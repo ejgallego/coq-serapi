@@ -1,3 +1,4 @@
+ser_util
 ser_bigint
 ser_loc
 ser_flags
@@ -8,6 +9,8 @@ ser_sorts
 ser_conv_oracle
 ser_globnames
 ser_misctypes
+ser_locus
+ser_genredexpr
 ser_decl_kinds
 ser_genarg
 ser_evar_kinds
