@@ -19,10 +19,30 @@ open Sexplib.Sexp
 (* GenArg                                                             *)
 (**********************************************************************)
 
-open Genarg
+type rlevel = [%import: Genarg.rlevel]
+type glevel = [%import: Genarg.glevel]
+type tlevel = [%import: Genarg.tlevel]
+
+let rlevel_of_sexp _ = Obj.magic 0
+let sexp_of_rlevel _ = Atom "GA_rlevel"
+
+let glevel_of_sexp _ = Obj.magic 0
+let sexp_of_glevel _ = Atom "GA_glevel"
+
+let tlevel_of_sexp _ = Obj.magic 0
+let sexp_of_tlevel _ = Atom "GA_tlevel"
+
+type 'a generic_argument = [%import: 'a Genarg.generic_argument]
+
+let generic_argument_of_sexp _ _x = Obj.magic 0
+let sexp_of_generic_argument _ _x = Atom ""
+
 type glob_generic_argument = [%import: Genarg.glob_generic_argument]
+  [@@deriving sexp]
 
-let glob_generic_argument_of_sexp _x = Obj.magic 0
-let sexp_of_glob_generic_argument _x = Atom ""
+type raw_generic_argument  = [%import: Genarg.raw_generic_argument]
+  [@@deriving sexp]
 
+type typed_generic_argument  = [%import: Genarg.typed_generic_argument]
+  [@@deriving sexp]
 

@@ -46,3 +46,7 @@ let _loc_get l = Loc.create l.fname l.line_nb l.bol_pos (l.bp, l.ep)
 
 let sexp_of_loc loc  = sexp_of__loc (_loc_put loc)
 let loc_of_sexp sexp = _loc_get (_loc_of_sexp sexp)
+
+type 'a located = [%import: 'a Loc.located
+                  [@with t := loc]]
+  [@@deriving sexp]

@@ -2,11 +2,15 @@
 
 include config.mk
 
-FILES=ser_loc ser_names ser_globnames ser_misctypes ser_decl_kinds	\
-      ser_genarg ser_evar_kinds ser_constr ser_goal ser_glob_term
+FILES=ser_bigint ser_loc ser_names ser_globnames ser_misctypes	\
+      ser_decl_kinds ser_genarg ser_evar_kinds ser_glob_term	\
+      ser_libnames ser_constrexpr
 
-MLI=$(addsuffix .cmi, $(FILES))
-OBJS=$(addsuffix .cmo, $(FILES))
+# Old-style stuff, needs review
+DUM=ser_constr ser_goal
+
+MLI=$(addsuffix .cmi, $(FILES) $(DUM))
+OBJS=$(addsuffix .cmo, $(FILES) $(DUM))
 
 all: $(MLI) $(OBJS)
 

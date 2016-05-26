@@ -13,16 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(**********************************************************************)
-(* Loc.mli                                                            *)
-(**********************************************************************)
+open Sexplib.Std
 
-open Sexplib
+type bigint = [%import: Bigint.bigint]
 
-type loc = Loc.t
-val loc_of_sexp : Sexp.t -> Loc.t
-val sexp_of_loc : Loc.t -> Sexp.t
+type _bigint                = Ser_Bigint of string [@@deriving sexp]
 
-type 'a located = 'a Loc.located
-val located_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Loc.located
-val sexp_of_located : ('a -> Sexp.t) -> 'a Loc.located -> Sexp.t
+let _bigint_put  bigint             = Ser_Bigint (Bigint.to_string bigint)
+let _bigint_get (Ser_Bigint bigint) = Bigint.of_string bigint
+
+let bigint_of_sexp sexp   = _bigint_get (_bigint_of_sexp sexp)
+let sexp_of_bigint bigint = sexp_of__bigint (_bigint_put bigint)

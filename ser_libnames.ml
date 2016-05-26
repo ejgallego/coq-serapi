@@ -13,16 +13,29 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(**********************************************************************)
-(* Loc.mli                                                            *)
-(**********************************************************************)
+(* open Sexplib.Std *)
 
-open Sexplib
+open Ser_loc
+open Ser_names
 
-type loc = Loc.t
-val loc_of_sexp : Sexp.t -> Loc.t
-val sexp_of_loc : Loc.t -> Sexp.t
+(* qualid: private *)
+type qualid = [%import: Libnames.qualid]
 
-type 'a located = 'a Loc.located
-val located_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Loc.located
-val sexp_of_located : ('a -> Sexp.t) -> 'a Loc.located -> Sexp.t
+type _qualid = Ser_Qualid of dirpath * id [@@deriving sexp]
+
+let _qualid_put qid                   = 
+  let dp, id = Libnames.repr_qualid qid in Ser_Qualid (dp, id)
+
+let _qualid_get (Ser_Qualid (dp, id)) = Libnames.make_qualid dp id
+
+let qualid_of_sexp sexp = _qualid_get (_qualid_of_sexp sexp)
+let sexp_of_qualid qid  = sexp_of__qualid (_qualid_put qid)
+
+(* reference: public *)
+type reference = [%import: Libnames.reference
+     [@with Loc.t       := loc;
+            Loc.located := located;
+            Names.Id.t  := id;
+     ]]
+  [@@deriving sexp]
+

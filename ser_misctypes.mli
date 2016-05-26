@@ -36,8 +36,8 @@ val sexp_of_glob_level : 'a -> Sexp.t
 val glob_sort_of_sexp : 'a -> 'b Misctypes.glob_sort_gen
 val sexp_of_glob_sort : 'a -> Sexp.t
 
-val patvar_of_sexp : 'a -> Names.Id.t
-val sexp_of_patvar : 'a -> Sexp.t
+val patvar_of_sexp : Sexp.t -> Misctypes.patvar
+val sexp_of_patvar : Misctypes.patvar -> Sexp.t
 
 val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a cast_type
 val sexp_of_cast_type : ('a -> Sexp.t) -> 'a cast_type -> Sexp.t

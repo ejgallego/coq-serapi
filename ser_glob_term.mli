@@ -29,8 +29,8 @@ and tomatch_tuples      = Glob_term.tomatch_tuples
 and cases_clause        = Glob_term.cases_clause
 and cases_clauses       = Glob_term.cases_clauses
 
-val existential_name_of_sexp : 'a -> Glob_term.existential_name
-val sexp_of_existential_name : 'a -> Sexp.t
+val existential_name_of_sexp : Sexp.t -> Glob_term.existential_name
+val sexp_of_existential_name : Glob_term.existential_name -> Sexp.t
 
 val cases_pattern_of_sexp : Sexp.t -> cases_pattern
 val sexp_of_cases_pattern : cases_pattern -> Sexp.t

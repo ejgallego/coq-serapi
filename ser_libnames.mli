@@ -13,16 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(**********************************************************************)
-(* Loc.mli                                                            *)
-(**********************************************************************)
-
 open Sexplib
 
-type loc = Loc.t
-val loc_of_sexp : Sexp.t -> Loc.t
-val sexp_of_loc : Loc.t -> Sexp.t
+type qualid = Libnames.qualid
 
-type 'a located = 'a Loc.located
-val located_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Loc.located
-val sexp_of_located : ('a -> Sexp.t) -> 'a Loc.located -> Sexp.t
+val qualid_of_sexp : Sexp.t -> Libnames.qualid
+val sexp_of_qualid : Libnames.qualid -> Sexp.t
+
+type reference = Libnames.reference
+
+val reference_of_sexp : Sexp.t -> Libnames.reference
+val sexp_of_reference : Libnames.reference -> Sexp.t
