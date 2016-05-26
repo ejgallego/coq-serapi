@@ -30,8 +30,8 @@ type inductive   = Names.inductive
 type constructor = Names.constructor
 type projection  = Names.Projection.t
 
-val id_of_sexp : 'a -> Id.t
-val sexp_of_id : 'a -> Sexp.t
+val id_of_sexp : Sexp.t -> Id.t
+val sexp_of_id : Id.t -> Sexp.t
 
 val name_of_sexp : Sexp.t -> Name.t
 val sexp_of_name : Name.t -> Sexp.t

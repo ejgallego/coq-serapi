@@ -1,4 +1,4 @@
-## Serialization for Coq internal structures
+## Serialization for Coq internal structures and Protocol Playground
 
 This repository contains the beginning of the ppx serialization for
 Coq's internal structures.

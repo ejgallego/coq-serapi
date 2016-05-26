@@ -14,7 +14,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+(* open Sexplib *)
 open Sexplib.Std
+
 (* open Sexplib.Sexp *)
 open Names
 
@@ -25,8 +27,12 @@ open Names
 (* Id: private *)
 type id   = [%import: Names.Id.t]
 
-let id_of_sexp _x = Id.of_string ""
-let sexp_of_id _x = Sexplib.Sexp.Atom ""
+type _id                = Ser_Id of string [@@deriving sexp]
+let _id_put  id         = Ser_Id (Id.to_string id)
+let _id_get (Ser_Id id) = Id.of_string id
+
+let id_of_sexp sexp = _id_get (_id_of_sexp sexp)
+let sexp_of_id id   = sexp_of__id (_id_put id)
 
 (* Name: public *)
 type name = [%import: Names.Name.t
@@ -36,14 +42,21 @@ type name = [%import: Names.Name.t
 (* DirPath: private *)
 type dirpath = [%import: Names.DirPath.t]
 
-let dirpath_of_sexp _x = DirPath.make []
-let sexp_of_dirpath _x = Sexplib.Sexp.Atom ""
+type _dirpath = Ser_DirPath of id list
+      [@@deriving sexp]
+
+let _dirpath_put dp                = Ser_DirPath (DirPath.repr dp)
+let _dirpath_get (Ser_DirPath dpl) = DirPath.make dpl
+
+let dirpath_of_sexp sexp = _dirpath_get (_dirpath_of_sexp sexp)
+let sexp_of_dirpath dp   = sexp_of__dirpath (_dirpath_put dp)
 
 (* Label: private *)
 type label = [%import: Names.Label.t]
 
-let label_of_sexp _x = Label.make ""
-let sexp_of_label _x = Sexplib.Sexp.Atom ""
+(* XXX: This will miss the tag *)
+let label_of_sexp sexp  = Label.of_id (id_of_sexp sexp)
+let sexp_of_label label = sexp_of_id (Label.to_id label)
 
 (* MBid: private *)
 type mbid = [%import: Names.MBId.t]

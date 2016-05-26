@@ -74,6 +74,7 @@ and predicate_pattern   = [%import: Glob_term.predicate_pattern
                                  Names.inductive     := inductive;
                                  Decl_kinds.binding_kind := binding_kind;
                           ]]
+
 and tomatch_tuple  = [%import: Glob_term.tomatch_tuple]
 and tomatch_tuples = [%import: Glob_term.tomatch_tuples]
 and cases_clause   = [%import: Glob_term.cases_clause
@@ -81,6 +82,7 @@ and cases_clause   = [%import: Glob_term.cases_clause
                             Names.Id.t          := id;
                             Names.Name.t        := name;
                      ]]
+
 and cases_clauses  = [%import: Glob_term.cases_clauses]
   [@@deriving sexp]
 
