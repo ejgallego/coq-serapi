@@ -48,14 +48,14 @@ val sexp_of_mbid : MBId.t -> Sexplib.Sexp.t
 val modpath_of_sexp : Sexp.t -> ModPath.t
 val sexp_of_modpath : ModPath.t -> Sexp.t
 
-val kername_of_sexp : 'a -> KerName.t
-val sexp_of_kername : 'a -> Sexp.t
+val kername_of_sexp : Sexp.t -> KerName.t
+val sexp_of_kername : KerName.t -> Sexp.t
 
-val constant_of_sexp : 'a -> Constant.t
-val sexp_of_constant : 'a -> Sexp.t
+val constant_of_sexp : Sexp.t -> Constant.t
+val sexp_of_constant : Constant.t -> Sexp.t
 
-val mutind_of_sexp : 'a -> MutInd.t
-val sexp_of_mutind : 'a -> Sexplib.Sexp.t
+val mutind_of_sexp : Sexp.t -> MutInd.t
+val sexp_of_mutind : MutInd.t -> Sexp.t
 
 val inductive_of_sexp : Sexp.t -> inductive
 val sexp_of_inductive : inductive -> Sexp.t

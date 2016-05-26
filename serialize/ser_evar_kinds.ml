@@ -14,7 +14,6 @@
 (************************************************************************)
 
 open Sexplib.Std
-open Sexplib.Sexp
 
 open Ser_names
 open Ser_globnames
@@ -26,8 +25,12 @@ open Ser_globnames
 (* Private *)
 type evar = [%import: Evar.t]
 
-let evar_of_sexp _x = Evar.unsafe_of_int 0
-let sexp_of_evar _x = Atom ""
+type _evar                    = Ser_Evar of int [@@deriving sexp]
+let _evar_put  evar           = Ser_Evar (Evar.repr evar)
+let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
+
+let evar_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
+let sexp_of_evar evar = sexp_of__evar (_evar_put evar)
 
 type obligation_definition_status =
   [%import: Evar_kinds.obligation_definition_status]
