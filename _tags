@@ -1,3 +1,3 @@
 true: package(ppx_import), package(sexplib), package(ppx_sexp_conv), rectypes
-true: warn_error(+1..49), bin_annot, annot, safe_string
+true: warn(+1..49-4), warn_error(+1..49), bin_annot, annot, safe_string
 <serialize/*.{ml,mli}>: use_lib, use_clib, use_library, use_kernel, use_intf, use_parsing
