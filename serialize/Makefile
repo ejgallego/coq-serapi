@@ -1,6 +1,6 @@
 .PHONY: clean all
 
-include config.mk
+include ../config.mk
 
 FILES=ser_bigint ser_loc ser_flags ser_goptions ser_names ser_univ	\
       ser_conv_oracle ser_globnames ser_misctypes ser_decl_kinds	\
@@ -63,4 +63,4 @@ COQDEPS=$(COQDIR)/lib/clib.cma			\
 	# $(COQDIR)/engine/engine.cma		\
 
 clean:
-	rm -f *.cmi *.cmo *.ml.d *.mli.d *.cmt *.cmx
+	rm -f *.cmi *.cmo *.ml.d *.mli.d *.cmt *.cmti *.cmx
