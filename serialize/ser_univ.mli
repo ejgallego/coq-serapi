@@ -15,6 +15,11 @@
 
 open Sexplib
 
+type universe = Univ.Universe.t
+
+val universe_of_sexp : Sexp.t -> universe
+val sexp_of_universe : universe -> Sexp.t
+
 type constraint_type = Univ.constraint_type
 
 val constraint_type_of_sexp : Sexp.t -> constraint_type

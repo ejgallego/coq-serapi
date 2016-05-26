@@ -42,64 +42,50 @@ type ('constr, 'types) kind_of_term =
   | Proj      of projection * 'constr
 *)
 
-module C = Constr
-module N = Names
-
 open Sexplib.Std
 
-type coq_name = NS of string | Anonymous [@@deriving sexp]
-
-type coq_sort = Prop | Type (* of universe Sorts.t *) [@@deriving sexp]
+open Ser_names
+open Ser_sorts
 
 type coq_constr =
   | Rel       of int
-  | Var       of string
+  | Var       of id
   | Meta      of int
   | Evar      of int * coq_constr array
-  | Sort      of coq_sort
+  | Sort      of sort
   | Cast      of coq_constr *  (* C.cast_kind * *) coq_types
-  | Prod      of coq_name * coq_types * coq_types
-  | Lambda    of coq_name * coq_types * coq_constr
-  | LetIn     of coq_name * coq_constr * coq_types * coq_constr
+  | Prod      of name * coq_types * coq_types
+  | Lambda    of name * coq_types * coq_constr
+  | LetIn     of name * coq_constr * coq_types * coq_constr
   | App       of coq_constr * coq_constr array
-  | Const     of string        (* XXX: Missing universe instance *)
-  | Ind       of string        (* XXX: Missing universe instance *)
-  | Construct of string        (* XXX: Missing universe instance *)
+  | Const     of constant
+  | Ind       of mutind
+  | Construct of mutind
   | Case      of (* C.case_info *  *) coq_constr * coq_constr * coq_constr array
   | Fix       of string        (* XXX: I'm lazy *)
   | CoFix     of string        (* XXX: I'm lazy *)
-  | Proj      of string * coq_constr
+  | Proj      of projection * coq_constr
 and coq_types = coq_constr [@@deriving sexp]
 
-let name_reify (n : N.Name.t) : coq_name =
-  match n with
-  | N.Name.Name id   -> NS (N.Id.to_string id)
-  | N.Name.Anonymous -> Anonymous
-
-let sort_reify (s : Sorts.t) : coq_sort =
-  match s with
-  | Sorts.Prop _ -> Prop
-  | Sorts.Type _ -> Type
-
-let rec constr_reify (c : C.constr) : coq_constr =
-  let nr  = name_reify             in
+let rec constr_reify (c : Constr.constr) : coq_constr =
   let cr  = constr_reify           in
   let cra = Array.map constr_reify in
+  let module C = Constr            in
   match C.kind c with
   | C.Rel i              -> Rel(i)
-  | C.Var v              -> Var(N.Id.to_string v)
+  | C.Var v              -> Var(v)
   | C.Meta(mv)           -> Meta mv
   | C.Evar(ek, csa)      -> Evar (Evar.repr ek, Array.map constr_reify csa)
-  | C.Sort(st)           -> Sort (sort_reify st)
+  | C.Sort(st)           -> Sort (st)
   | C.Cast(cs,_k,ty)     -> Cast(cr cs, cr ty)
-  | C.Prod(n,tya,tyr)    -> Prod(nr n, cr tya, cr tyr)
-  | C.Lambda(n,ab,bd)    -> Lambda(nr n, cr ab, cr bd)
-  | C.LetIn(n,u,ab,bd)   -> LetIn(nr n, cr u, cr ab, cr bd)
+  | C.Prod(n,tya,tyr)    -> Prod(n, cr tya, cr tyr)
+  | C.Lambda(n,ab,bd)    -> Lambda(n, cr ab, cr bd)
+  | C.LetIn(n,u,ab,bd)   -> LetIn(n, cr u, cr ab, cr bd)
   | C.App(hd, al)        -> App(cr hd, cra al)
-  | C.Const(p,_)         -> Const (N.Constant.to_string p)
-  | C.Ind((p,_),_)       -> Ind (N.MutInd.to_string p)
-  | C.Construct(((c,_),_),_) -> Construct (N.MutInd.to_string c)
+  | C.Const(p,_)         -> Const (p)
+  | C.Ind((p,_),_)       -> Ind (p)
+  | C.Construct(((c,_),_),_) -> Construct (c)
   | C.Case(_ci, d, c, ca) -> Case(cr d, cr c, cra ca)
   | C.Fix _              -> Fix "I'm lazy"
   | C.CoFix _            -> CoFix "I'm lazy"
-  | C.Proj(p,c)          -> Proj(N.Projection.to_string p, cr c)
+  | C.Proj(p,c)          -> Proj(p, cr c)

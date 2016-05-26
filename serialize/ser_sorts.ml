@@ -13,24 +13,18 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+open Ser_univ
 
-(* XXX: Think what to do with this  *)
-type universe = [%import: Univ.Universe.t]
-
-(* type _universe                = Ser_Universe of  [@@deriving sexp] *)
-(* let _universe_put  universe   = Ser_Universe (Universe.to_string universe) *)
-(* let _universe_get (Ser_Universe universe) = Universe.of_string universe *)
-
-(* let universe_of_sexp sexp     = _universe_get (_universe_of_sexp sexp) *)
-(* let sexp_of_universe universe = sexp_of__universe (_universe_put universe) *)
-
-open Univ
-
-let universe_of_sexp _sexp     = Universe.make (Level.prop)
-let sexp_of_universe _universe = Sexp.Atom "UNIV"
-
-type constraint_type =
-  [%import: Univ.constraint_type]
+type contents =
+  [%import: Sorts.contents]
   [@@deriving sexp]
 
+type family =
+  [%import: Sorts.family]
+  [@@deriving sexp]
+
+type sort =
+  [%import: Sorts.t
+  [@with Univ.universe := universe
+  ]]
+  [@@deriving sexp]

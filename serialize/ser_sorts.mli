@@ -14,32 +14,17 @@
 (************************************************************************)
 
 open Sexplib
-open Ser_names
 
-type coq_constr =
-  | Rel       of int
-  | Var       of id
-  | Meta      of int
-  | Evar      of int * coq_constr array
-  | Sort      of Ser_sorts.sort
-  | Cast      of coq_constr *  (* C.cast_kind * *) coq_types
-  | Prod      of name * coq_types * coq_types
-  | Lambda    of name * coq_types * coq_constr
-  | LetIn     of name * coq_constr * coq_types * coq_constr
-  | App       of coq_constr * coq_constr array
-  | Const     of constant
-  | Ind       of mutind
-  | Construct of mutind
-  | Case      of (* C.case_info *  *) coq_constr * coq_constr * coq_constr array
-  | Fix       of string        (* XXX: I'm lazy *)
-  | CoFix     of string        (* XXX: I'm lazy *)
-  | Proj      of projection * coq_constr
-and coq_types = coq_constr
+type contents = Sorts.contents
 
-val coq_constr_of_sexp : Sexp.t -> coq_types
-val sexp_of_coq_constr : coq_types -> Sexp.t
+val contents_of_sexp : Sexp.t -> contents
+val sexp_of_contents : contents -> Sexp.t
 
-val coq_types_of_sexp : Sexp.t -> coq_types
-val sexp_of_coq_types : coq_types -> Sexp.t
+type family = Sorts.family
+val family_of_sexp : Sexp.t -> family
+val sexp_of_family : family -> Sexp.t
 
-val constr_reify : Constr.constr -> coq_types
+type sort = Sorts.t
+
+val sort_of_sexp : Sexp.t -> sort
+val sexp_of_sort : sort -> Sexp.t
