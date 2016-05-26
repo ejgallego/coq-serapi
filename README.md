@@ -7,14 +7,14 @@ Most of the code should be eventually incorporated into Coq itself, where only t
 
 ### Building
 
-OPAM is recommended. You need the following packages:
+OPAM and ocamlbuild are recommended. You need the following packages:
 
 - ocamlfind
 - ppx_import
 - sexplib
 - ppx_sexp_conv
 
-Edit `config.mk` to point out Coq's location.
+Edit `myocamlbuild.ml` to point out Coq's location.
 
 ### API
 

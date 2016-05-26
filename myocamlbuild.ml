@@ -1,6 +1,7 @@
 open Ocamlbuild_plugin
 
-let p s = "/home/egallego/external/coq-git/" ^ s
+let location = "/home/egallego/external/coq-git/"
+let p s = location ^ s
 
 let () =
   dispatch begin function
