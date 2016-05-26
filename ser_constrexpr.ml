@@ -134,3 +134,41 @@ and local_binder         = [%import: Constrexpr.local_binder
     ]]
 and constr_notation_substitution = [%import: Constrexpr.constr_notation_substitution]
   [@@deriving sexp]
+
+type constr_pattern_expr = [%import: Constrexpr.constr_pattern_expr
+]
+  [@@deriving sexp]
+
+type typeclass_constraint =
+  [%import: Constrexpr.typeclass_constraint
+  [@with Loc.t        := loc;
+         Loc.located  := located;
+         Names.Id.t   := id;
+         Names.Name.t := name;
+         Decl_kinds.binding_kind := binding_kind;
+  ]]
+and typeclass_context =
+  [%import: Constrexpr.typeclass_context
+  ]
+  [@@deriving sexp]
+
+type with_declaration_ast =
+  [%import: Constrexpr.with_declaration_ast
+  [@with Loc.t        := loc;
+         Loc.located  := located;
+         Names.Id.t   := id;
+         Names.Name.t := name;
+         Libnames.qualid := qualid;
+  ]]
+  [@@deriving sexp]
+
+type module_ast =
+  [%import: Constrexpr.module_ast
+  [@with Loc.t        := loc;
+         Loc.located  := located;
+         Names.Id.t   := id;
+         Names.Name.t := name;
+         Libnames.qualid := qualid;
+  ]]
+  [@@deriving sexp]
+

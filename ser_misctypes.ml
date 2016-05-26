@@ -58,3 +58,8 @@ and 'constr or_and_intro_pattern_expr = [%import: 'constr Misctypes.or_and_intro
                                   [@with Loc.t := loc;
                                   ]]
 [@@deriving sexp]
+
+type 'a or_by_notation = [%import: 'a Misctypes.or_by_notation
+    [@with Loc.t := loc;
+    ]]
+[@@deriving sexp]

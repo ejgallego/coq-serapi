@@ -13,59 +13,45 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(**********************************************************************)
-(* Decl_kinds                                                         *)
-(**********************************************************************)
-
 open Sexplib.Std
 
-type locality = [%import: Decl_kinds.locality]
+open Ser_tok
+
+type side =
+  [%import: Extend.side]
   [@@deriving sexp]
 
-type binding_kind = [%import: Decl_kinds.binding_kind]
+type gram_assoc =
+  [%import: Extend.gram_assoc]
   [@@deriving sexp]
 
-type polymorphic =
-  [%import: Decl_kinds.polymorphic]
+type gram_position =
+  [%import: Extend.gram_position]
   [@@deriving sexp]
 
-type private_flag =
-  [%import: Decl_kinds.private_flag]
+type production_position =
+  [%import: Extend.production_position]
   [@@deriving sexp]
 
-type theorem_kind =
-  [%import: Decl_kinds.theorem_kind]
+type production_level =
+  [%import: Extend.production_level]
   [@@deriving sexp]
 
-type definition_object_kind =
-  [%import: Decl_kinds.definition_object_kind]
+type ('lev,'pos) constr_entry_key_gen =
+  [%import: ('lev, 'pos) Extend.constr_entry_key_gen
+  [@with Tok.t := tok;
+  ]]
   [@@deriving sexp]
 
-type assumption_object_kind =
-  [%import: Decl_kinds.assumption_object_kind]
+type constr_entry_key =
+  [%import: Extend.constr_entry_key]
   [@@deriving sexp]
 
-type assumption_kind =
-  [%import: Decl_kinds.assumption_kind]
+type constr_prod_entry_key =
+  [%import: Extend.constr_prod_entry_key]
   [@@deriving sexp]
 
-type definition_kind =
-  [%import: Decl_kinds.definition_kind]
-  [@@deriving sexp]
-
-type goal_object_kind =
-  [%import: Decl_kinds.goal_object_kind]
-  [@@deriving sexp]
-
-type goal_kind =
-  [%import: Decl_kinds.goal_kind]
-  [@@deriving sexp]
-
-type logical_kind =
-  [%import: Decl_kinds.logical_kind]
-  [@@deriving sexp]
-
-type recursivity_kind =
-  [%import: Decl_kinds.recursivity_kind]
+type simple_constr_prod_entry_key =
+  [%import: Extend.simple_constr_prod_entry_key]
   [@@deriving sexp]
 

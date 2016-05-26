@@ -56,3 +56,8 @@ val sexp_of_intro_pattern_action_expr : ('constr -> Sexp.t) -> 'constr intro_pat
 
 val or_and_intro_pattern_expr_of_sexp : (Sexp.t -> 'constr) -> Sexp.t -> 'constr or_and_intro_pattern_expr
 val sexp_of_or_and_intro_pattern_expr : ('constr -> Sexp.t) -> 'constr or_and_intro_pattern_expr -> Sexp.t
+
+type 'a or_by_notation = 'a Misctypes.or_by_notation
+
+val or_by_notation_of_sexp : (Sexplib.Sexp.t -> 'a) -> Sexplib.Sexp.t -> 'a or_by_notation
+val sexp_of_or_by_notation : ('a -> Sexplib.Sexp.t) -> 'a or_by_notation -> Sexplib.Sexp.t
