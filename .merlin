@@ -1,0 +1,9 @@
+FLG -rectypes
+
+S .
+B .
+
+S /home/egallego/external/coq-git/**
+B /home/egallego/external/coq-git/**
+
+PKG ppx_import sexplib ppx_sexp_conv
