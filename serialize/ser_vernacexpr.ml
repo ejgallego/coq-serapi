@@ -474,8 +474,6 @@ type module_binder =
   [@@deriving sexp]
 
 
-open Vernacexpr
-
 type vernac_expr =
   [%import: Vernacexpr.vernac_expr
   [@with
