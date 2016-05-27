@@ -167,31 +167,123 @@ type ml_tactic_name = Tacexpr.ml_tactic_name
 val ml_tactic_name_of_sexp : Sexp.t -> ml_tactic_name
 val sexp_of_ml_tactic_name : ml_tactic_name -> Sexp.t
 
-(*
-type 'a gen_atomic_tactic_expr = 'a Tacexpr.gen_atomic_tactic_expr
-constraint 'a =
-    < constant : 'cst; dterm : 'dtrm; level : 'lev; name : 'nam;
-      pattern : 'pat; reference : 'ref; tacexpr : 'tacexpr; term : 'trm;
-      utrm : 'utrm >
-and 'a gen_tactic_arg = 'a Tacexpr.gen_tactic_arg
-constraint 'a =
-    < constant : 'cst; dterm : 'dtrm; level : 'lev; name : 'nam;
-      pattern : 'pat; reference : 'ref; tacexpr : 'tacexpr; term : 'trm;
-      utrm : 'utrm >
-and 'a gen_tactic_expr ='a Tacexpr.gen_tactic_expr
-constraint 'a =
-    < constant : 'c; dterm : 'dtrm; level : 'l; name : 'n; pattern : 'p;
-      reference : 'r; tacexpr : 'tacexpr; term : 't; utrm : 'utrm >
-and 'a gen_tactic_fun_ast = 'a Tacexpr.gen_tactic_fun_ast
-constraint 'a =
-    < constant : 'c; dterm : 'dtrm; level : 'l; name : 'n; pattern : 'p;
-      reference : 'r; tacexpr : 'te; term : 't; utrm : 'utrm >
-*)
+val sexp_of_gen_atomic_tactic_expr :
+  ('a -> Sexplib.Sexp.t) ->
+  ('b -> Sexplib.Sexp.t) ->
+  ('c -> Sexplib.Sexp.t) ->
+  ('d -> Sexplib.Sexp.t) ->
+  ('e -> Sexplib.Sexp.t) ->
+  ('f -> Sexplib.Sexp.t) ->
+  ('g -> Sexplib.Sexp.t) ->
+  ('h -> Sexplib.Sexp.t) ->
+  ('i -> Sexplib.Sexp.t) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_atomic_tactic_expr -> Sexplib.Sexp.t
+val sexp_of_gen_tactic_expr :
+  ('a -> Sexplib.Sexp.t) ->
+  ('b -> Sexplib.Sexp.t) ->
+  ('c -> Sexplib.Sexp.t) ->
+  ('d -> Sexplib.Sexp.t) ->
+  ('e -> Sexplib.Sexp.t) ->
+  ('f -> Sexplib.Sexp.t) ->
+  ('g -> Sexplib.Sexp.t) ->
+  ('h -> Sexplib.Sexp.t) ->
+  ('i -> Sexplib.Sexp.t) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_tactic_expr -> Sexplib.Sexp.t
+val sexp_of_gen_tactic_arg :
+  ('a -> Sexplib.Sexp.t) ->
+  ('b -> Sexplib.Sexp.t) ->
+  ('c -> Sexplib.Sexp.t) ->
+  ('d -> Sexplib.Sexp.t) ->
+  ('e -> Sexplib.Sexp.t) ->
+  ('f -> Sexplib.Sexp.t) ->
+  ('g -> Sexplib.Sexp.t) ->
+  ('h -> Sexplib.Sexp.t) ->
+  ('i -> Sexplib.Sexp.t) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_tactic_arg -> Sexplib.Sexp.t
+val sexp_of_gen_fun_ast :
+  ('a -> Sexplib.Sexp.t) ->
+  ('b -> Sexplib.Sexp.t) ->
+  ('c -> Sexplib.Sexp.t) ->
+  ('d -> Sexplib.Sexp.t) ->
+  ('e -> Sexplib.Sexp.t) ->
+  ('f -> Sexplib.Sexp.t) ->
+  ('g -> Sexplib.Sexp.t) ->
+  ('h -> Sexplib.Sexp.t) ->
+  ('i -> Sexplib.Sexp.t) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_tactic_fun_ast -> Sexplib.Sexp.t
+
+val gen_atomic_tactic_expr_of_sexp :
+  Sexplib.Sexp.t ->
+  (Sexplib.Sexp.t -> 'a) ->
+  (Sexplib.Sexp.t -> 'b) ->
+  (Sexplib.Sexp.t -> 'c) ->
+  (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'e) ->
+  (Sexplib.Sexp.t -> 'f) ->
+  (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'h) ->
+  (Sexplib.Sexp.t -> 'i) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_atomic_tactic_expr
+
+val gen_tactic_expr_of_sexp :
+  Sexplib.Sexp.t ->
+  (Sexplib.Sexp.t -> 'a) ->
+  (Sexplib.Sexp.t -> 'b) ->
+  (Sexplib.Sexp.t -> 'c) ->
+  (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'e) ->
+  (Sexplib.Sexp.t -> 'f) ->
+  (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'h) ->
+  (Sexplib.Sexp.t -> 'i) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_tactic_expr
+
+val gen_tactic_arg_of_sexp :
+  Sexplib.Sexp.t ->
+  (Sexplib.Sexp.t -> 'a) ->
+  (Sexplib.Sexp.t -> 'b) ->
+  (Sexplib.Sexp.t -> 'c) ->
+  (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'e) ->
+  (Sexplib.Sexp.t -> 'f) ->
+  (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'h) ->
+  (Sexplib.Sexp.t -> 'i) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_tactic_arg
+
+val gen_fun_ast_of_sexp :
+  Sexplib.Sexp.t ->
+  (Sexplib.Sexp.t -> 'a) ->
+  (Sexplib.Sexp.t -> 'b) ->
+  (Sexplib.Sexp.t -> 'c) ->
+  (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'e) ->
+  (Sexplib.Sexp.t -> 'f) ->
+  (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'h) ->
+  (Sexplib.Sexp.t -> 'i) ->
+  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; utrm : 'b >
+  Tacexpr.gen_tactic_fun_ast
 
 type raw_tactic_expr = Tacexpr.raw_tactic_expr
-val raw_tactic_expr_of_sexp : 'a -> 'b
-val sexp_of_raw_tactic_expr : 'a -> Sexp.t
+val raw_tactic_expr_of_sexp : Sexp.t -> raw_tactic_expr
+val sexp_of_raw_tactic_expr : raw_tactic_expr -> Sexp.t
 
 type raw_red_expr = Tacexpr.raw_red_expr
-val raw_red_expr_of_sexp : 'a -> 'b
-val sexp_of_raw_red_expr : 'a -> Sexp.t
+val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
+val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t

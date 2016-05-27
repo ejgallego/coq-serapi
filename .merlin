@@ -3,6 +3,9 @@ FLG -rectypes
 S .
 B .
 
+S serialize/
+B _build/serialize/
+
 S /home/egallego/external/coq-git/**
 B /home/egallego/external/coq-git/**
 
