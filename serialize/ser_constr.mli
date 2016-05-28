@@ -88,23 +88,5 @@ val sexp_of_pcofixpoint :
   ('constr -> Sexp.t) -> ('types -> Sexp.t) ->
   ('constr, 'types) pcofixpoint -> Sexp.t
 
-type constr =
-    Rel       of int
-  | Var       of Ser_names.id
-  | Meta      of int
-  | Evar      of constr pexistential
-  | Sort      of Ser_sorts.sort
-  | Cast      of constr * cast_kind * types
-  | Prod      of Ser_names.name * types * types
-  | Lambda    of Ser_names.name * types * constr
-  | LetIn     of Ser_names.name * constr * types * constr
-  | App       of constr * constr array
-  | Const     of pconstant
-  | Ind       of pinductive
-  | Construct of pconstructor
-  | Case      of case_info * constr * constr * constr array
-  | Fix       of (constr, types) pfixpoint
-  | CoFix     of (constr, types) pcofixpoint
-  | Proj      of Ser_names.projection * constr
-and types = constr
-
+val constr_of_sexp : Sexp.t -> Constr.constr
+val sexp_of_constr : Constr.constr -> Sexp.t

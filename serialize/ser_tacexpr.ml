@@ -178,7 +178,7 @@ let to_dyn _   = Ser_Dyn
 let from_dyn _ = fst (Dyn.create "dyn_tac") 0
 
 (* This is beyond import and sexp for the moment, see:
- * [github issue]
+ * https://github.com/janestreet/ppx_sexp_conv/issues/6
  *)
 (* We thus iso-project the tactic definition in a virtually identical copy (but for the Dyn) *)
 module ITac = struct

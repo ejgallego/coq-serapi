@@ -42,6 +42,7 @@ type ('constr, 'types) kind_of_term =
   | Proj      of projection * 'constr
 *)
 
+open Sexplib
 open Sexplib.Std
 
 open Ser_names
@@ -141,28 +142,56 @@ type constr =
   | CoFix     of (constr, types) pcofixpoint
   | Proj      of projection * constr
 and types = constr
+[@@deriving sexp]
 
-(*
-let rec constr_reify (c : Constr.constr) : coq_constr =
-  let cr  = constr_reify           in
-  let cra = Array.map constr_reify in
-  let module C = Constr            in
+let rec _constr_put (c : Constr.constr) : constr =
+  let cr  = _constr_put           in
+  let cra = Array.map _constr_put in
+  let module C = Constr           in
   match C.kind c with
-  | C.Rel i              -> Rel(i)
-  | C.Var v              -> Var(v)
-  | C.Meta(mv)           -> Meta mv
-  | C.Evar(ek, csa)      -> Evar (Evar.repr ek, Array.map constr_reify csa)
-  | C.Sort(st)           -> Sort (st)
-  | C.Cast(cs,_k,ty)     -> Cast(cr cs, cr ty)
-  | C.Prod(n,tya,tyr)    -> Prod(n, cr tya, cr tyr)
-  | C.Lambda(n,ab,bd)    -> Lambda(n, cr ab, cr bd)
-  | C.LetIn(n,u,ab,bd)   -> LetIn(n, cr u, cr ab, cr bd)
-  | C.App(hd, al)        -> App(cr hd, cra al)
-  | C.Const(p,_)         -> Const (p)
-  | C.Ind((p,_),_)       -> Ind (p)
-  | C.Construct(((c,_),_),_) -> Construct (c)
-  | C.Case(_ci, d, c, ca) -> Case(cr d, cr c, cra ca)
-  | C.Fix _              -> Fix "I'm lazy"
-  | C.CoFix _            -> CoFix "I'm lazy"
-  | C.Proj(p,c)          -> Proj(p, cr c)
-*)
+  | C.Rel i               -> Rel(i)
+  | C.Var v               -> Var(v)
+  | C.Meta(mv)            -> Meta mv
+  | C.Evar(ek, csa)       -> Evar (ek, cra csa)
+  | C.Sort(st)            -> Sort (st)
+  | C.Cast(cs,k,ty)       -> Cast(cr cs, k, cr ty)
+  | C.Prod(n,tya,tyr)     -> Prod(n, cr tya, cr tyr)
+  | C.Lambda(n,ab,bd)     -> Lambda(n, cr ab, cr bd)
+  | C.LetIn(n,u,ab,bd)    -> LetIn(n, cr u, cr ab, cr bd)
+  | C.App(hd, al)         -> App(cr hd, cra al)
+  | C.Const p             -> Const p
+  | C.Ind(p,q)            -> Ind (p,q)
+  | C.Construct(p)        -> Construct (p)
+  | C.Case(ci, d, c, ca)  -> Case(ci, cr d, cr c, cra ca)
+  | C.Fix _p              -> failwith "U"
+  | C.CoFix _p            -> failwith "U"
+  | C.Proj(p,c)           -> Proj(p, cr c)
+
+let rec _constr_get (c : constr) : Constr.constr =
+  let cr  = _constr_get           in
+  let cra = Array.map _constr_get in
+  let module C = Constr           in
+  match c with
+  | Rel i               -> C.mkRel i
+  | Var v               -> C.mkVar v
+  | Meta(mv)            -> C.mkMeta mv
+  | Evar(ek, csa)       -> C.mkEvar (ek, cra csa)
+  | Sort(st)            -> C.mkSort (st)
+  | Cast(cs,k,ty)       -> C.mkCast(cr cs, k, cr ty)
+  | Prod(n,tya,tyr)     -> C.mkProd(n, cr tya, cr tyr)
+  | Lambda(n,ab,bd)     -> C.mkLambda(n, cr ab, cr bd)
+  | LetIn(n,u,ab,bd)    -> C.mkLetIn(n, cr u, cr ab, cr bd)
+  | App(hd, al)         -> C.mkApp(cr hd, cra al)
+  | Const p             -> C.mkConst (fst p)
+  | Ind(p,_q)           -> C.mkInd (fst p, snd p)
+  | Construct(p)        -> C.mkConstruct (fst p)
+  | Case(ci, d, c, ca)  -> C.mkCase(ci, cr d, cr c, cra ca)
+  | Fix _p              -> failwith "U"
+  | CoFix _p            -> failwith "U"
+  | Proj(p,c)           -> C.mkProj(p, cr c)
+
+let constr_of_sexp (c : Sexp.t) : Constr.constr =
+  _constr_get (constr_of_sexp c)
+
+let sexp_of_constr (c : Constr.constr) : Sexp.t =
+  sexp_of_constr (_constr_put c)

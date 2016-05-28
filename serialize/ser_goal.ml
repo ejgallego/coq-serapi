@@ -31,7 +31,7 @@ let the_proof () : Term.constr option =
       (* let _k     = Term.kind_of_term g_type                         in *)
 
 let sexp_of_proof () =
-  Option.cata (fun p -> p |> constr_reify |> sexp_of_coq_constr |> Sexplib.Sexp.to_string)
+  Option.cata (fun p -> p |> sexp_of_constr |> Sexplib.Sexp.to_string)
     "" (the_proof ())
 
 (* let yojson_of_proof () = *)
