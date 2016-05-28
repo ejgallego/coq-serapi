@@ -46,27 +46,103 @@ open Sexplib.Std
 
 open Ser_names
 open Ser_sorts
+open Ser_evar
+open Ser_univ
 
-type coq_constr =
+(* type 'a puniverses = *)
+(*   [%import: 'a Constr.puniverses *)
+(*   [@with *)
+(*      Univ.puniverses := puniverses; *)
+(*   ]] *)
+(*   [@@deriving sexp] *)
+
+type pconstant =
+  [%import: Constr.pconstant
+  [@with
+     Names.constant := constant;
+  ]]
+  [@@deriving sexp]
+
+type pinductive =
+  [%import: Constr.pinductive
+  [@with
+     Names.inductive := inductive;
+  ]]
+  [@@deriving sexp]
+
+type pconstructor =
+  [%import: Constr.pconstructor
+  [@with
+     Names.constructor := constructor;
+  ]]
+  [@@deriving sexp]
+
+type existential_key =
+  [%import: Constr.existential_key
+  [@with
+    Evar.t := evar;
+  ]]
+  [@@deriving sexp]
+
+type cast_kind =
+  [%import: Constr.cast_kind]
+  [@@deriving sexp]
+
+type case_style =
+  [%import: Constr.case_style]
+  [@@deriving sexp]
+
+type case_printing =
+  [%import: Constr.case_printing]
+  [@@deriving sexp]
+
+type case_info =
+  [%import: Constr.case_info
+  [@with
+     Names.inductive := inductive;
+  ]]
+  [@@deriving sexp]
+
+type 'constr pexistential =
+  [%import: 'constr Constr.pexistential]
+  [@@deriving sexp]
+
+type ('constr, 'types) prec_declaration =
+  [%import: ('constr, 'types) Constr.prec_declaration
+  [@with
+    Names.Name.t := name;
+  ]]
+  [@@deriving sexp]
+
+type ('constr, 'types) pfixpoint =
+  [%import: ('constr, 'types) Constr.pfixpoint]
+  [@@deriving sexp]
+
+type ('constr, 'types) pcofixpoint =
+  [%import: ('constr, 'types) Constr.pcofixpoint]
+  [@@deriving sexp]
+
+type constr =
   | Rel       of int
   | Var       of id
   | Meta      of int
-  | Evar      of int * coq_constr array
+  | Evar      of constr pexistential
   | Sort      of sort
-  | Cast      of coq_constr *  (* C.cast_kind * *) coq_types
-  | Prod      of name * coq_types * coq_types
-  | Lambda    of name * coq_types * coq_constr
-  | LetIn     of name * coq_constr * coq_types * coq_constr
-  | App       of coq_constr * coq_constr array
-  | Const     of constant
-  | Ind       of mutind
-  | Construct of mutind
-  | Case      of (* C.case_info *  *) coq_constr * coq_constr * coq_constr array
-  | Fix       of string        (* XXX: I'm lazy *)
-  | CoFix     of string        (* XXX: I'm lazy *)
-  | Proj      of projection * coq_constr
-and coq_types = coq_constr [@@deriving sexp]
+  | Cast      of constr * cast_kind * types
+  | Prod      of name * types * types
+  | Lambda    of name * types * constr
+  | LetIn     of name * constr * types * constr
+  | App       of constr * constr array
+  | Const     of pconstant
+  | Ind       of pinductive
+  | Construct of pconstructor
+  | Case      of case_info * constr * constr * constr array
+  | Fix       of (constr, types) pfixpoint
+  | CoFix     of (constr, types) pcofixpoint
+  | Proj      of projection * constr
+and types = constr
 
+(*
 let rec constr_reify (c : Constr.constr) : coq_constr =
   let cr  = constr_reify           in
   let cra = Array.map constr_reify in
@@ -89,3 +165,4 @@ let rec constr_reify (c : Constr.constr) : coq_constr =
   | C.Fix _              -> Fix "I'm lazy"
   | C.CoFix _            -> CoFix "I'm lazy"
   | C.Proj(p,c)          -> Proj(p, cr c)
+*)

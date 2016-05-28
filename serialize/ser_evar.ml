@@ -13,18 +13,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+open Sexplib.Std
 
-(************************************************************************)
-(* Evar_kinds.mli                                                       *)
-(************************************************************************)
-type obligation_definition_status = Evar_kinds.obligation_definition_status
+(* Private *)
+type evar = [%import: Evar.t]
 
-val obligation_definition_status_of_sexp : Sexp.t -> obligation_definition_status
-val sexp_of_obligation_definition_status : obligation_definition_status -> Sexp.t
+type _evar                    = Ser_Evar of int [@@deriving sexp]
+let _evar_put  evar           = Ser_Evar (Evar.repr evar)
+let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
 
-type evar_kinds = Evar_kinds.t
+let evar_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
+let sexp_of_evar evar = sexp_of__evar (_evar_put evar)
 
-val evar_kinds_of_sexp : Sexp.t -> evar_kinds
-val sexp_of_evar_kinds : evar_kinds -> Sexp.t
 

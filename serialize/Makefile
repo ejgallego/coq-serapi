@@ -2,12 +2,12 @@
 
 include ../config.mk
 
-FILES=ser_util ser_bigint ser_loc ser_flags ser_goptions ser_names   \
-      ser_univ ser_sorts ser_conv_oracle ser_globnames ser_misctypes \
-      ser_locus ser_genredexpr ser_decl_kinds ser_genarg	     \
-      ser_evar_kinds ser_tok ser_extend ser_stateid ser_glob_term    \
-      ser_libnames ser_constrexpr ser_tacexpr ser_vernacexpr	     \
-      ser_constr
+FILES=ser_util ser_bigint ser_loc ser_flags ser_goptions ser_names	\
+      ser_evar ser_univ ser_sorts ser_conv_oracle ser_globnames		\
+      ser_misctypes ser_locus ser_genredexpr ser_decl_kinds		\
+      ser_genarg ser_evar_kinds ser_tok ser_extend ser_stateid		\
+      ser_glob_term ser_libnames ser_constrexpr ser_tacexpr		\
+      ser_vernacexpr ser_constr
 
 # Old-style stuff, needs review
 DUM=ser_goal

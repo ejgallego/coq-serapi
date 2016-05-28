@@ -5,6 +5,7 @@ ser_flags
 ser_goptions
 ser_names
 ser_univ
+ser_evar
 ser_sorts
 ser_conv_oracle
 ser_globnames

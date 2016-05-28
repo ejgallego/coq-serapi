@@ -14,9 +14,23 @@
 (************************************************************************)
 
 open Sexplib
+open Sexplib.Std
+
+type level =
+  [%import: Univ.Level.t]
+
+type _level = Ser_Level of int
+  [@@deriving sexp]
+
+let _level_put level             = Ser_Level (Option.default 0 (Univ.Level.var_index level))
+let _level_get (Ser_Level level) = Univ.Level.var level
+
+let level_of_sexp sexp  = _level_get (_level_of_sexp sexp)
+let sexp_of_level level = sexp_of__level (_level_put level)
 
 (* XXX: Think what to do with this  *)
-type universe = [%import: Univ.Universe.t]
+type universe =
+  [%import: Univ.Universe.t]
 
 (* type _universe                = Ser_Universe of  [@@deriving sexp] *)
 (* let _universe_put  universe   = Ser_Universe (Universe.to_string universe) *)
@@ -25,12 +39,35 @@ type universe = [%import: Univ.Universe.t]
 (* let universe_of_sexp sexp     = _universe_get (_universe_of_sexp sexp) *)
 (* let sexp_of_universe universe = sexp_of__universe (_universe_put universe) *)
 
-open Univ
-
-let universe_of_sexp _sexp     = Universe.make (Level.prop)
+let universe_of_sexp _sexp     = Univ.Universe.make (Univ.Level.prop)
 let sexp_of_universe _universe = Sexp.Atom "UNIV"
+
+(*************************************************************************)
+
+type instance =
+  [%import: Univ.Instance.t]
+
+type _instance = Ser_Instance of level array
+  [@@deriving sexp]
+
+let _instance_put instance                = Ser_Instance (Univ.Instance.to_array instance)
+let _instance_get (Ser_Instance instance) = Univ.Instance.of_array instance
+
+let instance_of_sexp sexp     = _instance_get (_instance_of_sexp sexp)
+let sexp_of_instance instance = sexp_of__instance (_instance_put instance)
 
 type constraint_type =
   [%import: Univ.constraint_type]
+  [@@deriving sexp]
+
+type universe_instance =
+  [%import: Univ.universe_instance
+  [@with
+    Instance.t := instance;
+  ]]
+  [@@deriving sexp]
+
+type 'a puniverses =
+  [%import: 'a Univ.puniverses]
   [@@deriving sexp]
 
