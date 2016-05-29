@@ -20,28 +20,6 @@
    need to recurse throu the constr to build the clone.
 *)
 
-(* Main type to be cloned:
-
-type ('constr, 'types) kind_of_term =
-  | Rel       of int
-  | Var       of Id.t
-  | Meta      of metavariable
-  | Evar      of 'constr pexistential
-  | Sort      of Sorts.t
-  | Cast      of 'constr * cast_kind * 'types
-  | Prod      of Name.t * 'types * 'types
-  | Lambda    of Name.t * 'types * 'constr
-  | LetIn     of Name.t * 'constr * 'types * 'constr
-  | App       of 'constr * 'constr array
-  | Const     of constant puniverses
-  | Ind       of inductive puniverses
-  | Construct of constructor puniverses
-  | Case      of case_info * 'constr * 'constr * 'constr array
-  | Fix       of ('constr, 'types) pfixpoint
-  | CoFix     of ('constr, 'types) pcofixpoint
-  | Proj      of projection * 'constr
-*)
-
 open Sexplib
 open Sexplib.Std
 
@@ -163,8 +141,9 @@ let rec _constr_put (c : Constr.constr) : constr =
   | C.Ind(p,q)            -> Ind (p,q)
   | C.Construct(p)        -> Construct (p)
   | C.Case(ci, d, c, ca)  -> Case(ci, cr d, cr c, cra ca)
-  | C.Fix _p              -> failwith "U"
-  | C.CoFix _p            -> failwith "U"
+  (* (int array * int) * (Name.t array * 'types array * 'constr array)) *)
+  | C.Fix(p,(na,u1,u2))   -> Fix(p, (na, cra u1, cra u2))
+  | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
   | C.Proj(p,c)           -> Proj(p, cr c)
 
 let rec _constr_get (c : constr) : Constr.constr =
@@ -186,8 +165,8 @@ let rec _constr_get (c : constr) : Constr.constr =
   | Ind(p,_q)           -> C.mkInd (fst p, snd p)
   | Construct(p)        -> C.mkConstruct (fst p)
   | Case(ci, d, c, ca)  -> C.mkCase(ci, cr d, cr c, cra ca)
-  | Fix _p              -> failwith "U"
-  | CoFix _p            -> failwith "U"
+  | Fix (p,(na,u1,u2))  -> C.mkFix(p, (na, cra u1, cra u2))
+  | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
   | Proj(p,c)           -> C.mkProj(p, cr c)
 
 let constr_of_sexp (c : Sexp.t) : Constr.constr =
