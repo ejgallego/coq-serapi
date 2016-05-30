@@ -54,11 +54,11 @@ type lstring    = [%import: Vernacexpr.lstring
     ]]
   [@@deriving sexp]
 
-type lreference = [%import: Vernacexpr.lreference
-     [@with Names.Id.t := id;
-            Libnames.reference := reference;
-     ]]
-  [@@deriving sexp]
+(* type lreference = [%import: Vernacexpr.lreference *)
+(*      [@with Names.Id.t := id; *)
+(*             Libnames.reference := reference; *)
+(*      ]] *)
+(*   [@@deriving sexp] *)
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr
      [@with Libnames.reference := reference;
@@ -360,14 +360,14 @@ type proof_expr =
   ]]
   [@@deriving sexp]
 
-type grammar_tactic_prod_item_expr =
-  [%import: Vernacexpr.grammar_tactic_prod_item_expr
-  [@with Loc.t        := loc;
-         Loc.located  := located;
-         Names.Id.t := id;
-         Tacexpr.raw_tactic_expr := raw_tactic_expr;
-  ]]
-  [@@deriving sexp]
+(* type grammar_tactic_prod_item_expr = *)
+(*   [%import: Vernacexpr.grammar_tactic_prod_item_expr *)
+(*   [@with Loc.t        := loc; *)
+(*          Loc.located  := located; *)
+(*          Names.Id.t := id; *)
+(*          Tacexpr.raw_tactic_expr := raw_tactic_expr; *)
+(*   ]] *)
+(*   [@@deriving sexp] *)
 
 type syntax_modifier =
   [%import: Vernacexpr.syntax_modifier
@@ -509,13 +509,15 @@ type vernac_expr =
     Conv_oracle.level   := conv_level;
     Univ.constraint_type    := constraint_type;
     ]]
-and vernac_list =
-  [%import: Vernacexpr.vernac_list]
-
-and located_vernac_expr =
-  [%import: Vernacexpr.located_vernac_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-  ]]
   [@@deriving sexp]
+
+(* and vernac_list = *)
+(*   [%import: Vernacexpr.vernac_list] *)
+
+(* and located_vernac_expr = *)
+(*   [%import: Vernacexpr.located_vernac_expr *)
+(*   [@with *)
+(*     Loc.t        := loc; *)
+(*     Loc.located  := located; *)
+(*   ]] *)
+(*   [@@deriving sexp] *)

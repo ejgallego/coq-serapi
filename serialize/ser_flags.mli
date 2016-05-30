@@ -15,7 +15,7 @@
 
 open Sexplib
 
-type compat_version = Flags.compat_version = V8_2 | V8_3 | V8_4 | Current
+type compat_version = Flags.compat_version
 
 val compat_version_of_sexp : Sexp.t -> compat_version
 val sexp_of_compat_version : compat_version -> Sexp.t

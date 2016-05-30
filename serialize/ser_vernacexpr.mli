@@ -30,9 +30,9 @@ type lstring = Vernacexpr.lstring
 val lstring_of_sexp : Sexp.t -> lstring
 val sexp_of_lstring : lstring -> Sexp.t
 
-type lreference = Vernacexpr.lreference
-val lreference_of_sexp : Sexp.t -> lreference
-val sexp_of_lreference : lreference -> Sexp.t
+(* type lreference = Vernacexpr.lreference *)
+(* val lreference_of_sexp : Sexp.t -> lreference *)
+(* val sexp_of_lreference : lreference -> Sexp.t *)
 
 type class_rawexpr = Vernacexpr.class_rawexpr
 val class_rawexpr_of_sexp : Sexp.t -> class_rawexpr
@@ -222,10 +222,9 @@ type proof_expr = Vernacexpr.proof_expr
 val proof_expr_of_sexp : Sexp.t -> proof_expr
 val sexp_of_proof_expr : proof_expr -> Sexp.t
 
-type grammar_tactic_prod_item_expr = Vernacexpr.grammar_tactic_prod_item_expr
-
-val grammar_tactic_prod_item_expr_of_sexp : Sexp.t -> grammar_tactic_prod_item_expr
-val sexp_of_grammar_tactic_prod_item_expr : grammar_tactic_prod_item_expr -> Sexp.t
+(* type grammar_tactic_prod_item_expr = Vernacexpr.grammar_tactic_prod_item_expr *)
+(* val grammar_tactic_prod_item_expr_of_sexp : Sexp.t -> grammar_tactic_prod_item_expr *)
+(* val sexp_of_grammar_tactic_prod_item_expr : grammar_tactic_prod_item_expr -> Sexp.t *)
 
 type syntax_modifier = Vernacexpr.syntax_modifier
 
@@ -283,13 +282,14 @@ val module_binder_of_sexp : Sexp.t -> module_binder
 val sexp_of_module_binder : module_binder -> Sexp.t
 
 type vernac_expr = Vernacexpr.vernac_expr
-and  vernac_list = Vernacexpr.vernac_list
-and  located_vernac_expr = Vernacexpr.located_vernac_expr
+(* and  vernac_list = Vernacexpr.vernac_list *)
+(* and  located_vernac_expr = Vernacexpr.located_vernac_expr *)
 
 val vernac_expr_of_sexp : Sexp.t -> vernac_expr
-val vernac_list_of_sexp : Sexp.t -> vernac_list
-val located_vernac_expr_of_sexp : Sexp.t -> located_vernac_expr
-
 val sexp_of_vernac_expr : vernac_expr -> Sexp.t
-val sexp_of_vernac_list : vernac_list -> Sexp.t
-val sexp_of_located_vernac_expr : located_vernac_expr -> Sexp.t
+
+(* val located_vernac_expr_of_sexp : Sexp.t -> located_vernac_expr *)
+(* val sexp_of_located_vernac_expr : located_vernac_expr -> Sexp.t *)
+
+(* val vernac_list_of_sexp : Sexp.t -> vernac_list *)
+(* val sexp_of_vernac_list : vernac_list -> Sexp.t *)

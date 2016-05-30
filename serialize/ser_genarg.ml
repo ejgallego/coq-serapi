@@ -32,7 +32,18 @@ let sexp_of_glevel _ = Atom "GA_glevel"
 let tlevel_of_sexp _ = Obj.magic 0
 let sexp_of_tlevel _ = Atom "GA_tlevel"
 
-type 'a generic_argument = [%import: 'a Genarg.generic_argument]
+(* type ('a, 'b) abstract_argument_type = *)
+(*   ('a, 'b) Genarg.abstract_argument_type *)
+  (* [%import: ('a, 'b) Genarg.abstract_argument_type *)
+  (* ] *)
+
+type 'a generic_argument =
+  'a Genarg.generic_argument
+
+  (* [%import: 'a Genarg.generic_argument *)
+  (* [@with *)
+  (*    Genarg.abstract_argument_type := abstract_argument_type; *)
+  (* ]] *)
 
 let generic_argument_of_sexp _ _x = Obj.magic 0
 let sexp_of_generic_argument _ _x = Atom ""
