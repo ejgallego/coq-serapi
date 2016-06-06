@@ -13,37 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Main protocol handler *)
-
-(* Write the protocol handler *)
-
-type command = int
-type answer  = int
-type query   = int
-
-let parse_command () = ()
-let do_command    old_state _cmd = old_state
-let print_answers () = ()
-
-let fb_handler fb =
-  Format.printf "%a" Ser_top_util.pp_feedback fb
-
-(* Switch to a reactive lib? *)
-let rec loop old_state =
-  let new_state = do_command old_state (parse_command ()) in
-  print_answers ();
-  loop new_state
-
-let main () =
-  let verb = true in
-  let istate = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
-  Format.printf "Coq initialized with state: %s\n" (Stateid.to_string istate);
-  let istate,_ = Stm.add ~ontop:istate verb 0 "Inductive False := . " in
-  Stm.finish ();
-  let _istate,_ = Stm.add ~ontop:istate verb 0 "Inductive False := . " in
-  Stm.finish ();
-  flush_all ();
-  ()
-  (* ignore (loop istate) *)
-
-let _ = main ()
+val pp_feedback : Format.formatter -> Feedback.feedback -> unit
