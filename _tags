@@ -1,3 +1,10 @@
-true: package(ppx_import), package(sexplib), package(ppx_sexp_conv), rectypes
+true: package(ppx_import), package(sexplib), package(ppx_sexp_conv)
 true: warn(+1..49-4), warn_error(+1..49), bin_annot, annot, safe_string
-<serialize/*.{ml,mli}>: use_lib, use_clib, use_library, use_kernel, use_intf, use_parsing
+<serialize/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_parsing
+
+# Coq-specific linking flags
+true: rectypes, thread, package(threads), package(str), package(dynlink), package(camlp5), package(camlp5.gramlib)
+<sertop/*>: coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping
+<sertop/*>: coq_interp, coq_parsing, coq_grammar, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel
+
+

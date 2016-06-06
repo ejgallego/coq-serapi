@@ -5,3 +5,5 @@ _build
 *.cmt
 *.cmti
 *~
+*.byte
+*.native
