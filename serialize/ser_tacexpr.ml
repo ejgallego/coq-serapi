@@ -190,8 +190,8 @@ module ITac = struct
 type ('trm, 'utrm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_expr =
   (* 'a Tacexpr.gen_atomic_tactic_expr = *)
   | TacIntroPattern of 'dtrm intro_pattern_expr located list
-  | TacIntroMove of id option * 'nam move_location
-  | TacExact of 'trm
+  (* | TacIntroMove of id option * 'nam move_location *)
+  (* | TacExact of 'trm *)
   | TacApply of advanced_flag * evars_flag * 'trm with_bindings_arg list *
       ('nam * 'dtrm intro_pattern_expr located option) option
   | TacElim of evars_flag * 'trm with_bindings_arg * 'trm with_bindings option
@@ -209,13 +209,13 @@ type ('trm, 'utrm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tac
       intro_pattern_naming_expr located option
   | TacInductionDestruct of
       rec_flag * evars_flag * ('trm,'dtrm,'nam) induction_clause_list
-  | TacDoubleInduction of quantified_hypothesis * quantified_hypothesis
+  (* | TacDoubleInduction of quantified_hypothesis * quantified_hypothesis *)
   (* | TacTrivial of debug * 'trm list * string list option *)
   (* | TacAuto of debug * int or_var option * 'trm list * string list option *)
   (* | TacClear of bool * 'nam list *)
   (* | TacClearBody of 'nam list *)
   (* | TacMove of 'nam * 'nam move_location *)
-  | TacRename of ('nam *'nam) list
+  (* | TacRename of ('nam *'nam) list *)
   (* | TacSplit of evars_flag * 'trm bindings list *)
   | TacReduce of ('trm,'cst,'pat) red_expr_gen * 'nam clause_expr
   | TacChange of 'pat option * 'dtrm * 'nam clause_expr
@@ -308,8 +308,8 @@ end
 let rec _gen_atom_tactic_expr_put (t : 'a Tacexpr.gen_atomic_tactic_expr) :
   ('t, 'utrm, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_atomic_tactic_expr = match t with
   | Tacexpr.TacIntroPattern x            -> ITac.TacIntroPattern x
-  | Tacexpr.TacIntroMove (a,b)           -> ITac.TacIntroMove (a,b)
-  | Tacexpr.TacExact u                   -> ITac.TacExact u
+  (* | Tacexpr.TacIntroMove (a,b)           -> ITac.TacIntroMove (a,b) *)
+  (* | Tacexpr.TacExact u                   -> ITac.TacExact u *)
   | Tacexpr.TacApply (a,b,c,d)           -> ITac.TacApply (a,b,c,d)
   | Tacexpr.TacElim (a,b,c)              -> ITac.TacElim (a,b,c)
   | Tacexpr.TacCase (a,b)                -> ITac.TacCase (a,b)
@@ -322,13 +322,13 @@ let rec _gen_atom_tactic_expr_put (t : 'a Tacexpr.gen_atomic_tactic_expr) :
   (* | Tacexpr.TacGeneralizeDep a           -> ITac.TacGeneralizeDep a *)
   | Tacexpr.TacLetTac (a,b,c,d,e)        -> ITac.TacLetTac (a,b,c,d,e)
   | Tacexpr.TacInductionDestruct (a,b,c) -> ITac.TacInductionDestruct (a,b,c)
-  | Tacexpr.TacDoubleInduction (a,b)     -> ITac.TacDoubleInduction (a,b)
+  (* | Tacexpr.TacDoubleInduction (a,b)     -> ITac.TacDoubleInduction (a,b) *)
   (* | Tacexpr.TacTrivial (a,b,c)           -> ITac.TacTrivial (a,b,c) *)
   (* | Tacexpr.TacAuto (a,b,c,d)            -> ITac.TacAuto (a,b,c,d) *)
   (* | Tacexpr.TacClear (a,b)               -> ITac.TacClear (a,b) *)
   (* | Tacexpr.TacClearBody a               -> ITac.TacClearBody a *)
   (* | Tacexpr.TacMove (a,b)                -> ITac.TacMove (a,b) *)
-  | Tacexpr.TacRename a                  -> ITac.TacRename a
+  (* | Tacexpr.TacRename a                  -> ITac.TacRename a *)
   (* | Tacexpr.TacSplit (a,b)               -> ITac.TacSplit (a,b) *)
   | Tacexpr.TacReduce (a,b)              -> ITac.TacReduce (a,b)
   | Tacexpr.TacChange (a,b,c)            -> ITac.TacChange (a,b,c)
@@ -394,8 +394,8 @@ and _gen_tactic_fun_ast_put (t : 'a Tacexpr.gen_tactic_fun_ast) :
 let rec _gen_atom_tactic_expr_get (t : ('t, 'utrm, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_atomic_tactic_expr) :
   'a Tacexpr.gen_atomic_tactic_expr = match t with
   | ITac.TacIntroPattern x            -> Tacexpr.TacIntroPattern x
-  | ITac.TacIntroMove (a,b)           -> Tacexpr.TacIntroMove (a,b)
-  | ITac.TacExact u                   -> Tacexpr.TacExact u
+  (* | ITac.TacIntroMove (a,b)           -> Tacexpr.TacIntroMove (a,b) *)
+  (* | ITac.TacExact u                   -> Tacexpr.TacExact u *)
   | ITac.TacApply (a,b,c,d)           -> Tacexpr.TacApply (a,b,c,d)
   | ITac.TacElim (a,b,c)              -> Tacexpr.TacElim (a,b,c)
   | ITac.TacCase (a,b)                -> Tacexpr.TacCase (a,b)
@@ -408,13 +408,13 @@ let rec _gen_atom_tactic_expr_get (t : ('t, 'utrm, 'dtrm, 'p, 'c, 'r, 'n, 'tacex
   (* | ITac.TacGeneralizeDep a           -> Tacexpr.TacGeneralizeDep a *)
   | ITac.TacLetTac (a,b,c,d,e)        -> Tacexpr.TacLetTac (a,b,c,d,e)
   | ITac.TacInductionDestruct (a,b,c) -> Tacexpr.TacInductionDestruct (a,b,c)
-  | ITac.TacDoubleInduction (a,b)     -> Tacexpr.TacDoubleInduction (a,b)
+  (* | ITac.TacDoubleInduction (a,b)     -> Tacexpr.TacDoubleInduction (a,b) *)
   (* | ITac.TacTrivial (a,b,c)           -> Tacexpr.TacTrivial (a,b,c) *)
   (* | ITac.TacAuto (a,b,c,d)            -> Tacexpr.TacAuto (a,b,c,d) *)
   (* | ITac.TacClear (a,b)               -> Tacexpr.TacClear (a,b) *)
   (* | ITac.TacClearBody a               -> Tacexpr.TacClearBody a *)
   (* | ITac.TacMove (a,b)                -> Tacexpr.TacMove (a,b) *)
-  | ITac.TacRename a                  -> Tacexpr.TacRename a
+  (* | ITac.TacRename a                  -> Tacexpr.TacRename a *)
   (* | ITac.TacSplit (a,b)               -> Tacexpr.TacSplit (a,b) *)
   | ITac.TacReduce (a,b)              -> Tacexpr.TacReduce (a,b)
   | ITac.TacChange (a,b,c)            -> Tacexpr.TacChange (a,b,c)
