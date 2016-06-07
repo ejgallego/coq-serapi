@@ -52,4 +52,6 @@ let main () =
   loop istate
   (* ignore (loop istate) *)
 
-let _ = main ()
+let _ =
+  let _u = Ser_protocol.Summary in
+  main ()
