@@ -13,42 +13,48 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Main protocol handler *)
+open Sexplib.Std
 
-open Sexplib
-(* Write the protocol handler *)
+open Ser_loc
+open Ser_xml
+open Ser_richpp
+open Ser_stateid
 
-type command = int
-type answer  = int
-type query   = int
+type level =
+  [%import: Feedback.level]
+  [@@deriving sexp]
 
-let parse_command () = ()
-let do_command    old_state _cmd = old_state
-let print_answers () = ()
+type edit_id =
+  [%import: Feedback.edit_id]
+  [@@deriving sexp]
 
-let fb_handler fb =
-  Format.printf "%a@\n%!" Ser_top_util.pp_feedback fb;
-  let ser_fb = Ser_feedback.sexp_of_feedback fb   in
-  Format.printf "%a@\n%!" Sexp.pp_hum ser_fb
+type route_id =
+  [%import: Feedback.route_id]
+  [@@deriving sexp]
 
-(* Switch to a reactive lib? *)
-let verb = true
+type edit_or_state_id =
+  [%import: Feedback.edit_or_state_id
+  [@with
+     Feedback.edit_id := edit_id;
+     state_id := stateid;
+  ]]
+  [@@deriving sexp]
 
-let rec loop old_state =
-  let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in
-  try
-    Stm.finish ();
-    loop new_state
-  with exn ->
-    let open Format in
-    eprintf "%a\n%!" Pp.msg_with (Errors.print exn);
-    ignore (Stm.edit_at old_state);
-    loop old_state
+type feedback_content =
+  [%import: Feedback.feedback_content
+  [@with
+     Stateid.t := stateid;
+     Loc.t := loc;
+     Xml_datatype.xml := xml;
+     Richpp.richpp    := richpp;
+  ]]
+  [@@deriving sexp]
 
-let main () =
-  let istate = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
-  Format.printf "Coq initialized with state: %s\n" (Stateid.to_string istate);
-  loop istate
-  (* ignore (loop istate) *)
+type feedback =
+  [%import: Feedback.feedback
+  [@with
+     Stateid.t := stateid;
+     Feedback.route_id := route_id;
+  ]]
+  [@@deriving sexp]
 
-let _ = main ()

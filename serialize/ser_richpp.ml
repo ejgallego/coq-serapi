@@ -13,42 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Main protocol handler *)
+open Ser_xml
 
-open Sexplib
-(* Write the protocol handler *)
+type richpp = Richpp.richpp
 
-type command = int
-type answer  = int
-type query   = int
-
-let parse_command () = ()
-let do_command    old_state _cmd = old_state
-let print_answers () = ()
-
-let fb_handler fb =
-  Format.printf "%a@\n%!" Ser_top_util.pp_feedback fb;
-  let ser_fb = Ser_feedback.sexp_of_feedback fb   in
-  Format.printf "%a@\n%!" Sexp.pp_hum ser_fb
-
-(* Switch to a reactive lib? *)
-let verb = true
-
-let rec loop old_state =
-  let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in
-  try
-    Stm.finish ();
-    loop new_state
-  with exn ->
-    let open Format in
-    eprintf "%a\n%!" Pp.msg_with (Errors.print exn);
-    ignore (Stm.edit_at old_state);
-    loop old_state
-
-let main () =
-  let istate = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
-  Format.printf "Coq initialized with state: %s\n" (Stateid.to_string istate);
-  loop istate
-  (* ignore (loop istate) *)
-
-let _ = main ()
+let richpp_of_sexp sexp = Richpp.richpp_of_xml (xml_of_sexp sexp)
+let sexp_of_richpp rpp  = sexp_of_xml (Richpp.repr rpp)

@@ -48,7 +48,7 @@ let string_of_feedback_content fb : string =
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in
-  Format.fprintf fmt "feedback for [%s]: %s\n%!"
+  Format.fprintf fmt "feedback for [%s]: %s"
     (string_of_eosid fb.id)
     (string_of_feedback_content fb.Feedback.contents)
 

@@ -1,8 +1,12 @@
 ser_util
 ser_bigint
 ser_loc
+ser_xml
 ser_flags
 ser_goptions
+ser_stateid
+ser_richpp
+ser_feedback
 ser_names
 ser_univ
 ser_evar
@@ -17,7 +21,6 @@ ser_genarg
 ser_evar_kinds
 ser_tok
 ser_extend
-ser_stateid
 ser_glob_term
 ser_libnames
 ser_constrexpr

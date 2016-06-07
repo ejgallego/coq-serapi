@@ -4,6 +4,7 @@ true: warn(+1..49-4), warn_error(+1..49), bin_annot, annot, safe_string
 
 # Coq-specific linking flags
 true: rectypes, thread, package(threads), package(str)
+<serialize>: include
 <sertop/*>: linkall
 <sertop/*>: coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping
 <sertop/*>: coq_interp, coq_parsing, coq_grammar, coq_printing, coq_tactics
