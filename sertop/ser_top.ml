@@ -41,7 +41,8 @@ let rec loop old_state =
     loop new_state
   with exn ->
     let open Format in
-    eprintf "%a\n%!" Pp.msg_with (Errors.print exn);
+    eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn);
+    (* eprintf "%a\n%!" Pp.msg_with (Errors.print exn); *)
     ignore (Stm.edit_at old_state);
     loop old_state
 
