@@ -88,5 +88,7 @@ val sexp_of_pcofixpoint :
   ('constr -> Sexp.t) -> ('types -> Sexp.t) ->
   ('constr, 'types) pcofixpoint -> Sexp.t
 
-val constr_of_sexp : Sexp.t -> Constr.constr
-val sexp_of_constr : Constr.constr -> Sexp.t
+type constr = Constr.constr
+
+val constr_of_sexp : Sexp.t -> constr
+val sexp_of_constr : constr -> Sexp.t

@@ -101,28 +101,30 @@ type ('constr, 'types) pcofixpoint =
   [%import: ('constr, 'types) Constr.pcofixpoint]
   [@@deriving sexp]
 
-type constr =
+type constr = Constr.constr
+
+type _constr =
   | Rel       of int
   | Var       of id
   | Meta      of int
-  | Evar      of constr pexistential
+  | Evar      of _constr pexistential
   | Sort      of sort
-  | Cast      of constr * cast_kind * types
-  | Prod      of name * types * types
-  | Lambda    of name * types * constr
-  | LetIn     of name * constr * types * constr
-  | App       of constr * constr array
+  | Cast      of _constr * cast_kind * _types
+  | Prod      of name * _types * _types
+  | Lambda    of name * _types * _constr
+  | LetIn     of name * _constr * _types * _constr
+  | App       of _constr * _constr array
   | Const     of pconstant
   | Ind       of pinductive
   | Construct of pconstructor
-  | Case      of case_info * constr * constr * constr array
-  | Fix       of (constr, types) pfixpoint
-  | CoFix     of (constr, types) pcofixpoint
-  | Proj      of projection * constr
-and types = constr
+  | Case      of case_info * _constr * _constr * _constr array
+  | Fix       of (_constr, _types) pfixpoint
+  | CoFix     of (_constr, _types) pcofixpoint
+  | Proj      of projection * _constr
+and _types = _constr
 [@@deriving sexp]
 
-let rec _constr_put (c : Constr.constr) : constr =
+let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
   let cra = Array.map _constr_put in
   let module C = Constr           in
@@ -146,7 +148,7 @@ let rec _constr_put (c : Constr.constr) : constr =
   | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
   | C.Proj(p,c)           -> Proj(p, cr c)
 
-let rec _constr_get (c : constr) : Constr.constr =
+let rec _constr_get (c : _constr) : constr =
   let cr  = _constr_get           in
   let cra = Array.map _constr_get in
   let module C = Constr           in
@@ -169,8 +171,8 @@ let rec _constr_get (c : constr) : Constr.constr =
   | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
   | Proj(p,c)           -> C.mkProj(p, cr c)
 
-let constr_of_sexp (c : Sexp.t) : Constr.constr =
-  _constr_get (constr_of_sexp c)
+let constr_of_sexp (c : Sexp.t) : constr =
+  _constr_get (_constr_of_sexp c)
 
-let sexp_of_constr (c : Constr.constr) : Sexp.t =
-  sexp_of_constr (_constr_put c)
+let sexp_of_constr (c : constr) : Sexp.t =
+  sexp_of__constr (_constr_put c)
