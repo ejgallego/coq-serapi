@@ -61,10 +61,16 @@ type query_cmd =
   [@@deriving of_sexp]
 
 type coq_object =
+  | CoqString of string
   | CoqOption of option_state
   | CoqConstr of constr
   | CoqGlob   of glob_constr
   [@@deriving sexp]
+
+let exec_query (_limit, _pp) (cmd : query_cmd) = match cmd with
+  | Option _ -> failwith "Query option TODO"
+  | Search _ -> failwith "Query Search TODO"
+  | Goals    -> []
 
 type cmd =
   | Control    of control_cmd
@@ -76,23 +82,22 @@ type answer =
   | Ack         of int          (* Command id *)
   | StmInfo     of stateid
   (* | Feedback    of feedback *)
-  | QueryResult of coq_object list
-  | Printer     of (Format.formatter -> unit)
+  | ObjList     of coq_object list
+  (* Not serializable *)
+  (* | Printer     of (Format.formatter -> unit) *)
   [@@deriving sexp_of]
 
 (* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 (* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
 (*     Stateid.t * [ `NewTip | `Unfocus of Stateid.t ] *)
 
-let obj_print (popt : pp_opt) (obj : coq_object) =
-  let pr pp obj fmt = Format.fprintf fmt "%a" pp obj in
-  match popt, obj with
-  | PpStr,  CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
-  | PpSexp, CoqOption o -> pr Sexp.pp (sexp_of_option_state o)
-  | PpStr,  CoqConstr c -> pr (Pp.pp_with ?pp_tag:None) (Printer.pr_constr c)
-  | PpSexp, CoqConstr c -> pr Sexp.pp (sexp_of_constr c)
-  | PpStr,  CoqGlob   g -> pr (Pp.pp_with ?pp_tag:None) (Printer.pr_glob_constr g)
-  | PpSexp, CoqGlob   g -> pr Sexp.pp (sexp_of_glob_constr g)
+let obj_printer fmt (obj : coq_object) =
+  let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
+  match obj with
+  | CoqString s -> pr (Pp.str s)
+  | CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
+  | CoqConstr c -> pr (Printer.pr_constr c)
+  | CoqGlob   g -> pr (Printer.pr_glob_constr g)
 
 let fb_handler fb =
   Format.printf "%a@\n%!" Sexp.pp_hum (sexp_of_feedback fb)
@@ -122,8 +127,11 @@ let exec_ctrl (ctrl : control_cmd) = match ctrl with
 
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
-  | Query (_opt,_qry) -> [Ack 0; QueryResult []]
-  | Print obj         -> [Printer (obj_print PpStr obj)]
+  | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
+  | Print obj         ->
+    let open Format in
+    fprintf str_formatter "@[%a@]" obj_printer obj;
+    [ObjList [CoqString (flush_str_formatter ())]]
 
   (* Ser_protocol *)
   (* try *)
