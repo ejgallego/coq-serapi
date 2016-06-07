@@ -13,16 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Ser_stateid
 
-type option_name =
-  [%import: Goptions.option_name]
-  [@@deriving sexp]
+type focus =
+ [%import: Stm.focus
+ [@with
+    Stateid.t := stateid;
+ ]]
+ [@@deriving sexp]
 
-type option_value =
-  [%import: Goptions.option_value]
-  [@@deriving sexp]
+ (* { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 
-type option_state =
-  [%import: Goptions.option_state]
-  [@@deriving sexp]

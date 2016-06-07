@@ -27,3 +27,4 @@ ser_constrexpr
 ser_tacexpr
 ser_vernacexpr
 ser_constr
+ser_stm

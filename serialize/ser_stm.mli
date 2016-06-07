@@ -13,16 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Sexplib
 
-type option_name =
-  [%import: Goptions.option_name]
-  [@@deriving sexp]
+type focus = Stm.focus
 
-type option_value =
-  [%import: Goptions.option_value]
-  [@@deriving sexp]
-
-type option_state =
-  [%import: Goptions.option_state]
-  [@@deriving sexp]
+val sexp_of_focus : Stm.focus -> Sexp.t
+val focus_of_sexp : Sexp.t -> Stm.focus
