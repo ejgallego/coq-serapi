@@ -13,18 +13,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Main protocol handler *)
 open Sexplib
 
-let rec loop () =
-  let cmd = Ser_protocol.read_cmd stdin          in
-  let res = List.map Ser_protocol.sexp_of_answer
-      (Ser_protocol.exec_cmd cmd)                in
-  List.iter (Format.printf "@[%a@]@\n%!" Sexp.pp) res;
-  loop ()
+type cmd
+type answer
 
-let main () =
-  loop ()
+val sexp_of_answer : answer -> Sexp.t
 
-let _ =
-  main ()
+val read_cmd : in_channel -> cmd
+val exec_cmd : cmd -> answer list
+
