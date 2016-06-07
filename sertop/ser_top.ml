@@ -35,22 +35,32 @@ let fb_handler fb =
 let verb = true
 
 let rec loop old_state =
-  let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in
+  (* Parsing *)
   try
-    Stm.finish ();
-    loop new_state
-  with exn ->
-    let open Format in
-    eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn);
-    (* eprintf "%a\n%!" Pp.msg_with (Errors.print exn); *)
-    ignore (Stm.edit_at old_state);
+    let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in
+    (* Execution *)
+    begin try
+        Stm.finish ();
+        loop new_state
+      (* Execution error *)
+      with exn ->
+        Format.eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn);
+        ignore (Stm.edit_at old_state);
+        loop old_state
+    end
+  with
+  (* End of input *)
+  | End_of_file -> old_state
+  (* Parse error *)
+  | exn ->
+    Format.eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn);
     loop old_state
 
 let main () =
   let istate = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
   Format.printf "Coq initialized with state: %s\n" (Stateid.to_string istate);
-  loop istate
-  (* ignore (loop istate) *)
+  Format.printf "Coq      exited with state: %s\n" (Stateid.to_string (loop istate));
+  ()
 
 let _ =
   let _u = Ser_protocol.Summary in
