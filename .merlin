@@ -6,6 +6,9 @@ B .
 S serialize/
 B _build/serialize/
 
+S sertop/
+B _build/sertop/
+
 S /home/egallego/external/coq-git/**
 B /home/egallego/external/coq-git/**
 
