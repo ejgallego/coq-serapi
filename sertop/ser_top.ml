@@ -13,18 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Main protocol handler *)
-open Sexplib
-
-let rec loop () =
-  let cmd = Ser_protocol.read_cmd stdin          in
-  let res = List.map Ser_protocol.sexp_of_answer
-      (Ser_protocol.exec_cmd cmd)                in
-  List.iter (Format.printf "@[%a@]@\n%!" Sexp.pp) res;
-  loop ()
-
+(* XXX: Parse command line *)
 let main () =
-  loop ()
+  Ser_protocol.ser_loop stdin stdout
 
 let _ =
   main ()

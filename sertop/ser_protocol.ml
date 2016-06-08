@@ -25,23 +25,21 @@ open Ser_glob_term
 (* New protocol plus interpreter *)
 
 type control_cmd =
-  | StmInit                     (* Init Coq      *)
-  | StmState                    (* Get the state *)
-  | StmAdd     of stateid * string
-  | StmEdit    of stateid
-  | StmObserve of stateid
-  | SetOpt     of unit
+  | StmInit                        (* Init Coq      *)
+  | StmState                       (* Get the state *)
+  | StmAdd     of stateid * string (* Stm.add       *)
+  | StmQuery   of stateid * string (* Stm.query     *)
+  | StmEdit    of stateid          (* Stm.edit_at   *)
+  | StmObserve of stateid          (* Stm.observe   *)
+  | SetOpt     of unit             (* set_option    *)
   | Quit
   [@@deriving of_sexp]
 
-(* We'd like to use GADT here, but deriving sexp doesn't support them, we will
-   need to delay this for now.
-*)
-(* See https://github.com/c-cube/cconv to see if we could fix that *)
+(* We'd like to use GADTs here, but deriving sexp doesn't support them *)
 (* type _ query_cmd = *)
 (*   | Option : string query_cmd *)
 (*   | Search : string query_cmd *)
-(*   | Goals  : unit -> int query_cmd *)
+(*   | Goals  : constr query_cmd *)
 (*   [@@deriving sexp] *)
 
 type pp_opt = PpSexp | PpStr
@@ -78,18 +76,29 @@ type cmd =
   | Print      of coq_object
   [@@deriving of_sexp]
 
-type answer =
-  | Ack         of int          (* Command id *)
-  | StmInfo     of stateid
-  (* | Feedback    of feedback *)
-  | ObjList     of coq_object list
-  (* Not serializable *)
-  (* | Printer     of (Format.formatter -> unit) *)
+type answer_kind =
+  | Ack
+  | StmInfo       of stateid
+  | ObjList       of coq_object list
+  | CoqParseError of exn
+  | CoqStmError   of exn
   [@@deriving sexp_of]
 
 (* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 (* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
 (*     Stateid.t * [ `NewTip | `Unfocus of Stateid.t ] *)
+
+type answer =
+  | Answer   of int * answer_kind
+  | Feedback of feedback
+  | SexpError
+  [@@deriving sexp_of]
+
+let out_answer fmt a =
+  Format.fprintf fmt "@[%a@]@\n%!" Sexp.pp (sexp_of_answer a)
+
+(* XXX: why the std_formatter ??? *)
+let fb_handler fb = out_answer Format.std_formatter (Feedback fb)
 
 let obj_printer fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
@@ -99,31 +108,34 @@ let obj_printer fmt (obj : coq_object) =
   | CoqConstr c -> pr (Printer.pr_constr c)
   | CoqGlob   g -> pr (Printer.pr_glob_constr g)
 
-let fb_handler fb =
-  Format.printf "%a@\n%!" Sexp.pp_hum (sexp_of_feedback fb)
 
-let rec read_cmd in_channel =
-  let cmd_sexp = Sexplib.Sexp.input_sexp in_channel in
-  try cmd_of_sexp cmd_sexp
-  with _ ->
-    Format.eprintf "Parsing Error@\n%!";
-    read_cmd in_channel
+let read_cmd in_channel out_fmt =
+  let rec read_loop () =
+    let cmd_sexp = Sexplib.Sexp.input_sexp in_channel in
+    try cmd_of_sexp cmd_sexp
+    with _ -> out_answer out_fmt SexpError;
+              read_loop ()
+  in read_loop ()
+
+(* XXX *)
+let verb = true
 
 let exec_ctrl (ctrl : control_cmd) = match ctrl with
   | StmInit        -> let st = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
                       [StmInfo st]
 
   | StmState       -> [StmInfo (Stm.get_current_state ())]
-  | StmAdd (st, s) ->
-    let verb      = true                       in
-    let new_st, _ = Stm.add ~ontop:st verb 0 s in
-    [StmInfo new_st]
-  | StmEdit st     ->
-    ignore (Stm.edit_at st);
-    [Ack 0]
-  | StmObserve st  -> Stm.observe st; [Ack 1]
+  | StmAdd (st, s) -> begin try  let new_st, _ = Stm.add ~ontop:st verb 0 s in
+                                 [StmInfo new_st]
+                            with exn -> [CoqParseError exn]
+                      end
+  | StmQuery(st, s)-> Stm.query ~at:st s; []
+  | StmEdit st     -> ignore (Stm.edit_at st); []
+  | StmObserve st  -> begin try  Stm.observe st; []
+                            with exn -> [CoqStmError exn]
+                      end
   | SetOpt _       -> failwith "TODO"
-  | Quit           -> [Ack 2]
+  | Quit           -> []
 
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
@@ -133,7 +145,17 @@ let exec_cmd (cmd : cmd) = match cmd with
     fprintf str_formatter "@[%a@]" obj_printer obj;
     [ObjList [CoqString (flush_str_formatter ())]]
 
-  (* Ser_protocol *)
+let ser_loop in_c out_c =
+  let open Format in
+  let out_fmt    = formatter_of_out_channel out_c            in
+  let ack cmd_id = out_answer out_fmt (Answer (cmd_id, Ack)) in
+  let rec loop cmd_id =
+    let cmd = read_cmd in_c out_fmt                          in
+    ack cmd_id;
+    List.iter (out_answer out_fmt) @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd);
+    loop (cmd_id + 1)
+  in loop 0
+
   (* try *)
   (*   let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in *)
   (*   (\* Execution *\) *)
@@ -153,8 +175,3 @@ let exec_cmd (cmd : cmd) = match cmd with
   (* | exn -> *)
   (*   Format.eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn); *)
   (*   loop old_state *)
-
-  (* let istate = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in *)
-  (* Format.printf "Coq initialized with state: %s@\n" (Stateid.to_string istate); *)
-  (* Format.printf "Coq      exited with state: %s@\n" (Stateid.to_string (loop istate)); *)
-  (* () *)

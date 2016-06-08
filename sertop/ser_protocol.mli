@@ -13,13 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
-type cmd
-type answer
-
-val sexp_of_answer : answer -> Sexp.t
-
-val read_cmd : in_channel -> cmd
-val exec_cmd : cmd -> answer list
+val ser_loop : in_channel -> out_channel -> unit
 
