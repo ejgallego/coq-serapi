@@ -13,6 +13,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-val do_prelude : string -> unit
-val ser_loop : in_channel -> out_channel -> unit
+(* Options for the toplevel *)
+type ser_opts = {
+  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
+  in_chan  : in_channel;          (* Input/Output channels                                *)
+  out_chan : out_channel;
+  human    : bool;                (* Output function to use                               *)
+}
+
+val ser_loop : ser_opts -> unit
 

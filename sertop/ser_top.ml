@@ -15,12 +15,15 @@
 
 (* XXX: Parse command line *)
 let prelude = ref None
+let human   = ref false
 
 let ser_usage = "Usage: ser_top [options] inputfile"
 
 let ser_arg   = [
   "-prelude", Arg.String (fun l -> prelude := Some l),
         "Load prelude from dir";
+  "-human",   Arg.Unit   (fun _ -> human   := true),
+        "Output humand-readable prelude from dir";
 ]
 
 let parse_args () =
@@ -31,9 +34,14 @@ let parse_args () =
   List.rev !in_files
 
 let main () =
-  let _ = parse_args ()                      in
-  Option.iter Ser_protocol.do_prelude !prelude;
-  Ser_protocol.ser_loop stdin stdout
+  let open Ser_protocol            in
+  let _  = parse_args ()           in
+  ser_loop
+    {  coqlib   = !prelude;
+       in_chan  = stdin;
+       out_chan = stdout;
+       human    = !human;
+    }
 
 let _ =
   main ()

@@ -28,7 +28,6 @@ open Ser_constrexpr
 (* New protocol plus interpreter *)
 
 type control_cmd =
-  | StmInit                        (* Init Coq      *)
   | StmState                       (* Get the state *)
   | StmAdd     of stateid * string (* Stm.add       *)
   | StmQuery   of stateid * string (* Stm.query     *)
@@ -135,24 +134,28 @@ type cmd =
 (* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
 (*     Stateid.t * [ `NewTip | `Unfocus of Stateid.t ] *)
 
+let cmd_quit cmd = match cmd with
+  | Control Quit -> true
+  | _            -> false
+
 type answer =
   | Answer   of int * answer_kind
   | Feedback of feedback
   | SexpError
   [@@deriving sexp_of]
 
-let out_answer fmt a =
-  Format.fprintf fmt "@[%a@]@\n%!" Sexp.pp (sexp_of_answer a)
+let out_answer sexp_pp fmt a =
+  Format.fprintf fmt "@[%a@]@\n%!" sexp_pp (sexp_of_answer a)
 
-(* XXX: remove the std_formatter ??? *)
-let fb_handler fb = out_answer Format.std_formatter (Feedback fb)
-
-let read_cmd in_channel out_fmt =
+let read_cmd in_channel pp_answer =
   let rec read_loop () =
-    let cmd_sexp = Sexplib.Sexp.input_sexp in_channel in
-    try cmd_of_sexp cmd_sexp
-    with _ -> out_answer out_fmt SexpError;
-              read_loop ()
+    try
+      let cmd_sexp = Sexplib.Sexp.input_sexp in_channel in
+      cmd_of_sexp cmd_sexp
+    with
+    | End_of_file -> Control Quit
+    | _           -> pp_answer SexpError;
+                     read_loop ()
   in read_loop ()
 
 (* XXX *)
@@ -163,9 +166,6 @@ let coq_protect e =
   with exn -> [CoqExn exn]
 
 let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
-  | StmInit        -> let st = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
-                      [StmInfo st]
-
   | StmState       -> [StmInfo (Stm.get_current_state ())]
   | StmAdd (st, s) -> coq_protect @@ fun () ->
                       let new_st, _ = Stm.add ~ontop:st verb (-cmd_id) s in
@@ -190,26 +190,41 @@ let exec_cmd cmd_id (cmd : cmd) = match cmd with
                          fprintf str_formatter "@[%a@]" obj_printer obj;
                          [ObjList [CoqString (flush_str_formatter ())]]
 
-let ser_loop in_c out_c =
-  let open Format in
-  let out_fmt    = formatter_of_out_channel out_c            in
-  let ack cmd_id = out_answer out_fmt (Answer (cmd_id, Ack)) in
-  let rec loop cmd_id =
-    let cmd = read_cmd in_c out_fmt                          in
-    ack cmd_id;
-    List.iter (out_answer out_fmt) @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
-    loop (cmd_id + 1)
-  in loop 0
-
+(* XXX: Stid are fixed here. Move to ser_init? *)
 let ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  [ Control StmInit ] @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Ser_init.coq_init_plugins  @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Ser_init.coq_init_theories @
-  [ Control (StmAdd (Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
+  [ Control (StmAdd     (Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 
 let do_prelude coq_path =
   List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)
+
+type ser_opts = {
+  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
+  in_chan  : in_channel;          (* Input/Output channels                                *)
+  out_chan : out_channel;
+  human    : bool;                (* Output function to use                               *)
+}
+
+let ser_loop ser_opts =
+  let open Format in
+  let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
+  let pp_sexp      = if ser_opts.human then Sexp.pp_hum else Sexp.pp   in
+  let pp_answer an = out_answer pp_sexp out_fmt an                     in
+  let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
+  let pp_feed fb   = pp_answer (Feedback fb)                           in
+  (* Init Coq *)
+  Ser_init.coq_init { Ser_init.fb_handler = pp_feed; };
+  (* Load prelude if requested *)
+  Option.iter do_prelude ser_opts.coqlib;
+  (* Main loop *)
+  let rec loop cmd_id =
+    let cmd = read_cmd ser_opts.in_chan pp_answer in
+    pp_ack cmd_id;
+    List.iter pp_answer @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
+    if not (cmd_quit cmd) then loop (cmd_id + 1)
+  in loop 0
 

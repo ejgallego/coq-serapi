@@ -51,7 +51,8 @@ let coq_init opts =
   Vernacentries.qed_display_script   := false;
 
   (* Return the initial state of the STM *)
-  Stm.get_current_state ()
+  (* Stm.get_current_state () *)
+  ()
 
 let coq_init_plugins =
   [ ["syntax"]
