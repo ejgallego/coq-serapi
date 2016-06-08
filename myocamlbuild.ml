@@ -46,6 +46,7 @@ let () =
       ocaml_lib ~extern:true ~dir:(p "stm")      ~tag_name:"coq_stm"      (q "stm"       "stm");
       ocaml_lib ~extern:true ~dir:(p "toplevel") ~tag_name:"coq_toplevel" (q "toplevel"  "toplevel");
       ocaml_lib ~extern:true ~dir:(p "parsing")  ~tag_name:"coq_hparsing" (q "parsing"   "highparsing");
+      ocaml_lib ~extern:true ~dir:(p "ltac")     ~tag_name:"coq_ltac"     (q "ltac"      "ltac");
     | _ -> ()
   end
 

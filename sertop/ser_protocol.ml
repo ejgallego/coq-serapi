@@ -32,6 +32,7 @@ type control_cmd =
   | StmEdit    of stateid          (* Stm.edit_at   *)
   | StmObserve of stateid          (* Stm.observe   *)
   | SetOpt     of unit             (* set_option    *)
+  | LibAdd     of string list * string * bool
   | Quit
   [@@deriving of_sexp]
 
@@ -78,10 +79,9 @@ type cmd =
 
 type answer_kind =
   | Ack
-  | StmInfo       of stateid
-  | ObjList       of coq_object list
-  | CoqParseError of exn
-  | CoqStmError   of exn
+  | StmInfo of stateid
+  | ObjList of coq_object list
+  | CoqExn  of exn
   [@@deriving sexp_of]
 
 (* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
@@ -97,7 +97,7 @@ type answer =
 let out_answer fmt a =
   Format.fprintf fmt "@[%a@]@\n%!" Sexp.pp (sexp_of_answer a)
 
-(* XXX: why the std_formatter ??? *)
+(* XXX: remove the std_formatter ??? *)
 let fb_handler fb = out_answer Format.std_formatter (Feedback fb)
 
 let obj_printer fmt (obj : coq_object) =
@@ -107,7 +107,6 @@ let obj_printer fmt (obj : coq_object) =
   | CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
   | CoqConstr c -> pr (Printer.pr_constr c)
   | CoqGlob   g -> pr (Printer.pr_glob_constr g)
-
 
 let read_cmd in_channel out_fmt =
   let rec read_loop () =
@@ -120,25 +119,31 @@ let read_cmd in_channel out_fmt =
 (* XXX *)
 let verb = true
 
-let exec_ctrl (ctrl : control_cmd) = match ctrl with
+let coq_protect e =
+  try  e
+  with exn -> [CoqExn exn]
+
+let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
   | StmInit        -> let st = Ser_init.coq_init { Ser_init.fb_handler = fb_handler; } in
                       [StmInfo st]
 
   | StmState       -> [StmInfo (Stm.get_current_state ())]
-  | StmAdd (st, s) -> begin try  let new_st, _ = Stm.add ~ontop:st verb 0 s in
-                                 [StmInfo new_st]
-                            with exn -> [CoqParseError exn]
-                      end
-  | StmQuery(st, s)-> Stm.query ~at:st s; []
-  | StmEdit st     -> ignore (Stm.edit_at st); []
-  | StmObserve st  -> begin try  Stm.observe st; []
-                            with exn -> [CoqStmError exn]
-                      end
+  | StmAdd (st, s) -> coq_protect @@
+                      let new_st, _ = Stm.add ~ontop:st verb (-cmd_id) s in
+                      [StmInfo new_st]
+  | StmQuery(st, s)-> coq_protect (Stm.query ~at:st s; [])
+  | StmEdit st     -> coq_protect (ignore (Stm.edit_at st); [])
+  | StmObserve st  -> coq_protect (Stm.observe st; [])
+  | LibAdd(lib, lib_path, has_ml) ->
+    let open Names in
+    let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
+    Loadpath.add_load_path lib_path coq_path ~implicit:false;
+    if has_ml then Mltop.add_ml_dir lib_path; []
   | SetOpt _       -> failwith "TODO"
   | Quit           -> []
 
-let exec_cmd (cmd : cmd) = match cmd with
-  | Control ctrl      -> exec_ctrl ctrl
+let exec_cmd cmd_id (cmd : cmd) = match cmd with
+  | Control ctrl      -> exec_ctrl cmd_id ctrl
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print obj         ->
     let open Format in
@@ -152,7 +157,7 @@ let ser_loop in_c out_c =
   let rec loop cmd_id =
     let cmd = read_cmd in_c out_fmt                          in
     ack cmd_id;
-    List.iter (out_answer out_fmt) @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd);
+    List.iter (out_answer out_fmt) @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
     loop (cmd_id + 1)
   in loop 0
 
