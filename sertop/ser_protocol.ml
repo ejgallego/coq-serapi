@@ -139,7 +139,7 @@ let read_cmd in_channel out_fmt =
 let verb = true
 
 let coq_protect e =
-  try  e
+  try  e ()
   with exn -> [CoqExn exn]
 
 let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
@@ -147,12 +147,12 @@ let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
                       [StmInfo st]
 
   | StmState       -> [StmInfo (Stm.get_current_state ())]
-  | StmAdd (st, s) -> coq_protect @@
+  | StmAdd (st, s) -> coq_protect @@ fun () ->
                       let new_st, _ = Stm.add ~ontop:st verb (-cmd_id) s in
                       [StmInfo new_st]
-  | StmQuery(st, s)-> coq_protect (Stm.query ~at:st s; [])
-  | StmEdit st     -> coq_protect (ignore (Stm.edit_at st); [])
-  | StmObserve st  -> coq_protect (Stm.observe st; [])
+  | StmQuery(st, s)-> coq_protect (fun () -> Stm.query ~at:st s; [])
+  | StmEdit st     -> coq_protect (fun () -> ignore (Stm.edit_at st); [])
+  | StmObserve st  -> coq_protect (fun () -> Stm.observe st; [])
 
   | LibAdd(lib, lib_path, has_ml) ->
                       let open Names in
@@ -186,7 +186,9 @@ let ser_prelude coq_path : cmd list =
   [ Control StmInit ] @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Ser_init.coq_init_plugins  @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Ser_init.coq_init_theories @
-  [ Control (StmAdd (Stateid.of_int 1, "Require Import Coq.Init.Prelude. ")) ]
+  [ Control (StmAdd (Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
+    Control (StmObserve (Stateid.of_int 2))
+  ]
 
 let do_prelude coq_path =
   List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)

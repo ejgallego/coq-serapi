@@ -26,6 +26,11 @@ let coq_init opts =
   (* Internal Coq initialization *)
   Lib.init();
 
+  Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
+
+  (* Mltop.init_known_plugins (); *)
+  Global.set_engagement (Declarations.PredicativeSet, Declarations.StratifiedType);
+
   (* Library initialization *)
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
 
