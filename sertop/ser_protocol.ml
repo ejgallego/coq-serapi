@@ -18,10 +18,12 @@ open Sexplib.Std
 
 open Ser_goptions
 open Ser_stateid
+(* open Ser_names *)
 open Ser_richpp
 open Ser_feedback
 open Ser_constr
-open Ser_glob_term
+open Ser_constrexpr
+(* open Ser_glob_term *)
 
 (* New protocol plus interpreter *)
 
@@ -65,19 +67,22 @@ type coq_object =
   | CoqRichpp of richpp
   | CoqOption of option_state
   | CoqConstr of constr
-  | CoqGlob   of glob_constr
+  | CoqExpr   of constr_expr
+  (* Fixme *)
+  | CoqGoal   of richpp list * constr_expr * string
   [@@deriving sexp]
 
-let exec_query (_limit, _pp) (cmd : query_cmd) = match cmd with
-  | Option _ -> failwith "Query option TODO"
-  | Search _ -> failwith "Query Search TODO"
-  | Goals    -> []
-
-type cmd =
-  | Control    of control_cmd
-  | Query      of query_opt * query_cmd
-  | Print      of coq_object
-  [@@deriving of_sexp]
+let obj_printer fmt (obj : coq_object) =
+  let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
+  match obj with
+  | CoqString s -> pr (Pp.str s)
+  | CoqRichpp s -> pr (Pp.str (Richpp.raw_print s))
+  | CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
+  | CoqConstr c -> pr (Printer.pr_constr c)
+  | CoqExpr   e -> pr (Ppconstr.pr_lconstr_expr e)
+  (* Fixme *)
+  | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g)
+  (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
 type answer_kind =
   | Ack
@@ -85,6 +90,26 @@ type answer_kind =
   | ObjList of coq_object list
   | CoqExn  of exn
   [@@deriving sexp_of]
+
+let obj_print obj =
+  let open Format in
+  fprintf str_formatter "@[%a@]" obj_printer obj;
+  CoqString (flush_str_formatter ())
+
+let exec_query (_limit, pp) (cmd : query_cmd) = match cmd with
+  | Option _ -> failwith "Query option TODO"
+  | Search _ -> failwith "Query Search TODO"
+  | Goals    ->
+    let goals = List.map (fun (h,g,i) -> CoqGoal(h,g,i)) (Ser_goals.get_goals Ser_goals.FgGoals) in
+    match pp with
+    | PpStr  -> List.map obj_print goals
+    | PpSexp -> goals
+
+type cmd =
+  | Control    of control_cmd
+  | Query      of query_opt * query_cmd
+  | Print      of coq_object
+  [@@deriving of_sexp]
 
 (* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 (* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
@@ -101,15 +126,6 @@ let out_answer fmt a =
 
 (* XXX: remove the std_formatter ??? *)
 let fb_handler fb = out_answer Format.std_formatter (Feedback fb)
-
-let obj_printer fmt (obj : coq_object) =
-  let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
-  match obj with
-  | CoqString s -> pr (Pp.str s)
-  | CoqRichpp s -> pr (Pp.str (Richpp.raw_print s))
-  | CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
-  | CoqConstr c -> pr (Printer.pr_constr c)
-  | CoqGlob   g -> pr (Printer.pr_glob_constr g)
 
 let read_cmd in_channel out_fmt =
   let rec read_loop () =
@@ -175,22 +191,3 @@ let ser_prelude coq_path : cmd list =
 let do_prelude coq_path =
   List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)
 
-  (* try *)
-  (*   let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in *)
-  (*   (\* Execution *\) *)
-  (*   begin try *)
-  (*       Stm.finish (); *)
-  (*       loop new_state *)
-  (*     (\* Execution error *\) *)
-  (*     with exn -> *)
-  (*       Format.eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn); *)
-  (*       ignore (Stm.edit_at old_state); *)
-  (*       loop old_state *)
-  (*   end *)
-  (* with *)
-  (* (\* End of input *\) *)
-  (* | End_of_file -> old_state *)
-  (* (\* Parse error *\) *)
-  (* | exn -> *)
-  (*   Format.eprintf "%a@\n%!" Sexp.pp_hum (Conv.sexp_of_exn exn); *)
-  (*   loop old_state *)
