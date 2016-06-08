@@ -39,12 +39,17 @@ type control_cmd =
   | Quit
   [@@deriving of_sexp]
 
-(* We'd like to use GADTs here, but deriving sexp doesn't support them *)
-(* type _ query_cmd = *)
-(*   | Option : string query_cmd *)
-(*   | Search : string query_cmd *)
-(*   | Goals  : constr query_cmd *)
-(*   [@@deriving sexp] *)
+(* We'd like to use GADTs here, but we'd need to pack them somehow to
+ * support serialization both ways, see Jérémie Dimino comment here:
+ *
+ * https://github.com/janestreet/ppx_sexp_conv/issues/8
+ *
+ * type _ query_cmd =
+ *   | Option : string query_cmd
+ *   | Search : string query_cmd
+ *   | Goals  : constr query_cmd
+ *   [@@deriving sexp]
+ *)
 
 type pp_opt = PpSexp | PpStr
   [@@deriving of_sexp]
@@ -66,7 +71,7 @@ type coq_object =
   | CoqString  of string
   | CoqRichpp  of richpp
   (* XXX: For xml-like printing, should be moved to an option... *)
-  | CoqRichxml of richpp
+  | CoqRichXml of richpp
   | CoqOption  of option_state
   | CoqConstr  of constr
   | CoqExpr    of constr_expr
