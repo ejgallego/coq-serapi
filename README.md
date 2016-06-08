@@ -71,3 +71,11 @@ Coq SerAPI has two main components:
 - `sertop`, a toplevel implementing an modified version of the current IDE protocol. This is a simple file and largely independent of Coq itself.
 
 Building your own toplevels using `serialize` is encouraged. Here, the current limit is the Ml API itself.
+
+## Acknowledgments
+
+SerAPI has been developed at the
+[Centre de Recherche en Informatique](https://www.cri.ensmp.fr/") of
+[MINES ParisTech](http://www.mines-paristech.fr/) (former École de
+Mines de Paris) and partially supported by the
+[FEEVER](http://www.feever.fr) project.
