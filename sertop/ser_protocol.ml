@@ -63,23 +63,38 @@ type query_cmd =
   [@@deriving of_sexp]
 
 type coq_object =
-  | CoqString of string
-  | CoqRichpp of richpp
-  | CoqOption of option_state
-  | CoqConstr of constr
-  | CoqExpr   of constr_expr
+  | CoqString  of string
+  | CoqRichpp  of richpp
+  (* XXX: For xml-like printing, should be moved to an option... *)
+  | CoqRichxml of richpp
+  | CoqOption  of option_state
+  | CoqConstr  of constr
+  | CoqExpr    of constr_expr
   (* Fixme *)
-  | CoqGoal   of richpp list * constr_expr * string
+  | CoqGoal    of richpp list * constr_expr * string
   [@@deriving sexp]
+
+let pp_tag xtag att pp =
+  let open Pp in
+  let s_att   att   = pr_sequence (fun (t,v) -> str t ++ str "=" ++ str v) att in
+  let s_open  s att = str "<"  ++ str s ++ s_att att ++ str ">" in
+  let s_close s     = str "</" ++ str s              ++ str ">" in
+  s_open xtag att ++ pp ++ s_close xtag
+
+let rec pp_xml (xml : Xml_datatype.xml) = match xml with
+  | Xml_datatype.Element (tag, des, more) ->
+    pp_tag tag des ((Pp.pr_sequence pp_xml) more)
+  | Xml_datatype.PCData str -> Pp.str str
 
 let obj_printer fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
-  | CoqString s -> pr (Pp.str s)
-  | CoqRichpp s -> pr (Pp.str (Richpp.raw_print s))
-  | CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
-  | CoqConstr c -> pr (Printer.pr_constr c)
-  | CoqExpr   e -> pr (Ppconstr.pr_lconstr_expr e)
+  | CoqString  s -> pr (Pp.str s)
+  | CoqRichpp  s -> pr (Pp.str (Richpp.raw_print s))
+  | CoqRichXml x-> pr (pp_xml (Richpp.repr x))
+  | CoqOption  _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
+  | CoqConstr  c -> pr (Printer.pr_constr c)
+  | CoqExpr    e -> pr (Ppconstr.pr_lconstr_expr e)
   (* Fixme *)
   | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
