@@ -14,7 +14,25 @@
 (************************************************************************)
 
 (* XXX: Parse command line *)
+let prelude = ref None
+
+let ser_usage = "Usage: ser_top [options] inputfile"
+
+let ser_arg   = [
+  "-prelude", Arg.String (fun l -> prelude := Some l),
+        "Load prelude from dir";
+]
+
+let parse_args () =
+  let in_files = ref [] in
+  Arg.parse ser_arg
+     (fun file -> in_files := file :: !in_files)
+     ser_usage;
+  List.rev !in_files
+
 let main () =
+  let _ = parse_args ()                      in
+  Option.iter Ser_protocol.do_prelude !prelude;
   Ser_protocol.ser_loop stdin stdout
 
 let _ =

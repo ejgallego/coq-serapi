@@ -47,3 +47,19 @@ let coq_init opts =
 
   (* Return the initial state of the STM *)
   Stm.get_current_state ()
+
+let coq_init_plugins =
+  [ ["syntax"]
+  ; ["decl_mode"]
+  ; ["cc"]
+  ; ["firstorder"]
+  ; ["extraction"]
+  ; ["funind"]
+  ; ["quote"]
+  ]
+
+let coq_init_theories =
+  [ ["Init"]
+  ; ["Bool"]
+  ; ["Unicode"]
+  ]

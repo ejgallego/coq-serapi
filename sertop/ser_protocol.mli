@@ -13,5 +13,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+val do_prelude : string -> unit
 val ser_loop : in_channel -> out_channel -> unit
 

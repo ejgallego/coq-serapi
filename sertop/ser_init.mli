@@ -20,3 +20,6 @@ type coq_opts = {
 }
 
 val coq_init : coq_opts -> Stateid.t
+
+val coq_init_plugins  : string list list
+val coq_init_theories : string list list

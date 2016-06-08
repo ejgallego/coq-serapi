@@ -18,6 +18,7 @@ open Sexplib.Std
 
 open Ser_goptions
 open Ser_stateid
+open Ser_richpp
 open Ser_feedback
 open Ser_constr
 open Ser_glob_term
@@ -61,6 +62,7 @@ type query_cmd =
 
 type coq_object =
   | CoqString of string
+  | CoqRichpp of richpp
   | CoqOption of option_state
   | CoqConstr of constr
   | CoqGlob   of glob_constr
@@ -104,6 +106,7 @@ let obj_printer fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
   | CoqString s -> pr (Pp.str s)
+  | CoqRichpp s -> pr (Pp.str (Richpp.raw_print s))
   | CoqOption _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
   | CoqConstr c -> pr (Printer.pr_constr c)
   | CoqGlob   g -> pr (Printer.pr_glob_constr g)
@@ -134,21 +137,22 @@ let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
   | StmQuery(st, s)-> coq_protect (Stm.query ~at:st s; [])
   | StmEdit st     -> coq_protect (ignore (Stm.edit_at st); [])
   | StmObserve st  -> coq_protect (Stm.observe st; [])
+
   | LibAdd(lib, lib_path, has_ml) ->
-    let open Names in
-    let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
-    Loadpath.add_load_path lib_path coq_path ~implicit:false;
-    if has_ml then Mltop.add_ml_dir lib_path; []
+                      let open Names in
+                      let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
+                      Loadpath.add_load_path lib_path coq_path ~implicit:false;
+                      if has_ml then Mltop.add_ml_dir lib_path; []
+
   | SetOpt _       -> failwith "TODO"
   | Quit           -> []
 
 let exec_cmd cmd_id (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl cmd_id ctrl
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
-  | Print obj         ->
-    let open Format in
-    fprintf str_formatter "@[%a@]" obj_printer obj;
-    [ObjList [CoqString (flush_str_formatter ())]]
+  | Print obj         -> let open Format in
+                         fprintf str_formatter "@[%a@]" obj_printer obj;
+                         [ObjList [CoqString (flush_str_formatter ())]]
 
 let ser_loop in_c out_c =
   let open Format in
@@ -160,6 +164,16 @@ let ser_loop in_c out_c =
     List.iter (out_answer out_fmt) @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
     loop (cmd_id + 1)
   in loop 0
+
+let ser_prelude coq_path : cmd list =
+  let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
+  [ Control StmInit ] @
+  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Ser_init.coq_init_plugins  @
+  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Ser_init.coq_init_theories @
+  [ Control (StmAdd (Stateid.of_int 1, "Require Import Coq.Init.Prelude. ")) ]
+
+let do_prelude coq_path =
+  List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)
 
   (* try *)
   (*   let new_state, _ = Stm.add ~ontop:old_state verb 0 (read_line ()) in *)
