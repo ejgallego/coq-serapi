@@ -35,7 +35,7 @@ type control_cmd =
   (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
   | Quit
-  [@@deriving of_sexp]
+  [@@deriving sexp]
 
 (* We'd like to use GADTs here, but we'd need to pack them somehow to
  * support serialization both ways, see Jérémie's Dimino comment here:
@@ -52,20 +52,20 @@ type control_cmd =
 type pp_opt =
   | PpSexp
   | PpStr
-  [@@deriving of_sexp]
+  [@@deriving sexp]
 
 (** Max number of results to return, 0 will return a summary *)
 type query_limit = int option
-  [@@deriving of_sexp]
+  [@@deriving sexp]
 
 type query_opt = query_limit * pp_opt
-  [@@deriving of_sexp]
+  [@@deriving sexp]
 
 type query_cmd =
   | Option of string            (* Search for the value of an option *)
   | Search of string            (* Search vernacular *)
   | Goals                       (* Return goals [TODO: Add filtering/limiting options] *)
-  [@@deriving of_sexp]
+  [@@deriving sexp]
 
 type coq_object =
   | CoqString  of string
@@ -92,12 +92,16 @@ let obj_printer fmt (obj : coq_object) =
   | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
+(* XXX: Fixme: by matching? *)
+exception AnswerExn of Sexp.t
+let exn_of_sexp sexp = AnswerExn sexp
+
 type answer_kind =
   | Ack
   | StmInfo of stateid
   | ObjList of coq_object list
   | CoqExn  of exn
-  [@@deriving sexp_of]
+  [@@deriving sexp]
 
 let obj_print obj =
   let open Format in
@@ -117,7 +121,7 @@ type cmd =
   | Control    of control_cmd
   | Query      of query_opt * query_cmd
   | Print      of coq_object
-  [@@deriving of_sexp]
+  [@@deriving sexp]
 
 (* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 (* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
@@ -131,7 +135,7 @@ type answer =
   | Answer   of int * answer_kind
   | Feedback of feedback
   | SexpError
-  [@@deriving sexp_of]
+  [@@deriving sexp]
 
 let out_answer sexp_pp fmt a =
   Format.fprintf fmt "@[%a@]@\n%!" sexp_pp (sexp_of_answer a)

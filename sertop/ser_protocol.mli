@@ -21,5 +21,84 @@ type ser_opts = {
   human    : bool;                (* Output function to use                               *)
 }
 
+(** [ser_loop opts] main se(xp)r-protocol loop *)
 val ser_loop : ser_opts -> unit
 
+(** We provide the public API for ocaml client's  *)
+open Sexplib
+
+type control_cmd =
+    StmState
+  | StmAdd of Ser_stateid.stateid * string
+  | StmQuery of Ser_stateid.stateid * string
+  | StmEdit of Ser_stateid.stateid
+  | StmObserve of Ser_stateid.stateid
+  | SetOpt of unit
+  | LibAdd of string list * string * bool
+  | Quit
+
+val sexp_of_control_cmd : control_cmd -> Sexp.t
+val control_cmd_of_sexp : Sexp.t -> control_cmd
+
+type pp_opt =
+  | PpSexp
+  | PpStr
+
+val pp_opt_of_sexp : Sexp.t -> pp_opt
+val sexp_of_pp_opt : pp_opt -> Sexp.t
+
+type query_limit = int option
+val query_limit_of_sexp : Sexp.t -> query_limit
+val sexp_of_query_limit : query_limit -> Sexp.t
+
+type query_opt = query_limit * pp_opt
+val query_opt_of_sexp : Sexp.t -> query_opt
+val sexp_of_query_opt : query_opt -> Sexp.t
+
+(** We would ideally make both query_cmd and coq_object depend on a
+  * tag such that query : 'a query -> 'a coq_object 
+  *)
+type query_cmd =
+  | Option of string
+  | Search of string
+  | Goals
+
+val query_cmd_of_sexp : Sexp.t -> query_cmd
+val sexp_of_query_cmd : query_cmd -> Sexp.t
+
+type coq_object =
+    CoqString  of string
+  | CoqRichpp  of Richpp.richpp
+  | CoqRichXml of Richpp.richpp
+  | CoqOption  of Ser_goptions.option_state
+  | CoqConstr  of Constr.constr
+  | CoqExpr    of Constrexpr.constr_expr
+  | CoqGoal    of Richpp.richpp list * Constrexpr.constr_expr * string
+
+val coq_object_of_sexp : Sexp.t -> coq_object
+val sexp_of_coq_object : coq_object -> Sexp.t
+
+type answer_kind =
+    Ack
+  | StmInfo of Stateid.t
+  | ObjList of coq_object list
+  | CoqExn  of exn
+
+val sexp_of_answer_kind : answer_kind -> Sexp.t
+val answer_kind_of_sexp : Sexp.t -> answer_kind
+
+type cmd =
+    Control of control_cmd
+  | Query of query_opt * query_cmd
+  | Print of coq_object
+
+val cmd_of_sexp : Sexp.t -> cmd
+val sexp_of_cmd : cmd -> Sexp.t
+
+type answer =
+    Answer   of int * answer_kind
+  | Feedback of Ser_feedback.feedback
+  | SexpError
+
+val sexp_of_answer : answer -> Sexp.t
+val answer_of_sexp : Sexp.t -> answer
