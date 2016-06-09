@@ -62,6 +62,14 @@ OPAM and ocamlbuild are required. You need the following packages:
 Edit `myocamlbuild.ml` to add the location of Coq and opam
 sources. Then, make should do the rest.
 
+### Roadmap
+
+_Version 0.02_:
+
+ - Serialization of the `Proof.proof` object.
+ - Improve API: options and workers.
+ - Port CoqIDE to SerAPI. See tree at https://github.com/ejgallego/coqide-exp
+
 ### Technical details
 
 Coq SerAPI has two main components:
