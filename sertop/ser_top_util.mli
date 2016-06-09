@@ -14,3 +14,4 @@
 (************************************************************************)
 
 val pp_feedback : Format.formatter -> Feedback.feedback -> unit
+val pp_xml      : Format.formatter -> Xml_datatype.xml  -> unit

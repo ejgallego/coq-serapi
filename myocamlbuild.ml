@@ -16,8 +16,8 @@ let () =
       flag ["link"; "ocaml"; "coq_parsing"; "byte"]   (S [P (opam_location ^ "camlp5/odyl.cma")]);
       flag ["link"; "ocaml"; "coq_parsing"; "byte"]   (S [P (opam_location ^ "camlp5/camlp5.cma")]);
 
-      (* XXX: Native needs dynlink flags *)
-      flag ["link"; "ocaml"; "coq_parsing"; "native"] (S [P (opam_location ^ "camlp5/odyl.cmxa")]);
+      (* XXX: Native needs true: dynlink *)
+      (* flag ["link"; "ocaml"; "coq_parsing"; "native"] (S [P (opam_location ^ "camlp5/odyl.cmxa")]); *)
       flag ["link"; "ocaml"; "coq_parsing"; "native"] (S [P (opam_location ^ "camlp5/camlp5.cmxa")]);
 
       ocaml_lib ~extern:true ~dir:(p "kernel")   ~tag_name:"coq_kernel"   (q "kernel"   "kernel");

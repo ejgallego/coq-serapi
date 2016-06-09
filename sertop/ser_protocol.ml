@@ -18,12 +18,10 @@ open Sexplib.Std
 
 open Ser_goptions
 open Ser_stateid
-(* open Ser_names *)
 open Ser_richpp
 open Ser_feedback
 open Ser_constr
 open Ser_constrexpr
-(* open Ser_glob_term *)
 
 (* New protocol plus interpreter *)
 
@@ -34,12 +32,13 @@ type control_cmd =
   | StmEdit    of stateid          (* Stm.edit_at   *)
   | StmObserve of stateid          (* Stm.observe   *)
   | SetOpt     of unit             (* set_option    *)
+  (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
   | Quit
   [@@deriving of_sexp]
 
 (* We'd like to use GADTs here, but we'd need to pack them somehow to
- * support serialization both ways, see Jérémie Dimino comment here:
+ * support serialization both ways, see Jérémie's Dimino comment here:
  *
  * https://github.com/janestreet/ppx_sexp_conv/issues/8
  *
@@ -50,7 +49,9 @@ type control_cmd =
  *   [@@deriving sexp]
  *)
 
-type pp_opt = PpSexp | PpStr
+type pp_opt =
+  | PpSexp
+  | PpStr
   [@@deriving of_sexp]
 
 (** Max number of results to return, 0 will return a summary *)
@@ -78,24 +79,12 @@ type coq_object =
   | CoqGoal    of richpp list * constr_expr * string
   [@@deriving sexp]
 
-let pp_tag xtag att pp =
-  let open Pp in
-  let s_att   att   = pr_sequence (fun (t,v) -> str t ++ str "=" ++ str v) att in
-  let s_open  s att = str "<"  ++ str s ++ s_att att ++ str ">" in
-  let s_close s     = str "</" ++ str s              ++ str ">" in
-  s_open xtag att ++ pp ++ s_close xtag
-
-let rec pp_xml (xml : Xml_datatype.xml) = match xml with
-  | Xml_datatype.Element (tag, des, more) ->
-    pp_tag tag des ((Pp.pr_sequence pp_xml) more)
-  | Xml_datatype.PCData str -> Pp.str str
-
 let obj_printer fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
   | CoqString  s -> pr (Pp.str s)
   | CoqRichpp  s -> pr (Pp.str (Richpp.raw_print s))
-  | CoqRichXml x-> pr (pp_xml (Richpp.repr x))
+  | CoqRichXml x -> Ser_top_util.pp_xml fmt (Richpp.repr x)
   | CoqOption  _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
   | CoqConstr  c -> pr (Printer.pr_constr c)
   | CoqExpr    e -> pr (Ppconstr.pr_lconstr_expr e)

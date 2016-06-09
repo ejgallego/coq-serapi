@@ -52,3 +52,17 @@ let pp_feedback fmt (fb : Feedback.feedback) =
     (string_of_eosid fb.id)
     (string_of_feedback_content fb.Feedback.contents)
 
+let rec pp_list pp fmt l = match l with
+    []         -> Format.fprintf fmt ""
+  | csx :: []  -> Format.fprintf fmt "@[%a@]" pp csx
+  | csx :: csl -> Format.fprintf fmt "@[%a@]@;%a" pp csx (pp_list pp) csl
+
+let pp_attr fmt (xtag, att) =
+  Format.fprintf fmt "%s = %s" xtag att
+
+let rec pp_xml fmt (xml : Xml_datatype.xml) = match xml with
+  | Xml_datatype.Element (tag, att, more) ->
+    Format.fprintf fmt "@[<%s @[%a@]>@,%a@,</%s>@]" tag (pp_list pp_attr) att (pp_list pp_xml) more tag
+  | Xml_datatype.PCData str -> Format.fprintf fmt "%s" str
+
+
