@@ -29,12 +29,12 @@ open Sexplib
 
 type control_cmd =
     StmState
-  | StmAdd of Ser_stateid.stateid * string
-  | StmQuery of Ser_stateid.stateid * string
-  | StmEdit of Ser_stateid.stateid
-  | StmObserve of Ser_stateid.stateid
-  | SetOpt of unit
-  | LibAdd of string list * string * bool
+  | StmAdd     of Stateid.t * string
+  | StmQuery   of Stateid.t * string
+  | StmEdit    of Stateid.t
+  | StmObserve of Stateid.t
+  | SetOpt     of unit
+  | LibAdd     of string list * string * bool
   | Quit
 
 val sexp_of_control_cmd : control_cmd -> Sexp.t
@@ -70,7 +70,7 @@ type coq_object =
     CoqString  of string
   | CoqRichpp  of Richpp.richpp
   | CoqRichXml of Richpp.richpp
-  | CoqOption  of Ser_goptions.option_state
+  | CoqOption  of Goptions.option_state
   | CoqConstr  of Constr.constr
   | CoqExpr    of Constrexpr.constr_expr
   | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
@@ -98,8 +98,8 @@ val cmd_of_sexp : Sexp.t -> cmd
 val sexp_of_cmd : cmd -> Sexp.t
 
 type answer =
-    Answer   of int * answer_kind
-  | Feedback of Ser_feedback.feedback
+    Answer    of int * answer_kind
+  | Feedback  of Feedback.feedback
   | SexpError of Sexp.t
 
 val sexp_of_answer : answer -> Sexp.t
