@@ -89,8 +89,10 @@ val answer_kind_of_sexp : Sexp.t -> answer_kind
 
 type cmd =
     Control of control_cmd
-  | Query of query_opt * query_cmd
-  | Print of coq_object
+  | Query   of query_opt * query_cmd
+  | Print   of coq_object
+  | Parse   of string
+  | Help
 
 val cmd_of_sexp : Sexp.t -> cmd
 val sexp_of_cmd : cmd -> Sexp.t

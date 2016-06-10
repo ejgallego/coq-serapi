@@ -142,11 +142,24 @@ type cmd =
   | Control    of control_cmd
   | Query      of query_opt * query_cmd
   | Print      of coq_object
+  | Parse      of string
+  | Help
   [@@deriving sexp]
 
 (* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 (* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
 (*     Stateid.t * [ `NewTip | `Unfocus of Stateid.t ] *)
+
+(* Prints help to stderr. TODO, we should use a ppx to automatically
+   generate the description of the protocol. *)
+let serproto_help () =
+  let open Format in
+  eprintf "%s%!"
+    ("Coq SerAPI -- Protocol documentation is still incomplete, main commands are: \n\n" ^
+     "  (Control control_cmd) \n"      ^
+     "  (Query query_opt query_cmd) \n"^
+     "  (Print coq_object) \n"         ^
+     "\nSee sertop_protocol.mli for more details.\n\n")
 
 let cmd_quit cmd = match cmd with
   | Control Quit -> true
@@ -203,6 +216,8 @@ let exec_cmd cmd_id (cmd : cmd) = match cmd with
   | Print obj         -> let open Format in
                          fprintf str_formatter "@[%a@]" obj_printer obj;
                          [ObjList [CoqString (flush_str_formatter ())]]
+  | Parse _           -> failwith "TODO: Parsing terms"
+  | Help              -> serproto_help (); []
 
 (* XXX: Stid are fixed here. Move to ser_init? *)
 let ser_prelude coq_path : cmd list =
