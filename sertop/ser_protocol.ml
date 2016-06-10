@@ -134,7 +134,7 @@ let cmd_quit cmd = match cmd with
 type answer =
   | Answer   of int * answer_kind
   | Feedback of feedback
-  | SexpError
+  | SexpError of Sexp.t
   [@@deriving sexp]
 
 let out_answer sexp_pp fmt a =
@@ -143,12 +143,12 @@ let out_answer sexp_pp fmt a =
 let read_cmd in_channel pp_answer =
   let rec read_loop () =
     try
-      let cmd_sexp = Sexplib.Sexp.input_sexp in_channel in
+      let cmd_sexp = Sexp.input_sexp in_channel in
       cmd_of_sexp cmd_sexp
     with
-    | End_of_file -> Control Quit
-    | _           -> pp_answer SexpError;
-                     read_loop ()
+    | End_of_file   -> Control Quit
+    | exn           -> pp_answer (SexpError(sexp_of_exn exn));
+                       read_loop ()
   in read_loop ()
 
 (* XXX *)

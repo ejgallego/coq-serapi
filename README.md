@@ -70,6 +70,10 @@ _Version 0.02_:
  - Improve API: options and workers.
  - Port CoqIDE to SerAPI. See tree at https://github.com/ejgallego/coqide-exp
 
+_Version 0.03_:
+
+ - Improve search API, make objects tagged with a GADT.
+
 ### Technical details
 
 Coq SerAPI has two main components:

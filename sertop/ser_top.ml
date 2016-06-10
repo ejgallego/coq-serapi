@@ -23,7 +23,7 @@ let ser_arg   = [
   "-prelude", Arg.String (fun l -> prelude := Some l),
         "Load prelude from dir";
   "-human",   Arg.Unit   (fun _ -> human   := true),
-        "Output humand-readable prelude from dir";
+        "Use human-readable sexp output";
 ]
 
 let parse_args () =

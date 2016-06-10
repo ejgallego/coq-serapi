@@ -98,7 +98,7 @@ val sexp_of_cmd : cmd -> Sexp.t
 type answer =
     Answer   of int * answer_kind
   | Feedback of Ser_feedback.feedback
-  | SexpError
+  | SexpError of Sexp.t
 
 val sexp_of_answer : answer -> Sexp.t
 val answer_of_sexp : Sexp.t -> answer
