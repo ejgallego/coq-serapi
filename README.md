@@ -7,6 +7,8 @@ are very welcome!
 
 ### Quick demo
 
+Using `rlwrap` is highly recommended:
+
 ```
 coq-serapi$ rlwrap ./ser_top.byte -prelude /home/egallego/external/coq-git/
 (Print (CoqConstr (App (Rel 0) ((Rel 0)))))
@@ -48,7 +50,7 @@ coq-serapi$ rlwrap ./ser_top.byte -prelude /home/egallego/external/coq-git/
 
 ```
 
-Look into `ser_protocol.ml` for more details about the protocol itself.
+Look into `sertop_protocol.ml` for more details about the protocol itself.
 
 ### Building
 
@@ -59,18 +61,22 @@ OPAM and ocamlbuild are required. You need the following packages:
 - sexplib
 - ppx_sexp_conv
 
-Edit `myocamlbuild.ml` to add the location of Coq and opam
-sources. Then, make should do the rest.
+Edit `myocamlbuild.ml` to add the location of Coq sources and opam. make should do the rest.
 
-### Roadmap
+### Roadmap:
 
 _Version 0.02_:
 
- - Serialization of the `Proof.proof` object.
- - Improve API: options and workers.
- - Port CoqIDE to SerAPI. See tree at https://github.com/ejgallego/coqide-exp
+ - *[done]* Serialization of the `Proof.proof` object.
+ - Improve API: add options.
+ - Improve and review printing workflow.
 
 _Version 0.03_:
+
+ - Workers support.
+ - *[inprogress]* Port CoqIDE to SerAPI. See preliminary tree at https://github.com/ejgallego/coqide-exp/tree/serapi/
+
+_Version 0.04_:
 
  - Improve search API, make objects tagged with a GADT.
 
