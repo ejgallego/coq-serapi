@@ -18,7 +18,8 @@ type ser_opts = {
   coqlib   : string option;       (* Whether we should load the prelude, and its location *)
   in_chan  : in_channel;          (* Input/Output channels                                *)
   out_chan : out_channel;
-  human    : bool;                (* Output function to use                               *)
+  human    : bool;
+  print0   : bool;
 }
 
 (** [ser_loop opts] main se(xp)r-protocol loop *)

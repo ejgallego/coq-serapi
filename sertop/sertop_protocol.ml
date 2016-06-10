@@ -179,8 +179,10 @@ type answer =
   | SexpError of Sexp.t
   [@@deriving sexp]
 
-let out_answer sexp_pp fmt a =
-  Format.fprintf fmt "@[%a@]@\n%!" sexp_pp (sexp_of_answer a)
+let out_answer print0 sexp_pp fmt a =
+  let open Format in
+  let pp_term fmt () = if print0 then fprintf fmt "%c" (Char.chr 0) else fprintf fmt "@\n" in
+  fprintf fmt "@[%a@]%a%!" sexp_pp (sexp_of_answer a) pp_term ()
 
 let read_cmd in_channel pp_answer =
   let rec read_loop () =
@@ -246,13 +248,14 @@ type ser_opts = {
   in_chan  : in_channel;          (* Input/Output channels                                *)
   out_chan : out_channel;
   human    : bool;                (* Output function to use                               *)
+  print0   : bool;
 }
 
 let ser_loop ser_opts =
   let open Format in
   let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
   let pp_sexp      = if ser_opts.human then Sexp.pp_hum else Sexp.pp   in
-  let pp_answer an = out_answer pp_sexp out_fmt an                     in
+  let pp_answer an = out_answer ser_opts.print0 pp_sexp out_fmt an     in
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
   let pp_feed fb   = pp_answer (Feedback fb)                           in
   (* Init Coq *)
