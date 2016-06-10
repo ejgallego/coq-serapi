@@ -5,6 +5,24 @@ This repository provides facilities to serialize Coq's Ml API and protocol to/fr
 SerAPI is a proof of concept and thus very unstable. It is meant to gather further feedback from coq IDE users and developers, comments
 are very welcome!
 
+### Building
+
+Building is work in progress, OPAM and coq are required.
+
+1. Install the needed packages:
+   `$ opam install ocamlfind ppx_import sexplib ppx_sexp_conv`
+
+2. Download and compile coq-trunk. In the coq sources you can do:
+   `$ ./configure -local && make -j $NJOBS
+
+3. Edit our `myocamlbuild.ml` to add the location of Coq sources and Opam installation, then.
+   `$ make`
+   Should do the rest.
+
+### Documentation
+
+Look into the [interface file](sertop/sertop_protocol.mli) for more details about the protocol itself. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure it out.
+
 ### Quick demo
 
 Using `rlwrap` is highly recommended:
@@ -49,19 +67,6 @@ coq-serapi$ rlwrap ./ser_top.byte -prelude /home/egallego/external/coq-git/
 > (Answer 11(ObjList()))
 
 ```
-
-Look into `sertop_protocol.ml` for more details about the protocol itself.
-
-### Building
-
-OPAM and ocamlbuild are required. You need the following packages:
-
-- ocamlfind
-- ppx_import
-- sexplib
-- ppx_sexp_conv
-
-Edit `myocamlbuild.ml` to add the location of Coq sources and opam. make should do the rest.
 
 ### Roadmap:
 
