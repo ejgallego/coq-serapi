@@ -19,6 +19,8 @@ ser_genredexpr
 ser_decl_kinds
 ser_genarg
 ser_evar_kinds
+ser_goal
+ser_proof
 ser_tok
 ser_extend
 ser_glob_term

@@ -73,7 +73,7 @@ type coq_object =
   | CoqOption  of Ser_goptions.option_state
   | CoqConstr  of Constr.constr
   | CoqExpr    of Constrexpr.constr_expr
-  | CoqGoal    of Richpp.richpp list * Constrexpr.constr_expr * string
+  | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
 
 val coq_object_of_sexp : Sexp.t -> coq_object
 val sexp_of_coq_object : coq_object -> Sexp.t

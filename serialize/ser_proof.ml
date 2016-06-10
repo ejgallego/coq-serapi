@@ -11,8 +11,14 @@
 (* Copyright 2016 MINES ParisTech                                       *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
+(************************************************************************)
 
-type reified_goal = Constr.constr * Context.NamedList.Declaration.t list
+open Sexplib.Conv
 
-val get_goals : unit -> reified_goal Proof.pre_goals option
+type 'a pre_goals =
+  [%import: 'a Proof.pre_goals
+  [@with
+     Evar.t := evar;
+  ]]
+  [@@deriving sexp]
 

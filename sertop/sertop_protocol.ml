@@ -16,12 +16,14 @@
 open Sexplib
 open Sexplib.Std
 
+open Ser_names
 open Ser_goptions
 open Ser_stateid
 open Ser_richpp
 open Ser_feedback
 open Ser_constr
 open Ser_constrexpr
+open Ser_proof
 
 (* New protocol plus interpreter *)
 
@@ -76,8 +78,20 @@ type coq_object =
   | CoqConstr  of constr
   | CoqExpr    of constr_expr
   (* Fixme *)
-  | CoqGoal    of richpp list * constr_expr * string
+  | CoqGoal    of (constr * (id list * constr option * constr) list) pre_goals
   [@@deriving sexp]
+
+let pp_goal (g, hyps) =
+  let open Pp      in
+  let open Printer in
+  let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
+  let pr_lconstr_opt c = str " := " ++ pr_lconstr c in
+  let pr_hdef = Option.cata pr_lconstr_opt (mt ()) in
+  let pr_hyp (idl, hdef, htyp) =
+    pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ Printer.pr_lconstr htyp in
+  pr_vertical_list pr_hyp hyps         ++
+  str "============================\n" ++
+  Printer.pr_lconstr g
 
 let obj_printer fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
@@ -86,10 +100,11 @@ let obj_printer fmt (obj : coq_object) =
   | CoqRichpp  s -> pr (Pp.str (Richpp.raw_print s))
   | CoqRichXml x -> Sertop_util.pp_xml fmt (Richpp.repr x)
   | CoqOption  _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
-  | CoqConstr  c -> pr (Printer.pr_constr c)
+  | CoqConstr  c -> pr (Printer.pr_lconstr c)
   | CoqExpr    e -> pr (Ppconstr.pr_lconstr_expr e)
   (* Fixme *)
-  | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g)
+  | CoqGoal    g -> pr (Pp.pr_sequence pp_goal g.fg_goals)
+  (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
 (* XXX: Fixme: by matching? *)
@@ -108,14 +123,20 @@ let obj_print obj =
   fprintf str_formatter "@[%a@]" obj_printer obj;
   CoqString (flush_str_formatter ())
 
-let exec_query (_limit, pp) (cmd : query_cmd) = match cmd with
+let exec_raw_query (cmd : query_cmd) : coq_object list =
+  match cmd with
   | Option _ -> failwith "Query option TODO"
   | Search _ -> failwith "Query Search TODO"
-  | Goals    ->
-    let goals = List.map (fun (h,g,i) -> CoqGoal(h,g,i)) (Sertop_goals.get_goals Sertop_goals.FgGoals) in
-    match pp with
-    | PpStr  -> List.map obj_print goals
-    | PpSexp -> goals
+  | Goals    -> 
+    match Sertop_goals.get_goals () with
+    | None   -> []
+    | Some g -> [CoqGoal g]
+
+let exec_query (_limit, pp) cmd =
+  let res = exec_raw_query cmd in
+  match pp with
+    | PpStr  -> List.map obj_print res
+    | PpSexp -> res
 
 type cmd =
   | Control    of control_cmd

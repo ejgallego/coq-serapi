@@ -13,37 +13,11 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ser_constr
+open Ser_evar
 
-let the_proof () : Term.constr option =
-  let open Proof_global in
-  try
-    let pf = give_me_the_proof ()                                 in
-    let (goals, _stack , _shelf, _given_up, sigma ) = Proof.proof pf in
-    match goals with
-    | []     -> None
-    | g :: _ ->
-      let g_type = Goal.V82.concl sigma g                   in
-      Some g_type
-  with NoCurrentProof -> None
-      (* let env    = Goal.V82.env   sigma g                           in *)
-      (* let _term  = Constrextern.extern_constr true env sigma g_type in *)
-      (* let _k     = Term.kind_of_term g_type                         in *)
-
-let sexp_of_proof () =
-  Option.cata (fun p -> p |> sexp_of_constr |> Sexplib.Sexp.to_string)
-    "" (the_proof ())
-
-(* let yojson_of_proof () = *)
-(*   Option.cata (fun p -> p |> constr_reify |> coq_constr_to_yojson) *)
-(*       (`Assoc []) (the_proof ()) *)
-
-(* let json_of_proof () = *)
-(*   Option.cata (fun p -> p |> constr_reify |> coq_constr_to_yojson) *)
-(*       (`Assoc []) (the_proof ()) *)
-
-(* let string_of_proof () : string = *)
-(*   Option.cata Sexplib.Sexp.to_string "" (sexp_of_proof ()) *)
-
-(* let json_of_proof () : json = *)
-(*   json_of_proof () *)
+type goal =
+  [%import: Goal.goal
+  [@with
+     Evar.t := evar;
+  ]]
+  [@@deriving sexp]

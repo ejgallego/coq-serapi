@@ -1,6 +1,6 @@
 true: package(ppx_import), package(sexplib), package(ppx_sexp_conv)
 true: warn(+1..49-4), warn_error(+1..49), bin_annot, annot, safe_string
-<serialize/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_parsing, coq_stm
+<serialize/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_interp, coq_parsing, coq_stm, coq_proofs
 
 # Coq-specific linking flags
 true: rectypes, thread, package(threads), package(str)

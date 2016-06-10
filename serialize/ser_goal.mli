@@ -13,5 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-val the_proof     : unit -> Constr.constr option
-val sexp_of_proof : unit -> string
+open Sexplib
+
+type goal = Goal.goal
+
+val goal_of_sexp : Sexp.t -> goal
+val sexp_of_goal : goal -> Sexp.t
