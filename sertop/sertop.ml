@@ -34,7 +34,7 @@ let parse_args () =
   List.rev !in_files
 
 let main () =
-  let open Ser_protocol            in
+  let open Sertop_protocol         in
   let _  = parse_args ()           in
   ser_loop
     {  coqlib   = !prelude;

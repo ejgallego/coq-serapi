@@ -14,7 +14,7 @@ serialize:
 TARGET=byte
 toplevel:
 	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/ser_top.$(TARGET)
+	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop.$(TARGET)
 
 clean:
 	$(OCB) $(OCB_OPT) -clean

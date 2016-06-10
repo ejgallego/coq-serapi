@@ -84,7 +84,7 @@ let obj_printer fmt (obj : coq_object) =
   match obj with
   | CoqString  s -> pr (Pp.str s)
   | CoqRichpp  s -> pr (Pp.str (Richpp.raw_print s))
-  | CoqRichXml x -> Ser_top_util.pp_xml fmt (Richpp.repr x)
+  | CoqRichXml x -> Sertop_util.pp_xml fmt (Richpp.repr x)
   | CoqOption  _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
   | CoqConstr  c -> pr (Printer.pr_constr c)
   | CoqExpr    e -> pr (Ppconstr.pr_lconstr_expr e)
@@ -112,7 +112,7 @@ let exec_query (_limit, pp) (cmd : query_cmd) = match cmd with
   | Option _ -> failwith "Query option TODO"
   | Search _ -> failwith "Query Search TODO"
   | Goals    ->
-    let goals = List.map (fun (h,g,i) -> CoqGoal(h,g,i)) (Ser_goals.get_goals Ser_goals.FgGoals) in
+    let goals = List.map (fun (h,g,i) -> CoqGoal(h,g,i)) (Sertop_goals.get_goals Sertop_goals.FgGoals) in
     match pp with
     | PpStr  -> List.map obj_print goals
     | PpSexp -> goals
@@ -186,8 +186,8 @@ let exec_cmd cmd_id (cmd : cmd) = match cmd with
 (* XXX: Stid are fixed here. Move to ser_init? *)
 let ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Ser_init.coq_init_plugins  @
-  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Ser_init.coq_init_theories @
+  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Sertop_init.coq_init_plugins  @
+  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
   [ Control (StmAdd     (Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
@@ -210,7 +210,7 @@ let ser_loop ser_opts =
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
   let pp_feed fb   = pp_answer (Feedback fb)                           in
   (* Init Coq *)
-  Ser_init.coq_init { Ser_init.fb_handler = pp_feed; };
+  Sertop_init.coq_init { Sertop_init.fb_handler = pp_feed; };
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;
   (* Main loop *)
