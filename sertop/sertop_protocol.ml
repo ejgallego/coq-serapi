@@ -26,49 +26,25 @@ open Ser_constrexpr
 open Ser_proof
 open Ser_stm
 
-(* New protocol plus interpreter *)
+(* New protocol + interpreter *)
 
-type control_cmd =
-  | StmState                       (* Get the state *)
-  | StmAdd     of stateid * string (* Stm.add       *)
-  | StmQuery   of stateid * string (* Stm.query     *)
-  | StmEditAt  of stateid          (* Stm.edit_at   *)
-  | StmObserve of stateid          (* Stm.observe   *)
-  | SetOpt     of unit             (* set_option    *)
-  (*              prefix      * path   * implicit   *)
-  | LibAdd     of string list * string * bool
-  | Quit
-  [@@deriving sexp]
+(******************************************************************************)
+(* Basic Protocol Objects                                                     *)
+(******************************************************************************)
 
 (* We'd like to use GADTs here, but we'd need to pack them somehow to
  * support serialization both ways, see Jérémie's Dimino comment here:
  *
  * https://github.com/janestreet/ppx_sexp_conv/issues/8
  *
- * type _ query_cmd =
- *   | Option : string query_cmd
- *   | Search : string query_cmd
- *   | Goals  : constr query_cmd
+ * We need a type of tags + some packing, then:
+ *
+ * type _ object =
+ *   | Option : option      object
+ *   | Search : string list object
+ *   | Goals  : goals       object
  *   [@@deriving sexp]
  *)
-
-type pp_opt =
-  | PpSexp
-  | PpStr
-  [@@deriving sexp]
-
-(** Max number of results to return, 0 will return a summary *)
-type query_limit = int option
-  [@@deriving sexp]
-
-type query_opt = query_limit * pp_opt
-  [@@deriving sexp]
-
-type query_cmd =
-  | Option of string            (* Search for the value of an option *)
-  | Search of string            (* Search vernacular *)
-  | Goals                       (* Return goals [TODO: Add filtering/limiting options] *)
-  [@@deriving sexp]
 
 type coq_object =
   | CoqString  of string
@@ -82,6 +58,10 @@ type coq_object =
   | CoqGoal    of (constr * (id list * constr option * constr) list) pre_goals
   [@@deriving sexp]
 
+(******************************************************************************)
+(* Printing Sub-Protocol                                                      *)
+(******************************************************************************)
+
 let pp_goal (g, hyps) =
   let open Pp      in
   let open Printer in
@@ -94,7 +74,7 @@ let pp_goal (g, hyps) =
   str "============================\n" ++
   Printer.pr_lconstr g
 
-let obj_printer fmt (obj : coq_object) =
+let pp_obj fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
   | CoqString  s -> pr (Pp.str s)
@@ -108,7 +88,22 @@ let obj_printer fmt (obj : coq_object) =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
-(* XXX: Fixme: by matching? *)
+let string_of_obj obj =
+  let open Format in
+  fprintf str_formatter "@[%a@]" pp_obj obj;
+  CoqString (flush_str_formatter ())
+
+(******************************************************************************)
+(* Parsing Sub-Protocol                                                       *)
+(******************************************************************************)
+
+(* TODO *)
+
+(******************************************************************************)
+(* Answer Types                                                               *)
+(******************************************************************************)
+
+(* XXX: Fixme: adapt to 4.03 matching? *)
 exception AnswerExn of Sexp.t
 let exn_of_sexp sexp = AnswerExn sexp
 
@@ -119,7 +114,30 @@ type answer_kind =
   | CoqExn  of exn
   [@@deriving sexp]
 
-(* XXX: Can't this be done automatically *)
+(******************************************************************************)
+(* Control Sub-Protocol                                                       *)
+(******************************************************************************)
+
+(* Simple protection for Coq-generated exceptions *)
+let coq_protect e =
+  try  e ()
+  with exn -> [CoqExn exn]
+
+let verb = true
+type control_cmd =
+  | StmState                       (* Get the state *)
+  | StmAdd     of stateid * string (* Stm.add       *)
+  | StmQuery   of stateid * string (* Stm.query     *)
+  | StmEditAt  of stateid          (* Stm.edit_at   *)
+  | StmObserve of stateid          (* Stm.observe   *)
+  | SetOpt     of unit             (* set_option    *)
+  (*              prefix      * path   * implicit   *)
+  | LibAdd     of string list * string * bool
+  | Quit
+  [@@deriving sexp]
+
+(******************************************************************************)
+(* HACK: Can't this be done automatically *)
 let cast_add (r : [`NewTip | `Unfocus of stateid]) : [`NewTip | `Unfocus of stateid | `Focus of focus] =
   match r with
   | `NewTip     -> `NewTip
@@ -129,94 +147,8 @@ let cast_edit (r : [`NewTip | `Focus of focus]) : [`NewTip | `Unfocus of stateid
   match r with
   | `NewTip   -> `NewTip
   | `Focus fc -> `Focus fc
-
-let obj_print obj =
-  let open Format in
-  fprintf str_formatter "@[%a@]" obj_printer obj;
-  CoqString (flush_str_formatter ())
-
-let exec_raw_query (cmd : query_cmd) : coq_object list =
-  match cmd with
-  | Option _ -> failwith "Query option TODO"
-  | Search _ -> failwith "Query Search TODO"
-  | Goals    -> 
-    match Sertop_goals.get_goals () with
-    | None   -> []
-    | Some g -> [CoqGoal g]
-
-let exec_query (_limit, pp) cmd =
-  let res = exec_raw_query cmd in
-  match pp with
-    | PpStr  -> List.map obj_print res
-    | PpSexp -> res
-
-type cmd =
-  | Control    of control_cmd
-  | Query      of query_opt * query_cmd
-  | Print      of coq_object
-  | Parse      of string
-  | Help
-  [@@deriving sexp]
-
-(* Prints help to stderr. TODO, we should use a ppx to automatically
-   generate the description of the protocol. *)
-let serproto_help () =
-  let open Format in
-  eprintf "%s%!"
-    ("Coq SerAPI -- Protocol documentation is still incomplete, main commands are: \n\n" ^
-     "  (Control control_cmd) \n"      ^
-     "  (Query query_opt query_cmd) \n"^
-     "  (Print coq_object) \n"         ^
-     "\nSee sertop_protocol.mli for more details.\n\n")
-
-let cmd_quit cmd = match cmd with
-  | Control Quit -> true
-  | _            -> false
-
-type answer =
-  | Answer    of int * answer_kind
-  | Feedback  of feedback
-  | SexpError of Sexp.t
-  [@@deriving sexp]
-
-type ser_opts = {
-  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
-  in_chan  : in_channel;          (* Input/Output channels                                *)
-  out_chan : out_channel;
-  human    : bool;                (* Output function to use                               *)
-  print0   : bool;
-  lheader  : bool;
-}
-
-let out_answer opts =
-  let open Format in
-  let pp_sexp        = if opts.human  then Sexp.pp_hum                   else Sexp.pp           in
-  let pp_term fmt () = if opts.print0 then fprintf fmt "%c" (Char.chr 0) else fprintf fmt "@\n" in
-  if opts.lheader then
-    fun fmt a ->
-      fprintf str_formatter "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ();
-      let out = flush_str_formatter () in
-      fprintf fmt "@[byte-length: %d@\n%s@]%!" (String.length out) out
-  else
-    fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
-
-let read_cmd in_channel pp_answer =
-  let rec read_loop () =
-    try
-      let cmd_sexp = Sexp.input_sexp in_channel in
-      cmd_of_sexp cmd_sexp
-    with
-    | End_of_file   -> Control Quit
-    | exn           -> pp_answer (SexpError(sexp_of_exn exn));
-                       read_loop ()
-  in read_loop ()
-
-(* XXX *)
-let verb = true
-
-let coq_protect e =
-  try  e ()
-  with exn -> [CoqExn exn]
+(* HACK: Can't this be done automatically *)
+(******************************************************************************)
 
 let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
   | StmState       -> [StmInfo (Stm.get_current_state (), None)]
@@ -238,15 +170,105 @@ let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
   | SetOpt _       -> failwith "TODO"
   | Quit           -> []
 
+(******************************************************************************)
+(* Query Sub-Protocol                                                         *)
+(******************************************************************************)
+
+type pp_opt =
+  | PpSexp
+  | PpStr
+  [@@deriving sexp]
+
+(** Max number of results to return, 0 will return a summary *)
+type query_limit = int option
+  [@@deriving sexp]
+
+type query_opt = query_limit * pp_opt
+  [@@deriving sexp]
+
+type query_cmd =
+  | Option of string            (* Search for the value of an option *)
+  | Search of string            (* Search vernacular *)
+  | Goals                       (* Return goals [TODO: Add filtering/limiting options] *)
+  [@@deriving sexp]
+
+let exec_raw_query (cmd : query_cmd) : coq_object list =
+  match cmd with
+  | Option _ -> failwith "Query option TODO"
+  | Search _ -> failwith "Query Search TODO"
+  | Goals    ->
+    match Sertop_goals.get_goals () with
+    | None   -> []
+    | Some g -> [CoqGoal g]
+
+let exec_query (_limit, pp) cmd =
+  let res = exec_raw_query cmd in
+  match pp with
+    | PpStr  -> List.map string_of_obj res
+    | PpSexp -> res
+
+(******************************************************************************)
+(* Help                                                                       *)
+(******************************************************************************)
+
+(* Prints help to stderr. TODO, we should use a ppx to automatically
+   generate the description of the protocol. *)
+let serproto_help () =
+  let open Format in
+  eprintf "%s%!"
+    ("Coq SerAPI -- Protocol documentation is still incomplete, main commands are: \n\n" ^
+     "  (Control control_cmd) \n"      ^
+     "  (Query query_opt query_cmd) \n"^
+     "  (Print coq_object) \n"         ^
+     "\nSee sertop_protocol.mli for more details.\n\n")
+
+(******************************************************************************)
+(* Top-Level Commands                                                         *)
+(******************************************************************************)
+
+type cmd =
+  | Control    of control_cmd
+  | Print      of coq_object
+  | Parse      of string
+  | Query      of query_opt * query_cmd
+  | Help
+  [@@deriving sexp]
+
+type answer =
+  | Answer    of int * answer_kind
+  | Feedback  of feedback
+  | SexpError of Sexp.t
+  [@@deriving sexp]
+
 let exec_cmd cmd_id (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl cmd_id ctrl
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print obj         -> let open Format in
-                         fprintf str_formatter "@[%a@]" obj_printer obj;
+                         fprintf str_formatter "@[%a@]" pp_obj obj;
                          [ObjList [CoqString (flush_str_formatter ())]]
   | Parse _           -> failwith "TODO: Parsing terms"
   | Help              -> serproto_help (); []
 
+let is_cmd_quit cmd = match cmd with
+  | Control Quit -> true
+  | _            -> false
+
+(******************************************************************************)
+(* Global Protocol Options                                                    *)
+(******************************************************************************)
+
+type ser_opts = {
+  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
+  in_chan  : in_channel;          (* Input/Output channels                                *)
+  out_chan : out_channel;
+  human    : bool;                (* Output function to use                               *)
+  print0   : bool;
+  lheader  : bool;
+}
+
+(******************************************************************************)
+(* Prelude Hacks (to be removed)                                              *)
+(******************************************************************************)
 (* XXX: Stid are fixed here. Move to ser_init? *)
 let ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
@@ -258,6 +280,42 @@ let ser_prelude coq_path : cmd list =
 
 let do_prelude coq_path =
   List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)
+
+(******************************************************************************)
+(* Input/Output                                                               *)
+(******************************************************************************)
+(*                                                                            *)
+(* Until this point, we've been independent of a particular format or         *)
+(* or serialization, with all the operations defined at the symbolic level.   *)
+(*                                                                            *)
+(* It is now time to unfortunately abandon our fairy-tale and face the real,  *)
+(* ugly world in these last 40 lines!                                         *)
+(*                                                                            *)
+(******************************************************************************)
+
+let read_cmd in_channel pp_answer =
+  let rec read_loop () =
+    try
+      let cmd_sexp = Sexp.input_sexp in_channel in
+      cmd_of_sexp cmd_sexp
+    with
+    | End_of_file   -> Control Quit
+    | exn           -> pp_answer (SexpError(sexp_of_exn exn));
+                       read_loop ()
+  in read_loop ()
+
+let out_answer opts =
+  let open Format                                                               in
+  let pp_sexp = if opts.human  then Sexp.pp_hum                   else Sexp.pp  in
+  let pp_term = if opts.print0 then fun fmt () -> fprintf fmt "%c" (Char.chr 0)
+                               else fun fmt () -> fprintf fmt "@\n"             in
+  if opts.lheader then
+    fun fmt a ->
+      fprintf str_formatter "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ();
+      let out = flush_str_formatter () in
+      fprintf fmt "@[byte-length: %d@\n%s@]%!" (String.length out) out
+  else
+    fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
 
 let ser_loop ser_opts =
   let open Format in
@@ -274,6 +332,5 @@ let ser_loop ser_opts =
     let cmd = read_cmd ser_opts.in_chan pp_answer in
     pp_ack cmd_id;
     List.iter pp_answer @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
-    if not (cmd_quit cmd) then loop (cmd_id + 1)
+    if not (is_cmd_quit cmd) then loop (cmd_id + 1)
   in loop 0
-

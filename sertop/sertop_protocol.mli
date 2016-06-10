@@ -13,21 +13,52 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Options for the toplevel *)
-type ser_opts = {
-  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
-  in_chan  : in_channel;          (* Input/Output channels                                *)
-  out_chan : out_channel;
-  human    : bool;
-  print0   : bool;
-  lheader  : bool;
-}
-
-(** [ser_loop opts] main se(xp)r-protocol loop *)
-val ser_loop : ser_opts -> unit
-
-(** We provide the public API for ocaml client's  *)
+(** We provide the public API here for Ocaml clients  *)
 open Sexplib
+
+(******************************************************************************)
+(* Basic Protocol Objects                                                     *)
+(******************************************************************************)
+type coq_object =
+    CoqString  of string
+  | CoqRichpp  of Richpp.richpp
+  | CoqRichXml of Richpp.richpp
+  | CoqOption  of Goptions.option_state
+  | CoqConstr  of Constr.constr
+  | CoqExpr    of Constrexpr.constr_expr
+  | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
+
+val coq_object_of_sexp : Sexp.t -> coq_object
+val sexp_of_coq_object : coq_object -> Sexp.t
+
+(******************************************************************************)
+(* Printing Sub-Protocol                                                      *)
+(******************************************************************************)
+
+(* no public interface *)
+
+(******************************************************************************)
+(* Parsing Sub-Protocol                                                       *)
+(******************************************************************************)
+
+(* no public interface *)
+
+(******************************************************************************)
+(* Answer Types                                                               *)
+(******************************************************************************)
+
+type answer_kind =
+    Ack
+  | StmInfo of Stateid.t * [`NewTip | `Unfocus of Stateid.t | `Focus of Stm.focus] option
+  | ObjList of coq_object list
+  | CoqExn  of exn
+
+val sexp_of_answer_kind : answer_kind -> Sexp.t
+val answer_kind_of_sexp : Sexp.t -> answer_kind
+
+(******************************************************************************)
+(* Control Sub-Protocol                                                       *)
+(******************************************************************************)
 
 type control_cmd =
     StmState
@@ -41,6 +72,10 @@ type control_cmd =
 
 val sexp_of_control_cmd : control_cmd -> Sexp.t
 val control_cmd_of_sexp : Sexp.t -> control_cmd
+
+(******************************************************************************)
+(* Query Sub-Protocol                                                         *)
+(******************************************************************************)
 
 type pp_opt =
   | PpSexp
@@ -68,32 +103,21 @@ type query_cmd =
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t
 
-type coq_object =
-    CoqString  of string
-  | CoqRichpp  of Richpp.richpp
-  | CoqRichXml of Richpp.richpp
-  | CoqOption  of Goptions.option_state
-  | CoqConstr  of Constr.constr
-  | CoqExpr    of Constrexpr.constr_expr
-  | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
+(******************************************************************************)
+(* Help                                                                       *)
+(******************************************************************************)
 
-val coq_object_of_sexp : Sexp.t -> coq_object
-val sexp_of_coq_object : coq_object -> Sexp.t
+(* no public interface *)
 
-type answer_kind =
-    Ack
-  | StmInfo of Stateid.t * [`NewTip | `Unfocus of Stateid.t | `Focus of Stm.focus] option
-  | ObjList of coq_object list
-  | CoqExn  of exn
-
-val sexp_of_answer_kind : answer_kind -> Sexp.t
-val answer_kind_of_sexp : Sexp.t -> answer_kind
+(******************************************************************************)
+(* Top-Level Commands                                                         *)
+(******************************************************************************)
 
 type cmd =
     Control of control_cmd
-  | Query   of query_opt * query_cmd
   | Print   of coq_object
   | Parse   of string
+  | Query   of query_opt * query_cmd
   | Help
 
 val cmd_of_sexp : Sexp.t -> cmd
@@ -106,3 +130,23 @@ type answer =
 
 val sexp_of_answer : answer -> Sexp.t
 val answer_of_sexp : Sexp.t -> answer
+
+(******************************************************************************)
+(* Global Protocol Options                                                    *)
+(******************************************************************************)
+
+type ser_opts = {
+  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
+  in_chan  : in_channel;          (* Input/Output channels                                *)
+  out_chan : out_channel;
+  human    : bool;
+  print0   : bool;
+  lheader  : bool;
+}
+
+(******************************************************************************)
+(* Input/Output -- Main Loop                                                  *)
+(******************************************************************************)
+
+(** [ser_loop opts] main se(xp)r-protocol loop *)
+val ser_loop : ser_opts -> unit
