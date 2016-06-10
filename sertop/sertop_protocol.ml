@@ -179,10 +179,26 @@ type answer =
   | SexpError of Sexp.t
   [@@deriving sexp]
 
-let out_answer print0 sexp_pp fmt a =
+type ser_opts = {
+  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
+  in_chan  : in_channel;          (* Input/Output channels                                *)
+  out_chan : out_channel;
+  human    : bool;                (* Output function to use                               *)
+  print0   : bool;
+  lheader  : bool;
+}
+
+let out_answer opts =
   let open Format in
-  let pp_term fmt () = if print0 then fprintf fmt "%c" (Char.chr 0) else fprintf fmt "@\n" in
-  fprintf fmt "@[%a@]%a%!" sexp_pp (sexp_of_answer a) pp_term ()
+  let pp_sexp        = if opts.human  then Sexp.pp_hum                   else Sexp.pp           in
+  let pp_term fmt () = if opts.print0 then fprintf fmt "%c" (Char.chr 0) else fprintf fmt "@\n" in
+  if opts.lheader then
+    fun fmt a ->
+      fprintf str_formatter "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ();
+      let out = flush_str_formatter () in
+      fprintf fmt "@[byte-length: %d@\n%s@]%!" (String.length out) out
+  else
+    fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
 
 let read_cmd in_channel pp_answer =
   let rec read_loop () =
@@ -243,19 +259,10 @@ let ser_prelude coq_path : cmd list =
 let do_prelude coq_path =
   List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)
 
-type ser_opts = {
-  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
-  in_chan  : in_channel;          (* Input/Output channels                                *)
-  out_chan : out_channel;
-  human    : bool;                (* Output function to use                               *)
-  print0   : bool;
-}
-
 let ser_loop ser_opts =
   let open Format in
   let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
-  let pp_sexp      = if ser_opts.human then Sexp.pp_hum else Sexp.pp   in
-  let pp_answer an = out_answer ser_opts.print0 pp_sexp out_fmt an     in
+  let pp_answer an = out_answer ser_opts out_fmt an                    in
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
   let pp_feed fb   = pp_answer (Feedback fb)                           in
   (* Init Coq *)

@@ -20,6 +20,7 @@ type ser_opts = {
   out_chan : out_channel;
   human    : bool;
   print0   : bool;
+  lheader  : bool;
 }
 
 (** [ser_loop opts] main se(xp)r-protocol loop *)
