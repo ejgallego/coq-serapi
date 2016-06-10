@@ -75,6 +75,7 @@ _Version 0.02_:
  - *[done]* Serialization of the `Proof.proof` object.
  - Improve API: add options.
  - Improve and review printing workflow.
+ - Sentence splitting `(Parse (Sentence string))`.
 
 _Version 0.03_:
 
@@ -84,6 +85,10 @@ _Version 0.03_:
 _Version 0.04_:
 
  - Improve search API, make objects tagged with a GADT.
+
+_More_
+
+ - Checkstyle support.
 
 ### Technical details
 
