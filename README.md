@@ -1,13 +1,33 @@
 ## Coq Se(xp)rialized Protocol
 
-This repository provides facilities to serialize Coq's Ml API and protocol to/from S-expressions.
+This repository provides a new communication protocol for the Coq theorem prover. It is based on automatic serialization of Ocaml datatypes from/to S-expressions, targeted to IDE and coding tools users.
 
-SerAPI is a proof of concept and thus very unstable. It is meant to gather further feedback from coq IDE users and developers, comments
-are very welcome!
+SerAPI follows several design principles:
+
+- Don't Repeat Yourself: SerAPI provides unique data structures and methods for each particular purpose. In this category fall query or printing commands. Different representations are automatically derived from the canonical ones.
+
+- SerAPI tries to be extremely robust. It is liberal in what it accepts, and strict in what it produces.
+
+- SerAPI tries to make the life of their consumers easier. If a particular use case is not well supported, we prefer adapting SerAPI than making users implement hacks.
+
+- SerAPI tries to provide modular, reusable components. There is no reason some of its facilities couldn't be used by plugins, for instance.
+
+SerAPI is a proof of concept and thus very unstable. It is meant to gather further feedback from coq IDE users and developers, the design is not final in way, comments are very welcome!
+
+### Quick Overview and Documentation
+
+After you run SerAPI (see [building](#Building)) you should get a `sertop` binary, known as a _toplevel. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`. There are four categories of commands:
+
+- `(Control control_cmd)`: Instruct Coq to perform some action. Typically checking a proof, or setting an option.
+- `(Query opts query_cmd)`: Search for Coq objects. This can range from options, current goals and hypotheses, tactics, etc... Options allow filtering by name, paging, controlling the output format, etc...
+- `(Print opts obj)`: The `Print` command provides access to the Coq printers. Thus, it is possible to manipulate the objects returned by `Query` and then have Coq print them.
+- `(Parse opts obj)`: The `Parse` command gives access to IDEs to the Coq parsing engine.
+
+Look into the [interface file](sertop/sertop_protocol.mli) for more details about the protocol itself. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure it out.
 
 ### Building
 
-Building is work in progress, OPAM and coq are required.
+The build system is work in progress, as we would like to incorporate some changes to Coq upstream first. OPAM and coq are required.
 
 1. Install the needed packages:
    `$ opam install ocamlfind ppx_import sexplib ppx_sexp_conv`
@@ -19,9 +39,6 @@ Building is work in progress, OPAM and coq are required.
    `$ make`
    Should do the rest.
 
-### Documentation
-
-Look into the [interface file](sertop/sertop_protocol.mli) for more details about the protocol itself. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure it out.
 
 ### Quick demo
 
