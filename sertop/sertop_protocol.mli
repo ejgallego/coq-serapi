@@ -31,7 +31,7 @@ type control_cmd =
     StmState
   | StmAdd     of Stateid.t * string
   | StmQuery   of Stateid.t * string
-  | StmEdit    of Stateid.t
+  | StmEditAt  of Stateid.t
   | StmObserve of Stateid.t
   | SetOpt     of unit
   | LibAdd     of string list * string * bool
@@ -56,7 +56,7 @@ val query_opt_of_sexp : Sexp.t -> query_opt
 val sexp_of_query_opt : query_opt -> Sexp.t
 
 (** We would ideally make both query_cmd and coq_object depend on a
-  * tag such that query : 'a query -> 'a coq_object 
+  * tag such that query : 'a query -> 'a coq_object.
   *)
 type query_cmd =
   | Option of string
@@ -80,7 +80,7 @@ val sexp_of_coq_object : coq_object -> Sexp.t
 
 type answer_kind =
     Ack
-  | StmInfo of Stateid.t
+  | StmInfo of Stateid.t * [`NewTip | `Unfocus of Stateid.t | `Focus of Stm.focus] option
   | ObjList of coq_object list
   | CoqExn  of exn
 

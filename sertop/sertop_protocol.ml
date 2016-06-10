@@ -24,6 +24,7 @@ open Ser_feedback
 open Ser_constr
 open Ser_constrexpr
 open Ser_proof
+open Ser_stm
 
 (* New protocol plus interpreter *)
 
@@ -31,7 +32,7 @@ type control_cmd =
   | StmState                       (* Get the state *)
   | StmAdd     of stateid * string (* Stm.add       *)
   | StmQuery   of stateid * string (* Stm.query     *)
-  | StmEdit    of stateid          (* Stm.edit_at   *)
+  | StmEditAt  of stateid          (* Stm.edit_at   *)
   | StmObserve of stateid          (* Stm.observe   *)
   | SetOpt     of unit             (* set_option    *)
   (*              prefix      * path   * implicit   *)
@@ -113,10 +114,21 @@ let exn_of_sexp sexp = AnswerExn sexp
 
 type answer_kind =
   | Ack
-  | StmInfo of stateid
+  | StmInfo of stateid * [`NewTip | `Unfocus of stateid | `Focus of focus] option
   | ObjList of coq_object list
   | CoqExn  of exn
   [@@deriving sexp]
+
+(* XXX: Can't this be done automatically *)
+let cast_add (r : [`NewTip | `Unfocus of stateid]) : [`NewTip | `Unfocus of stateid | `Focus of focus] =
+  match r with
+  | `NewTip     -> `NewTip
+  | `Unfocus st -> `Unfocus st
+
+let cast_edit (r : [`NewTip | `Focus of focus]) : [`NewTip | `Unfocus of stateid | `Focus of focus] =
+  match r with
+  | `NewTip   -> `NewTip
+  | `Focus fc -> `Focus fc
 
 let obj_print obj =
   let open Format in
@@ -146,10 +158,6 @@ type cmd =
   | Help
   [@@deriving sexp]
 
-(* type focus = { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
-(* val edit_at : Stateid.t -> [ `NewTip | `Focus of focus ] *)
-(*     Stateid.t * [ `NewTip | `Unfocus of Stateid.t ] *)
-
 (* Prints help to stderr. TODO, we should use a ppx to automatically
    generate the description of the protocol. *)
 let serproto_help () =
@@ -166,8 +174,8 @@ let cmd_quit cmd = match cmd with
   | _            -> false
 
 type answer =
-  | Answer   of int * answer_kind
-  | Feedback of feedback
+  | Answer    of int * answer_kind
+  | Feedback  of feedback
   | SexpError of Sexp.t
   [@@deriving sexp]
 
@@ -193,12 +201,14 @@ let coq_protect e =
   with exn -> [CoqExn exn]
 
 let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
-  | StmState       -> [StmInfo (Stm.get_current_state ())]
+  | StmState       -> [StmInfo (Stm.get_current_state (), None)]
   | StmAdd (st, s) -> coq_protect @@ fun () ->
-                      let new_st, _ = Stm.add ~ontop:st verb (-cmd_id) s in
-                      [StmInfo new_st]
+                      let new_st, foc = Stm.add ~ontop:st verb (-cmd_id) s in
+                      [StmInfo (new_st, Some (cast_add foc))]
   | StmQuery(st, s)-> coq_protect (fun () -> Stm.query ~at:st s; [])
-  | StmEdit st     -> coq_protect (fun () -> ignore (Stm.edit_at st); [])
+  | StmEditAt st   -> coq_protect @@ fun () ->
+                      let foc = Stm.edit_at st in
+                      [StmInfo (st, Some (cast_edit foc))]
   | StmObserve st  -> coq_protect (fun () -> Stm.observe st; [])
 
   | LibAdd(lib, lib_path, has_ml) ->
