@@ -333,12 +333,12 @@ module QueryUtil = struct
 
   (* From @ppedrot *)
   let query_tactics prefix =
-    let open Core_kernel.Std in
     let open Names           in
 
-    let prefix_long kn = String.is_prefix (KerName.to_string kn) ~prefix in
+    let prefix_long kn = Core_kernel.Std.String.is_prefix (KerName.to_string kn) ~prefix in
     let prefix_best kn =
-      try String.is_prefix (Libnames.string_of_qualid (Nametab.shortest_qualid_of_tactic kn)) ~prefix
+      try Core_kernel.Std.String.is_prefix
+            (Libnames.string_of_qualid (Nametab.shortest_qualid_of_tactic kn)) ~prefix
       with Not_found ->
         (* Debug code, It is weird that shortest_qualid_of_tactic returns a Not_found... :S *)
         (* Format.eprintf "%s has no short name@\n%!" (KerName.to_string kn); *)
@@ -346,7 +346,6 @@ module QueryUtil = struct
     in
     let tpred kn _ = prefix_long kn || prefix_best kn in
     KNmap.bindings @@ KNmap.filter tpred @@ Tacenv.ltac_entries ()
-
   [@@warning "-44"]
 
     (* let map (kn, entry) = *)
@@ -497,6 +496,7 @@ let do_prelude coq_path =
 (*                                                                            *)
 (******************************************************************************)
 
+(* XXX: Improve by using manual tag parsing. *)
 let read_cmd cmd_id in_channel pp_answer =
   let rec read_loop () =
     try
