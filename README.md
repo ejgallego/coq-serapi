@@ -43,7 +43,7 @@ There are four categories of commands:
 
 - `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing manipulated objects returned by `Query`.
 
-- `(Parse string)`: The `Parse` command gives access to the Coq parsing engine. We currently just support detecting the end of a sente, thus `(Parse sentence)` will return a `CoqPosition` object signaling the end of the sentence.
+- `(Parse num string)`: The `Parse` command gives access to the Coq parsing engine. We currently support detecting the end of the first num sentences, returning the corresponding `CoqPosition` objects. Note that we don't execute the commands themselves so stateful parsing doesn't work.
 
 Look at the [interface file](sertop/sertop_protocol.mli) for all the details. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure the syntax out.
 
@@ -119,7 +119,8 @@ _Version 0.02_:
  - **[done]** Improve API: add options.
  - **[done]** Improve and review printing workflow.
  - **[done]** `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
- - **[done]** Basic Sentence splitting `(Parse string))`, retuns the loc of the end of the sentence.
+ - **[done]** Basic Sentence splitting `(Parse num string))`, retuns the first num end of the sentences _without_ executing them.
+   This has pitfalls as parsing is very stateful.
  - **[done]** Basic completion-oriented Search support `(Query () Names)`
  - **[partial]** Print Grammar tactic. `(Query ... (Tactics))`.
    Still we need to decide on:
