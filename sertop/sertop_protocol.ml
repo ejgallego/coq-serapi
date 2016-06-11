@@ -29,6 +29,30 @@ open Ser_stm
 (* New protocol + interpreter *)
 
 (******************************************************************************)
+(* Exception Registration                                                     *)
+(******************************************************************************)
+
+(* We play slow for now *)
+let _ =
+  (* XXX Finish this *)
+  let open Sexp in
+  let _sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
+  Conv.Exn_converter.add_slow (function
+(* Sadly private... request to make public?
+      | Cerrors.EvaluatedError(msg, exn) -> Some (
+          match exn with
+          | Some exn -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
+          | None     -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg]
+        )
+      | Errors.Anomaly(msgo, pp) ->
+        Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
+*)
+      | _ -> None
+
+    )
+
+
+(******************************************************************************)
 (* Auxiliary Definitions                                                      *)
 (******************************************************************************)
 
@@ -224,7 +248,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqExpr _       -> true
   | CoqGoal _       -> true
 
-let f_pred (p : query_pred) (obj : coq_object) : bool = match p with
+let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
 
 (** Query output format  *)
@@ -256,7 +280,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
 
 let obj_filter preds objs =
   let open List in
-  fold_left (fun obj p -> filter (f_pred p) obj) objs preds
+  fold_left (fun obj p -> filter (gen_pred p) obj) objs preds
 
 (* XXX: OCaml! .... *)
 let rec take n l =
