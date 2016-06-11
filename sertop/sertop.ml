@@ -14,10 +14,10 @@
 (************************************************************************)
 
 (* XXX: Parse command line *)
-let prelude = ref None
+let prelude = ref Coq_config.coqlib
 let human   = ref false
 let print0  = ref false
-let length = ref false
+let length  = ref false
 
 let ser_usage = "Usage: ser_top [options] inputfile"
 

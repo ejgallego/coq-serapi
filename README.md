@@ -4,11 +4,9 @@ This repository provides a new communication protocol for the Coq theorem prover
 
 SerAPI follows several design principles:
 
-- **Don't Repeat Yourself**: We have canonical data structures and methods for each particular purpose. There is a common query or printing command for all objects. Different representations are automatically derived from the canonical ones.
-
-- **Be extremely robust**: We are liberal in what we accept, and strict in what we produces. We consider any crash a critical bug.
-
-- **Make life easy**: Provide support for our user's particular use cases.
+- **Don't Repeat Yourself**: We have canonical data structures and methods for each particular purpose. There is a single query or printing command for all objects.
+- **Be extremely robust**: We are liberal in what we accept, and strict in what we produces. Any crash is a **critical** bug.
+- **Make life easy**: Be very user oriented.
 
 SerAPI is an unstable proof of concept and the design is not final in any way.
 
@@ -57,16 +55,16 @@ The build system is work in progress, as we would like to incorporate some chang
    `$ opam install ocamlfind ppx_import core_kernel sexplib ppx_sexp_conv`
 
 2. Download and compile coq-trunk. In the coq sources you can do:
-   `$ ./configure -local && make -j $NJOBS
+   `$ ./configure -local && make -j $NJOBS`
 
 3. Edit our `myocamlbuild.ml` to add the location of Coq sources and Opam installation, then
-   `make`
-   should do the rest.
-
+   `make` should do the rest.
 
 ### Emacs mode
 
 Open `sertop.el` and run `M-x eval-buffer` followed by `M-x sertop` to get a sertop REPL in Emacs, with highlighting and pretty-printing (useful for debugging).
+
+You may want to configure the variable `sertop-coq-directory` to point out the location of Coq's stdlib.
 
 ### Quick demo
 
