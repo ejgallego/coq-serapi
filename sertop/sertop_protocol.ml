@@ -275,7 +275,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqOption (n,_) -> String.is_prefix (String.concat ~sep:"." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
-  | CoqTactic _     -> true     (* XXX *)
+  | CoqTactic(kn,_) -> String.is_prefix (Names.KerName.to_string kn) ~prefix
   | CoqGoal _       -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
@@ -319,8 +319,13 @@ module QueryUtil = struct
     [CoqSList !acc]
 
   (* From @ppedrot *)
-  let query_tactics _prefix =
-    Names.KNmap.bindings (Tacenv.ltac_entries ())
+  let query_tactics prefix = let open Core_kernel.Std in
+
+    let tpred kn _ = String.is_prefix (Names.KerName.to_string kn) ~prefix in
+    Names.KNmap.bindings @@ Names.KNmap.filter tpred @@ Tacenv.ltac_entries ()
+
+  [@@warning "-44"]
+
     (* let map (kn, entry) = *)
     (*   let qid = *)
     (*     try Some (Nametab.shortest_qualid_of_tactic kn) *)

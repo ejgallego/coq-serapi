@@ -16,7 +16,7 @@ SerAPI is a proof of concept and thus very unstable. It is meant to gather furth
 
 ### Quick Overview and Documentation
 
-After you run SerAPI (see [building](#building)) you should get a `sertop` binary, known as a _toplevel. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`.
+After you run SerAPI (see [building](#building)) you should get a `sertop` binary, known as a _toplevel_. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`.
 
 The base object in SerAPI is the [`CoqObject`](sertop/sertop_protocol.mli#L22), a sum type encapsulating core Coq objects, automatically serialized. **WARNING: Object packing will change in the future, however adapting should be straigforward**
 
