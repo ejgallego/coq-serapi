@@ -18,13 +18,11 @@ SerAPI is a proof of concept and thus very unstable. It is meant to gather furth
 
 After you run SerAPI (see [building](#building)) you should get a `sertop` binary, known as a _toplevel. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`.
 
-The base object in SerAPI is the `[CoqObject](sertop/sertop_protocol.mli#L22)`, a sum type encapsulating core Coq objects, automatically serialized.
-
-**WARNING: Object packing will change in the future, however adapting should be straigforward**
+The base object in SerAPI is the [`CoqObject`](sertop/sertop_protocol.mli#L22), a sum type encapsulating core Coq objects, automatically serialized. **WARNING: Object packing will change in the future, however adapting should be straigforward**
 
 Commands are always tagged, in the form of `(tag cmd)`. There are four categories of commands:
 
-- `(Control [sertop/sertop_protocol.mli#L66](control_cmd))`: Instruct Coq to perform some action. Typically to check a proof, set an option, modify a load_path, etc... Every type of call will produce a unique numeric tag for the command `(Answer id Ack)` and possibly zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), to end with a tagged `(Answer id Completed)`.
+- `(Control `[`control_cmd`](sertop/sertop_protocol.mli#L66)`)`: Instruct Coq to perform some action. Typically to check a proof, set an option, modify a load_path, etc... Every type of call will produce a unique numeric tag for the command `(Answer id Ack)` and possibly zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), to end with a tagged `(Answer id Completed)`.
 
 - `(Query (preds limit pp) kind)`: **IMPORTANT: The Query API format will change soon, don't rely too much on it**
    Search for Coq objects of kind `kind`. This can range from options, current goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current value `PpSexp` for full serialization, `PpStr` for pretty printing. For instance:
