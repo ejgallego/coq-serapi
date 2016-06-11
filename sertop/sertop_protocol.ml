@@ -148,17 +148,31 @@ let string_of_obj obj =
 (******************************************************************************)
 
 (* Sadly this is not properly exported from Stm/Vernac *)
-let parse_sentence s =
+exception End_of_input
+
+let parse_sentence = Flags.with_option Flags.we_are_parsing
+  (fun pa ->
+    match Pcoq.Gram.entry_parse Pcoq.main_entry pa with
+    | Some (loc, _ast) -> CoqLoc loc
+    | None             -> raise End_of_input
+  )
+
+let parse_sentences s =
   let pa = Pcoq.Gram.parsable (Stream.of_string s) in
-  Flags.with_option Flags.we_are_parsing (fun () ->
-    try
-      match Pcoq.Gram.entry_parse Pcoq.main_entry pa with
-      | None     -> raise (Invalid_argument "vernac_parse")
-      | Some ast -> ast
-    with e when Errors.noncritical e ->
-      let (e, info) = Errors.push e in
-      Util.iraise (e, info))
-    ()
+  (* Not strictly needed *)
+  let acc = ref [] in
+  try
+    while true do
+      let loc = parse_sentence pa in
+      acc := loc :: !acc
+    done;
+    List.rev !acc
+  with
+  | End_of_input -> List.rev !acc
+  | e when Errors.noncritical e ->
+    let (e, info) = Errors.push e in
+    Util.iraise (e, info)
+
 (* TODO *)
 
 (******************************************************************************)
@@ -430,7 +444,7 @@ let exec_cmd (cmd : cmd) = match cmd with
   | Print obj         -> [ObjList [string_of_obj obj]]
 
   | Parse str         -> coq_protect @@ fun () ->
-                         [ObjList [CoqLoc (fst (parse_sentence str))]]
+                         [ObjList (parse_sentences str)]
 
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
 
@@ -492,6 +506,7 @@ let read_cmd in_channel pp_answer =
                        read_loop ()
   in read_loop ()
 
+(** We could use Sexp.to_string too  *)
 let out_answer opts =
   let open Format                                                               in
   let pp_sexp = if opts.human  then Sexp.pp_hum                   else Sexp.pp  in
