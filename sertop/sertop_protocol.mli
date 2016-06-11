@@ -108,6 +108,8 @@ type query_cmd =
   | Option
   | Search
   | Goals
+  | TypeOf of string
+  | Names of string              (* XXX Move to prefix *)
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t

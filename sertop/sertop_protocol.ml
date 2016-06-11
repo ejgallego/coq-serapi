@@ -265,6 +265,8 @@ type query_cmd =
   | Option   (*  *)
   | Search   (* Search vernacular, we only support prefix by name *)
   | Goals    (* Return goals [TODO: Add filtering/limiting options] *)
+  | TypeOf of string
+  | Names of string              (* XXX Move to prefix *)
   [@@deriving sexp]
 
 let obj_query (cmd : query_cmd) : coq_object list =
@@ -274,9 +276,19 @@ let obj_query (cmd : query_cmd) : coq_object list =
               List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Search -> [CoqString "Not Implemented"]
   | Goals  ->
-    match Sertop_goals.get_goals () with
+    begin match Sertop_goals.get_goals () with
     | None   -> []
     | Some g -> [CoqGoal g]
+    end
+  | TypeOf _ -> [CoqString "Not Implemented"]
+  | Names prefix ->
+    let acc = ref [] in
+    Search.generic_search None (fun gr _env _typ ->
+        (* Not happy with this at ALL *)
+        let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
+        if Core_kernel.Std.String.is_prefix name ~prefix then acc := CoqString(name) :: !acc
+    );
+    !acc
 
 let obj_filter preds objs =
   let open List in
