@@ -31,10 +31,6 @@ open Ser_stm
 (******************************************************************************)
 (* Auxiliary Definitions                                                      *)
 (******************************************************************************)
-exception NotImplemented of string
-[@@deriving sexp]
-
-let failNI s = raise (NotImplemented s)
 
 (******************************************************************************)
 (* Basic Protocol Objects                                                     *)
@@ -131,6 +127,7 @@ type answer_kind =
   | StmInfo of stateid * [`NewTip | `Unfocus of stateid | `Focus of focus] option
   | ObjList of coq_object list
   | CoqExn  of exn
+  | Completed
   [@@deriving sexp]
 
 (******************************************************************************)
@@ -139,7 +136,7 @@ type answer_kind =
 
 (* Simple protection for Coq-generated exceptions *)
 let coq_protect e =
-  try  e ()
+  try  e () @ [Completed]
   with exn -> [CoqExn exn]
 
 let verb = true
@@ -149,7 +146,7 @@ type control_cmd =
   | StmQuery   of stateid * string (* Stm.query     *)
   | StmEditAt  of stateid          (* Stm.edit_at   *)
   | StmObserve of stateid          (* Stm.observe   *)
-  | SetOpt     of unit             (* set_option    *)
+  | SetOpt     of bool option * option_name * option_value
   (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
   | Quit
@@ -169,28 +166,37 @@ let cast_edit (r : [`NewTip | `Focus of focus]) : [`NewTip | `Unfocus of stateid
 (* HACK: Can't this be done automatically *)
 (******************************************************************************)
 
-let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
+let exec_setopt loc n (v : option_value) =
+  let open Goptions in
+  match v with
+  | BoolValue b      -> set_bool_option_value_gen loc n b
+  | IntValue  i      -> set_int_option_value_gen  loc n i
+  | StringValue s    -> set_string_option_value_gen loc n s
+  | StringOptValue s -> set_string_option_value_gen loc n (Option.default "" s)
+
+let exec_ctrl cmd_id (ctrl : control_cmd) =
+  coq_protect @@ fun () -> match ctrl with
   | StmState       -> [StmInfo (Stm.get_current_state (), None)]
 
-  | StmAdd (st, s) -> coq_protect @@ fun () ->
-                      let new_st, foc = Stm.add ~ontop:st verb (-cmd_id) s in
+  | StmAdd (st, s) -> let new_st, foc = Stm.add ~ontop:st verb (-cmd_id) s in
                       [StmInfo (new_st, Some (cast_add foc))]
 
-  | StmEditAt st   -> coq_protect @@ fun () ->
-                      let foc = Stm.edit_at st in
+  | StmEditAt st   -> let foc = Stm.edit_at st in
                       [StmInfo (st, Some (cast_edit foc))]
 
-  | StmQuery(st, s)-> coq_protect @@ fun () -> Stm.query ~at:st s; []
-  | StmObserve st  -> coq_protect @@ fun () -> Stm.observe st; []
+  | StmQuery(st, s)-> Stm.query ~at:st s; []
+  | StmObserve st  -> Stm.observe st; []
 
   | LibAdd(lib, lib_path, has_ml) ->
                       let open Names in
                       let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
                       (* XXX [upstream]: Unify ML and .vo library paths.  *)
                       Loadpath.add_load_path lib_path coq_path ~implicit:false;
-                      if has_ml then Mltop.add_ml_dir lib_path; []
+                      if has_ml then Mltop.add_ml_dir lib_path;
+                      []
 
-  | SetOpt _       -> failNI "SetOpt: TODO"
+  | SetOpt(loc, n, v) -> exec_setopt loc n v; []
+
   | Quit           -> []
 
 (******************************************************************************)
@@ -243,7 +249,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | Option -> let table = Goptions.get_tables ()            in
               let opts  = Goptions.OptionMap.bindings table in
               List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Search -> failNI "Query Search TODO"
+  | Search -> [CoqString "Not Implemented"]
   | Goals  ->
     match Sertop_goals.get_goals () with
     | None   -> []
@@ -314,7 +320,7 @@ let exec_cmd cmd_id (cmd : cmd) = match cmd with
                          fprintf str_formatter "@[%a@]" pp_obj obj;
                          [ObjList [CoqString (flush_str_formatter ())]]
 
-  | Parse _           -> failNI "TODO: Parsing"
+  | Parse _           -> [ObjList [CoqString "Not yet Implemented"]]
 
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
 
@@ -406,7 +412,6 @@ let ser_loop ser_opts =
     pp_ack cmd_id;
     (* XXX: This protection should be unnecesary when we complete our
        toplevel *)
-    iter pp_answer @@ map (fun a  -> Answer (cmd_id, a))
-         @@ coq_protect (fun () -> exec_cmd cmd_id cmd);
+    iter pp_answer @@ map (fun a  -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
     if not (is_cmd_quit cmd) then loop (cmd_id + 1)
   in loop 0
