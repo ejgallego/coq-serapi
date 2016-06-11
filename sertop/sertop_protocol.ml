@@ -76,6 +76,7 @@ let _ =
 
 type coq_object =
   | CoqString  of string
+  | CoqSList   of string list
   | CoqRichpp  of richpp
   (* XXX: For xml-like printing, should be moved to an option... *)
   | CoqRichXml of richpp
@@ -116,6 +117,7 @@ let pp_obj fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
   | CoqString  s    -> pr (Pp.str s)
+  | CoqSList   s    -> pr (Pp.(pr_sequence str) s)
   | CoqRichpp  s    -> pr (Pp.str (Richpp.raw_print s))
   | CoqRichXml x    -> Sertop_util.pp_xml fmt (Richpp.repr x)
   | CoqOption (n,s) -> pr (pp_opt n s)
@@ -241,6 +243,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   let open Core_kernel.Std in
   match obj with
   | CoqString  s    -> String.is_prefix s ~prefix
+  | CoqSList   _    -> true     (* XXX *)
   | CoqRichpp  _    -> true
   | CoqRichXml _    -> true
   | CoqOption (n,_) -> String.is_prefix (String.concat ~sep:"." n) ~prefix
@@ -286,9 +289,9 @@ let obj_query (cmd : query_cmd) : coq_object list =
     Search.generic_search None (fun gr _env _typ ->
         (* Not happy with this at ALL *)
         let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
-        if Core_kernel.Std.String.is_prefix name ~prefix then acc := CoqString(name) :: !acc
+        if Core_kernel.Std.String.is_prefix name ~prefix then acc := name :: !acc
     );
-    !acc
+    [CoqSList !acc]
 
 let obj_filter preds objs =
   let open List in

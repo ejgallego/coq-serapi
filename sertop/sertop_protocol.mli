@@ -21,6 +21,7 @@ open Sexplib
 (******************************************************************************)
 type coq_object =
     CoqString  of string
+  | CoqSList   of string list
   | CoqRichpp  of Richpp.richpp
   | CoqRichXml of Richpp.richpp
   | CoqOption  of Goptions.option_name * Goptions.option_state
