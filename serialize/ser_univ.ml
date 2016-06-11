@@ -19,11 +19,11 @@ open Sexplib.Std
 type level =
   [%import: Univ.Level.t]
 
-type _level = Ser_Level of int
+type _level = ULevel of int
   [@@deriving sexp]
 
-let _level_put level             = Ser_Level (Option.default 0 (Univ.Level.var_index level))
-let _level_get (Ser_Level level) = Univ.Level.var level
+let _level_put level          = ULevel (Option.default 0 (Univ.Level.var_index level))
+let _level_get (ULevel level) = Univ.Level.var level
 
 let level_of_sexp sexp  = _level_get (_level_of_sexp sexp)
 let sexp_of_level level = sexp_of__level (_level_put level)
@@ -47,11 +47,11 @@ let sexp_of_universe _universe = Sexp.Atom "UNIV"
 type instance =
   [%import: Univ.Instance.t]
 
-type _instance = Ser_Instance of level array
+type _instance = Instance of level array
   [@@deriving sexp]
 
-let _instance_put instance                = Ser_Instance (Univ.Instance.to_array instance)
-let _instance_get (Ser_Instance instance) = Univ.Instance.of_array instance
+let _instance_put instance            = Instance (Univ.Instance.to_array instance)
+let _instance_get (Instance instance) = Univ.Instance.of_array instance
 
 let instance_of_sexp sexp     = _instance_get (_instance_of_sexp sexp)
 let sexp_of_instance instance = sexp_of__instance (_instance_put instance)
