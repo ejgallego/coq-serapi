@@ -77,18 +77,25 @@ val control_cmd_of_sexp : Sexp.t -> control_cmd
 (* Query Sub-Protocol                                                         *)
 (******************************************************************************)
 
-type pp_opt =
-  | PpSexp
-  | PpStr
-
-val pp_opt_of_sexp : Sexp.t -> pp_opt
-val sexp_of_pp_opt : pp_opt -> Sexp.t
-
 type query_limit = int option
 val query_limit_of_sexp : Sexp.t -> query_limit
 val sexp_of_query_limit : query_limit -> Sexp.t
 
-type query_opt = query_limit * pp_opt
+type query_pred =
+  | Prefix of string
+
+val query_pred_of_sexp : Sexp.t -> query_pred
+val sexp_of_query_pred : query_pred -> Sexp.t
+
+(** Query output format  *)
+type query_pp =
+  | PpSexp
+  | PpStr
+
+val query_pp_of_sexp : Sexp.t -> query_pp
+val sexp_of_query_pp : query_pp -> Sexp.t
+
+type query_opt = query_pred * query_limit * query_pp
 val query_opt_of_sexp : Sexp.t -> query_opt
 val sexp_of_query_opt : query_opt -> Sexp.t
 
@@ -96,8 +103,8 @@ val sexp_of_query_opt : query_opt -> Sexp.t
   * tag such that query : 'a query -> 'a coq_object.
   *)
 type query_cmd =
-  | Option of string
-  | Search of string
+  | Option
+  | Search
   | Goals
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd

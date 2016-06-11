@@ -174,35 +174,63 @@ let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
 (* Query Sub-Protocol                                                         *)
 (******************************************************************************)
 
-type pp_opt =
-  | PpSexp
-  | PpStr
-  [@@deriving sexp]
-
 (** Max number of results to return, 0 will return a summary *)
 type query_limit = int option
   [@@deriving sexp]
 
-type query_opt = query_limit * pp_opt
+(** Filtering predicates *)
+type query_pred =
+  | Prefix of string
+  (* Filter by type   *)
+  (* Filter by module *)
   [@@deriving sexp]
 
+let f_pred (_p : query_pred) _obj : bool = true
+
+(** Query output format  *)
+type query_pp =
+  | PpSexp
+  | PpStr
+  [@@deriving sexp]
+
+type query_opt = query_pred * query_limit * query_pp
+  [@@deriving sexp]
+
+(** XXX: This should be in sync with the object tag!  *)
 type query_cmd =
-  | Option of string            (* Search for the value of an option *)
-  | Search of string            (* Search vernacular *)
-  | Goals                       (* Return goals [TODO: Add filtering/limiting options] *)
+  | Option   (*  *)
+  | Search   (* Search vernacular, we only support prefix by name *)
+  | Goals    (* Return goals [TODO: Add filtering/limiting options] *)
   [@@deriving sexp]
 
-let exec_raw_query (cmd : query_cmd) : coq_object list =
+let obj_query (cmd : query_cmd) : coq_object list =
   match cmd with
-  | Option _ -> failwith "Query option TODO"
-  | Search _ -> failwith "Query Search TODO"
-  | Goals    ->
+  | Option -> failwith "Query option TODO"
+  | Search -> failwith "Query Search TODO"
+  | Goals  ->
     match Sertop_goals.get_goals () with
     | None   -> []
     | Some g -> [CoqGoal g]
 
-let exec_query (_limit, pp) cmd =
-  let res = exec_raw_query cmd in
+let obj_filter filter  =
+  List.filter (f_pred filter)
+
+(* XXX: OCaml! .... *)
+let rec take n l =
+  if n = 0 then [] else match l with
+    | []      -> []
+    | x :: xs -> x :: take (n-1) xs
+
+let obj_limit limit objs =
+  match limit with
+  | None   -> objs
+  | Some n -> take n objs
+
+let exec_query (pred, limit, pp) cmd =
+  let res = obj_query cmd        in
+  (* XXX: Filter should move to query once we have GADT *)
+  let res = obj_filter pred  res in
+  let res = obj_limit  limit res in
   match pp with
     | PpStr  -> List.map string_of_obj res
     | PpSexp -> res
