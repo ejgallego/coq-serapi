@@ -221,11 +221,14 @@ let exec_setopt loc n (v : option_value) =
   | StringValue s    -> set_string_option_value_gen loc n s
   | StringOptValue s -> set_string_option_value_gen loc n (Option.default "" s)
 
-let exec_ctrl cmd_id (ctrl : control_cmd) =
+let exec_ctrl =
+  let edit_id = ref 0 in
+  fun (ctrl : control_cmd) ->
   coq_protect @@ fun () -> match ctrl with
   | StmState       -> [StmInfo (Stm.get_current_state (), None)]
 
-  | StmAdd (st, s) -> let new_st, foc = Stm.add ~ontop:st verb (-cmd_id) s in
+  | StmAdd (st, s) -> let new_st, foc = Stm.add ~ontop:st verb (- !edit_id) s in
+                      incr edit_id;
                       [StmInfo (new_st, Some (cast_add foc))]
 
   | StmEditAt st   -> let foc = Stm.edit_at st in
@@ -394,14 +397,20 @@ type cmd =
   | Help
   [@@deriving sexp]
 
+type cmd_tag = string
+  [@@deriving sexp]
+
+type tagged_cmd = cmd_tag * cmd
+  [@@deriving sexp]
+
 type answer =
-  | Answer    of int * answer_kind
+  | Answer    of cmd_tag * answer_kind
   | Feedback  of feedback
   | SexpError of Sexp.t
   [@@deriving sexp]
 
-let exec_cmd cmd_id (cmd : cmd) = match cmd with
-  | Control ctrl      -> exec_ctrl cmd_id ctrl
+let exec_cmd (cmd : cmd) = match cmd with
+  | Control ctrl      -> exec_ctrl ctrl
 
   | Print obj         -> [ObjList [string_of_obj obj]]
 
@@ -443,7 +452,7 @@ let ser_prelude coq_path : cmd list =
   ]
 
 let do_prelude coq_path =
-  List.iter (fun cmd -> ignore (exec_cmd 0 cmd)) (ser_prelude coq_path)
+  List.iter (fun cmd -> ignore (exec_cmd cmd)) (ser_prelude coq_path)
 
 (******************************************************************************)
 (* Input/Output                                                               *)
@@ -461,9 +470,9 @@ let read_cmd in_channel pp_answer =
   let rec read_loop () =
     try
       let cmd_sexp = Sexp.input_sexp in_channel in
-      cmd_of_sexp cmd_sexp
+      tagged_cmd_of_sexp cmd_sexp
     with
-    | End_of_file   -> Control Quit
+    | End_of_file   -> "", Control Quit
     | exn           -> pp_answer (SexpError(sexp_of_exn exn));
                        read_loop ()
   in read_loop ()
@@ -493,11 +502,11 @@ let ser_loop ser_opts =
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;
   (* Main loop *)
-  let rec loop cmd_id =
-    let cmd = read_cmd ser_opts.in_chan pp_answer in
-    pp_ack cmd_id;
+  let rec loop () =
+    let cmd_tag, cmd = read_cmd ser_opts.in_chan pp_answer in
+    pp_ack cmd_tag;
     (* XXX: This protection should be unnecesary when we complete our
        toplevel *)
-    iter pp_answer @@ map (fun a  -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
-    if not (is_cmd_quit cmd) then loop (cmd_id + 1)
-  in loop 0
+    iter pp_answer @@ map (fun a  -> Answer (cmd_tag, a)) (exec_cmd cmd);
+    if not (is_cmd_quit cmd) then loop ()
+  in loop ()

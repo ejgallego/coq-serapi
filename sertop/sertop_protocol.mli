@@ -139,8 +139,15 @@ type cmd =
 val cmd_of_sexp : Sexp.t -> cmd
 val sexp_of_cmd : cmd -> Sexp.t
 
+type cmd_tag = string
+
+type tagged_cmd = cmd_tag * cmd
+
+val tagged_cmd_of_sexp : Sexp.t -> tagged_cmd
+val sexp_of_tagged_cmd : tagged_cmd -> Sexp.t
+
 type answer =
-    Answer    of int * answer_kind
+  | Answer    of cmd_tag * answer_kind
   | Feedback  of Feedback.feedback
   | SexpError of Sexp.t
 
