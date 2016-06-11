@@ -9,6 +9,9 @@ let q s lib = coq_location ^ s ^ "/" ^ lib
 let () =
   dispatch begin function
     | After_rules ->
+
+      flag ["ocaml"; "compile"; "coq_config"] (S [A "-I"; P (p "config")]);
+
       ocaml_lib ~extern:true ~dir:(p "lib")      ~tag_name:"coq_clib"     (q "lib"      "clib");
       ocaml_lib ~extern:true ~dir:(p "lib")      ~tag_name:"coq_lib"      (q "lib"      "lib");
 
