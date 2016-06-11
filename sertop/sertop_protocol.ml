@@ -26,6 +26,7 @@ open Ser_constr
 open Ser_constrexpr
 open Ser_proof
 open Ser_stm
+open Ser_tacenv
 
 (* New protocol + interpreter *)
 
@@ -89,6 +90,7 @@ type coq_object =
   | CoqOption  of option_name * option_state
   | CoqConstr  of constr
   | CoqExpr    of constr_expr
+  | CoqTactic  of kername * ltac_entry
   (* Fixme *)
   | CoqGoal    of (constr * (id list * constr option * constr) list) pre_goals
   [@@deriving sexp]
@@ -130,6 +132,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqOption (n,s) -> pr (pp_opt n s)
   | CoqConstr  c    -> pr (Printer.pr_lconstr c)
   | CoqExpr    e    -> pr (Ppconstr.pr_lconstr_expr e)
+  | CoqTactic(kn,_) -> pr (Names.KerName.print kn)
   (* Fixme *)
   | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.fg_goals)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
@@ -269,6 +272,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqOption (n,_) -> String.is_prefix (String.concat ~sep:"." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
+  | CoqTactic _     -> true     (* XXX *)
   | CoqGoal _       -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
@@ -288,23 +292,14 @@ type query_cmd =
   | Option   (*  *)
   | Search   (* Search vernacular, we only support prefix by name *)
   | Goals    (* Return goals [TODO: Add filtering/limiting options] *)
-  | TypeOf of string
-  | Names of string              (* XXX Move to prefix *)
+  | TypeOf  of string
+  | Names   of string              (* XXX Move to prefix *)
+  | Tactics of string              (* XXX Print LTAC signatures (with prefix) *)
   [@@deriving sexp]
 
-let obj_query (cmd : query_cmd) : coq_object list =
-  match cmd with
-  | Option -> let table = Goptions.get_tables ()            in
-              let opts  = Goptions.OptionMap.bindings table in
-              List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Search -> [CoqString "Not Implemented"]
-  | Goals  ->
-    begin match Sertop_goals.get_goals () with
-    | None   -> []
-    | Some g -> [CoqGoal g]
-    end
-  | TypeOf _ -> [CoqString "Not Implemented"]
-  | Names prefix ->
+module QueryUtil = struct
+
+  let query_names prefix =
     let acc = ref [] in
     Search.generic_search None (fun gr _env _typ ->
         (* Not happy with this at ALL:
@@ -319,6 +314,33 @@ let obj_query (cmd : query_cmd) : coq_object list =
         if Core_kernel.Std.String.is_prefix name ~prefix then acc := name :: !acc
     );
     [CoqSList !acc]
+
+  (* From @ppedrot *)
+  let query_tactics _prefix =
+    Names.KNmap.bindings (Tacenv.ltac_entries ())
+    (* let map (kn, entry) = *)
+    (*   let qid = *)
+    (*     try Some (Nametab.shortest_qualid_of_tactic kn) *)
+    (*     with Not_found -> None *)
+    (*   in *)
+    (*   match qid with *)
+    (*   | None -> None *)
+    (*   | Some qid -> Some (qid, entry.Tacenv.tac_body) *)
+    (* in *)
+    (* List.map  map entries [] *)
+
+end
+
+let obj_query (cmd : query_cmd) : coq_object list =
+  match cmd with
+  | Option         -> let table = Goptions.get_tables ()            in
+                      let opts  = Goptions.OptionMap.bindings table in
+                      List.map (fun (n,s) -> CoqOption(n,s)) opts
+  | Goals          -> Option.cata (fun g -> [CoqGoal g]) [] @@ Sertop_goals.get_goals ()
+  | Names   prefix -> QueryUtil.query_names   prefix
+  | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
+  | Search         -> [CoqString "Not Implemented"]
+  | TypeOf _       -> [CoqString "Not Implemented"]
 
 let obj_filter preds objs =
   let open List in

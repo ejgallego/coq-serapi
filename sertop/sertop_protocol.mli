@@ -28,6 +28,7 @@ type coq_object =
   | CoqOption  of Goptions.option_name * Goptions.option_state
   | CoqConstr  of Constr.constr
   | CoqExpr    of Constrexpr.constr_expr
+  | CoqTactic  of Names.KerName.t * Tacenv.ltac_entry
   | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
 
 val coq_object_of_sexp : Sexp.t -> coq_object
@@ -110,8 +111,9 @@ type query_cmd =
   | Option
   | Search
   | Goals
-  | TypeOf of string
-  | Names of string              (* XXX Move to prefix *)
+  | TypeOf  of string
+  | Names   of string              (* XXX Move to prefix *)
+  | Tactics of string              (* XXX Move to prefix *)
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t
