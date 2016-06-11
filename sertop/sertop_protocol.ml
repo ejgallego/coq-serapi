@@ -487,7 +487,7 @@ let read_cmd in_channel pp_answer =
       let cmd_sexp = Sexp.input_sexp in_channel in
       tagged_cmd_of_sexp cmd_sexp
     with
-    | End_of_file   -> "", Control Quit
+    | End_of_file   -> "EOF", Control Quit
     | exn           -> pp_answer (SexpError(sexp_of_exn exn));
                        read_loop ()
   in read_loop ()
