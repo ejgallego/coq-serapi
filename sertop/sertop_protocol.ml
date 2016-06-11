@@ -29,6 +29,14 @@ open Ser_stm
 (* New protocol + interpreter *)
 
 (******************************************************************************)
+(* Auxiliary Definitions                                                      *)
+(******************************************************************************)
+exception NotImplemented of string
+[@@deriving sexp]
+
+let failNI s = raise (NotImplemented s)
+
+(******************************************************************************)
 (* Basic Protocol Objects                                                     *)
 (******************************************************************************)
 
@@ -80,7 +88,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqString  s -> pr (Pp.str s)
   | CoqRichpp  s -> pr (Pp.str (Richpp.raw_print s))
   | CoqRichXml x -> Sertop_util.pp_xml fmt (Richpp.repr x)
-  | CoqOption  _ -> failwith "Fix goptions.mli in Coq to export the proper interface"
+  | CoqOption  _ -> failNI "Fix goptions.mli in Coq to export the proper interface"
   | CoqConstr  c -> pr (Printer.pr_lconstr c)
   | CoqExpr    e -> pr (Ppconstr.pr_lconstr_expr e)
   (* Fixme *)
@@ -171,7 +179,7 @@ let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
                       Loadpath.add_load_path lib_path coq_path ~implicit:false;
                       if has_ml then Mltop.add_ml_dir lib_path; []
 
-  | SetOpt _       -> failwith "TODO"
+  | SetOpt _       -> failNI "SetOpt: TODO"
   | Quit           -> []
 
 (******************************************************************************)
@@ -209,8 +217,8 @@ type query_cmd =
 
 let obj_query (cmd : query_cmd) : coq_object list =
   match cmd with
-  | Option -> failwith "Query option TODO"
-  | Search -> failwith "Query Search TODO"
+  | Option -> failNI "Query option TODO"
+  | Search -> failNI "Query Search TODO"
   | Goals  ->
     match Sertop_goals.get_goals () with
     | None   -> []
@@ -280,7 +288,7 @@ let exec_cmd cmd_id (cmd : cmd) = match cmd with
                          fprintf str_formatter "@[%a@]" pp_obj obj;
                          [ObjList [CoqString (flush_str_formatter ())]]
 
-  | Parse _           -> failwith "TODO: Parsing terms"
+  | Parse _           -> failNI "TODO: Parsing"
 
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
 
@@ -356,6 +364,7 @@ let out_answer opts =
     fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
 
 let ser_loop ser_opts =
+  let open List   in
   let open Format in
   let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
   let pp_answer an = out_answer ser_opts out_fmt an                    in
@@ -369,6 +378,9 @@ let ser_loop ser_opts =
   let rec loop cmd_id =
     let cmd = read_cmd ser_opts.in_chan pp_answer in
     pp_ack cmd_id;
-    List.iter pp_answer @@ List.map (fun a -> Answer (cmd_id, a)) (exec_cmd cmd_id cmd);
+    (* XXX: This protection should be unnecesary when we complete our
+       toplevel *)
+    iter pp_answer @@ map (fun a  -> Answer (cmd_id, a))
+         @@ coq_protect (fun () -> exec_cmd cmd_id cmd);
     if not (is_cmd_quit cmd) then loop (cmd_id + 1)
   in loop 0
