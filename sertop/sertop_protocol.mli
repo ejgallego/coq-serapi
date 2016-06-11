@@ -131,7 +131,7 @@ val sexp_of_query_cmd : query_cmd -> Sexp.t
 type cmd =
     Control of control_cmd
   | Print   of coq_object
-  | Parse   of string
+  | Parse   of int * string
   | Query   of query_opt * query_cmd
   | Noop
   | Help

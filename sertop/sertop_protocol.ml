@@ -157,12 +157,12 @@ let parse_sentence = Flags.with_option Flags.we_are_parsing
     | None             -> raise End_of_input
   )
 
-(* Accumulate succesful parsing attemps in acc *)
-let parse_sentences acc s =
+(* Accumulate at most num succesful parsing attemps in acc *)
+let parse_sentences num acc s =
   let pa = Pcoq.Gram.parsable (Stream.of_string s) in
   (* Not strictly needed *)
   try
-    while true do
+    for _i = 1 to num do
       let loc = parse_sentence pa in
       acc := loc :: !acc
     done;
@@ -419,7 +419,7 @@ let serproto_help () =
 type cmd =
   | Control    of control_cmd
   | Print      of coq_object
-  | Parse      of string
+  | Parse      of int * string
   | Query      of query_opt * query_cmd
   | Noop
   | Help
@@ -443,9 +443,9 @@ let exec_cmd (cmd : cmd) = match cmd with
   | Print obj         -> [ObjList [string_of_obj obj]]
 
   (* We do a bit betten than with Coq protect, we try to keep partial results. *)
-  | Parse str         ->
+  | Parse (num, str)  ->
     let acc = ref [] in
-    begin try parse_sentences acc str; [ObjList (List.rev !acc)]
+    begin try parse_sentences num acc str; [ObjList (List.rev !acc)]
           with exn -> [ObjList (List.rev !acc)] @ [CoqExn exn]
     end
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
