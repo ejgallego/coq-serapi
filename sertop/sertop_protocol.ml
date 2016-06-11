@@ -16,6 +16,7 @@
 open Sexplib
 open Sexplib.Std
 
+open Ser_loc
 open Ser_names
 open Ser_goptions
 open Ser_stateid
@@ -36,9 +37,13 @@ open Ser_stm
 let _ =
   (* XXX Finish this *)
   let open Sexp in
-  let _sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
+  let sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
   Conv.Exn_converter.add_slow (function
-(* Sadly private... request to make public?
+      | Errors.UserError(e,msg) -> 
+        Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
+      | Errors.AlreadyDeclared msg ->
+        Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
+(* Sadly private... request Coq devs to make them public?
       | Cerrors.EvaluatedError(msg, exn) -> Some (
           match exn with
           | Some exn -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
@@ -80,6 +85,7 @@ type coq_object =
   | CoqRichpp  of richpp
   (* XXX: For xml-like printing, should be moved to an option... *)
   | CoqRichXml of richpp
+  | CoqLoc     of loc
   | CoqOption  of option_name * option_state
   | CoqConstr  of constr
   | CoqExpr    of constr_expr
@@ -120,6 +126,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqSList   s    -> pr (Pp.(pr_sequence str) s)
   | CoqRichpp  s    -> pr (Pp.str (Richpp.raw_print s))
   | CoqRichXml x    -> Sertop_util.pp_xml fmt (Richpp.repr x)
+  | CoqLoc    _loc  -> pr (Pp.mt ())
   | CoqOption (n,s) -> pr (pp_opt n s)
   | CoqConstr  c    -> pr (Printer.pr_lconstr c)
   | CoqExpr    e    -> pr (Ppconstr.pr_lconstr_expr e)
@@ -137,6 +144,18 @@ let string_of_obj obj =
 (* Parsing Sub-Protocol                                                       *)
 (******************************************************************************)
 
+(* Sadly this is not properly exported from Stm/Vernac *)
+let parse_sentence s =
+  let pa = Pcoq.Gram.parsable (Stream.of_string s) in
+  Flags.with_option Flags.we_are_parsing (fun () ->
+    try
+      match Pcoq.Gram.entry_parse Pcoq.main_entry pa with
+      | None     -> raise (Invalid_argument "vernac_parse")
+      | Some ast -> ast
+    with e when Errors.noncritical e ->
+      let (e, info) = Errors.push e in
+      Util.iraise (e, info))
+    ()
 (* TODO *)
 
 (******************************************************************************)
@@ -246,6 +265,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqSList   _    -> true     (* XXX *)
   | CoqRichpp  _    -> true
   | CoqRichXml _    -> true
+  | CoqLoc     _    -> true
   | CoqOption (n,_) -> String.is_prefix (String.concat ~sep:"." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
@@ -363,7 +383,8 @@ let exec_cmd cmd_id (cmd : cmd) = match cmd with
 
   | Print obj         -> [ObjList [string_of_obj obj]]
 
-  | Parse _           -> [ObjList [CoqString "Not yet Implemented"]]
+  | Parse str         -> coq_protect @@ fun () ->
+                         [ObjList [CoqLoc (fst (parse_sentence str))]]
 
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
 

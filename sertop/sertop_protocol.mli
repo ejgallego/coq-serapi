@@ -24,6 +24,7 @@ type coq_object =
   | CoqSList   of string list
   | CoqRichpp  of Richpp.richpp
   | CoqRichXml of Richpp.richpp
+  | CoqLoc     of Loc.t
   | CoqOption  of Goptions.option_name * Goptions.option_state
   | CoqConstr  of Constr.constr
   | CoqExpr    of Constrexpr.constr_expr
