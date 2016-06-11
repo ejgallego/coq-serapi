@@ -59,7 +59,7 @@ type coq_object =
   | CoqRichpp  of richpp
   (* XXX: For xml-like printing, should be moved to an option... *)
   | CoqRichXml of richpp
-  | CoqOption  of option_state
+  | CoqOption  of option_name * option_state
   | CoqConstr  of constr
   | CoqExpr    of constr_expr
   (* Fixme *)
@@ -75,24 +75,28 @@ let pp_goal (g, hyps) =
   let open Printer in
   let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
   let pr_lconstr_opt c = str " := " ++ pr_lconstr c in
-  let pr_hdef = Option.cata pr_lconstr_opt (mt ()) in
+  let pr_hdef = Option.cata pr_lconstr_opt (mt ())  in
   let pr_hyp (idl, hdef, htyp) =
     pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ Printer.pr_lconstr htyp in
   pr_vertical_list pr_hyp hyps         ++
   str "============================\n" ++
   Printer.pr_lconstr g
 
+(* XXX: Use _s *)
+let pp_opt n _s =
+  Pp.str @@ String.concat "." n
+
 let pp_obj fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
-  | CoqString  s -> pr (Pp.str s)
-  | CoqRichpp  s -> pr (Pp.str (Richpp.raw_print s))
-  | CoqRichXml x -> Sertop_util.pp_xml fmt (Richpp.repr x)
-  | CoqOption  _ -> failNI "Fix goptions.mli in Coq to export the proper interface"
-  | CoqConstr  c -> pr (Printer.pr_lconstr c)
-  | CoqExpr    e -> pr (Ppconstr.pr_lconstr_expr e)
+  | CoqString  s    -> pr (Pp.str s)
+  | CoqRichpp  s    -> pr (Pp.str (Richpp.raw_print s))
+  | CoqRichXml x    -> Sertop_util.pp_xml fmt (Richpp.repr x)
+  | CoqOption (n,s) -> pr (pp_opt n s)
+  | CoqConstr  c    -> pr (Printer.pr_lconstr c)
+  | CoqExpr    e    -> pr (Ppconstr.pr_lconstr_expr e)
   (* Fixme *)
-  | CoqGoal    g -> pr (Pp.pr_sequence pp_goal g.fg_goals)
+  | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.fg_goals)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
@@ -174,7 +178,7 @@ let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
 
   | LibAdd(lib, lib_path, has_ml) ->
                       let open Names in
-                      let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
+                      let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
                       (* XXX [upstream]: Unify ML and .vo library paths.  *)
                       Loadpath.add_load_path lib_path coq_path ~implicit:false;
                       if has_ml then Mltop.add_ml_dir lib_path; []
@@ -197,7 +201,19 @@ type query_pred =
   (* Filter by module *)
   [@@deriving sexp]
 
-let f_pred (_p : query_pred) _obj : bool = true
+let prefix_pred (prefix : string) (obj : coq_object) : bool =
+  let open Core_kernel.Std in
+  match obj with
+  | CoqString  s    -> String.is_prefix s ~prefix
+  | CoqRichpp  _    -> true
+  | CoqRichXml _    -> true
+  | CoqOption (n,_) -> String.is_prefix (String.concat ~sep:"." n) ~prefix
+  | CoqConstr _     -> true
+  | CoqExpr _       -> true
+  | CoqGoal _       -> true
+
+let f_pred (p : query_pred) (obj : coq_object) : bool = match p with
+  | Prefix s -> prefix_pred s obj
 
 (** Query output format  *)
 type query_pp =
@@ -205,7 +221,7 @@ type query_pp =
   | PpStr
   [@@deriving sexp]
 
-type query_opt = query_pred * query_limit * query_pp
+type query_opt = query_pred list * query_limit * query_pp
   [@@deriving sexp]
 
 (** XXX: This should be in sync with the object tag!  *)
@@ -217,15 +233,18 @@ type query_cmd =
 
 let obj_query (cmd : query_cmd) : coq_object list =
   match cmd with
-  | Option -> failNI "Query option TODO"
+  | Option -> let table = Goptions.get_tables ()            in
+              let opts  = Goptions.OptionMap.bindings table in
+              List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Search -> failNI "Query Search TODO"
   | Goals  ->
     match Sertop_goals.get_goals () with
     | None   -> []
     | Some g -> [CoqGoal g]
 
-let obj_filter filter  =
-  List.filter (f_pred filter)
+let obj_filter preds objs =
+  let open List in
+  fold_left (fun obj p -> filter (f_pred p) obj) objs preds
 
 (* XXX: OCaml! .... *)
 let rec take n l =

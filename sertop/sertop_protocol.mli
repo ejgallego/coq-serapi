@@ -23,7 +23,7 @@ type coq_object =
     CoqString  of string
   | CoqRichpp  of Richpp.richpp
   | CoqRichXml of Richpp.richpp
-  | CoqOption  of Goptions.option_state
+  | CoqOption  of Goptions.option_name * Goptions.option_state
   | CoqConstr  of Constr.constr
   | CoqExpr    of Constrexpr.constr_expr
   | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
@@ -95,7 +95,8 @@ type query_pp =
 val query_pp_of_sexp : Sexp.t -> query_pp
 val sexp_of_query_pp : query_pp -> Sexp.t
 
-type query_opt = query_pred * query_limit * query_pp
+type query_opt = query_pred list * query_limit * query_pp
+
 val query_opt_of_sexp : Sexp.t -> query_opt
 val sexp_of_query_opt : query_opt -> Sexp.t
 
