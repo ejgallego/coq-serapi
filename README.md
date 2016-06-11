@@ -4,43 +4,48 @@ This repository provides a new communication protocol for the Coq theorem prover
 
 SerAPI follows several design principles:
 
-- Don't Repeat Yourself: SerAPI provides unique data structures and methods for each particular purpose. In this category fall query or printing commands. Different representations are automatically derived from the canonical ones.
+- **Don't Repeat Yourself**: We have canonical data structures and methods for each particular purpose. There is a common query or printing command for all objects. Different representations are automatically derived from the canonical ones.
 
-- SerAPI tries to be extremely robust. It is liberal in what it accepts, and strict in what it produces.
+- **Be extremely robust**: We are liberal in what we accept, and strict in what we produces. We consider any crash a critical bug.
 
-- SerAPI tries to make the life of their consumers easier. If a particular use case is not well supported, we prefer adapting SerAPI than making users implement hacks.
+- **Make life easy**: Provide support for our user's particular use cases.
 
-- SerAPI tries to provide modular, reusable components. There is no reason some of its facilities couldn't be used by plugins, for instance.
+SerAPI is an unstable proof of concept and the design is not final in any way.
 
-SerAPI is a proof of concept and thus very unstable. It is meant to gather further feedback from coq IDE users and developers, the design is not final in way, comments are very welcome!
+At this stage, we'd like to gather feedback from coq IDE users and developers, comments are very welcome!
 
 ### Quick Overview and Documentation
 
-After you run SerAPI (see [building](#building)) you should get a `sertop` binary, known as a _toplevel_. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`.
+We hope to provide SerAPI as an OPAM package soon; for now, see [building](#building).
 
-The base object in SerAPI is the [`CoqObject`](sertop/sertop_protocol.mli#L22), a sum type encapsulating core Coq objects, automatically serialized. **WARNING: Object packing will change in the future, however adapting should be straigforward**
+SerAPI provides a `sertop.native` binary, known as a _Coq toplevel_. This toplevel reads and write commands from stdin/stdout, it is up to you how to best interface with it. We recommend the [emacs mode](sertop.el) or `rlwrap` for command line users. `sertop -help` will provide an overview of command line options.
 
-Commands are always tagged, in the form of `(tag cmd)`. There are four categories of commands:
+SerAPI API's main building block is the [`CoqObject`](sertop/sertop_protocol.mli#L22) data type, a sum type encapsulating most core Coq objects, which can be automatically serialized. **API WARNING:** _Object packing will change in the future, however adapting should be straightforward_.
 
-- `(Control `[`control_cmd`](sertop/sertop_protocol.mli#L66)`)`: Instruct Coq to perform some action. Typically to check a proof, set an option, modify a load_path, etc... Every type of call will produce a unique numeric tag for the command `(Answer id Ack)` and possibly zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), to end with a tagged `(Answer id Completed)`.
+Interaction happens by means of _commands_, which are always tagged to distinguish responses, in the form of `(tag cmd)`. For every command, SerAPI **always** replies with an `(Answer tag Ack)` to indicate that the command was successfully parsed and delivered to Coq, or with a `SexpError` if parsing failed.
 
-- `(Query (preds limit pp) kind)`: **IMPORTANT: The Query API format will change soon, don't rely too much on it**
-   Search for Coq objects of kind `kind`. This can range from options, current goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current value `PpSexp` for full serialization, `PpStr` for pretty printing. For instance:
+There are four categories of commands:
+
+- `(Control `[`control_cmd`](sertop/sertop_protocol.mli#L66)`)`: AKIN function calls, control commands instruct Coq to perform some action. Typical actions are to check a proof, set an option, modify a `load path`, etc... Every command will produce zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), and will always finish with a `(Answer tag Completed)`.
+
+- `(Query (preds limit pp) kind)`: **API WARNING: The Query API format is experimental and will change soon, don't rely too much on it**
+   Queries stream Coq objects of kind `kind`. This can range from options, goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current values `PpSexp` for full serialization, and `PpStr` for pretty printing. For instance:
    ```lisp
-(Query (((Prefix "Debug")) (Some 10) PpSexp) Option)
+   (tag (Query (((Prefix "Debug")) (Some 10) PpSexp) Option))
    ```
-   will query all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
+   will stream all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
    ```lisp
    (CoqOption (Default Goal Selector)
       ((opt_sync true) (opt_depr false) (opt_name "default goal selector")
       (opt_value (StringValue 1))))
+   ...
    ```
 
-- `(Print opts obj)`: The `Print` command provides access to the Coq printers. Thus, it is possible to manipulate the objects returned by `Query` and then have Coq print them.
+- `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing manipulated objects returned by `Query`.
 
-- `(Parse opts obj)`: The `Parse` command gives access to IDEs to the Coq parsing engine.
+- `(Parse string)`: The `Parse` command gives access to the Coq parsing engine. We currently just support detecting the end of a sente, thus `(Parse sentence)` will return a `CoqPosition` object signaling the end of the sentence.
 
-Look into the [interface file](sertop/sertop_protocol.mli) for more details about the protocol itself. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure it out.
+Look at the [interface file](sertop/sertop_protocol.mli) for all the details. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure the syntax out.
 
 ### Building
 
@@ -117,9 +122,10 @@ _Version 0.02_:
  - **[done]** Basic Sentence splitting `(Parse string))`, retuns the loc of the end of the sentence.
  - **[done]** Basic completion-oriented Search support `(Query () Names)`
  - **[partial]** Print Grammar tactic. `(Query ... (Tactics))`.
-   Still we need to decide on
+   Still we need to decide on:
+   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of
+   `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
  - Implement Locate -> "file name where the object is defined".
-   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
  - Better command line parsing (`Cmdliner`, `Core` ?)
 
 _Version 0.03_:
