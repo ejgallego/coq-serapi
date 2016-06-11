@@ -18,6 +18,7 @@ open Sexplib.Std
 open Ser_names
 open Ser_globnames
 open Ser_loc
+open Ser_constr
 open Ser_misctypes
 open Ser_decl_kinds
 open Ser_genarg

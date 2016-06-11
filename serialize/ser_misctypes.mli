@@ -66,10 +66,10 @@ type glob_level = Misctypes.glob_level
 val glob_level_of_sexp : Sexp.t -> glob_level
 val sexp_of_glob_level : glob_level -> Sexp.t
 
-type case_style = Term.case_style
-
-val case_style_of_sexp : Sexp.t -> case_style
-val sexp_of_case_style : case_style -> Sexp.t
+(* Shadows the one in Constr. *)
+(* type case_style = Constr.case_style *)
+(* val case_style_of_sexp : Sexp.t -> case_style *)
+(* val sexp_of_case_style : case_style -> Sexp.t *)
 
 type 'a cast_type = 'a Misctypes.cast_type
 

@@ -176,3 +176,20 @@ let constr_of_sexp (c : Sexp.t) : constr =
 
 let sexp_of_constr (c : constr) : Sexp.t =
   sexp_of__constr (_constr_put c)
+
+type rec_declaration =
+  [%import: Constr.rec_declaration
+  [@with
+     Names.Name.t := name;
+     types        := constr;
+  ]]
+  [@@deriving sexp]
+
+type fixpoint =
+  [%import: Constr.fixpoint]
+  [@@deriving sexp]
+
+type cofixpoint =
+  [%import: Constr.cofixpoint]
+  [@@deriving sexp]
+

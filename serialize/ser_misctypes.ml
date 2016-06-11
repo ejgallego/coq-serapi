@@ -74,9 +74,10 @@ type glob_level =
   [%import: Misctypes.glob_level]
   [@@deriving sexp]
 
-type case_style =
-  [%import: Misctypes.case_style]
-  [@@deriving sexp]
+(* Shadows the one in Constr. *)
+(* type case_style = *)
+(*   [%import: Misctypes.case_style] *)
+(*   [@@deriving sexp] *)
 
 type 'a cast_type = [%import: 'a Misctypes.cast_type]
   [@@deriving sexp]

@@ -30,8 +30,16 @@ type inductive   = Names.inductive
 type constructor = Names.constructor
 type projection  = Names.Projection.t
 
+(* Aliases *)
+type evaluable_global_reference = Names.evaluable_global_reference
+
+type id_set = Names.Id.Set.t
+
 val id_of_sexp : Sexp.t -> Id.t
 val sexp_of_id : Id.t -> Sexp.t
+
+val id_set_of_sexp : Sexp.t -> Id.Set.t
+val sexp_of_id_set : Id.Set.t -> Sexp.t
 
 val name_of_sexp : Sexp.t -> Name.t
 val sexp_of_name : Name.t -> Sexp.t
@@ -65,3 +73,6 @@ val sexp_of_constructor : constructor -> Sexp.t
 
 val projection_of_sexp : Sexp.t -> Projection.t
 val sexp_of_projection : Projection.t -> Sexp.t
+
+val evaluable_global_reference_of_sexp : Sexp.t -> Names.evaluable_global_reference
+val sexp_of_evaluable_global_reference : Names.evaluable_global_reference -> Sexp.t

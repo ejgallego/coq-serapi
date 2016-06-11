@@ -27,6 +27,7 @@ ser_glob_term
 ser_libnames
 ser_constrexpr
 ser_tacexpr
+ser_tacenv
 ser_vernacexpr
 ser_constr
 ser_stm

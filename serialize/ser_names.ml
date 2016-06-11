@@ -32,6 +32,14 @@ let _id_get (Id id) = Id.of_string id
 let id_of_sexp sexp = _id_get (_id_of_sexp sexp)
 let sexp_of_id id   = sexp_of__id (_id_put id)
 
+(* Id.Set.t XXX: *)
+type id_set =
+  [%import: Names.Id.Set.t]
+  (* [@@deriving sexp] *)
+
+let id_set_of_sexp _sexp = Names.Id.Set.empty
+let sexp_of_id_set _ids  = Sexplib.Sexp.Atom "idset"
+
 (* Name: public *)
 type name = [%import: Names.Name.t
                       [@with Id.t := id]]
@@ -137,3 +145,11 @@ let _projection_get (Projection (cs,uf)) = Projection.make cs uf
 
 let projection_of_sexp sexp = _projection_get (_projection_of_sexp sexp)
 let sexp_of_projection dp   = sexp_of__projection (_projection_put dp)
+
+(* Evaluable global reference: public *)
+type evaluable_global_reference =
+  [%import: Names.evaluable_global_reference
+  [@with Id.t       := id;
+         Constant.t := constant;
+  ]]
+  [@@deriving sexp]

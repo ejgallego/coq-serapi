@@ -54,6 +54,21 @@ type case_info = Constr.case_info
 val case_info_of_sexp : Sexp.t -> case_info
 val sexp_of_case_info : case_info -> Sexp.t
 
+type rec_declaration = Constr.rec_declaration
+
+val rec_declaration_of_sexp : Sexp.t -> rec_declaration
+val sexp_of_rec_declaration : rec_declaration -> Sexp.t
+
+type fixpoint = Constr.fixpoint
+
+val fixpoint_of_sexp : Sexp.t -> fixpoint
+val sexp_of_fixpoint : fixpoint -> Sexp.t
+
+type cofixpoint = Constr.cofixpoint
+
+val cofixpoint_of_sexp : Sexp.t -> cofixpoint
+val sexp_of_cofixpoint : cofixpoint -> Sexp.t
+
 type 'constr pexistential = 'constr Constr.pexistential
 
 val pexistential_of_sexp : (Sexp.t -> 'constr) -> Sexp.t -> 'constr pexistential
