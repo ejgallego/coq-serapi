@@ -287,7 +287,14 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | Names prefix ->
     let acc = ref [] in
     Search.generic_search None (fun gr _env _typ ->
-        (* Not happy with this at ALL *)
+        (* Not happy with this at ALL:
+
+           String of qualid is OK, but shortest_qualid_of_global is an
+           unacceptable round-trip. I don't really see other option
+           than to maintain a prefix-specific table on the Coq side
+           capturing all the possible aliases.
+
+        *)
         let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
         if Core_kernel.Std.String.is_prefix name ~prefix then acc := name :: !acc
     );
