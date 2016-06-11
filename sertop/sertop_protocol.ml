@@ -263,6 +263,7 @@ type cmd =
   | Print      of coq_object
   | Parse      of string
   | Query      of query_opt * query_cmd
+  | Noop
   | Help
   [@@deriving sexp]
 
@@ -274,11 +275,16 @@ type answer =
 
 let exec_cmd cmd_id (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl cmd_id ctrl
-  | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
+
   | Print obj         -> let open Format in
                          fprintf str_formatter "@[%a@]" pp_obj obj;
                          [ObjList [CoqString (flush_str_formatter ())]]
+
   | Parse _           -> failwith "TODO: Parsing terms"
+
+  | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
+
+  | Noop              -> []
   | Help              -> serproto_help (); []
 
 let is_cmd_quit cmd = match cmd with

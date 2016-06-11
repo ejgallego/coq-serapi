@@ -125,6 +125,7 @@ type cmd =
   | Print   of coq_object
   | Parse   of string
   | Query   of query_opt * query_cmd
+  | Noop
   | Help
 
 val cmd_of_sexp : Sexp.t -> cmd
