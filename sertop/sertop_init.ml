@@ -62,10 +62,35 @@ let coq_init_plugins =
   ; ["extraction"]
   ; ["funind"]
   ; ["quote"]
+  ; ["setoid_ring"]
   ]
 
 let coq_init_theories =
   [ ["Init"]
   ; ["Bool"]
   ; ["Unicode"]
+
+  ; ["Lists"]
+  ; ["Vectors"]
+
+  ; ["Logic"]
+  ; ["Program"]
+
+  ; ["Classes"]
+  ; ["Relations"]
+  ; ["Structures"]
+  ; ["Setoids"]
+
+  ; ["Numbers"]
+  ; ["Numbers"; "NatInt"]
+  ; ["Numbers"; "Natural"; "Abstract"]
+  ; ["Numbers"; "Natural"; "Peano"]
+  ; ["Numbers"; "Integer"; "Abstract"]
+
+  ; ["Arith"]
+  ; ["PArith"]
+  ; ["NArith"]
+  ; ["ZArith"]
+  ; ["QArith"]
+
   ]
