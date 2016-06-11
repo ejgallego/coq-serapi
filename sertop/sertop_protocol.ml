@@ -497,11 +497,17 @@ let do_prelude coq_path =
 (*                                                                            *)
 (******************************************************************************)
 
-let read_cmd in_channel pp_answer =
+let read_cmd cmd_id in_channel pp_answer =
   let rec read_loop () =
     try
       let cmd_sexp = Sexp.input_sexp in_channel in
-      tagged_cmd_of_sexp cmd_sexp
+      begin
+        try tagged_cmd_of_sexp cmd_sexp
+        with
+        | End_of_file   -> "EOF", Control Quit
+        | _exn ->
+          (string_of_int cmd_id), cmd_of_sexp cmd_sexp
+      end
     with
     | End_of_file   -> "EOF", Control Quit
     | exn           -> pp_answer (SexpError(sexp_of_exn exn));
@@ -534,11 +540,11 @@ let ser_loop ser_opts =
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;
   (* Main loop *)
-  let rec loop () =
-    let cmd_tag, cmd = read_cmd ser_opts.in_chan pp_answer in
+  let rec loop cmd_id =
+    let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_answer in
     pp_ack cmd_tag;
     (* XXX: This protection should be unnecesary when we complete our
        toplevel *)
     iter pp_answer @@ map (fun a  -> Answer (cmd_tag, a)) (exec_cmd cmd);
-    if not (is_cmd_quit cmd) then loop ()
-  in loop ()
+    if not (is_cmd_quit cmd) then loop (1+cmd_id)
+  in loop 0
