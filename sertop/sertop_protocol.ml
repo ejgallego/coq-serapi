@@ -152,18 +152,22 @@ let cast_edit (r : [`NewTip | `Focus of focus]) : [`NewTip | `Unfocus of stateid
 
 let exec_ctrl cmd_id (ctrl : control_cmd) = match ctrl with
   | StmState       -> [StmInfo (Stm.get_current_state (), None)]
+
   | StmAdd (st, s) -> coq_protect @@ fun () ->
                       let new_st, foc = Stm.add ~ontop:st verb (-cmd_id) s in
                       [StmInfo (new_st, Some (cast_add foc))]
-  | StmQuery(st, s)-> coq_protect (fun () -> Stm.query ~at:st s; [])
+
   | StmEditAt st   -> coq_protect @@ fun () ->
                       let foc = Stm.edit_at st in
                       [StmInfo (st, Some (cast_edit foc))]
-  | StmObserve st  -> coq_protect (fun () -> Stm.observe st; [])
+
+  | StmQuery(st, s)-> coq_protect @@ fun () -> Stm.query ~at:st s; []
+  | StmObserve st  -> coq_protect @@ fun () -> Stm.observe st; []
 
   | LibAdd(lib, lib_path, has_ml) ->
                       let open Names in
                       let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
+                      (* XXX [upstream]: Unify ML and .vo library paths.  *)
                       Loadpath.add_load_path lib_path coq_path ~implicit:false;
                       if has_ml then Mltop.add_ml_dir lib_path; []
 
