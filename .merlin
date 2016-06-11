@@ -12,4 +12,4 @@ B _build/sertop/
 S /home/egallego/external/coq-git/**
 B /home/egallego/external/coq-git/**
 
-PKG ppx_import sexplib ppx_sexp_conv
+PKG core_kernel ppx_import sexplib ppx_sexp_conv

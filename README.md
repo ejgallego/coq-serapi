@@ -30,7 +30,7 @@ Look into the [interface file](sertop/sertop_protocol.mli) for more details abou
 The build system is work in progress, as we would like to incorporate some changes to Coq upstream first. OPAM and coq are required.
 
 1. Install the needed packages:
-   `$ opam install ocamlfind ppx_import sexplib ppx_sexp_conv`
+   `$ opam install ocamlfind ppx_import core_kernel sexplib ppx_sexp_conv`
 
 2. Download and compile coq-trunk. In the coq sources you can do:
    `$ ./configure -local && make -j $NJOBS

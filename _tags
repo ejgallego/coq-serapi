@@ -10,5 +10,6 @@ true: rectypes, thread, package(threads), package(str)
 <sertop/*>: linkall
 <sertop/*>: coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
 <sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
+<sertop/*>: package(core_kernel)
 
 
