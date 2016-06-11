@@ -83,8 +83,15 @@ let pp_goal (g, hyps) =
   Printer.pr_lconstr g
 
 (* XXX: Use _s *)
-let pp_opt n _s =
-  Pp.str @@ String.concat "." n
+let pp_opt_value (s : option_value) = match s with
+  | Goptions.BoolValue b      -> Pp.bool b
+  | Goptions.IntValue  i      -> Pp.pr_opt Pp.int i
+  | Goptions.StringValue s    -> Pp.str s
+  | Goptions.StringOptValue s -> Pp.pr_opt Pp.str s
+
+let pp_opt n s =
+  let open Pp in
+  str (String.concat "." n) ++ str " := " ++ pp_opt_value s.Goptions.opt_value
 
 let pp_obj fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
