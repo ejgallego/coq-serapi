@@ -35,17 +35,21 @@ The build system is work in progress, as we would like to incorporate some chang
 2. Download and compile coq-trunk. In the coq sources you can do:
    `$ ./configure -local && make -j $NJOBS
 
-3. Edit our `myocamlbuild.ml` to add the location of Coq sources and Opam installation, then.
-   `$ make`
-   Should do the rest.
+3. Edit our `myocamlbuild.ml` to add the location of Coq sources and Opam installation, then
+   `make`
+   should do the rest.
 
+
+### Emacs mode
+
+Open `sertop.el` and run `M-x eval-buffer` followed by `M-x sertop` to get a sertop REPL in Emacs, with highlighting and pretty-printing (useful for debugging).
 
 ### Quick demo
 
 Using `rlwrap` is highly recommended:
 
 ```
-coq-serapi$ rlwrap ./ser_top.byte -prelude /home/egallego/external/coq-git/
+coq-serapi$ rlwrap ./sertop.byte -prelude /home/egallego/external/coq-git/
 (Print (CoqConstr (App (Rel 0) ((Rel 0)))))
 > (Answer 0 Ack)
 > (Answer 0(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
