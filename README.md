@@ -19,8 +19,21 @@ SerAPI is a proof of concept and thus very unstable. It is meant to gather furth
 After you run SerAPI (see [building](#Building)) you should get a `sertop` binary, known as a _toplevel. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`. There are four categories of commands:
 
 - `(Control control_cmd)`: Instruct Coq to perform some action. Typically checking a proof, or setting an option.
-- `(Query opts query_cmd)`: Search for Coq objects. This can range from options, current goals and hypotheses, tactics, etc... Options allow filtering by name, paging, controlling the output format, etc...
+
+- `(Query (preds limit pp) kind)`:
+   Search for Coq objects of kind `kind`. This can range from options, current goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current value `PpSexp` for full serialization, `PpStr` for pretty printing. For instance:
+   ```lisp
+(Query (((Prefix "Debug")) (Some 10) PpSexp) Option)
+   ```
+   will query all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
+   ```lisp
+(CoqOption (Default Goal Selector)
+    ((opt_sync true) (opt_depr false) (opt_name "default goal selector")
+     (opt_value (StringValue 1))))
+   ```
+
 - `(Print opts obj)`: The `Print` command provides access to the Coq printers. Thus, it is possible to manipulate the objects returned by `Query` and then have Coq print them.
+
 - `(Parse opts obj)`: The `Parse` command gives access to IDEs to the Coq parsing engine.
 
 Look into the [interface file](sertop/sertop_protocol.mli) for more details about the protocol itself. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure it out.
@@ -48,7 +61,7 @@ Open `sertop.el` and run `M-x eval-buffer` followed by `M-x sertop` to get a ser
 
 Using `rlwrap` is highly recommended:
 
-```
+```lisp
 coq-serapi$ rlwrap ./sertop.byte -prelude /home/egallego/external/coq-git/
 (Print (CoqConstr (App (Rel 0) ((Rel 0)))))
 > (Answer 0 Ack)
