@@ -23,13 +23,13 @@ let ser_usage = "Usage: ser_top [options] inputfile"
 
 let ser_arg   = [
   "-prelude", Arg.String (fun l -> prelude := Some l),
-        "Load prelude from dir";
+              "Load prelude from dir";
   "-human",   Arg.Unit   (fun _ -> human   := true),
-        "Use human-readable sexp output";
-  "-print0",   Arg.Unit  (fun _ -> print0  := true),
-        "Add a \\0 char after every response";
-  "-length",   Arg.Unit  (fun _ -> length  := true),
-        "Adds a byte-length header to answers";
+              "Use human-readable sexp output";
+  "-print0",  Arg.Unit   (fun _ -> print0  := true),
+              "Add a \\0 char after every response";
+  "-length",  Arg.Unit   (fun _ -> length  := true),
+              "Adds a byte-length header to answers";
 ]
 
 let parse_args () =

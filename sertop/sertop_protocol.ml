@@ -78,7 +78,6 @@ let pp_goal (g, hyps) =
   str "============================\n" ++
   Printer.pr_lconstr g
 
-(* XXX: Use _s *)
 let pp_opt_value (s : option_value) = match s with
   | Goptions.BoolValue b      -> Pp.bool b
   | Goptions.IntValue  i      -> Pp.pr_opt Pp.int i
@@ -316,9 +315,7 @@ type answer =
 let exec_cmd cmd_id (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl cmd_id ctrl
 
-  | Print obj         -> let open Format in
-                         fprintf str_formatter "@[%a@]" pp_obj obj;
-                         [ObjList [CoqString (flush_str_formatter ())]]
+  | Print obj         -> [ObjList [string_of_obj obj]]
 
   | Parse _           -> [ObjList [CoqString "Not yet Implemented"]]
 

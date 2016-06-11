@@ -110,6 +110,7 @@ _Version 0.02_:
  - *[done]* Improve API: add options.
  - *[done]* Improve and review printing workflow.
  - *[done]* `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
+ - Implement Query Locate -> "file name where the object is defined".
  - Better command line parsing (`Cmdliner`, `Core` ?)
 
 _Version 0.03_:
