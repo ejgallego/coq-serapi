@@ -1,15 +1,19 @@
-.PHONY: clean all serialize toplevel
+.PHONY: clean all toplevel serialize-byte serialize-native
 
 include config.mk
 
 OCB=ocamlbuild
-OCB_OPT=-use-ocamlfind
+OCB_OPT=-use-ocamlfind -j 4
 
-all: serialize toplevel
+all: toplevel
 
-serialize:
+serialize-byte:
 	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) serialize/sercoq.cma
+
+serialize-native:
+	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
+	$(OCB) $(OCB_OPT) $(INCLUDETOP) serialize/sercoq.cmxa
 
 TARGET=native
 toplevel:
