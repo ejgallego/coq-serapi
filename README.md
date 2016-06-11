@@ -90,14 +90,14 @@ coq-serapi$ rlwrap ./ser_top.byte -prelude /home/egallego/external/coq-git/
 _Version 0.02_:
 
  - *[done]* Serialization of the `Proof.proof` object.
- - Improve API: add options.
- - Improve and review printing workflow.
- - `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
- - Sentence splitting `(Parse (Sentence string))`.
- - Better command line parsing (use the same as opam's ?)
+ - *[done]* Improve API: add options.
+ - *[done]* Improve and review printing workflow.
+ - *[done]* `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
+ - Better command line parsing (`Cmdliner`, `Core` ?)
 
 _Version 0.03_:
 
+ - Sentence splitting `(Parse (Sentence string))`.
  - Support regexps in queries.
  - Workers support.
  - *[inprogress]* Port CoqIDE to SerAPI. See preliminary tree at https://github.com/ejgallego/coqide-exp/tree/serapi/
