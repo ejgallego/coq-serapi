@@ -98,18 +98,21 @@ _Version 0.02_:
 
 _Version 0.03_:
 
-   Support regexps in queries.
+ - Support regexps in queries.
  - Workers support.
  - *[inprogress]* Port CoqIDE to SerAPI. See preliminary tree at https://github.com/ejgallego/coqide-exp/tree/serapi/
 
 _Version 0.04_:
+
+ - Improve search API, make objects tagged with a GADT.
+
+   *Critical: we hope to have gained enough experience to introduce the object tag*
 
  - Help with complex codepaths:
    - Load Path parsing and completion code is probably one of the most complex part of company-coq
    - parsing the output of Print Grammar tactic.
    - Help with implicits.
 
- - Improve search API, make objects tagged with a GADT.
 
 _More_:
 
@@ -117,6 +120,8 @@ _More_:
  - Checkstyle support.
 
  - Add a "document cache layer" where you can send a full document and Coq parses it in full and perform caching.
+
+ - ppx to enumerate datatypes. Write the help command with this and also Clément suggestions about Vernac enumeration.
 
 ### Technical details
 
