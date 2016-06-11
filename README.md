@@ -5,8 +5,8 @@ This repository provides a new communication protocol for the Coq theorem prover
 SerAPI follows several design principles:
 
 - **Don't Repeat Yourself**: We have canonical data structures and methods for each particular purpose. There is a single query or printing command for all objects.
-- **Be extremely robust**: We are liberal in what we accept, and strict in what we produces. Any crash is a **critical** bug.
-- **Make life easy**: Be very user oriented.
+- **Be extremely robust**: We are liberal in what we accept, and strict in what we produce. Any crash is a **critical** bug.
+- **Make life easy**: Provide a user-oriented interface.
 
 SerAPI is an unstable proof of concept and the design is not final in any way.
 
