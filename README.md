@@ -16,11 +16,17 @@ SerAPI is a proof of concept and thus very unstable. It is meant to gather furth
 
 ### Quick Overview and Documentation
 
-After you run SerAPI (see [building](#Building)) you should get a `sertop` binary, known as a _toplevel. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`. There are four categories of commands:
+After you run SerAPI (see [building](#building)) you should get a `sertop` binary, known as a _toplevel. The toplevel will read/write to stdin/stdout, so it is up to you to how to handle that. You can get an overview of SerAPI's options with `sertop -help`.
 
-- `(Control control_cmd)`: Instruct Coq to perform some action. Typically checking a proof, or setting an option.
+The base object in SerAPI is the `[CoqObject](sertop/sertop_protocol.mli#L22)`, a sum type encapsulating core Coq objects, automatically serialized.
 
-- `(Query (preds limit pp) kind)`:
+**WARNING: Object packing will change in the future, however adapting should be straigforward**
+
+There are four categories of commands:
+
+- `(Control [sertop/sertop_protocol.mli#L66](control_cmd))`: Instruct Coq to perform some action. Typically to check a proof, set an option, modify a load_path, etc... Every type of call will produce a unique numeric tag for the command `(Answer id Ack)` and possibly zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), to end with a tagged `(Answer id Completed)`.
+
+- `(Query (preds limit pp) kind)`: **IMPORTANT: The Query API format will change soon, don't rely too much on it**
    Search for Coq objects of kind `kind`. This can range from options, current goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current value `PpSexp` for full serialization, `PpStr` for pretty printing. For instance:
    ```lisp
 (Query (((Prefix "Debug")) (Some 10) PpSexp) Option)
@@ -102,39 +108,53 @@ coq-serapi$ rlwrap ./sertop.byte -prelude /home/egallego/external/coq-git/
 
 ```
 
-### Roadmap:
+### Roadmap/Changelog:
 
 _Version 0.02_:
 
- - *[done]* Serialization of the `Proof.proof` object.
- - *[done]* Improve API: add options.
- - *[done]* Improve and review printing workflow.
- - *[done]* `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
- - Implement Query Locate -> "file name where the object is defined".
+ - **[done]** Serialization of the `Proof.proof` object.
+ - **[done]** Improve API: add options.
+ - **[done]** Improve and review printing workflow.
+ - **[done]** `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
+ - **[done]** Basic Sentence splitting `(Parse string))`, retuns the loc of the end of the sentence.
+ - **[done]** Basic completion-oriented Search support `(Query () Names)`
+ - **[partial]** Print Grammar tactic. `(Query ... (Tactics))`.
+   Still we need to decide on
+ - Implement Locate -> "file name where the object is defined".
+   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
  - Better command line parsing (`Cmdliner`, `Core` ?)
 
 _Version 0.03_:
 
- - Sentence splitting `(Parse (Sentence string))`.
- - Support regexps in queries.
  - Workers support.
  - *[inprogress]* Port CoqIDE to SerAPI. See preliminary tree at https://github.com/ejgallego/coqide-exp/tree/serapi/
 
 _Version 0.04_:
 
- - Improve search API, make objects tagged with a GADT.
-
+ - Redo Query API, make objects tagged with a GADT.
    *Critical: we hope to have gained enough experience to introduce the object tag*
 
- - Help with complex codepaths:
-   - Load Path parsing and completion code is probably one of the most complex part of company-coq
-   - parsing the output of Print Grammar tactic.
-   - Help with implicits.
+ - Improve the handling of names and environments, see
+   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
 
+   Maybe we could add some options `Short`, `Full`, `Best` ? ...
+   Or we could even serialize the naming structure and let the ide decide if we export the current open namespace.
+
+ - Advanced Sentence splitting `(Parse (Sentence string))`, which can handle the whole document.
+
+ - Implicits.
+
+ - Help with complex codepaths:
+   Load Path parsing and completion code is probably one of the most complex part of company-coq
+
+_Version 0.04_:
+
+ - Support regexps in queries.
 
 _More_:
 
  - Would be easy to get a list of vernacs? Things like `Print`, `Typeclasses eauto`, etc.
+
  - Checkstyle support.
 
  - Add a "document cache layer" where you can send a full document and Coq parses it in full and perform caching.
