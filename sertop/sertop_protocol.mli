@@ -111,9 +111,9 @@ type query_cmd =
   | Option
   | Search
   | Goals
-  | TypeOf  of string
-  | Names   of string              (* XXX Move to prefix *)
-  | Tactics of string              (* XXX Move to prefix *)
+  | TypeOf  of string           (* XXX Unimplemented *)
+  | Names   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Tactics of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t

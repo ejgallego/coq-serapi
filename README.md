@@ -41,6 +41,8 @@ There are four categories of commands:
    ...
    ```
 
+   Currently supported queries can be seen [here](sertop/sertop_protocol.mli#L110)
+
 - `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing manipulated objects returned by `Query`.
 
 - `(Parse string)`: The `Parse` command gives access to the Coq parsing engine. We currently just support detecting the end of a sente, thus `(Parse sentence)` will return a `CoqPosition` object signaling the end of the sentence.
