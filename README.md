@@ -27,9 +27,9 @@ After you run SerAPI (see [building](#Building)) you should get a `sertop` binar
    ```
    will query all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
    ```lisp
-(CoqOption (Default Goal Selector)
-    ((opt_sync true) (opt_depr false) (opt_name "default goal selector")
-     (opt_value (StringValue 1))))
+   (CoqOption (Default Goal Selector)
+      ((opt_sync true) (opt_depr false) (opt_name "default goal selector")
+      (opt_value (StringValue 1))))
    ```
 
 - `(Print opts obj)`: The `Print` command provides access to the Coq printers. Thus, it is possible to manipulate the objects returned by `Query` and then have Coq print them.
