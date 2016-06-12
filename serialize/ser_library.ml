@@ -13,16 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type coq_opts = {
+(* open Sexplib.Std *)
 
-  (* callback to handle async feedback *)
-  fb_handler : Feedback.feedback -> unit;
-
-}
-
-val coq_init : coq_opts -> unit
-
-val coq_init_plugins  : string list list
-val coq_init_theories : string list list
-
-val sertop_dp : Names.DirPath.t
+type library_location =
+  [%import: Library.library_location]
+  [@@deriving sexp]

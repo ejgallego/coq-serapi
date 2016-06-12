@@ -131,9 +131,14 @@ _Version 0.02_:
    Still we need to decide on:
    `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of
    `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
- - Implement Locate -> "file name where the object is defined".
+ - Implicits.
 
 _Version 0.03_:
+
+ - **[started]** Implement Locate -> "file name where the object is defined".
+   To improve.
+
+ - Implement Locate -> "file name where the object is defined".
 
  - Workers support.
  - *[inprogress]* Port CoqIDE to SerAPI. See preliminary tree at https://github.com/ejgallego/coqide-exp/tree/serapi/
@@ -150,8 +155,6 @@ _Version 0.04_:
    Or we could even serialize the naming structure and let the ide decide if we export the current open namespace.
 
  - Advanced Sentence splitting `(Parse (Sentence string))`, which can handle the whole document.
-
- - Implicits.
 
  - Help with complex codepaths:
    Load Path parsing and completion code is probably one of the most complex part of company-coq

@@ -29,6 +29,8 @@ type coq_object =
   | CoqConstr  of Constr.constr
   | CoqExpr    of Constrexpr.constr_expr
   | CoqTactic  of Names.KerName.t * Tacenv.ltac_entry
+  | CoqQualId  of Libnames.qualid
+  (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
 
 val coq_object_of_sexp : Sexp.t -> coq_object
@@ -116,6 +118,7 @@ type query_cmd =
   | TypeOf  of string           (* XXX Unimplemented *)
   | Names   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Tactics of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Locate  of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t

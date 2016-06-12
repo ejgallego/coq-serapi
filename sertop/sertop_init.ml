@@ -13,6 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+let sertop_dp =
+  let open Names in
+  DirPath.make [Id.of_string "SerTop"]
+
 (* Init options for coq *)
 type coq_opts = {
 
@@ -21,7 +25,6 @@ type coq_opts = {
 }
 
 let coq_init opts =
-  let open Names in
 
   (* Internal Coq initialization *)
   Lib.init();
@@ -36,8 +39,7 @@ let coq_init opts =
 
   (* We need to declare a toplevel module name, not sure if this can
      be avoided.  *)
-  let ser_name = DirPath.make [Id.of_string "SerTop"] in
-  Declaremods.start_library ser_name;
+  Declaremods.start_library sertop_dp;
 
   (* Initialize the STM. *)
   Stm.init();
