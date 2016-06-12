@@ -26,6 +26,8 @@ There are four categories of commands:
 
 - `(Control `[`control_cmd`](sertop/sertop_protocol.mli#L66)`)`: AKIN function calls, control commands instruct Coq to perform some action. Typical actions are to check a proof, set an option, modify a `load path`, etc... Every command will produce zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), and will always finish with a `(Answer tag Completed)`.
 
+   This part of the API assumes the reader is familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/notes/coq-notes.md) you can find a few informal notes on how it works.
+
 - `(Query (preds limit pp) kind)`: **API WARNING: The Query API format is experimental and will change soon, don't rely too much on it**
    Queries stream Coq objects of kind `kind`. This can range from options, goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current values `PpSexp` for full serialization, and `PpStr` for pretty printing. For instance:
    ```lisp
