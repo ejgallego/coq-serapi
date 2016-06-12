@@ -51,7 +51,9 @@ Look at the [interface file](sertop/sertop_protocol.mli) for all the details. Oc
 
 ### Building
 
-The build system is work in progress, as we would like to incorporate some changes to Coq upstream first. OPAM and coq are required.
+The build system is work in progress. coq/coq#187 needs to be completed before we can put SerAPI in Opam.
+
+To build, OPAM and coq are required.
 
 1. Install the needed packages:
    `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv`
