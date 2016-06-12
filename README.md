@@ -54,7 +54,7 @@ Look at the [interface file](sertop/sertop_protocol.mli) for all the details. Oc
 The build system is work in progress, as we would like to incorporate some changes to Coq upstream first. OPAM and coq are required.
 
 1. Install the needed packages:
-   `$ opam install ocamlfind ppx_import core_kernel sexplib ppx_sexp_conv`
+   `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv`
 
 2. Download and compile coq-trunk. In the coq sources you can do:
    `$ ./configure -local && make -j $NJOBS`
@@ -124,12 +124,12 @@ _Version 0.02_:
  - **[done]** Basic Sentence splitting `(Parse num string))`, retuns the first num end of the sentences _without_ executing them.
    This has pitfalls as parsing is very stateful.
  - **[done]** Basic completion-oriented Search support `(Query () Names)`
+ - **[done]** Better command line parsing (`Cmdliner`, `Core` ?)
  - **[partial]** Print Grammar tactic. `(Query ... (Tactics))`.
    Still we need to decide on:
    `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of
    `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
  - Implement Locate -> "file name where the object is defined".
- - Better command line parsing (`Cmdliner`, `Core` ?)
 
 _Version 0.03_:
 
@@ -177,6 +177,11 @@ Coq SerAPI has two main components:
 - `sertop`, a toplevel implementing an modified version of the current IDE protocol. This is a simple file and largely independent of Coq itself.
 
 Building your own toplevels using `serialize` is encouraged. Here, the current limit is the Ml API itself.
+
+#### Open Questions
+
+- Should we fully embrace `Core` ?
+- What should we adopt as document model?
 
 ## Acknowledgments
 

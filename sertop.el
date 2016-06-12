@@ -32,7 +32,7 @@
 (defvar sertop-executable-path (expand-file-name "sertop.native" sertop--root)
   "Path to sertop.")
 
-(defvar sertop-coq-directory nil
+(defvar sertop-coq-directory "/home/egallego/external/coq-git/"
   "Location of the directory containing Coq's sources, or nil.")
 
 (defvar sertop--accumulator nil
@@ -76,9 +76,9 @@ Output is accumulated and printed once a full message has been received."
 
 (defun sertop--args ()
   "Compute sertop arguments."
-  `("-print0"
+  `("--print0"
     ,@(when sertop-coq-directory
-        `("-prelude" ,sertop-coq-directory))))
+        `("--prelude" ,sertop-coq-directory))))
 
 (defun sertop ()
   "Launch sertop."

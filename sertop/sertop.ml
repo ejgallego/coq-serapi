@@ -13,43 +13,48 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* XXX: Parse command line *)
-let prelude = ref Coq_config.coqlib
-let human   = ref false
-let print0  = ref false
-let length  = ref false
+open Cmdliner
 
-let ser_usage = "Usage: ser_top [options] inputfile"
+let prelude =
+  let doc = "Load prelude from dir" in
+  Arg.(value & opt (some string) Coq_config.coqlib & info ["prelude"] ~docv:"COQPATH" ~doc)
 
-let ser_arg   = [
-  "-prelude", Arg.String (fun l -> prelude := Some l),
-              "Load prelude from dir";
-  "-human",   Arg.Unit   (fun _ -> human   := true),
-              "Use human-readable sexp output";
-  "-print0",  Arg.Unit   (fun _ -> print0  := true),
-              "Add a \\0 char after every response";
-  "-length",  Arg.Unit   (fun _ -> length  := true),
-              "Adds a byte-length header to answers";
-]
+let human =
+  let doc = "Use human-readable sexp output" in
+  Arg.(value & flag & info ["human"] ~doc)
 
-let parse_args () =
-  let in_files = ref [] in
-  Arg.parse ser_arg
-     (fun file -> in_files := file :: !in_files)
-     ser_usage;
-  List.rev !in_files
+let print0 =
+  let doc = "Add a \\0 char after every response" in
+  Arg.(value & flag & info ["print0"] ~doc)
 
-let main () =
+let length =
+  let doc = "Adds a byte-length header to answers" in
+  Arg.(value & flag & info ["length"] ~doc)
+
+let sertop prelude human print0 length =
   let open Sertop_protocol         in
-  let _  = parse_args ()           in
   ser_loop
-    {  coqlib   = !prelude;
+    {  coqlib   = prelude;
        in_chan  = stdin;
        out_chan = stdout;
-       human    = !human;
-       print0   = !print0;
-       lheader  = !length;
+       human    = human;
+       print0   = print0;
+       lheader  = length;
     }
 
-let _ =
-  main ()
+let sertop_cmd =
+  let doc = "SerAPI Coq Toplevel" in
+  let man = [
+    `S "DESCRIPTION";
+    `P "Experimental Coq Toplevel with serialization support"
+  ]
+  in
+  Term.(const sertop $ prelude $ human $ print0 $ length),
+  Term.info "sertop" ~version:"0.02" ~doc ~man
+
+let main () =
+  match Term.eval sertop_cmd with
+  | `Error _ -> exit 1
+  | _        -> exit 0
+
+let _ = main ()

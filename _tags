@@ -1,5 +1,5 @@
 true: package(ppx_import), package(sexplib), package(ppx_sexp_conv)
-true: warn(+1..49-4), warn_error(+1..49), bin_annot, annot, safe_string
+true: warn(+1..49-4-44), warn_error(+1..49), bin_annot, annot, safe_string
 <serialize/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_interp, coq_parsing, coq_stm, coq_proofs, coq_ltac
 
 # Coq-specific linking flags
@@ -11,6 +11,6 @@ true: rectypes, thread, package(threads), package(str)
 <sertop/*.native>: package(dynlink)
 <sertop/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
 <sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
-<sertop/*>: package(core_kernel)
+<sertop/*>: package(core_kernel), package(cmdliner)
 
 
