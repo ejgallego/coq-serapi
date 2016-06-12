@@ -1,22 +1,25 @@
-.PHONY: clean all toplevel serialize-byte serialize-native
+.PHONY: clean all toplevel serlib sertop
 
 include config.mk
 
 OCB=ocamlbuild
 OCB_OPT=-use-ocamlfind -j 4
 
-all: toplevel
-
-serialize-byte:
-	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) serialize/sercoq.cma
-
-serialize-native:
-	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) serialize/sercoq.cmxa
+all: sertop
 
 TARGET=native
-toplevel:
+
+ifeq "${TARGET}" "native"
+CMAEXT=cmxa
+else
+CMAEXT=cma
+endif
+
+serlib:
+	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
+	$(OCB) $(OCB_OPT) $(INCLUDETOP) serlib/serlib.$(CMAEXT)
+
+sertop:
 	OCAMLFIND_IGNORE_DUPS_IN=/home/egallego/.opam/4.03.0/lib/ocaml/compiler-libs/ \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop.$(TARGET)
 
@@ -25,7 +28,7 @@ clean:
 
 # Not yet ready ocamlbuild support
 all-sub:
-	make -C serialize
+	make -C serlib
 
 clean-sub:
-	make -C serialize clean
+	make -C serlib clean

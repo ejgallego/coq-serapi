@@ -195,3 +195,17 @@ SerAPI has been developed at the
 [MINES ParisTech](http://www.mines-paristech.fr/) (former École de
 Mines de Paris) and partially supported by the
 [FEEVER](http://www.feever.fr) project.
+
+## Commit tag conventions [work in progress]:
+
+- [serlib] : Serialization lib.
+- [sertop] : Toplevel.
+
+- [doc]   : Documentation.
+- [build] : Build system.
+
+- [proto]   : Core protocol.
+- [control] : STM protocol.
+- [query]   : Query protocol.
+- [parse]   : Parsing protocol.
+- [print]   : Printing protocol.
