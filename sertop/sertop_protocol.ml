@@ -571,12 +571,19 @@ let ser_loop ser_opts =
   Sertop_init.coq_init { Sertop_init.fb_handler = pp_feed; };
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;
+
+  (* Follow the same approach than coqtop for now: allow Coq to be
+   * interrupted by Ctrl-C. Not entirely safe or race free... but we
+   * trust the IDEs to send the signal on coherent IO state.
+   *)
+  Sys.catch_break true;
+
   (* Main loop *)
   let rec loop cmd_id =
-    let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_answer in
-    pp_ack cmd_tag;
-    (* XXX: This protection should be unnecesary when we complete our
-       toplevel *)
-    iter pp_answer @@ map (fun a  -> Answer (cmd_tag, a)) (exec_cmd cmd);
-    if not (is_cmd_quit cmd) then loop (1+cmd_id)
+    try
+      let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_answer in
+      pp_ack cmd_tag;
+      iter pp_answer @@ map (fun a  -> Answer (cmd_tag, a)) (exec_cmd cmd);
+      if not (is_cmd_quit cmd) then loop (1+cmd_id)
+    with Sys.Break -> loop (1+cmd_id)
   in loop 0

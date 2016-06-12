@@ -49,6 +49,8 @@ There are four categories of commands:
 
 Look at the [interface file](sertop/sertop_protocol.mli) for all the details. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure the syntax out.
 
+Sertop can be interrupted by `Ctrl-C` in the same way than the regular `coqtop`.
+
 ### Building
 
 The build system is work in progress. coq/coq#187 needs to be completed before we can put SerAPI in Opam.
@@ -209,3 +211,5 @@ Mines de Paris) and partially supported by the
 - [query]   : Query protocol.
 - [parse]   : Parsing protocol.
 - [print]   : Printing protocol.
+
+We prefer signed commits.
