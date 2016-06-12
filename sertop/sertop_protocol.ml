@@ -153,9 +153,13 @@ exception End_of_input
 let parse_sentence = Flags.with_option Flags.we_are_parsing
   (fun pa ->
     match Pcoq.Gram.entry_parse Pcoq.main_entry pa with
-    | Some (loc, _ast) -> CoqLoc loc
+    | Some (loc, _ast) -> loc
     | None             -> raise End_of_input
   )
+
+let parse_sentence_from_string s =
+  let pa = Pcoq.Gram.parsable (Stream.of_string s) in
+  parse_sentence pa
 
 (* Accumulate at most num succesful parsing attemps in acc *)
 let parse_sentences num acc s =
@@ -164,7 +168,7 @@ let parse_sentences num acc s =
   try
     for _i = 1 to num do
       let loc = parse_sentence pa in
-      acc := loc :: !acc
+      acc := CoqLoc loc :: !acc
     done;
   with
   | End_of_input -> ()
@@ -184,7 +188,9 @@ let exn_of_sexp sexp = AnswerExn sexp
 
 type answer_kind =
   | Ack
-  | StmInfo of stateid * [`NewTip | `Unfocus of stateid | `Focus of focus] option
+  | StmCurId  of stateid
+  | StmAdded  of stateid * loc * [`NewTip | `Unfocus of stateid ]
+  | StmEdited of                 [`NewTip | `Focus   of focus   ]
   | ObjList of coq_object list
   | CoqExn  of exn
   | Completed
@@ -201,30 +207,16 @@ let coq_protect e =
 
 let verb = true
 type control_cmd =
-  | StmState                       (* Get the state *)
-  | StmAdd     of stateid * string (* Stm.add       *)
-  | StmQuery   of stateid * string (* Stm.query     *)
-  | StmEditAt  of stateid          (* Stm.edit_at   *)
-  | StmObserve of stateid          (* Stm.observe   *)
+  | StmState                             (* Get the state *)
+  | StmAdd     of int * stateid * string (* Stm.add       *)
+  | StmQuery   of       stateid * string (* Stm.query     *)
+  | StmEditAt  of       stateid          (* Stm.edit_at   *)
+  | StmObserve of       stateid          (* Stm.observe   *)
   | SetOpt     of bool option * option_name * option_value
   (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
   | Quit
   [@@deriving sexp]
-
-(******************************************************************************)
-(* HACK: Can't this be done automatically *)
-let cast_add (r : [`NewTip | `Unfocus of stateid]) : [`NewTip | `Unfocus of stateid | `Focus of focus] =
-  match r with
-  | `NewTip     -> `NewTip
-  | `Unfocus st -> `Unfocus st
-
-let cast_edit (r : [`NewTip | `Focus of focus]) : [`NewTip | `Unfocus of stateid | `Focus of focus] =
-  match r with
-  | `NewTip   -> `NewTip
-  | `Focus fc -> `Focus fc
-(* HACK: Can't this be done automatically *)
-(******************************************************************************)
 
 let exec_setopt loc n (v : option_value) =
   let open Goptions in
@@ -238,14 +230,17 @@ let exec_ctrl =
   let edit_id = ref 0 in
   fun (ctrl : control_cmd) ->
   coq_protect @@ fun () -> match ctrl with
-  | StmState       -> [StmInfo (Stm.get_current_state (), None)]
+  | StmState       -> [StmCurId (Stm.get_current_state ())]
 
-  | StmAdd (st, s) -> let new_st, foc = Stm.add ~ontop:st verb (- !edit_id) s in
+  | StmAdd(_lim, st, s) ->
+                      (* Workaround coq/coq#204 *)
+                      let loc         = parse_sentence_from_string s          in
+                      let new_st, foc = Stm.add ~ontop:st verb (- !edit_id) s in
                       incr edit_id;
-                      [StmInfo (new_st, Some (cast_add foc))]
+                      [StmAdded (new_st, loc, foc)]
 
   | StmEditAt st   -> let foc = Stm.edit_at st in
-                      [StmInfo (st, Some (cast_edit foc))]
+                      [StmEdited foc]
 
   | StmQuery(st, s)-> Stm.query ~at:st s; []
   | StmObserve st  -> Stm.observe st; []
@@ -477,7 +472,7 @@ let ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Sertop_init.coq_init_plugins  @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
-  [ Control (StmAdd     (Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
+  [ Control (StmAdd     (0, Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 

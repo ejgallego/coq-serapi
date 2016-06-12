@@ -52,7 +52,9 @@ val sexp_of_coq_object : coq_object -> Sexp.t
 
 type answer_kind =
     Ack
-  | StmInfo of Stateid.t * [`NewTip | `Unfocus of Stateid.t | `Focus of Stm.focus] option
+  | StmCurId  of Stateid.t
+  | StmAdded  of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | StmEdited of                     [`NewTip | `Focus   of Stm.focus ]
   | ObjList of coq_object list
   | CoqExn  of exn
   | Completed
@@ -66,10 +68,10 @@ val answer_kind_of_sexp : Sexp.t -> answer_kind
 
 type control_cmd =
     StmState
-  | StmAdd     of Stateid.t * string
-  | StmQuery   of Stateid.t * string
-  | StmEditAt  of Stateid.t
-  | StmObserve of Stateid.t
+  | StmAdd     of int * Stateid.t * string
+  | StmQuery   of       Stateid.t * string
+  | StmEditAt  of       Stateid.t
+  | StmObserve of       Stateid.t
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   | LibAdd     of string list * string * bool
   | Quit
