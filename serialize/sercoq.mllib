@@ -15,6 +15,7 @@ ser_conv_oracle
 ser_globnames
 ser_misctypes
 ser_locus
+ser_impargs
 ser_genredexpr
 ser_decl_kinds
 ser_genarg

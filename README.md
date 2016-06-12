@@ -131,10 +131,10 @@ _Version 0.02_:
    Still we need to decide on:
    `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of
    `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
- - Implicits.
 
 _Version 0.03_:
 
+ - **[started]** Implicit arguments.
  - **[started]** Implement Locate -> "file name where the object is defined".
    To improve.
 

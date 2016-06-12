@@ -23,6 +23,7 @@ open Ser_stateid
 open Ser_richpp
 open Ser_feedback
 open Ser_libnames
+open Ser_impargs
 (* open Ser_library *)
 open Ser_constr
 open Ser_constrexpr
@@ -94,6 +95,7 @@ type coq_object =
   | CoqExpr    of constr_expr
   | CoqTactic  of kername * ltac_entry
   | CoqQualId  of qualid
+  | CoqImplicit of implicits_list
   (* Fixme *)
   | CoqGoal    of (constr * (id list * constr option * constr) list) pre_goals
   [@@deriving sexp]
@@ -139,6 +141,7 @@ let pp_obj fmt (obj : coq_object) =
   (* Fixme *)
   | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.fg_goals)
   | CoqQualId qid   -> pr (Pp.str (Libnames.string_of_qualid qid))
+  | CoqImplicit _   -> pr (Pp.str "Implicit info")
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
@@ -291,6 +294,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqTactic(kn,_) -> String.is_prefix (Names.KerName.to_string kn) ~prefix
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
+  | CoqImplicit _   -> true
   | CoqGoal _       -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
@@ -314,6 +318,7 @@ type query_cmd =
   | Names   of string              (* XXX Move to prefix *)
   | Tactics of string              (* XXX Print LTAC signatures (with prefix) *)
   | Locate  of string              (* XXX Print LTAC signatures (with prefix) *)
+  | Implicits of string              (* XXX Print LTAC signatures (with prefix) *)
   [@@deriving sexp]
 
 module QueryUtil = struct
@@ -376,6 +381,13 @@ module QueryUtil = struct
     in
     List.map expand (Nametab.locate_extended_all qid)
 
+  let implicits id =
+    let open Names     in
+    let open Libnames  in
+    try let ref = Nametab.locate (qualid_of_ident (Id.of_string id)) in
+      Impargs.implicits_of_global ref
+    with Not_found -> []
+
 end
 
 let obj_query (cmd : query_cmd) : coq_object list =
@@ -387,6 +399,8 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | Names   prefix -> QueryUtil.query_names   prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
+  | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
+
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]
 
