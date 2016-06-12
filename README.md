@@ -18,6 +18,8 @@ We hope to provide SerAPI as an OPAM package soon; for now, see [building](#buil
 
 SerAPI provides a `sertop.native` binary, known as a _Coq toplevel_. This toplevel reads and write commands from stdin/stdout, it is up to you how to best interface with it. We recommend the [emacs mode](sertop.el) or `rlwrap` for command line users. `sertop -help` will provide an overview of command line options.
 
+`sertop` can be interrupted by `Ctrl-C` in the same way than `coqtop`.
+
 SerAPI API's main building block is the [`CoqObject`](sertop/sertop_protocol.mli#L22) data type, a sum type encapsulating most core Coq objects, which can be automatically serialized. **API WARNING:** _Object packing will change in the future, however adapting should be straightforward_.
 
 Interaction happens by means of _commands_, which are always tagged to distinguish responses, in the form of `(tag cmd)`. For every command, SerAPI **always** replies with an `(Answer tag Ack)` to indicate that the command was successfully parsed and delivered to Coq, or with a `SexpError` if parsing failed.
@@ -49,8 +51,6 @@ There are four categories of commands:
 
 Look at the [interface file](sertop/sertop_protocol.mli) for all the details. Ocaml type definitions are serialized in a straightforward manner so it should be easy to figure the syntax out.
 
-Sertop can be interrupted by `Ctrl-C` in the same way than the regular `coqtop`.
-
 ### Building
 
 The build system is work in progress. coq/coq#187 needs to be completed before we can put SerAPI in Opam.
@@ -71,51 +71,6 @@ To build, OPAM and coq are required.
 Open `sertop.el` and run `M-x eval-buffer` followed by `M-x sertop` to get a sertop REPL in Emacs, with highlighting and pretty-printing (useful for debugging).
 
 You may want to configure the variable `sertop-coq-directory` to point out the location of Coq's stdlib.
-
-### Quick demo
-
-Using `rlwrap` is highly recommended:
-
-```lisp
-coq-serapi$ rlwrap ./sertop.byte -prelude /home/egallego/external/coq-git/
-(0 (Print (CoqConstr (App (Rel 0) ((Rel 0))))))
-> (Answer 0 Ack)
-> (Answer 0(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
-(1 (Control (StmQuery 2 "Print nat. ")))
-> (Answer 1 Ack)
-> (Feedback((id(State 2))(contents Processed)(route 0)))
-> (Feedback((id(State 0))(contents(Message ....))))
-(2 (Print (CoqRichpp (Element ....))))
-> (Answer 2 Ack)
-> (Answer 2(ObjList((CoqString"Inductive nat : Set :=  O : nat | S : nat -> nat\n\nFor S: Argument scope is [nat_scope]"))))
-(3 (Control StmState))
-> (Answer 3 Ack)
-> (Answer 3(StmInfo 2))
-(4 (Control (StmAdd 2 "Goal forall n, n + 0 = n.")))
-> (Answer 4 Ack)
-> (Answer 4(StmInfo 4))
-(5 (Control (StmObserve 4)))
-> (Answer 5 Ack)
-> (Feedback((id(State 4))(contents(ProcessingIn master))(route 0)))
-> ...
-(6 (Query (None PpStr) Goals))
-> (Answer 6 Ack)
-> (Answer 6(ObjList((CoqString"forall n : nat, n + 0 = n"))))
-(7 (Query (None PpSexp) Goals))
-> (Answer 7 Ack)
-> (Answer 7(ObjList((CoqGoal()(CProdN((fname"")....))))))
-(8 (Control (StmAdd 4 "now induction n.")))
-> (Answer 8 Ack)
-> (Answer 8(StmInfo 5))
-(10 (Control (StmObserve 5)))
-> (Answer 10 Ack)
-> (Feedback((id(State 5))(contents Processed)(route 0)))
-> ...
-(11 (Query (None PpStr) Goals))
-> (Answer 11 Ack)
-> (Answer 11(ObjList()))
-
-```
 
 ### Roadmap/Changelog:
 
@@ -202,10 +157,8 @@ Mines de Paris) and partially supported by the
 
 - [serlib] : Serialization lib.
 - [sertop] : Toplevel.
-
 - [doc]   : Documentation.
 - [build] : Build system.
-
 - [proto]   : Core protocol.
 - [control] : STM protocol.
 - [query]   : Query protocol.
@@ -213,3 +166,49 @@ Mines de Paris) and partially supported by the
 - [print]   : Printing protocol.
 
 We prefer signed commits.
+
+### Quick demo (not always up to date)
+
+Using `rlwrap` or the emacs mode is highly recommended:
+
+```lisp
+coq-serapi$ rlwrap ./sertop.byte --prelude /home/egallego/external/coq-git/
+(0 (Print (CoqConstr (App (Rel 0) ((Rel 0))))))
+> (Answer 0 Ack)
+> (Answer 0(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
+(1 (Control (StmQuery 2 "Print nat. ")))
+> (Answer 1 Ack)
+> (Feedback((id(State 2))(contents Processed)(route 0)))
+> (Feedback((id(State 0))(contents(Message ....))))
+(2 (Print (CoqRichpp (Element ....))))
+> (Answer 2 Ack)
+> (Answer 2(ObjList((CoqString"Inductive nat : Set :=  O : nat | S : nat -> nat\n\nFor S: Argument scope is [nat_scope]"))))
+(3 (Control StmState))
+> (Answer 3 Ack)
+> (Answer 3(StmInfo 2))
+(4 (Control (StmAdd 0 2 "Goal forall n, n + 0 = n.")))
+> (Answer 4 Ack)
+> (Answer 4(StmInfo 4))
+(5 (Control (StmObserve 4)))
+> (Answer 5 Ack)
+> (Feedback((id(State 4))(contents(ProcessingIn master))(route 0)))
+> ...
+(6 (Query (None PpStr) Goals))
+> (Answer 6 Ack)
+> (Answer 6(ObjList((CoqString"forall n : nat, n + 0 = n"))))
+(7 (Query (None PpSexp) Goals))
+> (Answer 7 Ack)
+> (Answer 7(ObjList((CoqGoal()(CProdN((fname"")....))))))
+(8 (Control (StmAdd 0 4 "now induction n.")))
+> (Answer 8 Ack)
+> (Answer 8(StmInfo 5))
+(10 (Control (StmObserve 5)))
+> (Answer 10 Ack)
+> (Feedback((id(State 5))(contents Processed)(route 0)))
+> ...
+(11 (Query (None PpStr) Goals))
+> (Answer 11 Ack)
+> (Answer 11(ObjList()))
+
+```
+
