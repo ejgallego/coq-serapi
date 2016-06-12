@@ -32,7 +32,7 @@
 (defvar sertop-executable-path (expand-file-name "sertop.native" sertop--root)
   "Path to sertop.")
 
-(defvar sertop-coq-directory "/home/egallego/external/coq-git/"
+(defvar sertop-coq-directory nil
   "Location of the directory containing Coq's sources, or nil.")
 
 (defvar sertop--accumulator nil
