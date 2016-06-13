@@ -3,11 +3,11 @@ FLG -rectypes
 S .
 B .
 
-S serialize/
-B _build/serialize/
+S serlib
+B _build/serlib
 
-S sertop/
-B _build/sertop/
+S sertop
+B _build/sertop
 
 S /home/egallego/external/coq-git/**
 B /home/egallego/external/coq-git/**
