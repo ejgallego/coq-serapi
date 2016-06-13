@@ -146,8 +146,9 @@ type cmd =
 val cmd_of_sexp : Sexp.t -> cmd
 val sexp_of_cmd : cmd -> Sexp.t
 
-type cmd_tag = string
+val exec_cmd : cmd -> answer_kind list
 
+type cmd_tag = string
 type tagged_cmd = cmd_tag * cmd
 
 val tagged_cmd_of_sexp : Sexp.t -> tagged_cmd
