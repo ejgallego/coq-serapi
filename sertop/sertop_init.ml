@@ -48,9 +48,23 @@ let coq_init opts =
   Feedback.set_logger Feedback.feedback_logger;
   Feedback.set_feeder opts.fb_handler;
 
+  (* Forward Glob output to the IDE. *)
+  (* Dumpglob.feedback_glob (); *)
+
   (* Miscellaneous tweaks *)
   (* Vernacentries.enable_goal_printing := false; *)
   Vernacentries.qed_display_script   := false;
+
+  (* Enable async *)
+  let async = false in
+  if async then begin
+    Flags.async_proofs_full := true;
+    Flags.async_proofs_never_reopen_branch := true;
+    Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
+    CoqworkmgrApi.(init !Flags.High)
+  end;
+
+  (* async_proofs_worker_priority); *)
 
   (* Return the initial state of the STM *)
   (* Stm.get_current_state () *)
