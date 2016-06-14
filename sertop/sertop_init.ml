@@ -49,7 +49,7 @@ let coq_init opts =
   Feedback.set_feeder opts.fb_handler;
 
   (* Forward Glob output to the IDE. *)
-  (* Dumpglob.feedback_glob (); *)
+  Dumpglob.feedback_glob ();
 
   (* Miscellaneous tweaks *)
   (* Vernacentries.enable_goal_printing := false; *)
@@ -61,7 +61,7 @@ let coq_init opts =
     Flags.async_proofs_full := true;
     Flags.async_proofs_never_reopen_branch := true;
     Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
-    CoqworkmgrApi.(init !Flags.High)
+    CoqworkmgrApi.(init Flags.High)
   end;
 
   (* async_proofs_worker_priority); *)
