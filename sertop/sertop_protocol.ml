@@ -238,13 +238,25 @@ let exec_setopt loc n (v : option_value) =
 
 module ControlUtil = struct
 
+  open Format
+
   let edit_id = ref 0
 
   type doc    = stateid list
   let cur_doc : doc ref = ref []
 
-  (* List of cancelled ids! *)
-  let can_doc : doc ref = ref []
+  let rec pp_list_sep sep pp fmt l = match l with
+      []         -> fprintf fmt ""
+    | csx :: []  -> fprintf fmt "@[%a@]" pp csx
+    | csx :: csl -> fprintf fmt "@[%a@]%s@;%a" pp csx sep (pp_list_sep sep pp) csl
+
+  let pp_stateid fmt id = fprintf fmt "%d" (Stateid.to_int id)
+
+  let pp_doc fmt l =
+    Format.fprintf fmt "@[%a@]" (pp_list_sep " " pp_stateid) l
+
+  let _dump_doc () =
+    Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
   (* let add_sentence st_id pa = *)
   let add_sentence st_id sent pa =
@@ -289,28 +301,31 @@ module ControlUtil = struct
      look for the cancelled part
   *)
   let cancel_all st_list =
-    can_doc := st_list @ !can_doc;
     List.map (fun st -> StmCanceled st) st_list
-
-  let cancel_from c_st =
-    (* Don't cancel already cancelled ids *)
-    if List.mem c_st !can_doc then
-      []
-    else begin
-      let sw = Core_kernel.Std.List.split_while in
-      let to_cancel, to_keep = sw !cur_doc
-          ~f:(fun st -> Stateid.newer_than st c_st) in
-      cur_doc := to_keep;
-      cancel_all to_cancel
-    end
 
   let cancel_interval _start _stop _tip =
     failwith "SeqAPI FIXME, focus not yet supported"
 
-  let cancel_sentence st =
-    match Stm.edit_at st with
-    | `NewTip -> cancel_from st
+  (* We recover the list of states to cancel plus the first valid
+     one. The main invariant is that:
+     - The state has to belong to the list.
+     - The we cancel states that are newer
+  *)
+  let invalid_range_st can_st =
+    let open Core_kernel.Std in
+    if List.mem !cur_doc can_st then
+      List.split_while !cur_doc
+        ~f:(fun st -> Stateid.newer_than st can_st || Stateid.equal st can_st)
+    else [], !cur_doc
 
+  let cancel_sentence can_st =
+    let open Core_kernel.Std in
+    (* dump_doc (); *)
+    let c_ran, k_ran = invalid_range_st can_st in
+    let prev_st      = Option.value (List.hd k_ran) ~default:Stateid.initial in
+    match Stm.edit_at prev_st with
+    | `NewTip -> cur_doc := k_ran;
+                 cancel_all c_ran
     (* - [tip] is the new document tip.
        - [st]   -- [stop] is dropped.
        - [stop] -- [tip]  has been kept.
