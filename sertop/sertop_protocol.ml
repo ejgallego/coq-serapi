@@ -196,12 +196,12 @@ let exn_of_sexp sexp = AnswerExn sexp
 
 type answer_kind =
   | Ack
-  | StmCurId  of stateid
-  | StmAdded  of stateid * loc * [`NewTip | `Unfocus of stateid ]
-  | StmCanceled of stateid
+  | StmCurId    of stateid
+  | StmAdded    of stateid * loc * [`NewTip | `Unfocus of stateid ]
+  | StmCanceled of stateid list
   (* | StmEdited of                 [`NewTip | `Focus   of focus   ] *)
-  | ObjList of coq_object list
-  | CoqExn  of exn
+  | ObjList     of coq_object list
+  | CoqExn      of exn
   | Completed
   [@@deriving sexp]
 
@@ -219,7 +219,7 @@ type control_cmd =
   | StmState                             (* Get the state *)
   | StmAdd     of int * stateid * string (* Stm.add       *)
   | StmQuery   of       stateid * string (* Stm.query     *)
-  | StmCancel  of       stateid          (* New cancel method     *)
+  | StmCancel  of       stateid list     (* New cancel method     *)
   (* | StmEditAt  of       stateid          (\* Stm.edit_at   *\) *)
   | StmObserve of       stateid          (* Stm.observe   *)
   | SetOpt     of bool option * option_name * option_value
@@ -300,9 +300,6 @@ module ControlUtil = struct
      in a more modular way: When we issue the cancel command, we will
      look for the cancelled part
   *)
-  let cancel_all st_list =
-    List.map (fun st -> StmCanceled st) st_list
-
   let cancel_interval _start _stop _tip =
     failwith "SeqAPI FIXME, focus not yet supported"
 
@@ -325,7 +322,7 @@ module ControlUtil = struct
     let prev_st      = Option.value (List.hd k_ran) ~default:Stateid.initial in
     match Stm.edit_at prev_st with
     | `NewTip -> cur_doc := k_ran;
-                 cancel_all c_ran
+                 [StmCanceled c_ran]
     (* - [tip] is the new document tip.
        - [st]   -- [stop] is dropped.
        - [stop] -- [tip]  has been kept.
@@ -342,7 +339,7 @@ let exec_ctrl ctrl =
   | StmState       -> [StmCurId (Stm.get_current_state ())]
 
   | StmAdd (lim, st, s) -> ControlUtil.add_sentences lim st s
-  | StmCancel st        -> ControlUtil.cancel_sentence st
+  | StmCancel st        -> List.concat @@ List.map ControlUtil.cancel_sentence st
   (* | StmEditAt st   -> let foc = Stm.edit_at st in *)
   (*                     [StmEdited foc] *)
 
