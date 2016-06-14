@@ -86,10 +86,6 @@ val control_cmd_of_sexp : Sexp.t -> control_cmd
 (* Query Sub-Protocol                                                         *)
 (******************************************************************************)
 
-type query_limit = int option
-val query_limit_of_sexp : Sexp.t -> query_limit
-val sexp_of_query_limit : query_limit -> Sexp.t
-
 type query_pred =
   | Prefix of string
 
@@ -104,7 +100,11 @@ type query_pp =
 val query_pp_of_sexp : Sexp.t -> query_pp
 val sexp_of_query_pp : query_pp -> Sexp.t
 
-type query_opt = query_pred list * query_limit * query_pp
+type query_opt =
+  { preds : query_pred list;
+    limit : int option;
+    pp    : query_pp ;
+  }
 
 val query_opt_of_sexp : Sexp.t -> query_opt
 val sexp_of_query_opt : query_opt -> Sexp.t

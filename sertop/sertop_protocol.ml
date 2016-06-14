@@ -14,7 +14,7 @@
 (************************************************************************)
 
 open Sexplib
-open Sexplib.Std
+open Sexplib.Conv
 
 open Ser_loc
 open Ser_names
@@ -126,6 +126,10 @@ let pp_opt n s =
   let open Pp in
   str (String.concat "." n) ++ str " := " ++ pp_opt_value s.Goptions.opt_value
 
+let pp_implicit = function
+  | None               -> Pp.str "!"
+  | Some (iname, _, _) -> Names.Id.print iname
+
 let pp_obj fmt (obj : coq_object) =
   let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
   match obj with
@@ -141,7 +145,7 @@ let pp_obj fmt (obj : coq_object) =
   (* Fixme *)
   | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.fg_goals)
   | CoqQualId qid   -> pr (Pp.str (Libnames.string_of_qualid qid))
-  | CoqImplicit _   -> pr (Pp.str "Implicit info")
+  | CoqImplicit(_,l)-> pr (Pp.pr_sequence pp_implicit l)
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
@@ -270,8 +274,8 @@ let exec_ctrl =
 (******************************************************************************)
 
 (** Max number of results to return, 0 will return a summary *)
-type query_limit = int option
-  [@@deriving sexp]
+(* type query_limit = int option *)
+(*   [@@deriving sexp] *)
 
 (** Filtering predicates *)
 type query_pred =
@@ -306,8 +310,11 @@ type query_pp =
   | PpStr
   [@@deriving sexp]
 
-type query_opt = query_pred list * query_limit * query_pp
-  [@@deriving sexp]
+type query_opt =
+  { preds : query_pred sexp_list;
+    limit : int sexp_option;
+    pp    : query_pp [@default PpSexp];
+  } [@@deriving sexp]
 
 (** XXX: This should be in sync with the object tag!  *)
 type query_cmd =
@@ -419,12 +426,12 @@ let obj_limit limit objs =
   | None   -> objs
   | Some n -> take n objs
 
-let exec_query (pred, limit, pp) cmd =
+let exec_query opt cmd =
   let res = obj_query cmd        in
   (* XXX: Filter should move to query once we have GADT *)
-  let res = obj_filter pred  res in
-  let res = obj_limit  limit res in
-  match pp with
+  let res = obj_filter opt.preds res in
+  let res = obj_limit  opt.limit res in
+  match opt.pp with
     | PpStr  -> List.map string_of_obj res
     | PpSexp -> res
 

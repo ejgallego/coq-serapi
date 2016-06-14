@@ -30,10 +30,12 @@ There are four categories of commands:
 
    This part of the API assumes the reader is familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/notes/coq-notes.md) you can find a few informal notes on how it works.
 
-- `(Query (preds limit pp) kind)`: **API WARNING: The Query API format is experimental and will change soon, don't rely too much on it**
-   Queries stream Coq objects of kind `kind`. This can range from options, goals and hypotheses, tactics, etc... `preds` is a list of conjunctive filters and `limit` is an option type specifying how many values the query should return. `pp` controls the output format, with current values `PpSexp` for full serialization, and `PpStr` for pretty printing. For instance:
+- `(Query ((opt value) ...) kind)`:
+  **API WARNING: The Query API format is experimental and will change soon, don't rely too much on it**
+
+  Queries stream Coq objects of kind `kind`. This can range from options, goals and hypotheses, tactics, etc... The first argument is a list of options: `preds` is a list of conjunctive filters, `limit` specifies how many values the query may return. `pp` controls the output format: `PpSexp` for full serialization, or `PpStr` for "pretty printing". For instance:
    ```lisp
-   (tag (Query (((Prefix "Debug")) (Some 10) PpSexp) Option))
+   (tag (Query ((preds (Prefix "Debug")) (limit 10) (pp PpSexp)) Option))
    ```
    will stream all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
    ```lisp
@@ -43,7 +45,9 @@ There are four categories of commands:
    ...
    ```
 
-   Currently supported queries can be seen [here](sertop/sertop_protocol.mli#L110)
+  Options can be omitted, as in: `(tag (Query ((limit 10)) Option))`.
+
+  Currently supported queries can be seen [here](sertop/sertop_protocol.mli#L110)
 
 - `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing manipulated objects returned by `Query`.
 
