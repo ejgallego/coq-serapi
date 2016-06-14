@@ -28,7 +28,7 @@ open Ser_impargs
 open Ser_constr
 open Ser_constrexpr
 open Ser_proof
-open Ser_stm
+(* open Ser_stm *)
 open Ser_tacenv
 
 (* New protocol + interpreter *)
@@ -198,7 +198,8 @@ type answer_kind =
   | Ack
   | StmCurId  of stateid
   | StmAdded  of stateid * loc * [`NewTip | `Unfocus of stateid ]
-  | StmEdited of                 [`NewTip | `Focus   of focus   ]
+  | StmCanceled of stateid
+  (* | StmEdited of                 [`NewTip | `Focus   of focus   ] *)
   | ObjList of coq_object list
   | CoqExn  of exn
   | Completed
@@ -218,7 +219,8 @@ type control_cmd =
   | StmState                             (* Get the state *)
   | StmAdd     of int * stateid * string (* Stm.add       *)
   | StmQuery   of       stateid * string (* Stm.query     *)
-  | StmEditAt  of       stateid          (* Stm.edit_at   *)
+  | StmCancel  of       stateid          (* New cancel method     *)
+  (* | StmEditAt  of       stateid          (\* Stm.edit_at   *\) *)
   | StmObserve of       stateid          (* Stm.observe   *)
   | SetOpt     of bool option * option_name * option_value
   (*              prefix      * path   * implicit   *)
@@ -238,12 +240,19 @@ module ControlUtil = struct
 
   let edit_id = ref 0
 
+  type doc    = stateid list
+  let cur_doc : doc ref = ref []
+
+  (* List of cancelled ids! *)
+  let can_doc : doc ref = ref []
+
   (* let add_sentence st_id pa = *)
   let add_sentence st_id sent pa =
     (* Workaround coq/coq#204 *)
     let loc         = parse_sentence pa                           in
     let new_st, foc = Stm.add ~ontop:st_id verb (- !edit_id) sent in
     incr edit_id;
+    cur_doc := new_st :: !cur_doc;
     new_st, loc, foc
 
   let add_sentences lim st_id sent =
@@ -274,6 +283,43 @@ module ControlUtil = struct
       done;
       List.rev !acc
     with End_of_input -> List.rev !acc
+
+  (* We follow a suggestion by Clément to report sentence invalidation
+     in a more modular way: When we issue the cancel command, we will
+     look for the cancelled part
+  *)
+  let cancel_all st_list =
+    can_doc := st_list @ !can_doc;
+    List.map (fun st -> StmCanceled st) st_list
+
+  let cancel_from c_st =
+    (* Don't cancel already cancelled ids *)
+    if List.mem c_st !can_doc then
+      []
+    else begin
+      let sw = Core_kernel.Std.List.split_while in
+      let to_cancel, to_keep = sw !cur_doc
+          ~f:(fun st -> Stateid.newer_than st c_st) in
+      cur_doc := to_keep;
+      cancel_all to_cancel
+    end
+
+  let cancel_interval _start _stop _tip =
+    failwith "SeqAPI FIXME, focus not yet supported"
+
+  let cancel_sentence st =
+    match Stm.edit_at st with
+    | `NewTip -> cancel_from st
+
+    (* - [tip] is the new document tip.
+       - [st]   -- [stop] is dropped.
+       - [stop] -- [tip]  has been kept.
+       - [start] is where the editing zone starts
+       - [add] happen on top of [id].
+    *)
+    | `Focus { Stm.start = start ; Stm.stop = stop; Stm.tip = tip } ->
+      cancel_interval start stop tip
+
 end
 
 let exec_ctrl ctrl =
@@ -281,9 +327,9 @@ let exec_ctrl ctrl =
   | StmState       -> [StmCurId (Stm.get_current_state ())]
 
   | StmAdd (lim, st, s) -> ControlUtil.add_sentences lim st s
-
-  | StmEditAt st   -> let foc = Stm.edit_at st in
-                      [StmEdited foc]
+  | StmCancel st        -> ControlUtil.cancel_sentence st
+  (* | StmEditAt st   -> let foc = Stm.edit_at st in *)
+  (*                     [StmEdited foc] *)
 
   | StmQuery(st, s)-> Stm.query ~at:st s; []
   | StmObserve st  -> Stm.observe st; []

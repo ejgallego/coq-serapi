@@ -3,7 +3,7 @@ true: rectypes, thread, package(threads), package(str)
 
 # Sertop flags
 true: package(ppx_import), package(sexplib), package(ppx_sexp_conv)
-true: warn(+1..49-4-44), warn_error(+1..49), bin_annot, annot, safe_string
+true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 
 <serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_interp, coq_parsing, coq_stm, coq_proofs, coq_ltac
 
