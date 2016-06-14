@@ -35,7 +35,7 @@
 (defvar sertop-coq-directory nil
   "Location of the directory containing Coq's sources, or nil.")
 
-(defvar sertop--accumulator nil
+(defvar-local sertop--accumulator nil
   "List of strings accumulated from sertop in reverse order.")
 
 (defun sertop--format (response)
