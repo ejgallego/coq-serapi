@@ -13,6 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+let sertop_version = "0.03dev"
+
 open Cmdliner
 
 let prelude =
@@ -31,7 +33,11 @@ let length =
   let doc = "Adds a byte-length header to answers" in
   Arg.(value & flag & info ["length"] ~doc)
 
-let sertop prelude human print0 length =
+let async =
+  let doc = "Enables async support (currently broken)" in
+  Arg.(value & flag & info ["async"] ~doc)
+
+let sertop prelude human print0 length async =
   let open Sertop_protocol         in
   ser_loop
     {  coqlib   = prelude;
@@ -40,6 +46,7 @@ let sertop prelude human print0 length =
        human    = human;
        print0   = print0;
        lheader  = length;
+       async    = async;
     }
 
 let sertop_cmd =
@@ -49,8 +56,8 @@ let sertop_cmd =
     `P "Experimental Coq Toplevel with serialization support"
   ]
   in
-  Term.(const sertop $ prelude $ human $ print0 $ length),
-  Term.info "sertop" ~version:"0.02" ~doc ~man
+  Term.(const sertop $ prelude $ human $ print0 $ length $ async),
+  Term.info "sertop" ~version:sertop_version ~doc ~man
 
 let main () =
   match Term.eval sertop_cmd with

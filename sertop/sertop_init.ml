@@ -21,7 +21,8 @@ let sertop_dp =
 type coq_opts = {
 
   (* callback to handle async feedback *)
-  fb_handler : Feedback.feedback -> unit;
+  fb_handler   : Feedback.feedback -> unit;
+  enable_async : bool; 
 }
 
 let coq_init opts =
@@ -56,8 +57,7 @@ let coq_init opts =
   Vernacentries.qed_display_script   := false;
 
   (* Enable async *)
-  let async = false in
-  if async then begin
+  if opts.enable_async then begin
     Flags.async_proofs_full := true;
     Flags.async_proofs_never_reopen_branch := true;
     Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
