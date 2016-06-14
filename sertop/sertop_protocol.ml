@@ -169,10 +169,6 @@ let parse_sentence = Flags.with_option Flags.we_are_parsing
     | None             -> raise End_of_input
   )
 
-let parse_sentence_from_string s =
-  let pa = Pcoq.Gram.parsable (Stream.of_string s) in
-  parse_sentence pa
-
 (* Accumulate at most num succesful parsing attemps in acc *)
 let parse_sentences num acc s =
   let pa = Pcoq.Gram.parsable (Stream.of_string s) in
@@ -238,18 +234,53 @@ let exec_setopt loc n (v : option_value) =
   | StringValue s    -> set_string_option_value_gen loc n s
   | StringOptValue s -> set_string_option_value_gen loc n (Option.default "" s)
 
-let exec_ctrl =
-  let edit_id = ref 0 in
-  fun (ctrl : control_cmd) ->
+module ControlUtil = struct
+
+  let edit_id = ref 0
+
+  (* let add_sentence st_id pa = *)
+  let add_sentence st_id sent pa =
+    (* Workaround coq/coq#204 *)
+    let loc         = parse_sentence pa                           in
+    let new_st, foc = Stm.add ~ontop:st_id verb (- !edit_id) sent in
+    incr edit_id;
+    new_st, loc, foc
+
+  let add_sentences lim st_id sent =
+    (* Workaround coq/coq#204 *)
+    let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
+    let pos p l =
+      let (_,_,_,_,e) = Loc.represent l in (e-p)
+    in
+    let i   = ref 1                    in
+    let acc = ref []                   in
+    let buf = ref 0                    in
+    let rem = ref (String.length sent) in
+    let stt = ref st_id                in
+    try
+      while (0 < !rem) && (!i <= lim) do
+      let n_st, loc, foc =
+        let sent = String.sub sent !buf !rem in
+        (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
+        (* Format.eprintf "Sent: %s @\n%!" sent; *)
+        add_sentence !stt sent pa
+      in
+      acc := (StmAdded (n_st, loc, foc)) :: !acc;
+      rem := !rem - pos !buf loc;
+      buf := !buf + pos !buf loc;
+      stt := n_st;
+      incr i;
+      (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
+      done;
+      List.rev !acc
+    with End_of_input -> List.rev !acc
+end
+
+let exec_ctrl ctrl =
   coq_protect @@ fun () -> match ctrl with
   | StmState       -> [StmCurId (Stm.get_current_state ())]
 
-  | StmAdd(_lim, st, s) ->
-                      (* Workaround coq/coq#204 *)
-                      let loc         = parse_sentence_from_string s          in
-                      let new_st, foc = Stm.add ~ontop:st verb (- !edit_id) s in
-                      incr edit_id;
-                      [StmAdded (new_st, loc, foc)]
+  | StmAdd (lim, st, s) -> ControlUtil.add_sentences lim st s
 
   | StmEditAt st   -> let foc = Stm.edit_at st in
                       [StmEdited foc]
@@ -480,7 +511,8 @@ let exec_cmd (cmd : cmd) = match cmd with
 
   | Print obj         -> [ObjList [string_of_obj obj]]
 
-  (* We do a bit betten than with Coq protect, we try to keep partial results. *)
+  (* We try to do a bit better here than a coq_protect would do, by
+     trying to keep partial results. *)
   | Parse (num, str)  ->
     let acc = ref [] in
     begin try parse_sentences num acc str; [ObjList (List.rev !acc)]
@@ -516,7 +548,7 @@ let ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Sertop_init.coq_init_plugins  @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
-  [ Control (StmAdd     (0, Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
+  [ Control (StmAdd     (1, Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 
