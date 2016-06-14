@@ -15,9 +15,10 @@
 
 open Sexplib
 
-(** [sertop fb_handler] Initialize Coq and send feedback to [fb_handler] *)
-val sertop_init : (Feedback.feedback -> unit) -> unit
+(** [sertop fb_handler] Initialize Coq and send serialized feedback to
+    [fb_handler] *)
+val sertop_init : (Sexp.t -> unit) -> unit
 
 (** [sertop_callback input out] Execute command [input] and send
-    output to [out]. Not thread-safe. *)
+    serialized output to [out]. Not thread-safe. *)
 val sertop_callback : Sexp.t -> (Sexp.t -> unit) -> unit

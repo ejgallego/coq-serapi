@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib
+open Ser_feedback
 open Sertop_protocol
 
 (* There a subtles differences between the sync and async loop, so we
@@ -24,7 +25,8 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
   with exn -> `Error (Conv.sexp_of_exn exn)
 
 (* Initialize Coq. *)
-let sertop_init (fb_handler : Feedback.feedback -> unit) =
+let sertop_init (fb_out : Sexp.t -> unit) =
+  let fb_handler fb = sexp_of_feedback fb |> fb_out          in
   Sertop_init.coq_init { Sertop_init.fb_handler = fb_handler; }
 
 (* Callback for a command. Not thread-safe. *)
