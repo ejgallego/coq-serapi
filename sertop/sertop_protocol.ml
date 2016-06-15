@@ -304,15 +304,19 @@ module ControlUtil = struct
      - The state has to belong to the list.
      - The we cancel states that are newer
   *)
-  let invalid_range_st can_st =
+  let invalid_range can_st ~incl:include_st =
+    let pred st = if include_st then
+        Stateid.newer_than st can_st || Stateid.equal st can_st
+      else
+        Stateid.newer_than st can_st
+    in
     if List.mem !cur_doc can_st then
-      List.split_while !cur_doc
-        ~f:(fun st -> Stateid.newer_than st can_st || Stateid.equal st can_st)
+      List.split_while !cur_doc ~f:pred
     else [], !cur_doc
 
   let cancel_sentence can_st =
     (* dump_doc (); *)
-    let c_ran, k_ran = invalid_range_st can_st in
+    let c_ran, k_ran = invalid_range can_st ~incl:true in
     let prev_st      = Option.value (List.hd k_ran) ~default:Stateid.initial in
     match Stm.edit_at prev_st with
     | `NewTip -> cur_doc := k_ran;
@@ -329,15 +333,16 @@ module ControlUtil = struct
     (* _dump_doc (); *)
     let foc = Stm.edit_at st in
     (* We update our internal document *)
-    begin match foc with
-    | `NewTip    -> (if List.mem !cur_doc st then
-                       cur_doc := List.drop_while !cur_doc
-                           ~f:(fun st_act -> Stateid.newer_than st_act st)
-                    )
-    | `Focus foc -> ignore (cancel_interval foc)
-    end;
+    let c_ran =
+      match foc with
+      | `NewTip    ->
+        let c_ran, k_ran = invalid_range st ~incl:false in
+        cur_doc := k_ran;
+        c_ran
+      | `Focus foc -> ignore (cancel_interval foc); []
+    in
     (* _dump_doc (); *)
-    [StmEdited foc]
+    [StmEdited foc; StmCanceled c_ran]
 
 end
 
