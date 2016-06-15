@@ -417,14 +417,15 @@ type query_pp =
 type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
+    sid   : stateid  [@default Stm.get_current_state()];
     pp    : query_pp [@default PpSexp];
   } [@@deriving sexp]
 
 (** XXX: This should be in sync with the object tag!  *)
 type query_cmd =
   | Option   (*  *)
-  | Search   (* Search vernacular, we only support prefix by name *)
-  | Goals    (* Return goals [TODO: Add filtering/limiting options] *)
+  | Search                         (* Search vernacular, we only support prefix by name *)
+  | Goals   of stateid             (* Return goals [TODO: Add filtering/limiting options] *)
   | TypeOf  of string
   | Names   of string              (* XXX Move to prefix *)
   | Tactics of string              (* XXX Print LTAC signatures (with prefix) *)
@@ -506,7 +507,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | Option         -> let table = Goptions.get_tables ()            in
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Goals          -> Option.cata (fun g -> [CoqGoal g]) [] @@ Sertop_goals.get_goals ()
+  | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Sertop_goals.get_goals sid
   | Names   prefix -> QueryUtil.query_names   prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id

@@ -14,5 +14,5 @@
 
 type reified_goal = Constr.constr * Context.NamedList.Declaration.t list
 
-val get_goals : unit -> reified_goal Proof.pre_goals option
+val get_goals : Stateid.t -> reified_goal Proof.pre_goals option
 

@@ -106,6 +106,7 @@ val sexp_of_query_pp : query_pp -> Sexp.t
 type query_opt =
   { preds : query_pred list;
     limit : int option;
+    sid   : Stateid.t;
     pp    : query_pp ;
   }
 
@@ -118,7 +119,7 @@ val sexp_of_query_opt : query_opt -> Sexp.t
 type query_cmd =
   | Option
   | Search
-  | Goals
+  | Goals   of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
   | TypeOf  of string           (* XXX Unimplemented *)
   | Names   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Tactics of string           (* argument is prefix -> XXX Move to use the prefix predicate *)

@@ -35,8 +35,13 @@ let process_goal sigma g : reified_goal =
   let hyps      = List.map (get_hyp sigma) ctx                              in
   (get_goal_type sigma g, hyps)
 
-let get_goals () : reified_goal Proof.pre_goals option =
-  try
-    let proof = Proof_global.give_me_the_proof () in
-    Some (Proof.map_structured_proof proof process_goal)
+let get_goals sid : reified_goal Proof.pre_goals option =
+  try begin
+    match Stm.state_of_id sid with
+    | `Expired | `Error _ -> None
+    | `Valid ost ->
+      Option.map (fun stm_st ->
+          Proof.map_structured_proof (Proof_global.proof_of_state stm_st.Stm.proof) process_goal
+        ) ost
+  end
   with Proof_global.NoCurrentProof -> None
