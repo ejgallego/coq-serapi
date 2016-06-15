@@ -326,16 +326,17 @@ module ControlUtil = struct
     | `Focus foc -> cancel_interval foc
 
   let edit st =
-    _dump_doc ();
+    (* _dump_doc (); *)
     let foc = Stm.edit_at st in
     (* We update our internal document *)
     begin match foc with
     | `NewTip    -> (if List.mem !cur_doc st then
-                       cur_doc := List.drop_while !cur_doc ~f:(fun st_act -> Stateid.newer_than st_act st)
+                       cur_doc := List.drop_while !cur_doc
+                           ~f:(fun st_act -> Stateid.newer_than st_act st)
                     )
     | `Focus foc -> ignore (cancel_interval foc)
     end;
-    _dump_doc ();
+    (* _dump_doc (); *)
     [StmEdited foc]
 
 end
