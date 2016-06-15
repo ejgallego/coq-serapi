@@ -178,6 +178,7 @@ type ser_opts = {
   human    : bool;
   print0   : bool;
   lheader  : bool;
+  async_full : bool;
 }
 
 (******************************************************************************)

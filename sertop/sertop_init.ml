@@ -23,6 +23,7 @@ type coq_opts = {
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
   enable_async : string option;
+  async_full   : bool;
 }
 
 let coq_init opts =
@@ -55,7 +56,7 @@ let coq_init opts =
 
       Flags.async_proofs_mode := Flags.APon;
       (* Imitate CoqIDE *)
-      (* Flags.async_proofs_full := true; *)
+      Flags.async_proofs_full := opts.async_full;
       Flags.async_proofs_never_reopen_branch := true;
       Flags.async_proofs_flags_for_workers := [dump_opt];
       Flags.async_proofs_n_workers := 3;

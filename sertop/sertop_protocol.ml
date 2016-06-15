@@ -613,6 +613,7 @@ type ser_opts = {
   human    : bool;                (* Output function to use                               *)
   print0   : bool;
   lheader  : bool;
+  async_full : bool;
 }
 
 (******************************************************************************)
@@ -694,6 +695,7 @@ let ser_loop ser_opts =
   Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.enable_async = ser_opts.async;
+    Sertop_init.async_full   = ser_opts.async_full;
   };
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;
