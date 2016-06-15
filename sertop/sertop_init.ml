@@ -38,6 +38,18 @@ let coq_init opts =
   (* Library initialization *)
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
 
+  (* Whether to forward Glob output to the IDE. *)
+  let dumpglob = false in
+  let dump_opt =
+    if dumpglob then begin
+      Dumpglob.feedback_glob ();
+      "-feedback-glob"
+    end else begin
+      Dumpglob.noglob ();
+      "-no-glob"
+    end
+  in
+
   (* Set async flags; IMPORTANT, this has to happen before STM.init () ! *)
   Option.iter (fun coqtop ->
 
@@ -45,7 +57,7 @@ let coq_init opts =
       (* Imitate CoqIDE *)
       (* Flags.async_proofs_full := true; *)
       (* Flags.async_proofs_never_reopen_branch := true; *)
-      Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
+      Flags.async_proofs_flags_for_workers := [dump_opt];
       Flags.async_proofs_n_workers := 3;
       Flags.async_proofs_n_tacworkers := 3;
       (* async_proofs_worker_priority); *)
@@ -67,9 +79,6 @@ let coq_init opts =
   (* Initialize logging. *)
   Feedback.set_logger Feedback.feedback_logger;
   Feedback.set_feeder opts.fb_handler;
-
-  (* Forward Glob output to the IDE. *)
-  (* Dumpglob.feedback_glob (); *)
 
   (* Miscellaneous tweaks *)
   Vernacentries.enable_goal_printing := false;
