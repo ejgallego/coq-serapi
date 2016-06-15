@@ -16,7 +16,9 @@ SerAPI is at a proof-of-concept stage. Feedback from Coq users and developers is
 
 SerAPI will install as a Coq plugin, we hope to provide an OPAM package soon; for now, see [building](#building).
 
-The main entry point to SerAPI is the `sertop.native` binary, known as a _Coq toplevel_. The toplevel reads and writes commands (S-exps) from stdin/stdout, but we recommend using our [emacs mode](sertop.el) or the `rlwrap` utility. `sertop.native --help` will provide an overview of command line options. `Ctrl-C` will interrupt the toplevel in the same way than `coqtop`.
+A first IDE using SerAPI is Clément Pit--Claudel's [elcoq](https://github.com/cpitclaudel/elcoq).
+
+If you want to use SerAPI at a lower level, its main entry point is the `sertop.native` binary, known as a _Coq toplevel_. The toplevel reads and writes commands (S-exps) from stdin/stdout. We recommend interacting with our [emacs mode](sertop.el) or the `rlwrap` utility. `sertop.native --help` will provide an overview of command line options. `Ctrl-C` will interrupt the toplevel in the same way than `coqtop`.
 
 #### Protocol
 
@@ -32,10 +34,10 @@ There are four categories of commands:
 - `(Control `[`control_cmd`](sertop/sertop_protocol.mli#L73)`)`: control commands are similar to a function call and instruct Coq to perform some action.
   Typical actions are to check a proof, set an option, modify a `load path`, etc... Every command will produce zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), and  a final answer `(Answer tag Completed)`, indicating that there won't be more output.
 
-  We assume the reader familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/notes/coq-notes.md) you can find a few informal notes on how it works, but we are documenting some of our extensions. See the issue tracker for more details.
+  We assume the reader familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/notes/coq-notes.md) and [here](https://github.com/siegebell/vscoq/blob/master/CoqProtocol.md) you can find a few informal notes on how it works, but we are documenting some of our extensions. See the issue tracker for more details.
 
 - `(Query ((opt value) ...) kind)`:
-  **API WARNING: The Query API format is experimental and will change soon**
+  **API WARNING:** The Query API format is experimental and will change soon.
 
   Queries stream Coq objects of type `kind`. This can range from options, goals and hypotheses, tactics, etc... The first argument is a list of options: `preds` is a list of conjunctive filters, `limit` specifies how many values the query may return. `pp` controls the output format: `PpSexp` for full serialization, or `PpStr` for "pretty printing". For instance:
    ```lisp
