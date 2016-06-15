@@ -605,12 +605,12 @@ let is_cmd_quit cmd = match cmd with
 
 type ser_opts = {
   coqlib   : string option;       (* Whether we should load the prelude, and its location *)
+  async    : string option;       (* CoqTop for async support                             *)
   in_chan  : in_channel;          (* Input/Output channels                                *)
   out_chan : out_channel;
   human    : bool;                (* Output function to use                               *)
   print0   : bool;
   lheader  : bool;
-  async    : bool;
 }
 
 (******************************************************************************)

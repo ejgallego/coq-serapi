@@ -21,6 +21,10 @@ let prelude =
   let doc = "Load prelude from dir" in
   Arg.(value & opt (some string) Coq_config.coqlib & info ["prelude"] ~docv:"COQPATH" ~doc)
 
+let async =
+  let doc = "Enables async support with toplevel COQTOP (experimental)" in
+  Arg.(value & opt (some string) None & info ["async"] ~doc ~docv:"COQTOP")
+
 let human =
   let doc = "Use human-readable sexp output" in
   Arg.(value & flag & info ["human"] ~doc)
@@ -33,9 +37,6 @@ let length =
   let doc = "Adds a byte-length header to answers" in
   Arg.(value & flag & info ["length"] ~doc)
 
-let async =
-  let doc = "Enables async support (currently broken)" in
-  Arg.(value & flag & info ["async"] ~doc)
 
 let sertop prelude human print0 length async =
   let open Sertop_protocol         in

@@ -17,7 +17,7 @@ type coq_opts = {
 
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
-  enable_async : bool;
+  enable_async : string option;
 }
 
 val coq_init : coq_opts -> unit
