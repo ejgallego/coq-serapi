@@ -216,12 +216,12 @@ let coq_protect e =
 
 let verb = true
 type control_cmd =
-  | StmState                             (* Get the state *)
-  | StmAdd     of int * stateid * string (* Stm.add       *)
-  | StmQuery   of       stateid * string (* Stm.query     *)
-  | StmCancel  of       stateid list     (* New cancel method     *)
+  | StmState                                    (* Get the state *)
+  | StmAdd     of int * stateid option * string (* Stm.add       *)
+  | StmQuery   of       stateid        * string (* Stm.query     *)
+  | StmCancel  of       stateid list            (* New cancel method     *)
   (* | StmEditAt  of       stateid          (\* Stm.edit_at   *\) *)
-  | StmObserve of       stateid          (* Stm.observe   *)
+  | StmObserve of       stateid                 (* Stm.observe   *)
   | SetOpt     of bool option * option_name * option_value
   (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
@@ -330,7 +330,8 @@ let exec_ctrl ctrl =
   coq_protect @@ fun () -> match ctrl with
   | StmState       -> [StmCurId (Stm.get_current_state ())]
 
-  | StmAdd (lim, st, s) -> ControlUtil.add_sentences lim st s
+  | StmAdd (lim, ost, s) -> let st = Option.default (Stm.get_current_state ()) ost in
+                            ControlUtil.add_sentences lim st s
   | StmCancel st        -> List.concat @@ List.map ControlUtil.cancel_sentence st
   (* | StmEditAt st   -> let foc = Stm.edit_at st in *)
   (*                     [StmEdited foc] *)
@@ -599,7 +600,7 @@ let ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Sertop_init.coq_init_plugins  @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
-  [ Control (StmAdd     (1, Stateid.of_int 1, "Require Import Coq.Init.Prelude. "));
+  [ Control (StmAdd     (1, None, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 

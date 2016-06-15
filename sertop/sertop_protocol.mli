@@ -72,8 +72,8 @@ val answer_kind_of_sexp : Sexp.t -> answer_kind
 
 type control_cmd =
     StmState
-  | StmAdd     of int * Stateid.t * string
-  | StmQuery   of       Stateid.t * string
+  | StmAdd     of int * Stateid.t option * string
+  | StmQuery   of       Stateid.t        * string
   | StmCancel  of       Stateid.t list
   | StmObserve of       Stateid.t
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
