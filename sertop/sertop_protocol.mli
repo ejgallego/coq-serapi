@@ -77,6 +77,7 @@ type control_cmd =
   | StmCancel  of       Stateid.t list
   | StmEditAt  of       Stateid.t
   | StmObserve of       Stateid.t
+  | StmJoin                                     (* Stm.join      *)
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   | LibAdd     of string list * string * bool
   | Quit

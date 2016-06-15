@@ -58,11 +58,12 @@ let coq_init opts =
 
   (* Enable async *)
   Option.iter (fun coqtop ->
+      Flags.async_proofs_mode := Flags.APon;
       Flags.async_proofs_full := true;
       Flags.async_proofs_never_reopen_branch := true;
       Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
-      Flags.async_proofs_n_workers := 2;
-      Flags.async_proofs_n_tacworkers := 2;
+      Flags.async_proofs_n_workers := 4;
+      Flags.async_proofs_n_tacworkers := 4;
       (* async_proofs_worker_priority); *)
       CoqworkmgrApi.(init Flags.High);
       (* Uh! XXXX *)

@@ -222,6 +222,7 @@ type control_cmd =
   | StmCancel  of       stateid list            (* Cancel method *)
   | StmEditAt  of       stateid                 (* Stm.edit_at   *)
   | StmObserve of       stateid                 (* Stm.observe   *)
+  | StmJoin                                     (* Stm.join      *)
   | SetOpt     of bool option * option_name * option_value
   (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
@@ -359,7 +360,7 @@ let exec_ctrl ctrl =
 
   | StmQuery(st, s)-> Stm.query ~at:st s; []
   | StmObserve st  -> Stm.observe st; []
-
+  | StmJoin        -> Stm.join (); []
   | LibAdd(lib, lib_path, has_ml) ->
                       let open Names in
                       let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
