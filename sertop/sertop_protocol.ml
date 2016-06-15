@@ -674,13 +674,22 @@ let out_answer opts =
   else
     fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
 
+
 let ser_loop ser_opts =
   let open List   in
   let open Format in
   let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
   let pp_answer an = out_answer ser_opts out_fmt an                    in
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
-  let pp_feed fb   = pp_answer (Feedback fb)                           in
+
+  (* EG: I don't understand this, XXX Why this is needed ?? *)
+  let pp_feed =
+    let m = Mutex.create () in
+    fun fb -> Mutex.lock m;
+              pp_answer (Feedback fb);
+              Mutex.unlock m
+  in
+
   (* Init Coq *)
   Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
