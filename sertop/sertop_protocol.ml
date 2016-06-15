@@ -28,7 +28,7 @@ open Ser_impargs
 open Ser_constr
 open Ser_constrexpr
 open Ser_proof
-(* open Ser_stm *)
+open Ser_stm
 open Ser_tacenv
 
 (* New protocol + interpreter *)
@@ -199,7 +199,7 @@ type answer_kind =
   | StmCurId    of stateid
   | StmAdded    of stateid * loc * [`NewTip | `Unfocus of stateid ]
   | StmCanceled of stateid list
-  (* | StmEdited of                 [`NewTip | `Focus   of focus   ] *)
+  | StmEdited of                   [`NewTip | `Focus   of focus   ]
   | ObjList     of coq_object list
   | CoqExn      of exn
   | Completed
@@ -219,8 +219,8 @@ type control_cmd =
   | StmState                                    (* Get the state *)
   | StmAdd     of int * stateid option * string (* Stm.add       *)
   | StmQuery   of       stateid        * string (* Stm.query     *)
-  | StmCancel  of       stateid list            (* New cancel method     *)
-  (* | StmEditAt  of       stateid          (\* Stm.edit_at   *\) *)
+  | StmCancel  of       stateid list            (* Cancel method *)
+  | StmEditAt  of       stateid                 (* Stm.edit_at   *)
   | StmObserve of       stateid                 (* Stm.observe   *)
   | SetOpt     of bool option * option_name * option_value
   (*              prefix      * path   * implicit   *)
@@ -237,6 +237,8 @@ let exec_setopt loc n (v : option_value) =
   | StringOptValue s -> set_string_option_value_gen loc n (Option.default "" s)
 
 module ControlUtil = struct
+
+  open Core_kernel.Std
 
   let edit_id = ref 0
 
@@ -273,7 +275,7 @@ module ControlUtil = struct
     try
       while (0 < !rem) && (!i <= lim) do
       let n_st, loc, foc =
-        let sent = String.sub sent !buf !rem in
+        let sent = String.sub sent ~pos:!buf ~len:!rem in
         (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
         (* Format.eprintf "Sent: %s @\n%!" sent; *)
         add_sentence !stt sent pa
@@ -292,7 +294,7 @@ module ControlUtil = struct
      in a more modular way: When we issue the cancel command, we will
      look for the cancelled part
   *)
-  let cancel_interval _start _stop _tip =
+  let cancel_interval (_foc : Stm.focus) =
     failwith "SeqAPI FIXME, focus not yet supported"
 
   (* We recover the list of states to cancel plus the first valid
@@ -301,14 +303,12 @@ module ControlUtil = struct
      - The we cancel states that are newer
   *)
   let invalid_range_st can_st =
-    let open Core_kernel.Std in
     if List.mem !cur_doc can_st then
       List.split_while !cur_doc
         ~f:(fun st -> Stateid.newer_than st can_st || Stateid.equal st can_st)
     else [], !cur_doc
 
   let cancel_sentence can_st =
-    let open Core_kernel.Std in
     (* dump_doc (); *)
     let c_ran, k_ran = invalid_range_st can_st in
     let prev_st      = Option.value (List.hd k_ran) ~default:Stateid.initial in
@@ -321,8 +321,20 @@ module ControlUtil = struct
        - [start] is where the editing zone starts
        - [add] happen on top of [id].
     *)
-    | `Focus { Stm.start = start ; Stm.stop = stop; Stm.tip = tip } ->
-      cancel_interval start stop tip
+    | `Focus foc -> cancel_interval foc
+
+  let edit st =
+    _dump_doc ();
+    let foc = Stm.edit_at st in
+    (* We update our internal document *)
+    begin match foc with
+    | `NewTip    -> (if List.mem !cur_doc st then
+                       cur_doc := List.drop_while !cur_doc ~f:(fun st_act -> Stateid.newer_than st_act st)
+                    )
+    | `Focus foc -> ignore (cancel_interval foc)
+    end;
+    _dump_doc ();
+    [StmEdited foc]
 
 end
 
@@ -332,9 +344,10 @@ let exec_ctrl ctrl =
 
   | StmAdd (lim, ost, s) -> let st = Option.default (Stm.get_current_state ()) ost in
                             ControlUtil.add_sentences lim st s
-  | StmCancel st        -> List.concat @@ List.map ControlUtil.cancel_sentence st
-  (* | StmEditAt st   -> let foc = Stm.edit_at st in *)
-  (*                     [StmEdited foc] *)
+
+  | StmCancel st         -> List.concat @@ List.map ControlUtil.cancel_sentence st
+
+  | StmEditAt st         -> ControlUtil.edit st
 
   | StmQuery(st, s)-> Stm.query ~at:st s; []
   | StmObserve st  -> Stm.observe st; []

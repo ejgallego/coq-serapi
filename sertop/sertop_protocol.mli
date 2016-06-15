@@ -58,7 +58,7 @@ type answer_kind =
   | StmCurId     of Stateid.t
   | StmAdded     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
   | StmCanceled  of Stateid.t list
-  (* | StmEdited of                     [`NewTip | `Focus   of Stm.focus ] *)
+  | StmEdited of                        [`NewTip | `Focus   of Stm.focus ]
   | ObjList      of coq_object list
   | CoqExn       of exn
   | Completed
@@ -75,6 +75,7 @@ type control_cmd =
   | StmAdd     of int * Stateid.t option * string
   | StmQuery   of       Stateid.t        * string
   | StmCancel  of       Stateid.t list
+  | StmEditAt  of       Stateid.t
   | StmObserve of       Stateid.t
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   | LibAdd     of string list * string * bool
