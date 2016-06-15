@@ -56,7 +56,7 @@ let coq_init opts =
       Flags.async_proofs_mode := Flags.APon;
       (* Imitate CoqIDE *)
       (* Flags.async_proofs_full := true; *)
-      (* Flags.async_proofs_never_reopen_branch := true; *)
+      Flags.async_proofs_never_reopen_branch := true;
       Flags.async_proofs_flags_for_workers := [dump_opt];
       Flags.async_proofs_n_workers := 3;
       Flags.async_proofs_n_tacworkers := 3;
