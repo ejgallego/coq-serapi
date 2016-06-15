@@ -38,6 +38,25 @@ let coq_init opts =
   (* Library initialization *)
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
 
+  (* Set async flags; IMPORTANT, this has to happen before STM.init () ! *)
+  Option.iter (fun coqtop ->
+
+      Flags.async_proofs_mode := Flags.APon;
+      (* Imitate CoqIDE *)
+      (* Flags.async_proofs_full := true; *)
+      (* Flags.async_proofs_never_reopen_branch := true; *)
+      Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
+      Flags.async_proofs_n_workers := 3;
+      Flags.async_proofs_n_tacworkers := 3;
+      (* async_proofs_worker_priority); *)
+      CoqworkmgrApi.(init Flags.High);
+      (* Uh! XXXX *)
+      for i = 0 to Array.length Sys.argv - 1 do
+        Array.set Sys.argv i "-m"
+      done;
+      Array.set Sys.argv 0 coqtop
+    ) opts.enable_async;
+
   (* We need to declare a toplevel module name, not sure if this can
      be avoided.  *)
   Declaremods.start_library sertop_dp;
@@ -53,25 +72,10 @@ let coq_init opts =
   (* Dumpglob.feedback_glob (); *)
 
   (* Miscellaneous tweaks *)
-  (* Vernacentries.enable_goal_printing := false; *)
+  Vernacentries.enable_goal_printing := false;
   Vernacentries.qed_display_script   := false;
 
-  (* Enable async *)
-  Option.iter (fun coqtop ->
-      Flags.async_proofs_mode := Flags.APon;
-      Flags.async_proofs_full := true;
-      Flags.async_proofs_never_reopen_branch := true;
-      Flags.async_proofs_flags_for_workers := ["-feedback-glob"];
-      Flags.async_proofs_n_workers := 4;
-      Flags.async_proofs_n_tacworkers := 4;
-      (* async_proofs_worker_priority); *)
-      CoqworkmgrApi.(init Flags.High);
-      (* Uh! XXXX *)
-      for i = 0 to Array.length Sys.argv - 1 do
-        Array.set Sys.argv i "-m"
-      done;
-      Array.set Sys.argv 0 coqtop
-    ) opts.enable_async;
+  (* Flags.debug := true; *)
 
   (* Return the initial state of the STM *)
   (* Stm.get_current_state () *)
