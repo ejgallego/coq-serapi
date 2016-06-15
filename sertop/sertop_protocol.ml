@@ -288,7 +288,9 @@ module ControlUtil = struct
       (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
       done;
       List.rev !acc
-    with End_of_input -> List.rev !acc
+    with
+    | End_of_input  -> List.rev !acc
+    | exn           -> List.rev (CoqExn exn :: !acc)
 
   (* We follow a suggestion by Clément to report sentence invalidation
      in a more modular way: When we issue the cancel command, we will
