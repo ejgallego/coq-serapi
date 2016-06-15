@@ -116,7 +116,7 @@ let pp_goal (g, hyps) =
   str "============================\n" ++
   Printer.pr_lconstr g
 
-let pp_opt_value (s : option_value) = match s with
+let pp_opt_value (s : Goptions.option_value) = match s with
   | Goptions.BoolValue b      -> Pp.bool b
   | Goptions.IntValue  i      -> Pp.pr_opt Pp.int i
   | Goptions.StringValue s    -> Pp.str s
@@ -136,7 +136,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqString  s    -> pr (Pp.str s)
   | CoqSList   s    -> pr (Pp.(pr_sequence str) s)
   | CoqRichpp  s    -> pr (Pp.str (Richpp.raw_print s))
-  | CoqRichXml x    -> Sertop_util.pp_xml fmt (Richpp.repr x)
+  | CoqRichXml x    -> Sertop_pp.pp_xml fmt (Richpp.repr x)
   | CoqLoc    _loc  -> pr (Pp.mt ())
   | CoqOption (n,s) -> pr (pp_opt n s)
   | CoqConstr  c    -> pr (Printer.pr_lconstr c)
@@ -238,22 +238,14 @@ let exec_setopt loc n (v : option_value) =
 
 module ControlUtil = struct
 
-  open Format
-
   let edit_id = ref 0
 
   type doc    = stateid list
   let cur_doc : doc ref = ref []
 
-  let rec pp_list_sep sep pp fmt l = match l with
-      []         -> fprintf fmt ""
-    | csx :: []  -> fprintf fmt "@[%a@]" pp csx
-    | csx :: csl -> fprintf fmt "@[%a@]%s@;%a" pp csx sep (pp_list_sep sep pp) csl
-
-  let pp_stateid fmt id = fprintf fmt "%d" (Stateid.to_int id)
-
   let pp_doc fmt l =
-    Format.fprintf fmt "@[%a@]" (pp_list_sep " " pp_stateid) l
+    let open Sertop_pp in
+    Format.fprintf fmt "@[%a@]" (pp_list ~sep:" " pp_stateid) l
 
   let _dump_doc () =
     Format.eprintf "%a@\n%!" pp_doc !cur_doc

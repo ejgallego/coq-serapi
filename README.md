@@ -159,10 +159,11 @@ Mines de Paris) and partially supported by the
 
 ## Commit tag conventions [work in progress]:
 
-- [serlib] : Serialization lib.
-- [sertop] : Toplevel.
-- [doc]   : Documentation.
-- [build] : Build system.
+- [misc]    : Code refactoring, miscellanenous
+- [serlib]  : Serialization lib.
+- [sertop]  : Toplevel.
+- [doc]     : Documentation.
+- [build]   : Build system.
 - [proto]   : Core protocol.
 - [control] : STM protocol.
 - [query]   : Query protocol.

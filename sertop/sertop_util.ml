@@ -13,56 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let string_of_eosid esid =
-  let open Feedback in
-  match esid with
-  | Edit  eid -> "eid: " ^ string_of_int eid
-  | State sid -> "sid: " ^ (Stateid.to_string sid)
-
-let string_of_feedback_content fb : string =
-  let open Feedback in
-  match fb with
-  (* STM mandatory data (must be displayed) *)
-    | Processed       -> "Processed."
-    | Incomplete      -> "Incomplete."
-    | Complete        -> "Complete."
-    | ErrorMsg(_l, s) -> "ErrorMsg: " ^ s
-
-  (* STM optional data *)
-    | ProcessingIn s       -> "ProcessingIn: " ^ s
-    | InProgress d         -> "InProgress: " ^ (string_of_int d)
-    | WorkerStatus(w1, w2) -> "WorkerStatus: " ^ w1 ^ ", " ^ w2
-
-  (* Generally useful metadata *)
-    | Goals(_loc, g) -> "goals: " ^ g
-    | AddedAxiom -> "AddedAxiom."
-    | GlobRef (_loc, s1, s2, s3, s4) -> "GlobRef: " ^ s1 ^ ", " ^ s2 ^ ", " ^ s3 ^ ", " ^ s4
-    | GlobDef (_loc, s1, s2, s3) -> "GlobDef: " ^ s1 ^ ", " ^ s2 ^ ", " ^ s3
-    | FileDependency (os, s) -> "FileDep: " ^ (Option.default "" os) ^ ", " ^ s
-    | FileLoaded (s1, s2)    -> "FileLoaded: " ^ s1 ^ " " ^ s2
-
-    (* Extra metadata *)
-    | Custom(_loc, msg, _xml) -> "Custom: " ^ msg
-    (* Old generic messages *)
-    | Message(_l, m) -> "Msg: " ^ Richpp.raw_print m
-
-let pp_feedback fmt (fb : Feedback.feedback) =
-  let open Feedback in
-  Format.fprintf fmt "feedback for [%s]: %s"
-    (string_of_eosid fb.id)
-    (string_of_feedback_content fb.Feedback.contents)
-
-let rec pp_list pp fmt l = match l with
-    []         -> Format.fprintf fmt ""
-  | csx :: []  -> Format.fprintf fmt "@[%a@]" pp csx
-  | csx :: csl -> Format.fprintf fmt "@[%a@]@;%a" pp csx (pp_list pp) csl
-
-let pp_attr fmt (xtag, att) =
-  Format.fprintf fmt "%s = %s" xtag att
-
-let rec pp_xml fmt (xml : Xml_datatype.xml) = match xml with
-  | Xml_datatype.Element (tag, att, more) ->
-    Format.fprintf fmt "@[<%s @[%a@]>@,%a@,</%s>@]" tag (pp_list pp_attr) att (pp_list pp_xml) more tag
-  | Xml_datatype.PCData str -> Format.fprintf fmt "%s" str
 
 
