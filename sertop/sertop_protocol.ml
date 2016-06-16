@@ -43,16 +43,16 @@ let _ =
   let open Sexp in
   let sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
   Conv.Exn_converter.add_slow (function
-      | Errors.UserError(e,msg) -> 
+      | Errors.UserError(e,msg) ->
         Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
       | Errors.AlreadyDeclared msg ->
         Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
-(* Sadly private... request Coq devs to make them public?
       | Cerrors.EvaluatedError(msg, exn) -> Some (
           match exn with
           | Some exn -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
           | None     -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg]
         )
+(* Private... request Coq devs to make them public?
       | Errors.Anomaly(msgo, pp) ->
         Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
 *)
