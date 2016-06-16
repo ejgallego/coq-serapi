@@ -1,24 +1,24 @@
 ## The Coq Se(xp)rialized Protocol
 
-SerAPI/SerTOP a new library and communication protocol for the Coq
-proof assistant. It is based on automatic serialization of Ocaml
-datatypes from/to S-expressions. SerAPI main user base are IDE and
-tool developers, however it is also fun to play with it. Our main
-design principles are:
+SerAPI is a new library and communication protocol for the Coq proof
+assistant. It is based on automatic serialization of Ocaml datatypes
+from/to S-expressions. SerAPI's main user base are IDE/tool
+developers, however it is also fun to play with it, and serve as an
+interesting debug tool for Coq. Its main design principles are:
 
-- **Don't Repeat Yourself**: We have canonical data structures and methods for each particular purpose. For example, there is a single search and print command.
+- **Don't Repeat Yourself**: We build on top of Coq's plugin API, we have canonical commands (search, print).
 - **Be extremely robust**: Any crash is a **critical** bug; we are liberal in what we accept, and strict in what we produce.
 - **Make life easy**: We are flexible with abstractions in order to provide a user-oriented interface.
 
-SerAPI is at a proof-of-concept stage. Feedback from Coq users and developers is very welcome by mail our at the issue tracker!
+SerAPI is still a proof-of-concept. Feedback from Coq users and developers is very welcome, either by mail or by using the issue tracker!
 
 ### Quick Overview and Documentation
 
-SerAPI will install as a Coq plugin, we hope to provide an OPAM package soon; for now, see [building](#building).
+SerAPI installation is similar to a Coq plugin, we hope to provide an OPAM package soon; for now, see [building](#building).
 
-A first IDE using SerAPI is Clément Pit--Claudel's [elcoq](https://github.com/cpitclaudel/elcoq).
+A first IDE prototype using SerAPI is Clément Pit--Claudel's [elcoq](https://github.com/cpitclaudel/elcoq).
 
-If you want to use SerAPI at a lower level, its main entry point is the `sertop.native` binary, known as a _Coq toplevel_. The toplevel reads and writes commands (S-exps) from stdin/stdout. We recommend interacting with our [emacs mode](sertop.el) or the `rlwrap` utility. `sertop.native --help` will provide an overview of command line options. `Ctrl-C` will interrupt the toplevel in the same way than `coqtop`.
+To use SerAPI at a lower level, we provide a _SerTop toplevel_: `sertop.native`. The toplevel reads and writes commands (S-exps) from stdin/stdout. We recommend using our [emacs mode](sertop.el) or the `rlwrap` utility. `sertop.native --help` will provide an overview of command line options. `Ctrl-C` will interrupt a busy Coq process in a similar way than what `coqtop` does.
 
 #### Protocol
 
