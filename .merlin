@@ -1,7 +1,7 @@
 FLG -rectypes -thread
 
 S .
-B .
+B _build/
 
 S serlib
 B _build/serlib
@@ -12,4 +12,4 @@ B _build/sertop
 S /home/egallego/external/coq-git/**
 B /home/egallego/external/coq-git/**
 
-PKG threads core_kernel cmdliner ppx_import sexplib ppx_sexp_conv
+PKG threads threads.posix core_kernel cmdliner ppx_import sexplib ppx_sexp_conv
