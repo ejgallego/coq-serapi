@@ -143,7 +143,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqExpr    e    -> pr (Ppconstr.pr_lconstr_expr e)
   | CoqTactic(kn,_) -> pr (Names.KerName.print kn)
   (* Fixme *)
-  | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.fg_goals)
+  | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.Proof.fg_goals)
   | CoqQualId qid   -> pr (Pp.str (Libnames.string_of_qualid qid))
   | CoqImplicit(_,l)-> pr (Pp.pr_sequence pp_implicit l)
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
