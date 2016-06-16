@@ -13,12 +13,17 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type coq_opts = {
-
-  (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
+type async_flags = {
   enable_async : string option;
   async_full   : bool;
+  deep_edits   : bool;
+}
+
+type coq_opts = {
+  (* callback to handle async feedback *)
+  fb_handler   : Feedback.feedback -> unit;
+  (* Async flags *)
+  aopts        : async_flags;
 }
 
 val coq_init : coq_opts -> unit

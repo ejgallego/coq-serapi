@@ -297,8 +297,13 @@ module ControlUtil = struct
      in a more modular way: When we issue the cancel command, we will
      look for the cancelled part
   *)
-  let cancel_interval (_foc : Stm.focus) =
-    failwith "SeqAPI FIXME, focus not yet supported"
+  let cancel_interval st (foc : Stm.focus) =
+    let open Sertop_pp in
+    let fmt = Format.err_formatter in
+    Format.fprintf fmt "%a -- %a" pp_stateid st pp_stateid foc.Stm.stop;
+    []
+    (* eprintf "%d" foc.stop *)
+    (* failwith "SeqAPI FIXME, focus not yet supported" *)
 
   (* We recover the list of states to cancel plus the first valid
      one. The main invariant is that:
@@ -328,7 +333,7 @@ module ControlUtil = struct
        - [start] is where the editing zone starts
        - [add] happen on top of [id].
     *)
-    | `Focus foc -> cancel_interval foc
+    | `Focus foc -> cancel_interval can_st foc
 
   let edit st =
     (* _dump_doc (); *)
@@ -340,7 +345,7 @@ module ControlUtil = struct
         let c_ran, k_ran = invalid_range st ~incl:false in
         cur_doc := k_ran;
         c_ran
-      | `Focus foc -> ignore (cancel_interval foc); []
+      | `Focus foc -> ignore (cancel_interval st foc); []
     in
     (* _dump_doc (); *)
     [StmEdited foc; StmCanceled c_ran]
@@ -607,13 +612,12 @@ let is_cmd_quit cmd = match cmd with
 
 type ser_opts = {
   coqlib   : string option;       (* Whether we should load the prelude, and its location *)
-  async    : string option;       (* CoqTop for async support                             *)
   in_chan  : in_channel;          (* Input/Output channels                                *)
   out_chan : out_channel;
   human    : bool;                (* Output function to use                               *)
   print0   : bool;
   lheader  : bool;
-  async_full : bool;
+  async    : Sertop_init.async_flags;
 }
 
 (******************************************************************************)
@@ -683,7 +687,8 @@ let ser_loop ser_opts =
   let pp_answer an = out_answer ser_opts out_fmt an                    in
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
 
-  (* EG: I don't understand this, XXX Why this is needed ?? *)
+  (* XXX EG: I don't understand this well, why is this lock needed ??
+     Review fork code in CoqworkmgrApi *)
   let pp_feed =
     let m = Mutex.create () in
     fun fb -> Mutex.lock m;
@@ -693,9 +698,8 @@ let ser_loop ser_opts =
 
   (* Init Coq *)
   Sertop_init.coq_init {
-    Sertop_init.fb_handler   = pp_feed;
-    Sertop_init.enable_async = ser_opts.async;
-    Sertop_init.async_full   = ser_opts.async_full;
+    Sertop_init.fb_handler = pp_feed;
+    Sertop_init.aopts      = ser_opts.async;
   };
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;

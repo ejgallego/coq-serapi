@@ -18,12 +18,17 @@ let sertop_dp =
   DirPath.make [Id.of_string "SerTop"]
 
 (* Init options for coq *)
-type coq_opts = {
-
-  (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
+type async_flags = {
   enable_async : string option;
   async_full   : bool;
+  deep_edits   : bool;
+}
+
+type coq_opts = {
+  (* callback to handle async feedback *)
+  fb_handler   : Feedback.feedback -> unit;
+  (* Async flags *)
+  aopts        : async_flags;
 }
 
 let coq_init opts =
@@ -56,10 +61,10 @@ let coq_init opts =
 
       Flags.async_proofs_mode := Flags.APon;
       (* Imitate CoqIDE *)
-      Flags.async_proofs_full := opts.async_full;
-      Flags.async_proofs_never_reopen_branch := true;
+      Flags.async_proofs_full := opts.aopts.async_full;
+      Flags.async_proofs_never_reopen_branch := not opts.aopts.deep_edits;
       Flags.async_proofs_flags_for_workers := [dump_opt];
-      Flags.async_proofs_n_workers := 3;
+      Flags.async_proofs_n_workers    := 3;
       Flags.async_proofs_n_tacworkers := 3;
       (* async_proofs_worker_priority); *)
       CoqworkmgrApi.(init Flags.High);
@@ -68,7 +73,7 @@ let coq_init opts =
         Array.set Sys.argv i "-m"
       done;
       Array.set Sys.argv 0 coqtop
-    ) opts.enable_async;
+    ) opts.aopts.enable_async;
 
   (* We need to declare a toplevel module name, not sure if this can
      be avoided.  *)

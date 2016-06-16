@@ -29,6 +29,10 @@ let async_full =
   let doc = "Enable async_full in the STM." in
   Arg.(value & flag & info ["async-full"] ~doc)
 
+let deep_edits =
+  let doc = "Enable deep edits into the document." in
+  Arg.(value & flag & info ["deep-edits"] ~doc)
+
 let human =
   let doc = "Use human-readable sexp output." in
   Arg.(value & flag & info ["human"] ~doc)
@@ -42,7 +46,8 @@ let length =
   Arg.(value & flag & info ["length"] ~doc)
 
 
-let sertop prelude human print0 length async async_full =
+let sertop prelude human print0 length async async_full deep_edits =
+  let open Sertop_init             in
   let open Sertop_protocol         in
   ser_loop
     {  coqlib   = prelude;
@@ -51,8 +56,11 @@ let sertop prelude human print0 length async async_full =
        human    = human;
        print0   = print0;
        lheader  = length;
-       async    = async;
-       async_full = async_full;
+       async = {
+         enable_async = async;
+         async_full = async_full;
+         deep_edits = deep_edits;
+       }
     }
 
 let sertop_cmd =
@@ -62,7 +70,7 @@ let sertop_cmd =
     `P "Experimental Coq Toplevel with serialization support"
   ]
   in
-  Term.(const sertop $ prelude $ human $ print0 $ length $ async $async_full),
+  Term.(const sertop $ prelude $ human $ print0 $ length $ async $ async_full $ deep_edits ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 
 let main () =
