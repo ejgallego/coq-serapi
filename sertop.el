@@ -61,7 +61,7 @@
     ("\\_<nil\\_>" . font-lock-builtin-face))
   "Font lock pairs for `sertop-mode'.")
 
-(defvar sertop-mode-syntax-table lisp--mode-syntax-table
+(defvar sertop-mode-syntax-table lisp-mode-syntax-table
   "Syntax table for `sertop-mode'.")
 
 (define-derived-mode sertop-mode comint-mode "Sertop"
