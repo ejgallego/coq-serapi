@@ -271,24 +271,24 @@ module ControlUtil = struct
       let (_,_,_,_,e) = Loc.represent l in (e-p)
     in
     let i   = ref 1                    in
-    let acc = ref []                   in
     let buf = ref 0                    in
+    let acc = ref []                   in
     let rem = ref (String.length sent) in
     let stt = ref st_id                in
     try
       while (0 < !rem) && (!i <= lim) do
-      let n_st, loc, foc =
-        let sent = String.sub sent ~pos:!buf ~len:!rem in
+        let n_st, loc, foc =
+          let sent = String.sub sent ~pos:!buf ~len:!rem in
+          (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
+          (* Format.eprintf "Sent: %s @\n%!" sent; *)
+          add_sentence !stt sent pa
+        in
+        acc := (StmAdded (n_st, loc, foc)) :: !acc;
+        rem := !rem - pos !buf loc;
+        buf := !buf + pos !buf loc;
+        stt := n_st;
+        incr i;
         (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
-        (* Format.eprintf "Sent: %s @\n%!" sent; *)
-        add_sentence !stt sent pa
-      in
-      acc := (StmAdded (n_st, loc, foc)) :: !acc;
-      rem := !rem - pos !buf loc;
-      buf := !buf + pos !buf loc;
-      stt := n_st;
-      incr i;
-      (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
       done;
       List.rev !acc
     with
@@ -302,7 +302,7 @@ module ControlUtil = struct
   let cancel_interval st (foc : Stm.focus) =
     let open Sertop_pp in
     let fmt = Format.err_formatter in
-    Format.fprintf fmt "%a -- %a" pp_stateid st pp_stateid foc.Stm.stop;
+    Format.fprintf fmt "Cancel interval: [%a -- %a]" pp_stateid st pp_stateid foc.Stm.stop;
     []
     (* eprintf "%d" foc.stop *)
     (* failwith "SeqAPI FIXME, focus not yet supported" *)
