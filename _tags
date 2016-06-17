@@ -1,19 +1,20 @@
 # Coq-specific linking flags
-true: rectypes, thread, package(threads), package(str)
+true: rectypes, thread, package(str), package(unix), package(threads)
 
 # Sertop flags
-true: package(ppx_import), package(sexplib), package(ppx_sexp_conv)
+true: package(sexplib), package(ppx_sexp_conv)
 true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 
 <serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_interp, coq_parsing, coq_stm, coq_proofs, coq_ltac
-
+<serlib/*.{ml,mli}>: package(ppx_import)
 <serlib>: include
 
 <sertop/*.{ml,mli}>: coq_intf
-<sertop/*>: linkall
-<sertop/*.native>: package(dynlink)
 <sertop/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
 <sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
 <sertop/*>: package(core_kernel), package(cmdliner)
+
+<sertop/*.native>: linkall
+<sertop/*.native>: package(dynlink), package(camlp5), package(camlp5.gramlib)
 
 

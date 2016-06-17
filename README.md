@@ -69,7 +69,7 @@ Building `sertop` requires OPAM and Coq trunk.
    `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv`
 2. Download and compile coq trunk. We recommend:
    `$ ./configure -local && make -j $NJOBS`
-3. Edit the `myocamlbuild.ml` file to add the location of your Coq sources and Opam installation.
+3. Edit the `myocamlbuild.ml` file to add the location of your Coq sources.
 4. `make` should build `sertop`.
 
 ### Emacs mode
