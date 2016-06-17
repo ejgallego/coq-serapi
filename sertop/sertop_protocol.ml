@@ -49,9 +49,11 @@ let _ =
         Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
       | Cerrors.EvaluatedError(msg, exn) -> Some (
           match exn with
-          | Some exn -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
-          | None     -> List [Atom "CError.EvaluatedError"; sexp_of_std_ppcmds msg]
+          | Some exn -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
+          | None     -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg]
         )
+      | Proof_global.NoCurrentProof ->
+        Some (Atom "NoCurrentProof")
 (* Private... request Coq devs to make them public?
       | Errors.Anomaly(msgo, pp) ->
         Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
