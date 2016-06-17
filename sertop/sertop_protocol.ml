@@ -299,9 +299,7 @@ module ControlUtil = struct
   let add_sentences lim st_id sent =
     (* Workaround coq/coq#204 *)
     let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
-    let pos p l =
-      let (_,_,_,_,e) = Loc.represent l in (e-p)
-    in
+    let pos p l = l.Loc.ep - p         in
     let i   = ref 1                    in
     let buf = ref 0                    in
     let acc = ref []                   in

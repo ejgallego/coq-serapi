@@ -19,34 +19,15 @@
 
 open Sexplib.Std
 
-(* Loc: private *)
-type loc = [%import: Loc.t]
+(* Loc: public *)
+type loc =
+  [%import: Loc.t]
+  [@@deriving sexp]
 
-type _loc = {
-  fname        : string; (** filename *)
-  line_nb      : int;    (** start line number *)
-  bol_pos      : int;    (** position of the beginning of start line *)
-  line_nb_last : int;    (** end line number *)
-  bol_pos_last : int;    (** position of the beginning of end line *)
-  bp           : int;    (** start position *)
-  ep           : int;    (** end position *)
-} [@@deriving sexp]
-
-let _loc_put loc =
-  let s, p1, p2, p3, p4 = Loc.represent loc in
-  { fname   = s;
-    line_nb = p1;
-    bol_pos = p2;
-    bp      = p3;
-    ep      = p4;
-    line_nb_last = p1;
-    bol_pos_last = p2;
-  }
-let _loc_get l = Loc.create l.fname l.line_nb l.bol_pos (l.bp, l.ep)
-
-let sexp_of_loc loc  = sexp_of__loc (_loc_put loc)
-let loc_of_sexp sexp = _loc_get (_loc_of_sexp sexp)
-
-type 'a located = [%import: 'a Loc.located
-                  [@with t := loc]]
+(* located: public *)
+type 'a located =
+  [%import: 'a Loc.located
+  [@with
+    t := loc
+  ]]
   [@@deriving sexp]
