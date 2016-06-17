@@ -685,18 +685,17 @@ let out_answer opts =
 let ser_loop ser_opts =
   let open List   in
   let open Format in
+  let pr_mutex     = Mutex.create ()                                   in
+  let ser_lock f x = Mutex.lock   pr_mutex;
+                     f x;
+                     Mutex.unlock pr_mutex                             in
   let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
-  let pp_answer an = out_answer ser_opts out_fmt an                    in
+  let pp_answer an = ser_lock (out_answer ser_opts out_fmt) an         in
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
+  let pp_feed fb   = pp_answer (Feedback fb)                           in
 
   (* XXX EG: I don't understand this well, why is this lock needed ??
      Review fork code in CoqworkmgrApi *)
-  let pp_feed =
-    let m = Mutex.create () in
-    fun fb -> Mutex.lock m;
-              pp_answer (Feedback fb);
-              Mutex.unlock m
-  in
 
   (* Init Coq *)
   Sertop_init.coq_init {
