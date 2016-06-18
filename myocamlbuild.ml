@@ -5,33 +5,6 @@ let coq_location  = "/home/egallego/external/coq-git/"
 let p s     = coq_location ^ s
 let q s lib = coq_location ^ s ^ "/" ^ lib
 
-(* For byte code compilation
- -linkall -rectypes -w -31 -dllib -lcoqrun
- -dllpath /home/egallego/external/coq-git/kernel/byterun
- -cclib -lunix
- -cclib -lcoqrun
- -thread -o bin/coqtop.byte
- -I .
- -I lib
- -I toplevel
- -I kernel/byterun
- -I /home/egallego/.opam/4.03.0/lib/camlp5
- -I +compiler-libs
- str.cma unix.cma nums.cma dynlink.cma threads.cma gramlib.cma ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma
- camlp5_top.cma
- pa_o.cmo
- pa_extend.cmo
- lib/clib.cma
- lib/lib.cma
- kernel/kernel.cma
- library/library.cma
- engine/engine.cma pretyping/pretyping.cma
- interp/interp.cma proofs/proofs.cma parsing/parsing.cma
- printing/printing.cma tactics/tactics.cma
- stm/stm.cma toplevel/toplevel.cma parsing/highparsing.cma
- ltac/ltac.cma
-*)
-
 let () =
   dispatch begin function
     | After_rules ->
@@ -68,15 +41,3 @@ let () =
       ocaml_lib ~extern:true ~dir:(p "ltac")     ~tag_name:"coq_ltac"     (q "ltac"      "ltac");
     | _ -> ()
   end
-
-module Debug = struct
-
-  let coq_reg tag_name dir libpath =
-    Format.printf "registering t: %s, d: %s, lp: %s \n%!" tag_name dir libpath;
-    let add_dir x             = S[A"-I"; P dir; x]          in
-    let flag_and_dep tags lib = flag tags (add_dir (A lib)) in
-    flag_and_dep ["ocaml"; "link"; "byte"]   (libpath^".cma");
-    flag_and_dep ["ocaml"; "link"; "native"] (libpath^".cmxa");
-
-end
-

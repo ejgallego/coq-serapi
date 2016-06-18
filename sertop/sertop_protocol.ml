@@ -13,6 +13,34 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+(* STUB module. Current cost of using Core_kernel ≈ 1.6 MiB !!
+ *
+ * This seems due to -linkall, not good for jsCoq at all.
+ * I wonder what's the proper fix here...
+ *)
+
+(*
+module Core_kernel = struct
+  module Std = struct
+    module String = struct
+      let is_prefix s ~prefix = s = prefix
+      let length _s = 0
+      let sub sent ~pos ~len = let _ = pos, len in sent
+      let concat ~sep x = String.concat sep x
+    end
+    module List = struct
+      let hd _ = None
+      let mem _ _ = true
+      let rev x   = x
+      let split_while x ~f = let _ = f in x, x
+    end
+    module Option = struct
+      let value _x ~default = default
+    end
+  end
+end
+*)
+
 open Sexplib
 open Sexplib.Conv
 
@@ -439,12 +467,12 @@ type query_opt =
 type query_cmd =
   | Option   (*  *)
   | Search                         (* Search vernacular, we only support prefix by name *)
-  | Goals   of stateid             (* Return goals [TODO: Add filtering/limiting options] *)
-  | TypeOf  of string
-  | Names   of string              (* XXX Move to prefix *)
-  | Tactics of string              (* XXX Print LTAC signatures (with prefix) *)
-  | Locate  of string              (* XXX Print LTAC signatures (with prefix) *)
-  | Implicits of string              (* XXX Print LTAC signatures (with prefix) *)
+  | Goals     of stateid           (* Return goals [TODO: Add filtering/limiting options] *)
+  | TypeOf    of string
+  | Names     of string            (* XXX Move to prefix *)
+  | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
+  | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
+  | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
   [@@deriving sexp]
 
 module QueryUtil = struct
@@ -531,8 +559,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | TypeOf _       -> [CoqString "Not Implemented"]
 
 let obj_filter preds objs =
-  let open List in
-  fold_left (fun obj p -> filter (gen_pred p) obj) objs preds
+  List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
 
 (* XXX: OCaml! .... *)
 let rec take n l =
@@ -677,7 +704,10 @@ let read_cmd cmd_id in_channel pp_answer =
 (** We could use Sexp.to_string too  *)
 let out_answer opts =
   let open Format                                                               in
-  let pp_sexp = if opts.human  then Sexp.pp_hum                   else Sexp.pp  in
+
+  let pp_sexp = if opts.human  then Sexp.pp_hum
+                               else Sexp.pp                                     in
+
   let pp_term = if opts.print0 then fun fmt () -> fprintf fmt "%c" (Char.chr 0)
                                else fun fmt () -> fprintf fmt "@\n"             in
   if opts.lheader then
@@ -688,10 +718,12 @@ let out_answer opts =
   else
     fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
 
-
 let ser_loop ser_opts =
   let open List   in
   let open Format in
+
+  (* XXX EG: I don't understand this well, why is this lock needed ??
+     Review fork code in CoqworkmgrApi *)
   let pr_mutex     = Mutex.create ()                                   in
   let ser_lock f x = Mutex.lock   pr_mutex;
                      f x;
@@ -701,8 +733,6 @@ let ser_loop ser_opts =
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
   let pp_feed fb   = pp_answer (Feedback fb)                           in
 
-  (* XXX EG: I don't understand this well, why is this lock needed ??
-     Review fork code in CoqworkmgrApi *)
 
   (* Init Coq *)
   Sertop_init.coq_init {
@@ -723,7 +753,7 @@ let ser_loop ser_opts =
     try
       let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_answer in
       pp_ack cmd_tag;
-      iter pp_answer @@ map (fun a  -> Answer (cmd_tag, a)) (exec_cmd cmd);
+      iter pp_answer @@ map (fun a -> Answer (cmd_tag, a)) (exec_cmd cmd);
       if not (is_cmd_quit cmd) then loop (1+cmd_id)
     with Sys.Break -> loop (1+cmd_id)
   in loop 0

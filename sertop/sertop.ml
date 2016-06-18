@@ -13,7 +13,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let sertop_version = "0.03dev"
+let sertop_version = "0.04dev"
 
 open Cmdliner
 
