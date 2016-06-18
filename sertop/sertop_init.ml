@@ -39,7 +39,7 @@ let coq_init opts =
   Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
 
   (* Mltop.init_known_plugins (); *)
-  Global.set_engagement (Declarations.PredicativeSet, Declarations.StratifiedType);
+  Global.set_engagement Declarations.PredicativeSet;
 
   (* Library initialization *)
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
