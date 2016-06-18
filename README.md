@@ -174,43 +174,42 @@ We prefer signed commits.
 Using `rlwrap` or the emacs mode is highly recommended:
 
 ```lisp
-coq-serapi$ rlwrap ./sertop.byte --prelude /home/egallego/external/coq-git/
-(0 (Print (CoqConstr (App (Rel 0) ((Rel 0))))))
+coq-serapi$ rlwrap ./sertop.byte --prelude ~/external/coq-git/
+(0 (Print () (CoqConstr (App (Rel 0) ((Rel 0))))))
 > (Answer 0 Ack)
 > (Answer 0(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
 (1 (Control (StmQuery 2 "Print nat. ")))
 > (Answer 1 Ack)
 > (Feedback((id(State 2))(contents Processed)(route 0)))
 > (Feedback((id(State 0))(contents(Message ....))))
-(2 (Print (CoqRichpp (Element ....))))
+(2 (Print () (CoqRichpp (Element ....))))
 > (Answer 2 Ack)
 > (Answer 2(ObjList((CoqString"Inductive nat : Set :=  O : nat | S : nat -> nat\n\nFor S: Argument scope is [nat_scope]"))))
 (3 (Control StmState))
 > (Answer 3 Ack)
 > (Answer 3(StmInfo 2))
-(4 (Control (StmAdd 0 2 "Goal forall n, n + 0 = n.")))
+(4 (Control (StmAdd 0 (Some 2) "Goal forall n, n + 0 = n.")))
 > (Answer 4 Ack)
 > (Answer 4(StmInfo 4))
 (5 (Control (StmObserve 4)))
 > (Answer 5 Ack)
 > (Feedback((id(State 4))(contents(ProcessingIn master))(route 0)))
 > ...
-(6 (Query (None PpStr) Goals))
+(Query ((pp ((pp_format PpStr)))) (Goals 4))
 > (Answer 6 Ack)
 > (Answer 6(ObjList((CoqString"forall n : nat, n + 0 = n"))))
-(7 (Query (None PpSexp) Goals))
+(Query ((pp ((pp_format PpSexp)))) (Goals 4))
 > (Answer 7 Ack)
 > (Answer 7(ObjList((CoqGoal()(CProdN((fname"")....))))))
-(8 (Control (StmAdd 0 4 "now induction n.")))
+(8 (Control (StmAdd 0 (Some 4) "now induction n.")))
 > (Answer 8 Ack)
 > (Answer 8(StmInfo 5))
 (10 (Control (StmObserve 5)))
 > (Answer 10 Ack)
 > (Feedback((id(State 5))(contents Processed)(route 0)))
 > ...
-(11 (Query (None PpStr) Goals))
+(Query () (Goals 4))
 > (Answer 11 Ack)
 > (Answer 11(ObjList()))
 
 ```
-
