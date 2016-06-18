@@ -73,8 +73,8 @@ type goal_selector =
   ]]
   [@@deriving sexp]
 
-type 'a core_induction_arg =
-  [%import: 'a Tacexpr.core_induction_arg
+type 'a core_destruction_arg =
+  [%import: 'a Tacexpr.core_destruction_arg
   [@with
     Loc.t       := loc;
     Loc.located := located;
@@ -82,8 +82,8 @@ type 'a core_induction_arg =
   ]]
   [@@deriving sexp]
 
-type 'a induction_arg =
-  [%import: 'a Tacexpr.induction_arg]
+type 'a destruction_arg =
+  [%import: 'a Tacexpr.destruction_arg]
   [@@deriving sexp]
 
 type inversion_kind =
@@ -197,7 +197,7 @@ type ml_tactic_entry =
 module ITac = struct
 
 type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_expr =
-  | TacIntroPattern of 'dtrm intro_pattern_expr located list
+  | TacIntroPattern of evars_flag * 'dtrm intro_pattern_expr located list
   | TacApply of advanced_flag * evars_flag * 'trm with_bindings_arg list *
       ('nam * 'dtrm intro_pattern_expr located option) option
   | TacElim of evars_flag * 'trm with_bindings_arg * 'trm with_bindings option
@@ -299,7 +299,7 @@ end
 
 let rec _gen_atom_tactic_expr_put (t : 'a Tacexpr.gen_atomic_tactic_expr) :
   ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_atomic_tactic_expr = match t with
-  | Tacexpr.TacIntroPattern x            -> ITac.TacIntroPattern x
+  | Tacexpr.TacIntroPattern(a,b)         -> ITac.TacIntroPattern(a,b)
   | Tacexpr.TacApply (a,b,c,d)           -> ITac.TacApply (a,b,c,d)
   | Tacexpr.TacElim (a,b,c)              -> ITac.TacElim (a,b,c)
   | Tacexpr.TacCase (a,b)                -> ITac.TacCase (a,b)
@@ -390,7 +390,7 @@ and _gen_tactic_fun_ast_put (t : 'a Tacexpr.gen_tactic_fun_ast) :
 
 let rec _gen_atom_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_atomic_tactic_expr) :
   'a Tacexpr.gen_atomic_tactic_expr = match t with
-  | ITac.TacIntroPattern x            -> Tacexpr.TacIntroPattern x
+  | ITac.TacIntroPattern(a,b)         -> Tacexpr.TacIntroPattern(a,b)
   | ITac.TacApply (a,b,c,d)           -> Tacexpr.TacApply (a,b,c,d)
   | ITac.TacElim (a,b,c)              -> Tacexpr.TacElim (a,b,c)
   | ITac.TacCase (a,b)                -> Tacexpr.TacCase (a,b)

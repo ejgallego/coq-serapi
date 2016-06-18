@@ -51,19 +51,19 @@ type debug = Tacexpr.debug = Debug | Info | Off
 val debug_of_sexp : Sexp.t -> debug
 val sexp_of_debug : debug -> Sexp.t
 
-type 'a core_induction_arg = 'a Tacexpr.core_induction_arg
+type 'a core_destruction_arg = 'a Tacexpr.core_destruction_arg
 
-val core_induction_arg_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a core_induction_arg
-val sexp_of_core_induction_arg :
-  ('a -> Sexp.t) -> 'a core_induction_arg -> Sexp.t
+val core_destruction_arg_of_sexp :
+  (Sexp.t -> 'a) -> Sexp.t -> 'a core_destruction_arg
+val sexp_of_core_destruction_arg :
+  ('a -> Sexp.t) -> 'a core_destruction_arg -> Sexp.t
 
-type 'a induction_arg = clear_flag * 'a core_induction_arg
+type 'a destruction_arg = clear_flag * 'a core_destruction_arg
 
-val induction_arg_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a induction_arg
-val sexp_of_induction_arg :
-  ('a -> Sexp.t) -> 'a induction_arg -> Sexp.t
+val destruction_arg_of_sexp :
+  (Sexp.t -> 'a) -> Sexp.t -> 'a destruction_arg
+val sexp_of_destruction_arg :
+  ('a -> Sexp.t) -> 'a destruction_arg -> Sexp.t
 
 type inversion_kind =
   Tacexpr.inversion_kind
