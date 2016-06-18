@@ -96,18 +96,27 @@ val query_pred_of_sexp : Sexp.t -> query_pred
 val sexp_of_query_pred : query_pred -> Sexp.t
 
 (** Query output format  *)
-type query_pp =
+type print_format =
   | PpSexp
   | PpStr
 
-val query_pp_of_sexp : Sexp.t -> query_pp
-val sexp_of_query_pp : query_pp -> Sexp.t
+val print_format_of_sexp : Sexp.t -> print_format
+val sexp_of_print_format : print_format -> Sexp.t
+
+type print_opt = {
+  pp_format : print_format;
+  pp_depth  : int;
+  (* pp_margin : int; *)
+}
+
+val print_opt_of_sexp : Sexp.t -> print_opt
+val sexp_of_print_opt : print_opt -> Sexp.t
 
 type query_opt =
   { preds : query_pred list;
     limit : int option;
     sid   : Stateid.t;
-    pp    : query_pp ;
+    pp    : print_opt ;
   }
 
 val query_opt_of_sexp : Sexp.t -> query_opt
@@ -119,12 +128,12 @@ val sexp_of_query_opt : query_opt -> Sexp.t
 type query_cmd =
   | Option
   | Search
-  | Goals   of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
-  | TypeOf  of string           (* XXX Unimplemented *)
-  | Names   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
-  | Tactics of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
-  | Locate  of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
-  | Implicits of string              (* XXX Print LTAC signatures (with prefix) *)
+  | Goals     of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
+  | TypeOf    of string           (* XXX Unimplemented *)
+  | Names     of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Tactics   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t
@@ -141,7 +150,7 @@ val sexp_of_query_cmd : query_cmd -> Sexp.t
 
 type cmd =
     Control of control_cmd
-  | Print   of coq_object
+  | Print   of print_opt * coq_object
   | Parse   of int * string
   | Query   of query_opt * query_cmd
   | Noop

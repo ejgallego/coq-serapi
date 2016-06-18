@@ -416,16 +416,23 @@ let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
 
 (** Query output format  *)
-type query_pp =
+type print_format =
   | PpSexp
   | PpStr
+  [@@deriving sexp]
+
+type print_opt = {
+  pp_format : print_format  [@default PpStr];
+  pp_depth  : int           [@default 0];
+  (* pp_margin : int; *)
+}
   [@@deriving sexp]
 
 type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
-    sid   : stateid  [@default Stm.get_current_state()];
-    pp    : query_pp [@default PpSexp];
+    sid   : stateid   [@default Stm.get_current_state()];
+    pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0 } ];
   } [@@deriving sexp]
 
 (** XXX: This should be in sync with the object tag!  *)
@@ -543,7 +550,7 @@ let exec_query opt cmd =
   (* XXX: Filter should move to query once we have GADT *)
   let res = obj_filter opt.preds res in
   let res = obj_limit  opt.limit res in
-  match opt.pp with
+  match opt.pp.pp_format with
     | PpStr  -> List.map string_of_obj res
     | PpSexp -> res
 
@@ -568,7 +575,7 @@ let serproto_help () =
 
 type cmd =
   | Control    of control_cmd
-  | Print      of coq_object
+  | Print      of print_opt * coq_object
   | Parse      of int * string
   | Query      of query_opt * query_cmd
   | Noop
@@ -590,7 +597,7 @@ type answer =
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
 
-  | Print obj         -> [ObjList [string_of_obj obj]]
+  | Print(_opts, obj) -> [ObjList [string_of_obj obj]]
 
   (* We try to do a bit better here than a coq_protect would do, by
      trying to keep partial results. *)
