@@ -10,7 +10,10 @@ interesting debug tool for Coq. Its main design principles are:
 - **Be extremely robust**: Any crash is a **critical** bug; we are liberal in what we accept, and strict in what we produce.
 - **Make life easy**: We are flexible with abstractions in order to provide a user-oriented interface.
 
-SerAPI is still a proof-of-concept. Feedback from Coq users and developers is very welcome, contact us by mail or in the issue tracker!
+SerAPI is still a proof-of-concept. However, it already supports async
+processing, most of the functionality available in the XML protocol,
+and a few extra things. Feedback from Coq users and developers is very
+welcome, contact us by mail or in the issue tracker!
 
 ### Quick Overview and Documentation
 
