@@ -30,9 +30,9 @@ let () =
       ocaml_lib ~extern:true ~dir:(p "engine")   ~tag_name:"coq_engine"   (q "engine"    "engine");
       ocaml_lib ~extern:true ~dir:(p "pretyping")~tag_name:"coq_pretyping"(q "pretyping" "pretyping");
       ocaml_lib ~extern:true ~dir:(p "interp")   ~tag_name:"coq_interp"   (q "interp"    "interp");
-      ocaml_lib ~extern:true ~dir:(p "parsing")  ~tag_name:"coq_parsing"  (q "parsing"   "parsing");
       ocaml_lib ~extern:true ~dir:(p "grammar")  ~tag_name:"coq_grammar"  (q "grammar"   "grammar");
       ocaml_lib ~extern:true ~dir:(p "proofs")   ~tag_name:"coq_proofs"   (q "proofs"    "proofs");
+      ocaml_lib ~extern:true ~dir:(p "parsing")  ~tag_name:"coq_parsing"  (q "parsing"   "parsing");
       ocaml_lib ~extern:true ~dir:(p "printing") ~tag_name:"coq_printing" (q "printing"  "printing");
       ocaml_lib ~extern:true ~dir:(p "tactics")  ~tag_name:"coq_tactics"  (q "tactics"   "tactics");
       ocaml_lib ~extern:true ~dir:(p "stm")      ~tag_name:"coq_stm"      (q "stm"       "stm");
