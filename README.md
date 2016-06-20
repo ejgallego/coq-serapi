@@ -129,12 +129,11 @@ _Version 0.2_:
 _More_:
 
  - Would be easy to get a list of vernacs? Things like `Print`, `Typeclasses eauto`, etc.
-
+ - Add a cache to full document parsing..
+ - enable an open CoqObject tag for plugin use (see coq/coq#209 ) ?
  - Checkstyle support.
-
- - Add a "document cache layer" where you can send a full document and Coq parses it in full and perform caching.
-
  - ppx to enumerate datatypes. Write the help command with this and also Clément suggestions about Vernac enumeration.
+
 
 ### Technical details
 
