@@ -58,6 +58,7 @@ open Ser_constrexpr
 open Ser_proof
 open Ser_stm
 open Ser_tacenv
+open Ser_profile_ltac
 
 (* New protocol + interpreter *)
 
@@ -126,6 +127,7 @@ type coq_object =
   | CoqTactic  of kername * ltac_entry
   | CoqQualId  of qualid
   | CoqImplicit of implicits_list
+  | CoqProfData of ltacprof_results
   (* Fixme *)
   | CoqGoal    of (constr * (id list * constr option * constr) list) pre_goals
   [@@deriving sexp]
@@ -174,6 +176,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqTactic(kn,_) -> pr (Names.KerName.print kn)
   (* Fixme *)
   | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.Proof.fg_goals)
+  | CoqProfData _pf -> pr (Pp.str "FIXME UPSTREAM, provide pr_prof_results")
   | CoqQualId qid   -> pr (Pp.str (Libnames.string_of_qualid qid))
   | CoqImplicit(_,l)-> pr (Pp.pr_sequence pp_implicit l)
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
@@ -439,6 +442,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqTactic(kn,_) -> String.is_prefix (Names.KerName.to_string kn) ~prefix
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
+  | CoqProfData _   -> true
   | CoqImplicit _   -> true
   | CoqGoal _       -> true
 
@@ -475,6 +479,7 @@ type query_cmd =
   | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
   | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
   | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
+  | ProfileData
   [@@deriving sexp]
 
 module QueryUtil = struct
@@ -556,6 +561,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
+  | ProfileData    -> [CoqProfData (Profile_ltac.get_profiling_results ())]
 
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]

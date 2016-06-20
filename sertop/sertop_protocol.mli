@@ -31,6 +31,7 @@ type coq_object =
   | CoqTactic  of Names.KerName.t * Tacenv.ltac_entry
   | CoqQualId  of Libnames.qualid
   | CoqImplicit of Impargs.implicits_list
+  | CoqProfData of Profile_ltac.ltacprof_results
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal    of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
 
@@ -135,6 +136,7 @@ type query_cmd =
   | Tactics   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
+  | ProfileData
 
 val query_cmd_of_sexp : Sexp.t -> query_cmd
 val sexp_of_query_cmd : query_cmd -> Sexp.t
