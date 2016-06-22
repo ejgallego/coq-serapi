@@ -201,17 +201,15 @@ let obj_print pr_opt obj =
   match pr_opt.pp_format with
   | PpSexp -> obj
   | PpStr  ->
-    if pr_opt.pp_depth = 0 then begin
-      fprintf str_formatter "@[%a@]" pp_obj obj;
-      CoqString (flush_str_formatter ())
-    end else begin
-      let mb      = Pp_control.get_depth_boxes ()      in
-      fprintf str_formatter "@[%a@]" pp_obj obj;
-      let str_obj = CoqString (flush_str_formatter ()) in
-      Pp_control.set_depth_boxes mb;
-      str_obj
-    end
-
+    let mb      = pp_get_max_boxes str_formatter ()     in
+    let et      = pp_get_ellipsis_text str_formatter () in
+    pp_set_max_boxes     str_formatter pr_opt.pp_depth;
+    pp_set_ellipsis_text str_formatter "...";
+    fprintf str_formatter "@[%a@]" pp_obj obj;
+    let str_obj = CoqString (flush_str_formatter ()) in
+    pp_set_max_boxes     str_formatter mb;
+    pp_set_ellipsis_text str_formatter et;
+    str_obj
 
 (******************************************************************************)
 (* Parsing Sub-Protocol                                                       *)
