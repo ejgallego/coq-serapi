@@ -3,7 +3,7 @@
 include config.mk
 
 OCB=ocamlbuild
-OCB_OPT=-use-ocamlfind -j 4
+OCB_OPT=-use-ocamlfind -j 4 #-classic-display
 
 all: sertop
 

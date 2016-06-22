@@ -14,7 +14,4 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
 <sertop/*>: package(core_kernel), package(cmdliner)
 
-<sertop/*.{byte,native}>: linkall, package(dynlink), package(camlp5), package(camlp5.gramlib)
-
-
-
+<sertop/*.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib)
