@@ -108,6 +108,7 @@ val sexp_of_print_format : print_format -> Sexp.t
 type print_opt = {
   pp_format : print_format;
   pp_depth  : int;
+  pp_elide  : string;
   (* pp_margin : int; *)
 }
 

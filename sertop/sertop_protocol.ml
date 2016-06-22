@@ -192,6 +192,7 @@ type print_format =
 type print_opt = {
   pp_format : print_format  [@default PpStr];
   pp_depth  : int           [@default 0];
+  pp_elide  : string        [@default "..."];
   (* pp_margin : int; *)
 }
   [@@deriving sexp]
@@ -204,7 +205,7 @@ let obj_print pr_opt obj =
     let mb      = pp_get_max_boxes str_formatter ()     in
     let et      = pp_get_ellipsis_text str_formatter () in
     pp_set_max_boxes     str_formatter pr_opt.pp_depth;
-    pp_set_ellipsis_text str_formatter "...";
+    pp_set_ellipsis_text str_formatter pr_opt.pp_elide;
     fprintf str_formatter "@[%a@]" pp_obj obj;
     let str_obj = CoqString (flush_str_formatter ()) in
     pp_set_max_boxes     str_formatter mb;
@@ -474,7 +475,7 @@ type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
     sid   : stateid   [@default Stm.get_current_state()];
-    pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0 } ];
+    pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0; pp_elide = "..." } ];
   } [@@deriving sexp]
 
 (** XXX: This should be in sync with the object tag!  *)
