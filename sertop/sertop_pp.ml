@@ -40,56 +40,58 @@ let rec pp_list ?sep pp fmt l = match l with
 (************************************************************************)
 let pp_stateid fmt id = fprintf fmt "%d" (Stateid.to_int id)
 
-let string_of_eosid esid =
+let pp_eosid fmt esid =
   let open Feedback in
   match esid with
-  | Edit  eid -> "eid: " ^ string_of_int eid
-  | State sid -> "sid: " ^ (Stateid.to_string sid)
+  | Edit  eid -> fprintf fmt "edit__id: %2d" eid
+  | State sid -> fprintf fmt "state_id: %2d" (Stateid.to_int sid)
 
 (************************************************************************)
 (* Feedback                                                             *)
 (************************************************************************)
-let string_of_feedback_content fb : string =
+let pp_feedback_content fmt fb =
   let open Feedback in
   match fb with
   (* STM mandatory data (must be displayed) *)
-    | Processed       -> "Processed."
-    | Incomplete      -> "Incomplete."
-    | Complete        -> "Complete."
-    | ErrorMsg(_l, s) -> "ErrorMsg: " ^ s
+  | Processed       -> fprintf fmt "Processed"
+  | Incomplete      -> fprintf fmt "Incomplete"
+  | Complete        -> fprintf fmt "Complete"
+  (* XXX: TODO print loc *)
+  | ErrorMsg(_l, s) -> fprintf fmt "ErrorMsg: %s" s
 
   (* STM optional data *)
-    | ProcessingIn s       -> "ProcessingIn: " ^ s
-    | InProgress d         -> "InProgress: " ^ (string_of_int d)
-    | WorkerStatus(w1, w2) -> "WorkerStatus: " ^ w1 ^ ", " ^ w2
+  | ProcessingIn s       -> fprintf fmt "ProcessingIn: %s" s
+  | InProgress d         -> fprintf fmt "InProgress: %d" d
+  | WorkerStatus(w1, w2) -> fprintf fmt "WorkerStatus: %s, %s" w1 w2
 
   (* Generally useful metadata *)
-    | Goals(_loc, g) -> "goals: " ^ g
-    | AddedAxiom -> "AddedAxiom."
-    | GlobRef (_loc, s1, s2, s3, s4) -> "GlobRef: " ^ s1 ^ ", " ^ s2 ^ ", " ^ s3 ^ ", " ^ s4
-    | GlobDef (_loc, s1, s2, s3) -> "GlobDef: " ^ s1 ^ ", " ^ s2 ^ ", " ^ s3
-    | FileDependency (os, s) -> "FileDep: " ^ (Option.default "" os) ^ ", " ^ s
-    | FileLoaded (s1, s2)    -> "FileLoaded: " ^ s1 ^ " " ^ s2
+  | Goals(_loc, g) -> fprintf fmt "Goals: %s" g
+  | AddedAxiom     -> fprintf fmt "AddedAxiom"
 
-    (* Extra metadata *)
-    | Custom(_loc, msg, _xml) -> "Custom: " ^ msg
-    (* Old generic messages *)
-    | Message(_l, m) -> "Msg: " ^ Richpp.raw_print m
+  | GlobRef (_loc, s1, s2, s3, s4) -> fprintf fmt "GlobRef: %s,%s,%s,%s" s1 s2 s3 s4
+  | GlobDef (_loc, s1, s2, s3)     -> fprintf fmt "GlobDef: %s,%s,%s"    s1 s2 s3
+
+  | FileDependency (os, s) -> fprintf fmt "FileDep: %a, %s" (pp_opt pp_str) os s
+  | FileLoaded (s1, s2)    -> fprintf fmt "FileLoaded: %s, %s" s1 s2
+
+  (* Extra metadata *)
+  | Custom(_loc, msg, _xml) -> fprintf fmt "Custom: %s" msg
+
+  (* Old generic messages *)
+  | Message(_l, m) -> fprintf fmt "Msg: %s " (Richpp.raw_print m)
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in
-  Format.fprintf fmt "feedback for [%s]: %s"
-    (string_of_eosid fb.id)
-    (string_of_feedback_content fb.Feedback.contents)
+  fprintf fmt "feedback for [%a]: @[%a@]" pp_eosid fb.id pp_feedback_content fb.Feedback.contents
 
 (************************************************************************)
 (* Xml                                                                  *)
 (************************************************************************)
 let pp_attr fmt (xtag, att) =
-  Format.fprintf fmt "%s = %s" xtag att
+  fprintf fmt "%s = %s" xtag att
 
 let rec pp_xml fmt (xml : Xml_datatype.xml) = match xml with
   | Xml_datatype.Element (tag, att, more) ->
-    Format.fprintf fmt "@[<%s @[%a@]>@,%a@,</%s>@]" tag (pp_list pp_attr) att (pp_list pp_xml) more tag
-  | Xml_datatype.PCData str -> Format.fprintf fmt "%s" str
+    fprintf fmt "@[<%s @[%a@]>@,%a@,</%s>@]" tag (pp_list pp_attr) att (pp_list pp_xml) more tag
+  | Xml_datatype.PCData str -> fprintf fmt "%s" str
 
