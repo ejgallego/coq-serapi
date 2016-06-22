@@ -183,10 +183,35 @@ let pp_obj fmt (obj : coq_object) =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
-let string_of_obj obj =
+(** Print output format  *)
+type print_format =
+  | PpSexp
+  | PpStr
+  [@@deriving sexp]
+
+type print_opt = {
+  pp_format : print_format  [@default PpStr];
+  pp_depth  : int           [@default 0];
+  (* pp_margin : int; *)
+}
+  [@@deriving sexp]
+
+let obj_print pr_opt obj =
   let open Format in
-  fprintf str_formatter "@[%a@]" pp_obj obj;
-  CoqString (flush_str_formatter ())
+  match pr_opt.pp_format with
+  | PpSexp -> obj
+  | PpStr  ->
+    if pr_opt.pp_depth = 0 then begin
+      fprintf str_formatter "@[%a@]" pp_obj obj;
+      CoqString (flush_str_formatter ())
+    end else begin
+      let mb      = Pp_control.get_depth_boxes ()      in
+      fprintf str_formatter "@[%a@]" pp_obj obj;
+      let str_obj = CoqString (flush_str_formatter ()) in
+      Pp_control.set_depth_boxes mb;
+      str_obj
+    end
+
 
 (******************************************************************************)
 (* Parsing Sub-Protocol                                                       *)
@@ -447,19 +472,6 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
 
-(** Query output format  *)
-type print_format =
-  | PpSexp
-  | PpStr
-  [@@deriving sexp]
-
-type print_opt = {
-  pp_format : print_format  [@default PpStr];
-  pp_depth  : int           [@default 0];
-  (* pp_margin : int; *)
-}
-  [@@deriving sexp]
-
 type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
@@ -583,9 +595,7 @@ let exec_query opt cmd =
   (* XXX: Filter should move to query once we have GADT *)
   let res = obj_filter opt.preds res in
   let res = obj_limit  opt.limit res in
-  match opt.pp.pp_format with
-    | PpStr  -> List.map string_of_obj res
-    | PpSexp -> res
+  List.map (obj_print opt.pp) res
 
 (******************************************************************************)
 (* Help                                                                       *)
@@ -630,7 +640,7 @@ type answer =
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
 
-  | Print(_opts, obj) -> [ObjList [string_of_obj obj]]
+  | Print(opts, obj) -> [ObjList [obj_print opts obj]]
 
   (* We try to do a bit better here than a coq_protect would do, by
      trying to keep partial results. *)
