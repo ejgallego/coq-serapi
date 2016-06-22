@@ -82,6 +82,10 @@ type reference_or_constr = Vernacexpr.reference_or_constr
 val reference_or_constr_of_sexp : Sexp.t -> reference_or_constr
 val sexp_of_reference_or_constr : reference_or_constr -> Sexp.t
 
+type hint_mode = Vernacexpr.hint_mode
+val hint_mode_of_sexp : Sexp.t -> hint_mode
+val sexp_of_hint_mode : hint_mode -> Sexp.t
+
 type hints_expr = Vernacexpr.hints_expr
 val hints_expr_of_sexp : Sexp.t -> hints_expr
 val sexp_of_hints_expr : hints_expr -> Sexp.t

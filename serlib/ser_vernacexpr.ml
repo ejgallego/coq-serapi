@@ -130,6 +130,10 @@ type reference_or_constr =  [%import: Vernacexpr.reference_or_constr
      ]]
   [@@deriving sexp]
 
+type hint_mode =
+  [%import: Vernacexpr.hint_mode]
+  [@@deriving sexp]
+
 type hints_expr =  [%import: Vernacexpr.hints_expr
      [@with Names.Id.t := id;
             Libnames.reference := reference;
@@ -521,3 +525,4 @@ type vernac_expr =
 (*     Loc.located  := located; *)
 (*   ]] *)
 (*   [@@deriving sexp] *)
+
