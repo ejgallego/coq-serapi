@@ -202,12 +202,14 @@ let obj_print pr_opt obj =
   match pr_opt.pp_format with
   | PpSexp -> obj
   | PpStr  ->
-    let mb      = pp_get_max_boxes str_formatter ()     in
+    let mb      = pp_get_max_boxes     str_formatter () in
     let et      = pp_get_ellipsis_text str_formatter () in
     pp_set_max_boxes     str_formatter pr_opt.pp_depth;
     pp_set_ellipsis_text str_formatter pr_opt.pp_elide;
+
     fprintf str_formatter "@[%a@]" pp_obj obj;
-    let str_obj = CoqString (flush_str_formatter ()) in
+    let str_obj = CoqString (flush_str_formatter ())    in
+
     pp_set_max_boxes     str_formatter mb;
     pp_set_ellipsis_text str_formatter et;
     str_obj
@@ -624,22 +626,10 @@ type cmd =
   | Help
   [@@deriving sexp]
 
-type cmd_tag = string
-  [@@deriving sexp]
-
-type tagged_cmd = cmd_tag * cmd
-  [@@deriving sexp]
-
-type answer =
-  | Answer    of cmd_tag * answer_kind
-  | Feedback  of feedback
-  | SexpError of Sexp.t
-  [@@deriving sexp]
-
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
 
-  | Print(opts, obj) -> [ObjList [obj_print opts obj]]
+  | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
 
   (* We try to do a bit better here than a coq_protect would do, by
      trying to keep partial results. *)
@@ -656,6 +646,18 @@ let exec_cmd (cmd : cmd) = match cmd with
 let is_cmd_quit cmd = match cmd with
   | Control Quit -> true
   | _            -> false
+
+type cmd_tag = string
+  [@@deriving sexp]
+
+type tagged_cmd = cmd_tag * cmd
+  [@@deriving sexp]
+
+type answer =
+  | Answer    of cmd_tag * answer_kind
+  | Feedback  of feedback
+  | SexpError of Sexp.t
+  [@@deriving sexp]
 
 (******************************************************************************)
 (* Global Protocol Options                                                    *)
@@ -674,17 +676,29 @@ type ser_opts = {
 (******************************************************************************)
 (* Prelude Hacks (to be removed)                                              *)
 (******************************************************************************)
+
 (* XXX: Stid are fixed here. Move to ser_init? *)
-let ser_prelude coq_path : cmd list =
+let _ser_prelude coq_path : cmd list =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Sertop_init.coq_init_plugins  @
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
+  []
+  (* [ Control (StmAdd     (1, None, "Require Import Coq.Init.Prelude. ")); *)
+  (*   Control (StmObserve (Stateid.of_int 2)) *)
+  (* ] *)
+
+let ser_load_prelude =
   [ Control (StmAdd     (1, None, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 
-let do_prelude coq_path =
-  List.iter (fun cmd -> ignore (exec_cmd cmd)) (ser_prelude coq_path)
+let do_prelude _ =
+  List.iter (fun cmd -> ignore (exec_cmd cmd)) ser_load_prelude
+
+let ser_prelude_list coq_path =
+  let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
+  List.map (fun p -> ("Coq" :: p, mk_path "plugins"  p, true)) Sertop_init.coq_init_plugins  @
+  List.map (fun p -> ("Coq" :: p, mk_path "theories" p, true)) Sertop_init.coq_init_theories
 
 (******************************************************************************)
 (* Input/Output                                                               *)
@@ -748,12 +762,13 @@ let ser_loop ser_opts =
   let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
   let pp_feed fb   = pp_answer (Feedback fb)                           in
 
-
   (* Init Coq *)
   Sertop_init.coq_init {
     Sertop_init.fb_handler = pp_feed;
     Sertop_init.aopts      = ser_opts.async;
+    Sertop_init.iload_path = Option.cata ser_prelude_list [] ser_opts.coqlib;
   };
+
   (* Load prelude if requested *)
   Option.iter do_prelude ser_opts.coqlib;
 

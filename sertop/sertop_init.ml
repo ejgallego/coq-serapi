@@ -29,11 +29,15 @@ type coq_opts = {
   fb_handler   : Feedback.feedback -> unit;
   (* Async flags *)
   aopts        : async_flags;
+  (* Initial LoadPath XXX: Use a record *)
+  iload_path   : (string list * string * bool) list;
 }
 
 let coq_init opts =
 
-  (* Internal Coq initialization *)
+  (**************************************************************************)
+  (* Low-level, internal Coq initialization                                 *)
+  (**************************************************************************)
   Lib.init();
 
   Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
@@ -41,8 +45,27 @@ let coq_init opts =
   (* Mltop.init_known_plugins (); *)
   Global.set_engagement Declarations.PredicativeSet;
 
-  (* Library initialization *)
+  (**************************************************************************)
+  (* Library initialization                                                 *)
+  (**************************************************************************)
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
+
+  List.iter (fun (lib, lib_path, has_ml) ->
+      let open Names in
+      let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
+      Loadpath.add_load_path lib_path coq_path ~implicit:false;
+      if has_ml then Mltop.add_ml_dir lib_path
+    ) opts.iload_path;
+
+  (* We need to declare a toplevel module name, not sure if this can
+     be avoided.  *)
+  Declaremods.start_library sertop_dp;
+
+  (* XXX: Should we seed Coq std loadpath here, before STM init ? *)
+
+  (**************************************************************************)
+  (* Feedback setup                                                         *)
+  (**************************************************************************)
 
   (* Whether to forward Glob output to the IDE. *)
   let dumpglob = false in
@@ -55,6 +78,14 @@ let coq_init opts =
       "-no-glob"
     end
   in
+
+  (* Initialize logging. *)
+  Feedback.set_logger Feedback.feedback_logger;
+  Feedback.set_feeder opts.fb_handler;
+
+  (**************************************************************************)
+  (* Async setup                                                            *)
+  (**************************************************************************)
 
   (* Set async flags; IMPORTANT, this has to happen before STM.init () ! *)
   Option.iter (fun coqtop ->
@@ -75,16 +106,10 @@ let coq_init opts =
       Array.set Sys.argv 0 coqtop
     ) opts.aopts.enable_async;
 
-  (* We need to declare a toplevel module name, not sure if this can
-     be avoided.  *)
-  Declaremods.start_library sertop_dp;
-
-  (* Initialize the STM. *)
+  (**************************************************************************)
+  (* Start the STM!!                                                        *)
+  (**************************************************************************)
   Stm.init();
-
-  (* Initialize logging. *)
-  Feedback.set_logger Feedback.feedback_logger;
-  Feedback.set_feeder opts.fb_handler;
 
   (* Miscellaneous tweaks *)
   Vernacentries.enable_goal_printing := false;
@@ -134,5 +159,4 @@ let coq_init_theories =
   ; ["NArith"]
   ; ["ZArith"]
   ; ["QArith"]
-
   ]

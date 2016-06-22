@@ -24,6 +24,8 @@ type coq_opts = {
   fb_handler   : Feedback.feedback -> unit;
   (* Async flags *)
   aopts        : async_flags;
+  (* Initial LoadPath XXX: Use a record *)
+  iload_path   : (string list * string * bool) list;
 }
 
 val coq_init : coq_opts -> unit
