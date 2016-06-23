@@ -66,12 +66,17 @@ open Ser_profile_ltac
 (* Exception Registration                                                     *)
 (******************************************************************************)
 
+exception NoSuchState of Stateid.t
+[@@deriving sexp]
+
 (* We play slow for now *)
 let _ =
   (* XXX Finish this *)
   let open Sexp in
   let sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
   Conv.Exn_converter.add_slow (function
+      | NoSuchState sid ->
+        Some (List [Atom "NoSuchState"; sexp_of_stateid sid])
       | Errors.UserError(e,msg) ->
         Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
       | Errors.AlreadyDeclared msg ->
@@ -339,6 +344,12 @@ module ControlUtil = struct
     let stt = ref (Option.value opts.ontop ~default:(Stm.get_current_state ())) in
     let check_lim i = Option.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
     try
+      (* XXX: We check that the ontop state is actually in the
+       * document to avoid an Anomaly exception.
+       *)
+      if not (List.mem !cur_doc !stt) then
+        raise (NoSuchState !stt);
+
       while (0 < !rem) && (check_lim !i) do
         let n_st, loc, foc =
           let sent = String.sub sent ~pos:!buf ~len:!rem in
