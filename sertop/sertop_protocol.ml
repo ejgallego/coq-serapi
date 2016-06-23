@@ -315,7 +315,7 @@ module ControlUtil = struct
   let edit_id = ref 0
 
   type doc    = stateid list
-  let cur_doc : doc ref = ref []
+  let cur_doc : doc ref = ref [Stateid.of_int 1]
 
   let pp_doc fmt l =
     let open Sertop_pp in
