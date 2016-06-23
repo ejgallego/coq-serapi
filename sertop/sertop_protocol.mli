@@ -71,10 +71,17 @@ val answer_kind_of_sexp : Sexp.t -> answer_kind
 (* Control Sub-Protocol                                                       *)
 (******************************************************************************)
 
+type add_opts = {
+  lim    : int       option;
+  ontop  : Stateid.t option;
+  newtip : Stateid.t option;
+  verb   : bool;
+}
+
 type control_cmd =
     StmState
-  | StmAdd     of int * Stateid.t option * string
-  | StmQuery   of       Stateid.t        * string
+  | StmAdd     of       add_opts  * string      (* Stm.add       *)
+  | StmQuery   of       Stateid.t * string
   | StmCancel  of       Stateid.t list
   | StmEditAt  of       Stateid.t
   | StmObserve of       Stateid.t

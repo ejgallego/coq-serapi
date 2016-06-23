@@ -273,11 +273,17 @@ let coq_protect e =
   try  e () @ [Completed]
   with exn -> [CoqExn exn]
 
-let verb = true
+type add_opts = {
+  lim    : int     sexp_option;
+  ontop  : stateid sexp_option;
+  newtip : stateid sexp_option;
+  verb   : bool    [@default false];
+} [@@deriving sexp]
+
 type control_cmd =
   | StmState                                    (* Get the state *)
-  | StmAdd     of int * stateid option * string (* Stm.add       *)
-  | StmQuery   of       stateid        * string (* Stm.query     *)
+  | StmAdd     of       add_opts * string       (* Stm.add       *)
+  | StmQuery   of       stateid  * string       (* Stm.query     *)
   | StmCancel  of       stateid list            (* Cancel method *)
   | StmEditAt  of       stateid                 (* Stm.edit_at   *)
   | StmObserve of       stateid                 (* Stm.observe   *)
@@ -314,15 +320,15 @@ module ControlUtil = struct
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
   (* let add_sentence st_id pa = *)
-  let add_sentence st_id sent pa =
+  let add_sentence ?newtip ~ontop verb pa sent =
     (* Workaround coq/coq#204 *)
-    let loc         = parse_sentence pa                           in
-    let new_st, foc = Stm.add ~ontop:st_id verb (- !edit_id) sent in
+    let loc         = parse_sentence pa                             in
+    let new_st, foc = Stm.add ~ontop ?newtip verb (- !edit_id) sent in
     incr edit_id;
     cur_doc := new_st :: !cur_doc;
     new_st, loc, foc
 
-  let add_sentences lim st_id sent =
+  let add_sentences opts sent =
     (* Workaround coq/coq#204 *)
     let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
     let pos p l = l.Loc.ep - p         in
@@ -330,14 +336,15 @@ module ControlUtil = struct
     let buf = ref 0                    in
     let acc = ref []                   in
     let rem = ref (String.length sent) in
-    let stt = ref st_id                in
+    let stt = ref (Option.value opts.ontop ~default:(Stm.get_current_state ())) in
+    let check_lim i = Option.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
     try
-      while (0 < !rem) && (!i <= lim) do
+      while (0 < !rem) && (check_lim !i) do
         let n_st, loc, foc =
           let sent = String.sub sent ~pos:!buf ~len:!rem in
           (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
           (* Format.eprintf "Sent: %s @\n%!" sent; *)
-          add_sentence !stt sent pa
+          add_sentence ?newtip:opts.newtip ~ontop:!stt opts.verb pa sent
         in
         acc := (StmAdded (n_st, loc, foc)) :: !acc;
         rem := !rem - pos !buf loc;
@@ -412,10 +419,9 @@ end
 
 let exec_ctrl ctrl =
   coq_protect @@ fun () -> match ctrl with
-  | StmState       -> [StmCurId (Stm.get_current_state ())]
+  | StmState        -> [StmCurId (Stm.get_current_state ())]
 
-  | StmAdd (lim, ost, s) -> let st = Option.default (Stm.get_current_state ()) ost in
-                            ControlUtil.add_sentences lim st s
+  | StmAdd (opt, s)      -> ControlUtil.add_sentences opt s
 
   | StmCancel st         -> List.concat @@ List.map ControlUtil.cancel_sentence st
 
@@ -610,7 +616,7 @@ let serproto_help () =
     ("Coq SerAPI -- Protocol documentation is still incomplete, main commands are: \n\n" ^
      "  (Control control_cmd) \n"      ^
      "  (Query query_opt query_cmd) \n"^
-     "  (Print coq_object) \n"         ^
+     "  (Print print_opt coq_object) \n"         ^
      "\nSee sertop_protocol.mli for more details.\n\n")
 
 (******************************************************************************)
@@ -688,7 +694,7 @@ let _ser_prelude coq_path : cmd list =
   (* ] *)
 
 let ser_load_prelude =
-  [ Control (StmAdd     (1, None, "Require Import Coq.Init.Prelude. "));
+  [ Control (StmAdd     (add_opts_of_sexp (Sexp.List []), "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 
