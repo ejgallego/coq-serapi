@@ -7,7 +7,9 @@ easier, putting particular emphasis on IDE/tool developers. However,
 we believe that everybody can have some fun playing with our tool!
 
 SerAPI provides a standard "Coq toplevel", `sertop`. Support for a
-Javascript and Jupyter kernel is planned.
+Javascript and Jupyter kernel is on its way.
+
+*NEW, try sertop in your browser!* https://x80.org/rhino-hawk/
 
 Our main design principles are:
 
