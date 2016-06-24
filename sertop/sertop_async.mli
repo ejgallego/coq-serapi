@@ -19,6 +19,6 @@ open Sexplib
     [fb_handler] *)
 val sertop_init : (Sexp.t -> unit) -> unit
 
-(** [sertop_callback input out] Execute command [input] and send
+(** [sertop_callback out input] Execute command [input] and send
     serialized output to [out]. Not thread-safe. *)
-val sertop_callback : Sexp.t -> (Sexp.t -> unit) -> unit
+val sertop_callback : (Sexp.t -> unit) -> Sexp.t -> unit

@@ -41,7 +41,7 @@ let sertop_init (fb_out : Sexp.t -> unit) =
   Sertop_init.coq_init coq_opts
 
 (* Callback for a command. Not thread-safe. *)
-let sertop_callback sexp (out_fn : Sexp.t -> unit) =
+let sertop_callback (out_fn : Sexp.t -> unit) sexp =
   let out_answer a = out_fn (sexp_of_answer a) in
   match read_cmd sexp with
   | `Error err         -> out_answer (SexpError err)

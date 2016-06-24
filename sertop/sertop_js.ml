@@ -22,8 +22,7 @@ let post_message (msg : Sexp.t) : unit =
   Worker.post_message msg_str
 
 (* Receive message from the main thread *)
-let on_message (cmd : Sexp.t) : unit =
-  sertop_callback cmd post_message
+let on_message = sertop_callback post_message
 
 (* This code is executed on Worker initialization *)
 let _ =
