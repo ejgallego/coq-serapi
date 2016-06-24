@@ -17,4 +17,6 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <sertop/*.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib)
 
 # Js Stuff
-<sertop/sertop_js.*>: package(js_of_ocaml.ppx)
+<coq-libjs>: include
+<coq-libjs/*.{ml,mli}>: package(yojson)
+<sertop/sertop_js*.*>: package(js_of_ocaml.ppx), package(yojson)
