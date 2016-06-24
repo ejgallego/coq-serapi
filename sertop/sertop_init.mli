@@ -26,6 +26,9 @@ type coq_opts = {
   aopts        : async_flags;
   (* Initial LoadPath XXX: Use a record *)
   iload_path   : (string list * string * bool) list;
+
+  (* Whether to load the prelude non qualified *)
+  implicit_prelude : bool;
 }
 
 val coq_init : coq_opts -> unit

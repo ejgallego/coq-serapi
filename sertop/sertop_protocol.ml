@@ -432,23 +432,24 @@ let exec_ctrl ctrl =
   coq_protect @@ fun () -> match ctrl with
   | StmState        -> [StmCurId (Stm.get_current_state ())]
 
-  | StmAdd (opt, s)      -> ControlUtil.add_sentences opt s
+  | StmAdd (opt, s) -> ControlUtil.add_sentences opt s
 
-  | StmCancel st         -> List.concat @@ List.map ControlUtil.cancel_sentence st
+  | StmCancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
 
-  | StmEditAt st         -> ControlUtil.edit st
+  | StmEditAt st    -> ControlUtil.edit st
 
-  | StmQuery(st, s)-> Stm.query ~at:st s; []
-  | StmObserve st  -> Stm.observe st; []
-  | StmJoin        -> Stm.join (); []
+  | StmQuery(st, s) -> Stm.query ~at:st s; []
+  | StmObserve st   -> Stm.observe st; []
+  | StmJoin         -> Stm.join (); []
   | StmStopWorker w -> Stm.stop_worker w; []
+
   | LibAdd(lib, lib_path, has_ml) ->
-                      let open Names in
-                      let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
-                      (* XXX [upstream]: Unify ML and .vo library paths.  *)
-                      Loadpath.add_load_path lib_path coq_path ~implicit:false;
-                      if has_ml then Mltop.add_ml_dir lib_path;
-                      []
+    let open Names in
+    let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
+    (* XXX [upstream]: Unify ML and .vo library paths.  *)
+    Loadpath.add_load_path lib_path coq_path ~implicit:false;
+    if has_ml then Mltop.add_ml_dir lib_path;
+    []
 
   | SetOpt(loc, n, v) -> exec_setopt loc n v; []
 
@@ -687,6 +688,7 @@ type ser_opts = {
   human    : bool;                (* Output function to use                               *)
   print0   : bool;
   lheader  : bool;
+  implicit : bool;
   async    : Sertop_init.async_flags;
 }
 
@@ -784,6 +786,7 @@ let ser_loop ser_opts =
     Sertop_init.fb_handler = pp_feed;
     Sertop_init.aopts      = ser_opts.async;
     Sertop_init.iload_path = Option.cata ser_prelude_list [] ser_opts.coqlib;
+    Sertop_init.implicit_prelude = ser_opts.implicit;
   };
 
   (* Load prelude if requested *)

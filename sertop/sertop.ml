@@ -33,6 +33,10 @@ let deep_edits =
   let doc = "Enable deep edits into the document." in
   Arg.(value & flag & info ["deep-edits"] ~doc)
 
+let implicit_stdlib =
+  let doc = "Allow to load unqualified stdlib libraries (deprecated)." in
+  Arg.(value & flag & info ["implicit"] ~doc)
+
 let human =
   let doc = "Use human-readable sexp output." in
   Arg.(value & flag & info ["human"] ~doc)
@@ -46,7 +50,7 @@ let length =
   Arg.(value & flag & info ["length"] ~doc)
 
 
-let sertop prelude human print0 length async async_full deep_edits =
+let sertop prelude human print0 length async async_full deep_edits implicit_prelude =
   let open Sertop_init             in
   let open Sertop_protocol         in
   ser_loop
@@ -56,6 +60,7 @@ let sertop prelude human print0 length async async_full deep_edits =
        human    = human;
        print0   = print0;
        lheader  = length;
+       implicit = implicit_prelude;
        async = {
          enable_async = async;
          async_full = async_full;
@@ -70,7 +75,10 @@ let sertop_cmd =
     `P "Experimental Coq Toplevel with serialization support"
   ]
   in
-  Term.(const sertop $ prelude $ human $ print0 $ length $ async $ async_full $ deep_edits ),
+  Term.(const sertop
+        $ prelude $ human $ print0
+        $ length $ async $ async_full
+        $ deep_edits $ implicit_stdlib ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 
 let main () =

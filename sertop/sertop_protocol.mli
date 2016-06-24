@@ -197,6 +197,7 @@ type ser_opts = {
   human    : bool;
   print0   : bool;
   lheader  : bool;
+  implicit : bool;
   async    : Sertop_init.async_flags;
 }
 

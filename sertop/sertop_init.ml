@@ -31,6 +31,8 @@ type coq_opts = {
   aopts        : async_flags;
   (* Initial LoadPath XXX: Use a record *)
   iload_path   : (string list * string * bool) list;
+
+  implicit_prelude : bool;
 }
 
 let coq_init opts =
@@ -53,7 +55,7 @@ let coq_init opts =
   List.iter (fun (lib, lib_path, has_ml) ->
       let open Names in
       let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
-      Loadpath.add_load_path lib_path coq_path ~implicit:false;
+      Loadpath.add_load_path lib_path coq_path ~implicit:opts.implicit_prelude;
       if has_ml then Mltop.add_ml_dir lib_path
     ) opts.iload_path;
 
