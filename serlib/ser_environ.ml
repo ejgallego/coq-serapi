@@ -13,22 +13,22 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Sexplib
 
-(* Private *)
-type evar = [%import: Evar.t]
+open Ser_constr
 
-type _evar                    = Ser_Evar of int [@@deriving sexp]
-let _evar_put  evar           = Ser_Evar (Evar.repr evar)
-let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
+type env =
+  [%import: Environ.env]
 
-let evar_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
-let sexp_of_evar evar = sexp_of__evar (_evar_put evar)
+let env_of_sexp _env  = Environ.env_of_pre_env Pre_env.empty_env
+let sexp_of_env _sexp = Sexp.Atom "Env"
 
-type evar_set = Evar.Set.t
 
-let evar_set_of_sexp sexp =
-  Evar.Set.of_list (list_of_sexp evar_of_sexp sexp)
+type unsafe_judgment =
+  [%import: Environ.unsafe_judgment
+  [@with
+    Term.constr := constr;
+    Term.types  := constr;
+  ]]
+  [@@deriving sexp]
 
-let sexp_of_evar_set cst =
-  sexp_of_list sexp_of_evar (Evar.Set.elements cst)

@@ -15,20 +15,39 @@
 
 open Sexplib.Std
 
-(* Private *)
-type evar = [%import: Evar.t]
+open Ser_constr
+open Ser_environ
+open Ser_names
+open Ser_sorts
+open Ser_univ
 
-type _evar                    = Ser_Evar of int [@@deriving sexp]
-let _evar_put  evar           = Ser_Evar (Evar.repr evar)
-let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
+type arity_error =
+  [%import: Type_errors.arity_error]
+  [@@deriving sexp]
 
-let evar_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
-let sexp_of_evar evar = sexp_of__evar (_evar_put evar)
+type guard_error =
+  [%import: Type_errors.guard_error
+  [@with
+     Environ.env := env;
+     Term.constr := constr;
+  ]]
+  [@@deriving sexp]
 
-type evar_set = Evar.Set.t
+type type_error =
+  [%import: Type_errors.type_error
+  [@with
+     Environ.env := env;
+     Environ.unsafe_judgment := unsafe_judgment;
+     Term.constr := constr;
+     Term.types  := constr;
+     Term.pinductive := pinductive;
+     Term.pconstructor := pconstructor;
+     Term.sorts_family := family;
+     Term.case_info := case_info;
+     Names.variable := id;
+     Names.Name.t := name;
+     Names.identifier := id;
+     Univ.constraints := constraints;
+  ]]
+  [@@deriving sexp]
 
-let evar_set_of_sexp sexp =
-  Evar.Set.of_list (list_of_sexp evar_of_sexp sexp)
-
-let sexp_of_evar_set cst =
-  sexp_of_list sexp_of_evar (Evar.Set.elements cst)

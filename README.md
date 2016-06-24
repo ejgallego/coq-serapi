@@ -2,9 +2,9 @@
 
 SerAPI is a new library and communication protocol for the Coq proof
 assistant. It is based on automatic serialization of Ocaml datatypes
-from/to S-expressions; our goal is to make the life of people
-interacting with Coq easier, with a particular emphasis in IDE/tool developers,
-however, we believe that everybody can have some fun playing with it!
+from/to S-expressions; we aim to make low-level interaction with Coq
+easier, putting particular emphasis on IDE/tool developers. However,
+we believe that everybody can have some fun playing with our tool!
 
 SerAPI provides a standard "Coq toplevel", `sertop`. Support for a
 Javascript and Jupyter kernel is planned.
@@ -22,7 +22,7 @@ welcome, contact us by mail or in the issue tracker!
 
 ### Quick Overview and Documentation
 
-SerAPI installation is similar to a Coq plugin, we hope to provide an OPAM package soon; for now, see [building](#building).
+SerAPI installation process is similar to a Coq plugin, we hope to provide an OPAM package soon; for now, see [building](#building).
 
 A first IDE prototype using SerAPI is Clément Pit--Claudel's [elcoq](https://github.com/cpitclaudel/elcoq).
 

@@ -193,3 +193,6 @@ type cofixpoint =
   [%import: Constr.cofixpoint]
   [@@deriving sexp]
 
+type existential =
+  [%import: Constr.existential]
+  [@@deriving sexp]

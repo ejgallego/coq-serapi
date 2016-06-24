@@ -75,12 +75,19 @@ let _ =
   let open Sexp in
   let sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
   Conv.Exn_converter.add_slow (function
+      (* Own things *)
       | NoSuchState sid ->
         Some (List [Atom "NoSuchState"; sexp_of_stateid sid])
+      (* Errors *)
       | Errors.UserError(e,msg) ->
         Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
       | Errors.AlreadyDeclared msg ->
         Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
+      (* Pretype Errors XXX *)
+      | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
+        Some (List [Atom "Pretype_errors.PretypeError";
+                    List [Ser_pretype_errors.sexp_of_pretype_error pterr]])
+      (* Cerrors *)
       | Cerrors.EvaluatedError(msg, exn) -> Some (
           match exn with
           | Some exn -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]

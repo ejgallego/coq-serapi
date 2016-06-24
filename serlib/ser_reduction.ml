@@ -13,22 +13,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+type conv_pb =
+  [%import: Reduction.conv_pb]
+  [@@deriving sexp]
 
-(* Private *)
-type evar = [%import: Evar.t]
-
-type _evar                    = Ser_Evar of int [@@deriving sexp]
-let _evar_put  evar           = Ser_Evar (Evar.repr evar)
-let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
-
-let evar_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
-let sexp_of_evar evar = sexp_of__evar (_evar_put evar)
-
-type evar_set = Evar.Set.t
-
-let evar_set_of_sexp sexp =
-  Evar.Set.of_list (list_of_sexp evar_of_sexp sexp)
-
-let sexp_of_evar_set cst =
-  sexp_of_list sexp_of_evar (Evar.Set.elements cst)

@@ -15,20 +15,18 @@
 
 open Sexplib.Std
 
-(* Private *)
-type evar = [%import: Evar.t]
+open Ser_environ
+open Ser_reduction
+open Ser_constr
 
-type _evar                    = Ser_Evar of int [@@deriving sexp]
-let _evar_put  evar           = Ser_Evar (Evar.repr evar)
-let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
+type evar_constraint =
+  [%import: Evd.evar_constraint
+  [@with
+     Environ.env := env;
+     Term.constr := constr;
+  ]]
+  [@@deriving sexp]
 
-let evar_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
-let sexp_of_evar evar = sexp_of__evar (_evar_put evar)
-
-type evar_set = Evar.Set.t
-
-let evar_set_of_sexp sexp =
-  Evar.Set.of_list (list_of_sexp evar_of_sexp sexp)
-
-let sexp_of_evar_set cst =
-  sexp_of_list sexp_of_evar (Evar.Set.elements cst)
+type unsolvability_explanation =
+  [%import: Evd.unsolvability_explanation]
+  [@@deriving sexp]

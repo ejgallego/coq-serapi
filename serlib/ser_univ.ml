@@ -60,6 +60,21 @@ type constraint_type =
   [%import: Univ.constraint_type]
   [@@deriving sexp]
 
+type univ_constraint =
+  [%import: Univ.univ_constraint
+  [@with
+     universe_level := level;
+  ]]
+  [@@deriving sexp]
+
+type constraints = Univ.constraints
+
+let constraints_of_sexp sexp =
+  Univ.Constraint.of_list (list_of_sexp univ_constraint_of_sexp sexp)
+
+let sexp_of_constraints cst =
+  sexp_of_list sexp_of_univ_constraint (Univ.Constraint.elements cst)
+
 type universe_instance =
   [%import: Univ.universe_instance
   [@with
@@ -69,5 +84,13 @@ type universe_instance =
 
 type 'a puniverses =
   [%import: 'a Univ.puniverses]
+  [@@deriving sexp]
+
+type explanation =
+  [%import: Univ.explanation]
+  [@@deriving sexp]
+
+type univ_inconsistency =
+  [%import: Univ.univ_inconsistency]
   [@@deriving sexp]
 

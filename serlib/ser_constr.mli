@@ -107,3 +107,9 @@ type constr = Constr.constr
 
 val constr_of_sexp : Sexp.t -> constr
 val sexp_of_constr : constr -> Sexp.t
+
+type existential = Constr.existential
+val existential_of_sexp : Sexp.t -> existential
+val sexp_of_existential : existential -> Sexp.t
+
+

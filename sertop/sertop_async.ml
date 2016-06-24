@@ -26,8 +26,20 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
 
 (* Initialize Coq. *)
 let sertop_init (fb_out : Sexp.t -> unit) =
-  let fb_handler fb = sexp_of_feedback fb |> fb_out          in
-  Sertop_init.coq_init { Sertop_init.fb_handler = fb_handler; }
+  let open Sertop_init in
+  let fb_handler fb = sexp_of_feedback fb |> fb_out in
+  let no_asyncf     = {
+    enable_async = None;
+    async_full   = false;
+    deep_edits   = false;
+  }                                                 in
+  let coq_opts = {
+    fb_handler = fb_handler;
+    aopts      = no_asyncf;
+    iload_path = None;
+    implicit_prelude = false;
+  } in
+  Sertop_init.coq_init coq_opts
 
 (* Callback for a command. Not thread-safe. *)
 let sertop_callback sexp (out_fn : Sexp.t -> unit) =
