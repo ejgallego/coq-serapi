@@ -12,4 +12,4 @@ B _build/sertop
 S /home/egallego/external/coq-git/**
 B /home/egallego/external/coq-git/**
 
-PKG threads threads.posix core_kernel cmdliner ppx_import sexplib ppx_sexp_conv
+PKG threads threads.posix core_kernel cmdliner ppx_import sexplib ppx_sexp_conv js_of_ocaml.ppx

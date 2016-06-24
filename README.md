@@ -173,6 +173,7 @@ Mines de Paris) and partially supported by the
 - [query]   : Query protocol.
 - [parse]   : Parsing protocol.
 - [print]   : Printing protocol.
+- [js]      : Javascript version.
 
 We prefer signed commits.
 

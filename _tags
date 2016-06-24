@@ -15,3 +15,6 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <sertop/*>: package(core_kernel), package(cmdliner)
 
 <sertop/*.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib)
+
+# Js Stuff
+<sertop/sertop_js.*>: package(js_of_ocaml.ppx)
