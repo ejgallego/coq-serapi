@@ -6,29 +6,69 @@ from/to S-expressions; we aim to make low-level interaction with Coq
 easier, putting particular emphasis on IDE/tool developers. However,
 we believe that everybody can have some fun playing with our tool!
 
-SerAPI provides a standard "Coq toplevel", `sertop`. Support for a
-Javascript and Jupyter kernel is on its way.
+SerAPI currently provides two frontends to Coq: a standard "Coq
+toplevel", **sertop**, and a JavaScript asynchronous version, allowing
+to use SerAPI directly from your browser. We are working on a
+Jupyter/IPython kernel.
 
-**NEW, try sertop in your browser!** https://x80.org/rhino-hawk/
-
-The main main design principles for SerAPI are:
+The main design principles of SerAPI are:
 
 - **Don't Repeat Yourself**: We build on top of Coq's plugin API, we have canonical commands (search, print).
 - **Be extremely robust**: Any crash is a **critical** bug; we are liberal in what we accept, and strict in what we produce.
 - **Make life easy**: We are flexible with abstractions in order to provide a user-oriented interface.
 
 SerAPI is still a proof-of-concept. However, it already supports async
-processing, most of the functionality available in the XML protocol,
-and a few extra things. Feedback from Coq users and developers is very
-welcome, contact us by mail or in the issue tracker!
+processing, most of the functionality available in Coq's XML protocol
+plus a few extra things, and runs quite well in the browser. Typical
+load times are less than a second.
+
+Feedback from Coq users and developers is very welcome, contact us by
+mail or in the issue tracker!
 
 ### Quick Overview and Documentation
 
-SerAPI installation process is similar to a Coq plugin, we hope to provide an OPAM package soon; for now, see [building](#building).
+SerAPI is meant to be a basis for developers to build Coq IDEs and
+plugins.
 
-A first IDE prototype using SerAPI is Clément Pit--Claudel's [elcoq](https://github.com/cpitclaudel/elcoq).
+If you are a Coq user, you have two choices:
 
-To use SerAPI at a lower level, we provide a _SerTop toplevel_: `sertop.native`. The toplevel reads and writes commands (S-exps) from stdin/stdout. We recommend using our [emacs mode](sertop.el) or the `rlwrap` utility. `sertop.native --help` will provide an overview of command line options. `Ctrl-C` will interrupt a busy Coq process in a similar way than what `coqtop` does.
+- Use [jsCoq](https://github.com/ejgallego/jscoq) and run Coq in your
+  browser. JsCoq is the predecessor of SerAPI and will be shortly
+  fully based on it. Meanwhile, you can access the embedding
+  technology from our sister project.
+- [elcoq](https://github.com/cpitclaudel/elcoq), a first emacs IDE
+  prototype using SerAPI by Clément Pit--Claudel. This is not yet
+  functional but already very cool!
+
+If you are a developer, you can use SerAPI in 3 different ways:
+
+- As a
+  [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+  from your web app. In this model, you communicate with SerAPI using
+  the typical `onmessage/postMessage` worker API. Ready-to-use builds
+  are typically found
+  [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
+  also provide a simple REPL at:
+
+  https://x80.org/rhino-hawk
+
+- From your shell/application as a REPL: `sertop.native`.  The
+  `sertop` toplevel reads and writes commands (S-Expressions) from
+  stdin/stdout, but paying attention to machine parsing support.
+  `sertop` provides many options, `sertop.native --help` will display
+  an overview. `Ctrl-C` will interrupts a busy Coq process in the same
+  way than the standard `coqtop` does.
+
+  We recommend using `rlwrap` or our [emacs mode](sertop.el) for
+  direct interaction.
+
+- As an Ocaml library. You can either link against the serialization
+  library `serlib/`, or use our SerAPI protocol:
+  `sertop/sertop_protocol.mli`.
+
+The installation process for the last two options is similar to a Coq
+plugin, we hope to provide an OPAM package soon; for now, see the
+[build instructions](#building).
 
 #### Protocol
 
