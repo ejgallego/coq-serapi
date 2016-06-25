@@ -20,5 +20,5 @@ open Sexplib
 val sertop_init : (Sexp.t -> unit) -> unit
 
 (** [sertop_callback out input] Execute command [input] and send
-    serialized output to [out]. Not thread-safe. *)
+    serialized output to [out]. Takes an internal mutex. *)
 val sertop_callback : (Sexp.t -> unit) -> Sexp.t -> unit
