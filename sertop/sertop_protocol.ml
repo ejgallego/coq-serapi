@@ -13,33 +13,60 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* STUB module. Current cost of using Core_kernel ≈ 1.6 MiB !!
+(* Cost analysis:
  *
- * This seems due to -linkall, not good for jsCoq at all.
- * I wonder what's the proper fix here...
+ * Core_kernel costs ≈ 1.6 MiB.
+ * Yojson costs ≈ 0.3Mib
+ *
+ * This seems due to -linkall? Such costs are not good for the js version.
+ * I wonder what's the proper fix here... we should we fix Coq not to
+ * require -linkall?
+ *
+ * The main price we see to pay in JS SerAPI now is 1 MiB due
+ * to Sexplib + 0.8MiB due to the serialization itself.
+ *
+ * It seems like a fair price to pay to me, but I wonder how to reduce it.
+ *
+ * Maybe we could include reduced serialization options?
  *)
 
-(*
-module Core_kernel = struct
-  module Std = struct
-    module String = struct
-      let is_prefix s ~prefix = s = prefix
-      let length _s = 0
-      let sub sent ~pos ~len = let _ = pos, len in sent
-      let concat ~sep x = String.concat sep x
-    end
-    module List = struct
-      let hd _ = None
-      let mem _ _ = true
-      let rev x   = x
-      let split_while x ~f = let _ = f in x, x
-    end
-    module Option = struct
-      let value _x ~default = default
-    end
-  end
+module Extra = struct
+
+  let hd_opt l = match l with
+    | []     -> None
+    | x :: _ -> Some x
+
+  let mem l e = List.mem e l
+  let sub s ~pos ~len = String.sub s pos len
+
+  let value     x ~default    = Option.default default x
+  let value_map x ~default ~f = Option.cata f default x
+
+  (******************************************************************************)
+  (* Taken from Core_kernel, (c) Jane Street, releaser under Apache License 2.0 *)
+  let is_prefix_gen =
+    let rec loop s ~prefix ~char_equal i =
+      i < 0
+      || ((char_equal prefix.[i] s.[i])
+          && loop s ~prefix ~char_equal (i - 1))
+    in
+    fun s ~prefix ~char_equal ->
+      let prefix_len = String.length prefix in
+      String.length s >= prefix_len && loop s ~prefix ~char_equal (prefix_len - 1)
+
+  let is_prefix s ~prefix = is_prefix_gen s ~prefix ~char_equal:Char.equal
+
+  let split_while xs ~f =
+    let rec loop acc = function
+      | hd :: tl when f hd -> loop (hd :: acc) tl
+      | t -> (List.rev acc, t)
+    in
+    loop [] xs
+
+  (* End of Core_kernel code, (c) Jane Street *)
+  (******************************************************************************)
+
 end
-*)
 
 open Sexplib
 open Sexplib.Conv
@@ -52,7 +79,6 @@ open Ser_richpp
 open Ser_feedback
 open Ser_libnames
 open Ser_impargs
-(* open Ser_library *)
 open Ser_constr
 open Ser_constrexpr
 open Ser_proof
@@ -60,7 +86,7 @@ open Ser_stm
 open Ser_tacenv
 open Ser_profile_ltac
 
-(* New protocol + interpreter *)
+(* SerAPI protocol & interpreter. *)
 
 (******************************************************************************)
 (* Exception Registration                                                     *)
@@ -83,7 +109,7 @@ let _ =
         Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
       | Errors.AlreadyDeclared msg ->
         Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
-      (* Pretype Errors XXX *)
+      (* Pretype Errors XXX what to do with _env, _envmap *)
       | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
         Some (List [Atom "Pretype_errors.PretypeError";
                     List [Ser_pretype_errors.sexp_of_pretype_error pterr]])
@@ -317,8 +343,6 @@ let exec_setopt loc n (v : option_value) =
 
 module ControlUtil = struct
 
-  open Core_kernel.Std
-
   let edit_id = ref 0
 
   type doc    = stateid list
@@ -348,18 +372,18 @@ module ControlUtil = struct
     let buf = ref 0                    in
     let acc = ref []                   in
     let rem = ref (String.length sent) in
-    let stt = ref (Option.value opts.ontop ~default:(Stm.get_current_state ())) in
-    let check_lim i = Option.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
+    let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ())) in
+    let check_lim i = Extra.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
     try
       (* XXX: We check that the ontop state is actually in the
        * document to avoid an Anomaly exception.
        *)
-      if not (List.mem !cur_doc !stt) then
+      if not (List.mem !stt !cur_doc) then
         raise (NoSuchState !stt);
 
       while (0 < !rem) && (check_lim !i) do
         let n_st, loc, foc =
-          let sent = String.sub sent ~pos:!buf ~len:!rem in
+          let sent = Extra.sub sent ~pos:!buf ~len:!rem in
           (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
           (* Format.eprintf "Sent: %s @\n%!" sent; *)
           add_sentence ?newtip:opts.newtip ~ontop:!stt opts.verb pa sent
@@ -399,14 +423,14 @@ module ControlUtil = struct
       else
         Stateid.newer_than st can_st
     in
-    if List.mem !cur_doc can_st then
-      List.split_while !cur_doc ~f:pred
+    if Extra.mem !cur_doc can_st then
+      Extra.split_while !cur_doc ~f:pred
     else [], !cur_doc
 
   let cancel_sentence can_st =
     (* dump_doc (); *)
     let c_ran, k_ran = invalid_range can_st ~incl:true in
-    let prev_st      = Option.value (List.hd k_ran) ~default:Stateid.initial in
+    let prev_st      = Extra.value (Extra.hd_opt k_ran) ~default:Stateid.initial in
     match Stm.edit_at prev_st with
     | `NewTip -> cur_doc := k_ran;
                  [StmCanceled c_ran]
@@ -478,17 +502,16 @@ type query_pred =
   [@@deriving sexp]
 
 let prefix_pred (prefix : string) (obj : coq_object) : bool =
-  let open Core_kernel.Std in
   match obj with
-  | CoqString  s    -> String.is_prefix s ~prefix
+  | CoqString  s    -> Extra.is_prefix s ~prefix
   | CoqSList   _    -> true     (* XXX *)
   | CoqRichpp  _    -> true
   | CoqRichXml _    -> true
   | CoqLoc     _    -> true
-  | CoqOption (n,_) -> String.is_prefix (String.concat ~sep:"." n) ~prefix
+  | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
-  | CoqTactic(kn,_) -> String.is_prefix (Names.KerName.to_string kn) ~prefix
+  | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
   | CoqProfData _   -> true
@@ -532,7 +555,7 @@ module QueryUtil = struct
 
         *)
         let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
-        if Core_kernel.Std.String.is_prefix name ~prefix then acc := name :: !acc
+        if Extra.is_prefix name ~prefix then acc := name :: !acc
     );
     [CoqSList !acc]
 
@@ -540,9 +563,9 @@ module QueryUtil = struct
   let query_tactics prefix =
     let open Names           in
 
-    let prefix_long kn = Core_kernel.Std.String.is_prefix (KerName.to_string kn) ~prefix in
+    let prefix_long kn = Extra.is_prefix (KerName.to_string kn) ~prefix in
     let prefix_best kn =
-      try Core_kernel.Std.String.is_prefix
+      try Extra.is_prefix
             (Libnames.string_of_qualid (Nametab.shortest_qualid_of_tactic kn)) ~prefix
       with Not_found ->
         (* Debug code, It is weird that shortest_qualid_of_tactic returns a Not_found... :S *)

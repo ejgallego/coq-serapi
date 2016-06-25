@@ -1,22 +1,35 @@
+# This has to take preference over the global flags...
+# <coq-libjs/jslib.ml>: warn(-39), warn_error(-39)
+
 # Coq-specific linking flags
 true: rectypes, thread, package(str), package(unix), package(threads)
 
-# Sertop flags
+# Sertop/Serlib general flags
 true: package(sexplib), package(ppx_sexp_conv)
 true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 
-<serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_engine, coq_pretyping, coq_interp, coq_parsing, coq_stm, coq_proofs, coq_ltac
+# Serlib building options
+<serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_engine, coq_pretyping, coq_interp
+<serlib/*.{ml,mli}>: coq_parsing, coq_stm, coq_proofs, coq_ltac
 <serlib/*.{ml,mli}>: package(ppx_import)
+
+# Sertop building options
 <serlib>: include
 
 <sertop/*.{ml,mli}>: coq_intf
 <sertop/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
 <sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
-<sertop/*>: package(core_kernel), package(cmdliner)
 
-<sertop/*.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib)
+# Specifip toplevel
+<sertop/sertop.ml>: package(cmdliner)
+<sertop/sertop.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
 
-# Js Stuff
-<coq-libjs>: include
+# Js helpers (to go away)
 <coq-libjs/*.{ml,mli}>: package(yojson)
-<sertop/sertop_js*.*>: package(js_of_ocaml.ppx), package(yojson)
+<coq-libjs>: include
+
+# Js Toplevel
+<sertop/sertop_js*.*>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(js_of_ocaml.ppx)
+
+# Don't mess with this.
+<js>: -traverse

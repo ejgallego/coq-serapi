@@ -18,11 +18,16 @@ type coq_pkg = {
   cma_files : (string * Digest.t) list;
 }
 
+(* val digest_json  : Digest.t Deriving_Json.t *)
+(* val coq_pkg_json : coq_pkg  Deriving_Json.t *)
+
 type coq_bundle = {
   desc      : string;
   deps      : string list;
   pkgs      : coq_pkg list;
 }
+
+(* val coq_bundle_json : coq_bundle Deriving_Json.t *)
 
 val to_dir  : coq_pkg -> string
 val to_desc : coq_pkg -> string

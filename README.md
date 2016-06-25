@@ -9,9 +9,9 @@ we believe that everybody can have some fun playing with our tool!
 SerAPI provides a standard "Coq toplevel", `sertop`. Support for a
 Javascript and Jupyter kernel is on its way.
 
-*NEW, try sertop in your browser!* https://x80.org/rhino-hawk/
+**NEW, try sertop in your browser!** https://x80.org/rhino-hawk/
 
-Our main design principles are:
+The main main design principles for SerAPI are:
 
 - **Don't Repeat Yourself**: We build on top of Coq's plugin API, we have canonical commands (search, print).
 - **Be extremely robust**: Any crash is a **critical** bug; we are liberal in what we accept, and strict in what we produce.

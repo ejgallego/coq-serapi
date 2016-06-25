@@ -11,11 +11,14 @@
  * We could have accessed Loadpath.t, etc..., but we've opted to keep
  * this module separated from Coq
  *)
+type digest = string
+  (* [@@deriving json] *)
+
 type coq_pkg = {
   pkg_id    : string list;
-  vo_files  : (string * Digest.t) list;
-  cma_files : (string * Digest.t) list;
-}
+  vo_files  : (string * digest) list;
+  cma_files : (string * digest) list;
+} (* [@@deriving json] *)
 
 let to_dir  pkg = String.concat "/" (pkg.pkg_id)
 let to_desc pkg = String.concat "." (pkg.pkg_id)
@@ -24,7 +27,7 @@ type coq_bundle = {
   desc      : string;
   deps      : string list;
   pkgs      : coq_pkg list;
-}
+} (* [@@deriving json] *)
 
 let no_files pkg = List.length pkg.vo_files + List.length pkg.cma_files
 
