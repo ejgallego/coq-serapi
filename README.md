@@ -48,23 +48,23 @@ If you are a developer, you can use SerAPI in 3 different ways:
   the typical `onmessage/postMessage` worker API. Ready-to-use builds
   are typically found
   [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
-  also provide a simple REPL at:
+  provide an example REPL at:
 
   https://x80.org/rhino-hawk
 
 - From your shell/application as a REPL: `sertop.native`.  The
   `sertop` toplevel reads and writes commands (S-Expressions) from
-  stdin/stdout, but paying attention to machine parsing support.
-  `sertop` provides many options, `sertop.native --help` will display
-  an overview. `Ctrl-C` will interrupts a busy Coq process in the same
-  way than the standard `coqtop` does.
+  stdin/stdout, in a machine or human-friendly format.  Asynchronous
+  processing is supported, see `sertop.native --help` for an
+  overview of the main options. `Ctrl-C` will interrupt a busy Coq
+  process in the same way than the standard `coqtop` does.
 
   We recommend using `rlwrap` or our [emacs mode](sertop.el) for
   direct interaction.
 
-- As an Ocaml library. You can either link against the serialization
-  library `serlib/`, or use our SerAPI protocol:
-  `sertop/sertop_protocol.mli`.
+- As an Ocaml library. You can directly link against the low-level
+  serialization library `serlib/`, or against the higher-level SerAPI
+  protocol in `sertop/sertop_protocol.mli`.
 
 The installation process for the last two options is similar to a Coq
 plugin, we hope to provide an OPAM package soon; for now, see the
