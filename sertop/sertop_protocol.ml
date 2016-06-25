@@ -13,21 +13,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Cost analysis:
+(* Cost analysis: in the past we used to pay almost 3MiB of overload.
+ * Now, thanks to smarter linking flags we are paying ~500k for the whole
+ * of SerTOP when compared with jsCoq which is IMHO amazing.
  *
- * Core_kernel costs ≈ 1.6 MiB.
- * Yojson costs ≈ 0.3Mib
- *
- * This seems due to -linkall? Such costs are not good for the js version.
- * I wonder what's the proper fix here... we should we fix Coq not to
- * require -linkall?
- *
- * The main price we see to pay in JS SerAPI now is 1 MiB due
- * to Sexplib + 0.8MiB due to the serialization itself.
- *
- * It seems like a fair price to pay to me, but I wonder how to reduce it.
- *
- * Maybe we could include reduced serialization options?
+ * Unfortunately Core_kernel makes us pay ~1.8MiB of size, so it is too
+ * much for now until we figure out a better linking strategy. We manually
+ * embed a few utilities functions in the below `Extra` module meanwhile.
  *)
 
 module Extra = struct
