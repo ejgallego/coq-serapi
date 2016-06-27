@@ -24,10 +24,10 @@ type cache_entry = {
 }
 
 (* Number of actual files in a full distribution ~ 2000 *)
-let file_cache : (string, cache_entry) Hashtbl.t = Hashtbl.create 500
+let file_cache : (string, cache_entry) Hashtbl.t = Hashtbl.create 503
 
 (* The cma resolver cache maps a cma module to its actual path. *)
-let cma_cache : (string, string) Hashtbl.t = Hashtbl.create 100
+let cma_cache : (string, string) Hashtbl.t = Hashtbl.create 103
 
 let preload_vo_file ?(refresh=false) base_url (file, _hash) : unit Lwt.t =
   let open XmlHttpRequest                           in

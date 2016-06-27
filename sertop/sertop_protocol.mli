@@ -42,7 +42,23 @@ val sexp_of_coq_object : coq_object -> Sexp.t
 (* Printing Sub-Protocol                                                      *)
 (******************************************************************************)
 
-(* no public interface *)
+(** Query output format  *)
+type print_format =
+  | PpSexp
+  | PpStr
+
+val print_format_of_sexp : Sexp.t -> print_format
+val sexp_of_print_format : print_format -> Sexp.t
+
+type print_opt = {
+  pp_format : print_format;
+  pp_depth  : int;
+  pp_elide  : string;
+  (* pp_margin : int; *)
+}
+
+val print_opt_of_sexp : Sexp.t -> print_opt
+val sexp_of_print_opt : print_opt -> Sexp.t
 
 (******************************************************************************)
 (* Parsing Sub-Protocol                                                       *)
@@ -103,24 +119,6 @@ type query_pred =
 
 val query_pred_of_sexp : Sexp.t -> query_pred
 val sexp_of_query_pred : query_pred -> Sexp.t
-
-(** Query output format  *)
-type print_format =
-  | PpSexp
-  | PpStr
-
-val print_format_of_sexp : Sexp.t -> print_format
-val sexp_of_print_format : print_format -> Sexp.t
-
-type print_opt = {
-  pp_format : print_format;
-  pp_depth  : int;
-  pp_elide  : string;
-  (* pp_margin : int; *)
-}
-
-val print_opt_of_sexp : Sexp.t -> print_opt
-val sexp_of_print_opt : print_opt -> Sexp.t
 
 type query_opt =
   { preds : query_pred list;
