@@ -56,8 +56,6 @@ let pp_feedback_content fmt fb =
   | Processed       -> fprintf fmt "Processed"
   | Incomplete      -> fprintf fmt "Incomplete"
   | Complete        -> fprintf fmt "Complete"
-  (* XXX: TODO print loc *)
-  | ErrorMsg(_l, s) -> fprintf fmt "ErrorMsg: %s" s
 
   (* STM optional data *)
   | ProcessingIn s       -> fprintf fmt "ProcessingIn: %s" s
@@ -78,7 +76,7 @@ let pp_feedback_content fmt fb =
   | Custom(_loc, msg, _xml) -> fprintf fmt "Custom: %s" msg
 
   (* Old generic messages *)
-  | Message(_l, m) -> fprintf fmt "Msg: %s " (Richpp.raw_print m)
+  | Message(_lvl, _loc, m) -> fprintf fmt "Msg: %s " (Richpp.raw_print m)
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in

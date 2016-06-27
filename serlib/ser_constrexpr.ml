@@ -53,6 +53,12 @@ type prim_token = [%import: Constrexpr.prim_token
      ]]
   [@@deriving sexp]
 
+type instance_expr = [%import: Constrexpr.instance_expr
+  [@with Misctypes.glob_level := glob_level;
+         Libnames.reference   := reference;
+  ]]
+  [@@deriving sexp]
+
 type cases_pattern_expr = [%import: Constrexpr.cases_pattern_expr
      [@with Loc.t        := loc;
             Loc.located  := located;
@@ -66,13 +72,7 @@ and cases_pattern_notation_substitution = [%import: Constrexpr.cases_pattern_not
     ]]
   [@@deriving sexp]
 
-type instance_expr = [%import: Constrexpr.instance_expr
-  [@with Misctypes.glob_level := glob_level;
-         Libnames.reference   := reference;
-  ]]
-  [@@deriving sexp]
-
-type constr_expr = [%import: Constrexpr.constr_expr
+and constr_expr = [%import: Constrexpr.constr_expr
      [@with Loc.t        := loc;
             Loc.located  := located;
 
