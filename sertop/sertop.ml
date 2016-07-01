@@ -51,8 +51,8 @@ let length =
 
 
 let sertop prelude human print0 length async async_full deep_edits implicit_prelude =
-  let open Sertop_init             in
-  let open Sertop_protocol         in
+  let open Sertop_init         in
+  let open Sertop_sexp         in
   ser_loop
     {  coqlib   = prelude;
        in_chan  = stdin;

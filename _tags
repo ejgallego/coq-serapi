@@ -8,7 +8,7 @@ true: rectypes, thread, package(str), package(unix), package(threads)
 true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 
 # This needs to go first to avoid flag precedence problems.
-<sertop/sertop_protocol.ml>: package(ppx_sexp_conv)
+<sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
 
 # Serlib building options
 <serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_engine, coq_pretyping, coq_interp

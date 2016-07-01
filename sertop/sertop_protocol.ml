@@ -22,6 +22,8 @@
  * embed a few utilities functions in the below `Extra` module meanwhile.
  *)
 
+open Sexplib.Conv
+
 module Extra = struct
 
   let hd_opt l = match l with
@@ -60,67 +62,11 @@ module Extra = struct
 
 end
 
-open Sexplib
-open Sexplib.Conv
-
-open Ser_loc
-open Ser_names
-open Ser_goptions
-open Ser_stateid
-open Ser_richpp
-open Ser_feedback
-open Ser_libnames
-open Ser_impargs
-open Ser_constr
-open Ser_constrexpr
-open Ser_proof
-open Ser_stm
-open Ser_tacenv
-open Ser_profile_ltac
-
-(* SerAPI protocol & interpreter. *)
-
 (******************************************************************************)
-(* Exception Registration                                                     *)
+(* SerAPI protocol & interpreter. *)
 (******************************************************************************)
 
 exception NoSuchState of Stateid.t
-[@@deriving sexp]
-
-(* We play slow for now *)
-let _ =
-  (* XXX Finish this *)
-  let open Sexp in
-  let sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
-  Conv.Exn_converter.add_slow (function
-      (* Own things *)
-      | NoSuchState sid ->
-        Some (List [Atom "NoSuchState"; sexp_of_stateid sid])
-      (* Errors *)
-      | Errors.UserError(e,msg) ->
-        Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
-      | Errors.AlreadyDeclared msg ->
-        Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
-      (* Pretype Errors XXX what to do with _env, _envmap *)
-      | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
-        Some (List [Atom "Pretype_errors.PretypeError";
-                    List [Ser_pretype_errors.sexp_of_pretype_error pterr]])
-      (* Cerrors *)
-      | Cerrors.EvaluatedError(msg, exn) -> Some (
-          match exn with
-          | Some exn -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
-          | None     -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg]
-        )
-      | Proof_global.NoCurrentProof ->
-        Some (Atom "NoCurrentProof")
-(* Private... request Coq devs to make them public?
-      | Errors.Anomaly(msgo, pp) ->
-        Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
-*)
-      | _ -> None
-
-    )
-
 
 (******************************************************************************)
 (* Auxiliary Definitions                                                      *)
@@ -145,22 +91,22 @@ let _ =
  *)
 
 type coq_object =
-  | CoqString  of string
-  | CoqSList   of string list
-  | CoqRichpp  of richpp
+  | CoqString   of string
+  | CoqSList    of string list
+  | CoqRichpp   of Richpp.richpp
   (* XXX: For xml-like printing, should be moved to an option... *)
-  | CoqRichXml of richpp
-  | CoqLoc     of loc
-  | CoqOption  of option_name * option_state
-  | CoqConstr  of constr
-  | CoqExpr    of constr_expr
-  | CoqTactic  of kername * ltac_entry
-  | CoqQualId  of qualid
-  | CoqImplicit of implicits_list
-  | CoqProfData of ltacprof_results
+  | CoqRichXml  of Richpp.richpp
+  | CoqLoc      of Loc.t
+  | CoqOption   of Goptions.option_name * Goptions.option_state
+  | CoqConstr   of Constr.constr
+  | CoqExpr     of Constrexpr.constr_expr
+  | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
+  | CoqQualId   of Libnames.qualid
+  | CoqGlobRef  of Globnames.global_reference
+  | CoqImplicit of Impargs.implicits_list
+  | CoqProfData of Profile_ltac.ltacprof_results
   (* Fixme *)
-  | CoqGoal    of (constr * (id list * constr option * constr) list) pre_goals
-  [@@deriving sexp]
+  | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -208,6 +154,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.Proof.fg_goals)
   | CoqProfData _pf -> pr (Pp.str "FIXME UPSTREAM, provide pr_prof_results")
   | CoqQualId qid   -> pr (Pp.str (Libnames.string_of_qualid qid))
+  | CoqGlobRef _gr  -> pr (Pp.str "FIXME GlobRef")
   | CoqImplicit(_,l)-> pr (Pp.pr_sequence pp_implicit l)
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
@@ -215,9 +162,10 @@ let pp_obj fmt (obj : coq_object) =
 
 (** Print output format  *)
 type print_format =
-  | PpSexp
+  | PpSer
   | PpStr
-  [@@deriving sexp]
+
+(* register printer *)
 
 type print_opt = {
   pp_format : print_format  [@default PpStr];
@@ -225,13 +173,12 @@ type print_opt = {
   pp_elide  : string        [@default "..."];
   (* pp_margin : int; *)
 }
-  [@@deriving sexp]
 
 let obj_print pr_opt obj =
   let open Format in
   match pr_opt.pp_format with
-  | PpSexp -> obj
-  | PpStr  ->
+  | PpSer -> obj
+  | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
     let et      = pp_get_ellipsis_text str_formatter () in
     pp_set_max_boxes     str_formatter pr_opt.pp_depth;
@@ -280,19 +227,15 @@ let parse_sentences num acc s =
 (******************************************************************************)
 
 (* XXX: Fixme: adapt to 4.03 matching? *)
-exception AnswerExn of Sexp.t
-let exn_of_sexp sexp = AnswerExn sexp
-
 type answer_kind =
   | Ack
-  | StmCurId    of stateid
-  | StmAdded    of stateid * loc * [`NewTip | `Unfocus of stateid ]
-  | StmCanceled of stateid list
-  | StmEdited of                   [`NewTip | `Focus   of focus   ]
+  | StmCurId    of Stateid.t
+  | StmAdded    of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | StmCanceled of Stateid.t list
+  | StmEdited   of                     [`NewTip | `Focus   of Stm.focus ]
   | ObjList     of coq_object list
   | CoqExn      of exn
   | Completed
-  [@@deriving sexp]
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
@@ -304,28 +247,27 @@ let coq_protect e =
   with exn -> [CoqExn exn]
 
 type add_opts = {
-  lim    : int     sexp_option;
-  ontop  : stateid sexp_option;
-  newtip : stateid sexp_option;
-  verb   : bool    [@default false];
-} [@@deriving sexp]
+  lim    : int       sexp_option;
+  ontop  : Stateid.t sexp_option;
+  newtip : Stateid.t sexp_option;
+  verb   : bool      [@default false];
+}
 
 type control_cmd =
   | StmState                                    (* Get the state *)
   | StmAdd     of       add_opts * string       (* Stm.add       *)
-  | StmQuery   of       stateid  * string       (* Stm.query     *)
-  | StmCancel  of       stateid list            (* Cancel method *)
-  | StmEditAt  of       stateid                 (* Stm.edit_at   *)
-  | StmObserve of       stateid                 (* Stm.observe   *)
+  | StmQuery   of       Stateid.t  * string       (* Stm.query     *)
+  | StmCancel  of       Stateid.t list            (* Cancel method *)
+  | StmEditAt  of       Stateid.t                 (* Stm.edit_at   *)
+  | StmObserve of       Stateid.t                 (* Stm.observe   *)
   | StmJoin                                     (* Stm.join      *)
   | StmStopWorker of    string
-  | SetOpt     of bool option * option_name * option_value
+  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   (*              prefix      * path   * implicit   *)
   | LibAdd     of string list * string * bool
   | Quit
-  [@@deriving sexp]
 
-let exec_setopt loc n (v : option_value) =
+let exec_setopt loc n (v : Goptions.option_value) =
   let open Goptions in
   match v with
   | BoolValue b      -> set_bool_option_value_gen loc n b
@@ -337,7 +279,7 @@ module ControlUtil = struct
 
   let edit_id = ref 0
 
-  type doc    = stateid list
+  type doc    = Stateid.t list
   let cur_doc : doc ref = ref [Stateid.of_int 1]
 
   let pp_doc fmt l =
@@ -376,7 +318,7 @@ module ControlUtil = struct
       while (0 < !rem) && (check_lim !i) do
         let n_st, loc, foc =
           let sent = Extra.sub sent ~pos:!buf ~len:!rem in
-          (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
+          (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.T.to_int !stt); *)
           (* Format.eprintf "Sent: %s @\n%!" sent; *)
           add_sentence ?newtip:opts.newtip ~ontop:!stt opts.verb pa sent
         in
@@ -385,7 +327,7 @@ module ControlUtil = struct
         buf := !buf + pos !buf loc;
         stt := n_st;
         incr i;
-        (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.to_int !stt); *)
+        (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.T.to_int !stt); *)
       done;
       List.rev !acc
     with
@@ -484,14 +426,12 @@ let exec_ctrl ctrl =
 
 (** Max number of results to return, 0 will return a summary *)
 (* type query_limit = int option *)
-(*   [@@deriving sexp] *)
 
 (** Filtering predicates *)
 type query_pred =
   | Prefix of string
   (* Filter by type   *)
   (* Filter by module *)
-  [@@deriving sexp]
 
 let prefix_pred (prefix : string) (obj : coq_object) : bool =
   match obj with
@@ -506,6 +446,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
+  | CoqGlobRef _    -> true
   | CoqProfData _   -> true
   | CoqImplicit _   -> true
   | CoqGoal _       -> true
@@ -516,26 +457,25 @@ let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
 type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
-    sid   : stateid   [@default Stm.get_current_state()];
+    sid   : Stateid.t [@default Stm.get_current_state()];
     pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0; pp_elide = "..." } ];
-  } [@@deriving sexp]
+  }
 
 (** XXX: This should be in sync with the object tag!  *)
 type query_cmd =
   | Option   (*  *)
   | Search                         (* Search vernacular, we only support prefix by name *)
-  | Goals     of stateid           (* Return goals [TODO: Add filtering/limiting options] *)
+  | Goals     of Stateid.t           (* Return goals [TODO: Add filtering/limiting options] *)
   | TypeOf    of string
   | Names     of string            (* XXX Move to prefix *)
   | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
   | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
   | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
   | ProfileData
-  [@@deriving sexp]
 
 module QueryUtil = struct
 
-  let query_names prefix =
+  let _query_names prefix =
     let acc = ref [] in
     Search.generic_search None (fun gr _env _typ ->
         (* Not happy with this at ALL:
@@ -550,6 +490,10 @@ module QueryUtil = struct
         if Extra.is_prefix name ~prefix then acc := name :: !acc
     );
     [CoqSList !acc]
+
+  let query_names_locate prefix =
+    let all_gr = Nametab.locate_all @@ Libnames.qualid_of_ident (Names.Id.of_string prefix) in
+    List.map (fun x -> CoqGlobRef x) all_gr
 
   (* From @ppedrot *)
   let query_tactics prefix =
@@ -608,7 +552,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Sertop_goals.get_goals sid
-  | Names   prefix -> QueryUtil.query_names   prefix
+  | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
@@ -664,7 +608,6 @@ type cmd =
   | Query      of query_opt * query_cmd
   | Noop
   | Help
-  [@@deriving sexp]
 
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
@@ -683,40 +626,18 @@ let exec_cmd (cmd : cmd) = match cmd with
   | Noop              -> []
   | Help              -> serproto_help (); []
 
-let is_cmd_quit cmd = match cmd with
-  | Control Quit -> true
-  | _            -> false
-
-type cmd_tag = string
-  [@@deriving sexp]
-
+type cmd_tag    = string
 type tagged_cmd = cmd_tag * cmd
-  [@@deriving sexp]
 
 type answer =
   | Answer    of cmd_tag * answer_kind
-  | Feedback  of feedback
-  | SexpError of Sexp.t
-  [@@deriving sexp]
-
-(******************************************************************************)
-(* Global Protocol Options                                                    *)
-(******************************************************************************)
-
-type ser_opts = {
-  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
-  in_chan  : in_channel;          (* Input/Output channels                                *)
-  out_chan : out_channel;
-  human    : bool;                (* Output function to use                               *)
-  print0   : bool;
-  lheader  : bool;
-  implicit : bool;
-  async    : Sertop_init.async_flags;
-}
+  | Feedback  of Feedback.feedback
 
 (******************************************************************************)
 (* Prelude Hacks (to be removed)                                              *)
 (******************************************************************************)
+
+(*
 
 (* XXX: Stid are fixed here. Move to ser_init? *)
 let _ser_prelude coq_path : cmd list =
@@ -725,107 +646,16 @@ let _ser_prelude coq_path : cmd list =
   List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
   []
   (* [ Control (StmAdd     (1, None, "Require Import Coq.Init.Prelude. ")); *)
-  (*   Control (StmObserve (Stateid.of_int 2)) *)
+  (*   Control (StmObserve (Stateid.T.of_int 2)) *)
   (* ] *)
 
 let ser_load_prelude =
-  [ Control (StmAdd     (add_opts_of_sexp (Sexp.List []), "Require Import Coq.Init.Prelude. "));
+  let def_opts : add_opts = { lim = None; ontop = None; newtip = None; verb = false } in
+  [ Control (StmAdd     (def_opts, "Require Import Coq.Init.Prelude. "));
     Control (StmObserve (Stateid.of_int 2))
   ]
 
 let do_prelude _ =
   List.iter (fun cmd -> ignore (exec_cmd cmd)) ser_load_prelude
 
-let ser_prelude_list coq_path =
-  let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  List.map (fun p -> ("Coq" :: p, mk_path "plugins"  p, true)) Sertop_init.coq_init_plugins  @
-  List.map (fun p -> ("Coq" :: p, mk_path "theories" p, true)) Sertop_init.coq_init_theories
-
-(******************************************************************************)
-(* Input/Output                                                               *)
-(******************************************************************************)
-(*                                                                            *)
-(* Until this point, we've been independent of a particular format or         *)
-(* or serialization, with all the operations defined at the symbolic level.   *)
-(*                                                                            *)
-(* It is now time to unfortunately abandon our fairy-tale and face the real,  *)
-(* ugly world in these last 40 lines!                                         *)
-(*                                                                            *)
-(******************************************************************************)
-
-(* XXX: Improve by using manual tag parsing. *)
-let read_cmd cmd_id in_channel pp_answer =
-  let rec read_loop () =
-    try
-      let cmd_sexp = Sexp.input_sexp in_channel in
-      begin
-        try tagged_cmd_of_sexp cmd_sexp
-        with
-        | End_of_file   -> "EOF", Control Quit
-        | _exn ->
-          (string_of_int cmd_id), cmd_of_sexp cmd_sexp
-      end
-    with
-    | End_of_file   -> "EOF", Control Quit
-    | exn           -> pp_answer (SexpError(sexp_of_exn exn));
-                       read_loop ()
-  in read_loop ()
-
-(** We could use Sexp.to_string too  *)
-let out_answer opts =
-  let open Format                                                               in
-
-  let pp_sexp = if opts.human  then Sexp.pp_hum
-                               else Sexp.pp                                     in
-
-  let pp_term = if opts.print0 then fun fmt () -> fprintf fmt "%c" (Char.chr 0)
-                               else fun fmt () -> fprintf fmt "@\n"             in
-  if opts.lheader then
-    fun fmt a ->
-      fprintf str_formatter "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ();
-      let out = flush_str_formatter () in
-      fprintf fmt "@[byte-length: %d@\n%s@]%!" (String.length out) out
-  else
-    fun fmt a -> fprintf fmt "@[%a@]%a%!" pp_sexp (sexp_of_answer a) pp_term ()
-
-let ser_loop ser_opts =
-  let open List   in
-  let open Format in
-
-  (* XXX EG: I don't understand this well, why is this lock needed ??
-     Review fork code in CoqworkmgrApi *)
-  let pr_mutex     = Mutex.create ()                                   in
-  let ser_lock f x = Mutex.lock   pr_mutex;
-                     f x;
-                     Mutex.unlock pr_mutex                             in
-  let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
-  let pp_answer an = ser_lock (out_answer ser_opts out_fmt) an         in
-  let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
-  let pp_feed fb   = pp_answer (Feedback fb)                           in
-
-  (* Init Coq *)
-  Sertop_init.coq_init {
-    Sertop_init.fb_handler = pp_feed;
-    Sertop_init.aopts      = ser_opts.async;
-    Sertop_init.iload_path = Option.cata ser_prelude_list [] ser_opts.coqlib;
-    Sertop_init.implicit_prelude = ser_opts.implicit;
-  };
-
-  (* Load prelude if requested *)
-  Option.iter do_prelude ser_opts.coqlib;
-
-  (* Follow the same approach than coqtop for now: allow Coq to be
-   * interrupted by Ctrl-C. Not entirely safe or race free... but we
-   * trust the IDEs to send the signal on coherent IO state.
-   *)
-  Sys.catch_break true;
-
-  (* Main loop *)
-  let rec loop cmd_id =
-    try
-      let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_answer in
-      pp_ack cmd_tag;
-      iter pp_answer @@ map (fun a -> Answer (cmd_tag, a)) (exec_cmd cmd);
-      if not (is_cmd_quit cmd) then loop (1+cmd_id)
-    with Sys.Break -> loop (1+cmd_id)
-  in loop 0
+*)
