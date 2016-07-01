@@ -61,7 +61,8 @@ let _ =
   Mltop.set_top jstop;
   sertop_init post_message;
   (* Library init *)
-  let base_path = Js.string "./"                  in
-  let pkgs      = Js.array [| Js.string "init" |] in
-  Sertop_jslib.init base_path pkgs pkgs;
+  let base_path = "./"       in
+  let pkgs      = [ "init" ] in
+  let out_libevent _ = ()    in
+  Sertop_jslib.info_pkg out_libevent base_path pkgs;
   ()

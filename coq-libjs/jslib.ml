@@ -32,12 +32,12 @@ type coq_bundle = {
 let no_files pkg = List.length pkg.vo_files + List.length pkg.cma_files
 
 (* JSON handling *)
-open Yojson.Basic
+open Yojson.Safe
 
 let file_to_json (f : (string * Digest.t)) : json =
   `String (fst f)
 
-let pkg_to_json (p : coq_pkg) : json =
+let coq_pkg_to_yojson (p : coq_pkg) : json =
   `Assoc ["pkg_id",    `List (List.map (fun s -> `String s) p.pkg_id);
           "vo_files",  `List (List.map file_to_json p.vo_files);
           "cma_files", `List (List.map file_to_json p.cma_files)]
@@ -52,7 +52,7 @@ let json_to_string (s : json) : string =
   | `String name -> name
   | _            -> raise (Failure "JSON")
 
-let json_to_pkg (p : json) : coq_pkg =
+let coq_pkg_of_yojson (p : json) : coq_pkg =
   match p with
   | `Assoc ["pkg_id", `List pid; "vo_files", `List vo_files; "cma_files", `List cma_files] ->
      { pkg_id    = List.map json_to_string pid;
@@ -61,12 +61,12 @@ let json_to_pkg (p : json) : coq_pkg =
      }
   | _ -> raise (Failure "JSON")
 
-let bundle_to_json (b : coq_bundle) : json =
+let coq_bundle_to_yojson (b : coq_bundle) : json =
   `Assoc ["desc", `String b.desc;
           "deps", `List ((List.map (fun s -> `String s) b.deps));
-          "pkgs", `List (List.map pkg_to_json b.pkgs)]
+          "pkgs", `List (List.map coq_pkg_to_yojson b.pkgs)]
 
-let json_to_bundle (p : json) : coq_bundle =
+let coq_bundle_of_yojson (p : json) : coq_bundle =
   match p with
   | `Assoc ["desc", `String desc;
             "deps", `List deps;
@@ -74,7 +74,7 @@ let json_to_bundle (p : json) : coq_bundle =
            ] ->
      { desc = desc;
        deps = List.map json_to_string deps;
-       pkgs = List.map json_to_pkg pkgs;
+       pkgs = List.map coq_pkg_of_yojson pkgs;
      }
   | _ -> raise (Failure "JSON")
 

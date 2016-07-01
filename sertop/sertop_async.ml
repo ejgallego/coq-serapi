@@ -15,6 +15,7 @@
 
 open Sexplib
 open Sertop_protocol
+open Sertop_sexp
 
 (* There a subtles differences between the sync and async loop, so we
    keep a bit of duplication for now. *)
@@ -54,8 +55,9 @@ let async_mut = Mutex.create ()
 let sertop_callback (out_fn : Sexp.t -> unit) sexp =
   Mutex.lock async_mut;
   let out_answer a = out_fn (sexp_of_answer a) in
+  let out_error  a = out_fn a                  in
   begin match read_cmd sexp with
-  | `Error err         -> out_answer (SexpError err)
+  | `Error err         -> out_error  err
   | `Ok (cmd_tag, cmd) -> out_answer (Answer (cmd_tag, Ack));
                           List.(iter out_answer @@ map (fun a -> Answer (cmd_tag, a))
                                      (exec_cmd cmd))

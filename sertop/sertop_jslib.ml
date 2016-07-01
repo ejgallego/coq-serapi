@@ -4,14 +4,13 @@
  * LICENSE: GPLv3+
  *)
 
-(* Library management for Sertop_js
+(* Library management for Sertop_js/jsCoq
 
    Due to the large size of Coq libraries, we wnat to perform caching
    and lazy loading in the browser.
 *)
 open Jslib
 open Lwt
-open Js
 
 let cma_verb     = false
 let pkg_prefix   = ref ""
@@ -28,6 +27,20 @@ let file_cache : (string, cache_entry) Hashtbl.t = Hashtbl.create 503
 
 (* The cma resolver cache maps a cma module to its actual path. *)
 let cma_cache : (string, string) Hashtbl.t = Hashtbl.create 103
+
+type progress_info = {
+  bundle : string;
+  pkg    : string;
+  loaded : int;
+  total  : int;
+}
+
+type lib_event =
+  | LibInfo     of string * coq_bundle  (* Information about the bundle, we could well put the json here *)
+  | LibProgress of progress_info        (* Information about loading progress *)
+  | LibLoaded   of string               (* Bundle [pkg] is loaded *)
+
+type out_fn = lib_event -> unit
 
 let preload_vo_file ?(refresh=false) base_url (file, _hash) : unit Lwt.t =
   let open XmlHttpRequest                           in
@@ -71,68 +84,64 @@ let jslib_add_load_path pkg pkg_path has_ml =
   Loadpath.add_load_path ("./" ^ pkg_path) coq_path ~implicit:false;
   if has_ml then Mltop.add_ml_dir pkg_path
 
-let preload_pkg _bundle pkg : unit Lwt.t =
+let preload_pkg ?(verb=false) out_fn bundle pkg : unit Lwt.t =
   let pkg_dir = to_dir pkg                                           in
   let ncma    = List.length pkg.cma_files                            in
-  let _nfiles = no_files pkg                                         in
-  let preload_vo_and_log _nc _i f =
+  let nfiles  = no_files pkg                                         in
+  if verb then
+    Format.eprintf "pre-loading package %s, [00/%02d] files\n%!" pkg_dir nfiles;
+  (* XXX: pkg_start, we don't emit an event here *)
+  let preload_vo_and_log nc i f =
     preload_vo_file pkg_dir f >>= fun () ->
-    (* !cb.pkg_progress (mk_progressInfo bundle pkg (i+nc+1)); *)
+    if verb then
+      Format.eprintf "pre-loading package %s, [%02d/%02d] files\n%!" pkg_dir (i+nc+1) nfiles;
+    out_fn (LibProgress { bundle; pkg = pkg_dir; loaded = i+nc+1; total = nfiles });
     Lwt.return_unit
   in
   Lwt_list.iter_s (preload_cma_file pkg_dir) pkg.cma_files    >>= fun () ->
   Lwt_list.iteri_s (preload_vo_and_log ncma) pkg.vo_files     >>= fun () ->
   jslib_add_load_path pkg.pkg_id pkg_dir (ncma > 0);
-  (* !cb.pkg_load (mk_progressInfo bundle pkg nfiles); *)
+  (* We dont emit a package loaded event *)
+  (* out_fn (LibLoadedPkg bundle pkg); *)
   Lwt.return_unit
 
-(* Load a bundle *)
-let rec preload_from_file file =
+let parse_bundle file : coq_bundle Lwt.t =
   let file_url = !pkg_prefix ^ file ^ ".json" in
   XmlHttpRequest.get file_url >>= (fun res ->
-  (* XXX: Use _JSON.json??????? *)
-  let bundle = try Jslib.json_to_bundle
-                     (Yojson.Basic.from_string res.XmlHttpRequest.content)
-               with | _ -> (Format.eprintf "JSON error in preload_from_file\n%!";
-                            raise (Failure "JSON"))
-  in
-  (* !cb.bundle_start bundle_info; *)
-  (* Load deps *)
-  Lwt_list.iter_p  preload_from_file bundle.deps <&>
-  Lwt_list.iter_p (preload_pkg file) bundle.pkgs >>= fun () ->
-  (* !cb.bundle_load  bundle_info; *)
-  return_unit)
-
-let iter_arr (f : 'a -> unit Lwt.t) (l : 'a js_array t) : unit Lwt.t =
-  let f_js = wrap_callback (fun p x _ _ -> f x >>= (fun () -> p)) in
-  l##(reduce_init f_js return_unit)
-
+      try return @@ Jslib.coq_bundle_of_yojson
+              (Yojson.Safe.from_string res.XmlHttpRequest.content)
+      with _ -> Format.eprintf "JSON error in preload_from_file\n%!";
+                Lwt.fail (Failure "JSON")
+    )
 (*
-let info_from_file file =
-  let file_url = !pkg_prefix ^ file ^ ".json" in
-  XmlHttpRequest.get file_url >>= fun res ->
-  let bundle = try Jslib.json_to_bundle
-                     (Yojson.Basic.from_string res.XmlHttpRequest.content)
-               with | _ -> (Format.eprintf "JSON error in preload_from_file\n%!";
-                            raise (Failure "JSON"))
-  in
-  return @@ !cb.bundle_info (build_bundle_info bundle)
+      match Jslib.coq_bundle_of_yojson
+              (Yojson.Safe.from_string res.XmlHttpRequest.content) with
+      | Result.Ok bundle -> return bundle
+      | Result.Error s -> Format.eprintf "JSON error in preload_from_file\n%!";
+                          Lwt.fail (Failure s)
+    )
 *)
 
-let init base_path _all_pkgs init_pkgs =
-  pkg_prefix := to_string base_path ^ "/" ^ coq_pkgs_dir;
-  Lwt.async (fun () ->
-    (* iter_arr (fun x -> to_string x |> info_from_file)                all_pkgs  >>= fun () -> *)
-    iter_arr (fun x -> to_string x |> preload_from_file) init_pkgs >>= fun () ->
-    return_unit
-  )
+(* Load a bundle *)
+let rec preload_from_file ?(verb=false) out_fn file =
+  parse_bundle file >>= (fun bundle ->
+  (* Load deps in paralell *)
+  Lwt_list.iter_p (preload_from_file ~verb:verb out_fn) bundle.deps <&>
+  Lwt_list.iter_p (preload_pkg  ~verb:verb out_fn file) bundle.pkgs     >>= fun () ->
+  return @@ out_fn (LibLoaded file))
 
-let load_pkg pkg_file = Lwt.async (fun () ->
-    preload_from_file pkg_file >>= fun () ->
-    (* XXX: No notification for bundle loading *)
-    (* !cb.bundle_load pkg_file; *)
-    return_unit
-  )
+let info_from_file out_fn file =
+  parse_bundle file >>= (fun bundle ->
+  return @@ out_fn (LibInfo (file, bundle)))
+
+let info_pkg out_fn base_path pkgs =
+  pkg_prefix := base_path ^ "/" ^ coq_pkgs_dir;
+  Lwt.async (fun () ->
+      Lwt_list.iter_p (info_from_file out_fn) pkgs)
+
+let load_pkg out_fn pkg_file =
+  Lwt.async (fun () ->
+    preload_from_file out_fn pkg_file)
 
 (* let _is_bad_url _ = false *)
 

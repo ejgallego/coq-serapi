@@ -10,16 +10,28 @@
  * loading in the browser.
 *)
 
-open Js
+type progress_info = {
+  bundle : string;
+  pkg    : string;
+  loaded : int;
+  total  : int;
+}
 
-(** [init lib_path available_pkg init_pkgs]
-    gather package list [available_pkg] and start preloading
-    [init_pkgs] from directory [lib_path]
-  *)
-val init : js_string t -> js_string t js_array t -> js_string t js_array t -> unit
+type lib_event =
+  | LibInfo     of string * Jslib.coq_bundle (* Information about the bundle, we could well put the json here *)
+  | LibProgress of progress_info             (* Information about loading progress *)
+  | LibLoaded   of string                    (* Bundle [pkg] is loaded *)
 
-(** [load_pkg pkg] load package [pkg] *)
-val load_pkg : string -> unit
+type out_fn = lib_event -> unit
+
+(** [info_pkg out_fn lib_path pkgs] gathers package list [pkgs] from
+    directory [lib_path], emits events using [out_fn].  *)
+val info_pkg : out_fn -> string -> string list -> unit
+
+(** [load_pkg pkg_file] loads package [pkg_file] *)
+val load_pkg : out_fn -> string -> unit
+(** [info_pkg lib_path available_pkg ] gather package list
+    [available_pkg] from directory [lib_path] *)
 
 (** [coq_resource_req url] query the manager's cache for object [url] *)
 val coq_vo_req  : string -> string option
