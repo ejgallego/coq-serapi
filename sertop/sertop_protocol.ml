@@ -216,8 +216,8 @@ let parse_sentences num acc s =
     done;
   with
   | End_of_input -> ()
-  | e when Errors.noncritical e ->
-    let (e, info) = Errors.push e in
+  | e when CErrors.noncritical e ->
+    let (e, info) = CErrors.push e in
     Util.iraise (e, info)
 
 (* TODO *)

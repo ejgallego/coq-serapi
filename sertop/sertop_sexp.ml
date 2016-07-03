@@ -48,16 +48,16 @@ let _ =
       | SP.NoSuchState sid ->
         Some (List [Atom "NoSuchState"; sexp_of_stateid sid])
       (* Errors *)
-      | Errors.UserError(e,msg) ->
+      | CErrors.UserError(e,msg) ->
         Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
-      | Errors.AlreadyDeclared msg ->
+      | CErrors.AlreadyDeclared msg ->
         Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
       (* Pretype Errors XXX what to do with _env, _envmap *)
       | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
         Some (List [Atom "Pretype_errors.PretypeError";
                     List [Ser_pretype_errors.sexp_of_pretype_error pterr]])
       (* Cerrors *)
-      | Cerrors.EvaluatedError(msg, exn) -> Some (
+      | ExplainErr.EvaluatedError(msg, exn) -> Some (
           match exn with
           | Some exn -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
           | None     -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg]
