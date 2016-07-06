@@ -32,7 +32,7 @@ open Ser_stm
 open Ser_tacenv
 open Ser_profile_ltac
 
-module SP = Sertop_protocol
+module SP = Serapi_protocol
 
 (******************************************************************************)
 (* Exception Registration                                                     *)
@@ -74,7 +74,7 @@ let _ =
 
 (* Serialization to sexp *)
 type coq_object =
-  [%import: Sertop_protocol.coq_object
+  [%import: Serapi_protocol.coq_object
   [@with
      Constr.constr                 := constr;
      Constrexpr.constr_expr        := constr_expr;
@@ -97,15 +97,15 @@ exception AnswerExn of Sexp.t
 let exn_of_sexp sexp = AnswerExn sexp
 
 type print_format =
-  [%import: Sertop_protocol.print_format]
+  [%import: Serapi_protocol.print_format]
   [@@deriving sexp]
 
 type print_opt =
-  [%import: Sertop_protocol.print_opt]
+  [%import: Serapi_protocol.print_opt]
   [@@deriving sexp]
 
 type answer_kind =
-  [%import: Sertop_protocol.answer_kind
+  [%import: Serapi_protocol.answer_kind
   [@with
      Loc.t                         := loc;
      Stateid.t := stateid;
@@ -114,7 +114,7 @@ type answer_kind =
   [@@deriving sexp]
 
 type add_opts =
-  [%import: Sertop_protocol.add_opts
+  [%import: Serapi_protocol.add_opts
   [@with
      Stateid.t := stateid;
      Sexplib.Conv.sexp_option := sexp_option;
@@ -122,7 +122,7 @@ type add_opts =
   [@@deriving sexp]
 
 type control_cmd =
-  [%import: Sertop_protocol.control_cmd
+  [%import: Serapi_protocol.control_cmd
   [@with
      Goptions.option_name          := option_name;
      Goptions.option_state         := option_state;
@@ -132,14 +132,14 @@ type control_cmd =
   [@@deriving sexp]
 
 type query_pred =
-  [%import: Sertop_protocol.query_pred
+  [%import: Serapi_protocol.query_pred
   [@with
      Stateid.t := stateid;
   ]]
   [@@deriving sexp]
 
 type query_opt =
-  [%import: Sertop_protocol.query_opt
+  [%import: Serapi_protocol.query_opt
   [@with
      Stateid.t                := stateid;
      Sexplib.Conv.sexp_list   := sexp_list;
@@ -148,26 +148,26 @@ type query_opt =
   [@@deriving sexp]
 
 type query_cmd =
-  [%import: Sertop_protocol.query_cmd
+  [%import: Serapi_protocol.query_cmd
   [@with
      Stateid.t := stateid;
   ]]
   [@@deriving sexp]
 
 type cmd =
-  [%import: Sertop_protocol.cmd]
+  [%import: Serapi_protocol.cmd]
   [@@deriving sexp]
 
 type cmd_tag =
-  [%import: Sertop_protocol.cmd_tag]
+  [%import: Serapi_protocol.cmd_tag]
   [@@deriving sexp]
 
 type tagged_cmd =
-  [%import: Sertop_protocol.tagged_cmd]
+  [%import: Serapi_protocol.tagged_cmd]
   [@@deriving sexp]
 
 type answer =
-  [%import: Sertop_protocol.answer
+  [%import: Serapi_protocol.answer
   [@with
      Feedback.feedback := feedback;
   ]]

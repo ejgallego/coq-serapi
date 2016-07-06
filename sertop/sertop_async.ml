@@ -14,7 +14,7 @@
 (************************************************************************)
 
 open Sexplib
-open Sertop_protocol
+open Serapi_protocol
 open Sertop_sexp
 
 (* There a subtles differences between the sync and async loop, so we
@@ -33,7 +33,7 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
       `Error (Conv.sexp_of_exn exn)
 
 (* Initialize Coq. *)
-let sertop_init (fb_out : Sexp.t -> unit) libs =
+let sertop_init (fb_out : Sexp.t -> unit) paths libs =
   let open Sertop_init in
   let fb_handler fb = sexp_of_answer (Feedback fb) |> fb_out in
   let no_asyncf     = {
@@ -42,9 +42,10 @@ let sertop_init (fb_out : Sexp.t -> unit) libs =
     deep_edits   = false;
   }                                                 in
   let coq_opts = {
-    fb_handler = fb_handler;
-    aopts      = no_asyncf;
-    iload_path = libs;
+    fb_handler   = fb_handler;
+    aopts        = no_asyncf;
+    iload_path   = paths;
+    require_libs = libs;
     implicit_prelude = false;
   } in
   Sertop_init.coq_init coq_opts

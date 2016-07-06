@@ -144,7 +144,7 @@ let pp_obj fmt (obj : coq_object) =
   | CoqString  s    -> pr (Pp.str s)
   | CoqSList   s    -> pr (Pp.(pr_sequence str) s)
   | CoqRichpp  s    -> pr (Pp.str (Richpp.raw_print s))
-  | CoqRichXml x    -> Sertop_pp.pp_xml fmt (Richpp.repr x)
+  | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x)
   | CoqLoc    _loc  -> pr (Pp.mt ())
   | CoqOption (n,s) -> pr (pp_opt n s)
   | CoqConstr  c    -> pr (Printer.pr_lconstr c)
@@ -283,7 +283,7 @@ module ControlUtil = struct
   let cur_doc : doc ref = ref [Stateid.of_int 1]
 
   let pp_doc fmt l =
-    let open Sertop_pp in
+    let open Serapi_pp in
     Format.fprintf fmt "@[%a@]" (pp_list ~sep:" " pp_stateid) l
 
   let _dump_doc () =
@@ -339,7 +339,7 @@ module ControlUtil = struct
      look for the cancelled part
   *)
   let cancel_interval st (foc : Stm.focus) =
-    let open Sertop_pp in
+    let open Serapi_pp in
     let fmt = Format.err_formatter in
     Format.fprintf fmt "Cancel interval: [%a -- %a]" pp_stateid st pp_stateid foc.Stm.stop;
     []
@@ -551,7 +551,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
   | Option         -> let table = Goptions.get_tables ()            in
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Sertop_goals.get_goals sid
+  | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id

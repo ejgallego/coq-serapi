@@ -72,7 +72,7 @@ plugin, we hope to provide an OPAM package soon; for now, see the
 
 #### Protocol
 
-SerAPI's main building block is the [`CoqObject`](sertop/sertop_protocol.mli#L22) data type, a _sum type_ encapsulating most core Coq objects.
+SerAPI's main building block is the [`CoqObject`](serapi/serapi_protocol.mli#L22) data type, a _sum type_ encapsulating most core Coq objects.
 
 **API WARNING:** _Object packing will change in the future, however adapting should be straightforward_.
 
@@ -81,8 +81,8 @@ For every command, SerAPI **will always** reply with `(Answer tag Ack)` to indic
 
 There are four categories of commands:
 
-- `(Control `[`control_cmd`](sertop/sertop_protocol.mli#L73)`)`: control commands are similar to a function call and instruct Coq to perform some action.
-  Typical actions are to check a proof, set an option, modify a `load path`, etc... Every command will produce zero or more different _tagged_ [answers](sertop/sertop_protocol.mli#52), and  a final answer `(Answer tag Completed)`, indicating that there won't be more output.
+- `(Control `[`control_cmd`](serapi/serapi_protocol.mli#L73)`)`: control commands are similar to a function call and instruct Coq to perform some action.
+  Typical actions are to check a proof, set an option, modify a `load path`, etc... Every command will produce zero or more different _tagged_ [answers](serapi/serapi_protocol.mli#52), and  a final answer `(Answer tag Completed)`, indicating that there won't be more output.
 
   We assume the reader familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/notes/coq-notes.md) and [here](https://github.com/siegebell/vscoq/blob/master/CoqProtocol.md) you can find a few informal notes on how it works, but we are documenting some of our extensions. See the issue tracker for more details.
 
@@ -101,13 +101,13 @@ There are four categories of commands:
    ...
    ```
   Options can be omitted, as in: `(tag (Query ((limit 10)) Option))`, and
-  currently supported queries can be seen [here](sertop/sertop_protocol.mli#L118)
+  currently supported queries can be seen [here](serapi/serapi_protocol.mli#L118)
 
 - `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
 
 - `(Parse num string)`: The `Parse` command gives access to the Coq parsing engine. We currently support detecting the end of the first num sentences, returning the corresponding `CoqPosition` objects. If you want to parse a document use the `StmAdd` control command instead.
 
-Look at the [interface file](sertop/sertop_protocol.mli) more the details. The Ocaml type definitions are often self-explanatory and are serialized in a predictable way.
+Look at the [interface file](serapi/serapi_protocol.mli) more the details. The Ocaml type definitions are often self-explanatory and are serialized in a predictable way.
 
 ### Building
 
@@ -130,26 +130,7 @@ You may want to configure the variable `sertop-coq-directory` to point out the l
 
 ### Roadmap/Changelog:
 
-_Version 0.02_:
-
- - **[done]** Serialization of the `Proof.proof` object.
- - **[done]** Improve API: add options.
- - **[done]** Improve and review printing workflow.
- - **[done]** `(Query ((Prefix "add") (Limit 10) (PpStr)) $ObjectType)`
- - **[done]** Basic Sentence splitting `(Parse num string))`, retuns the first num end of the sentences _without_ executing them.
-   This has pitfalls as parsing is very stateful.
- - **[done]** Basic completion-oriented Search support `(Query () Names)`
- - **[done]** Better command line parsing (`Cmdliner`, `Core` ?)
- - **[partial]** Print Grammar tactic. `(Query ... (Tactics))`.
-   Still we need to decide on:
-   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of
-   `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
-
-_Version 0.03_:
-
- - **[done]** Implicit arguments.
- - *[partial]* Workers support.
- - *[inprogress]* Advanced Sentence splitting `(Parse (Sentence string))`, which can handle the whole document.
+See also the [CHANGELOG.md](CHANGELOG.md).
 
 _Version 0.1_:
 
@@ -166,34 +147,26 @@ _Version 0.1_:
    Or we could even serialize the naming structure and let the ide decide if we export the current open namespace.
 
  - Help with complex codepaths:
-
    Load Path parsing and completion code is probably one of the most complex part of company-coq
-
-_Version 0.2_:
-
- - Support regexps in queries.
 
 _More_:
 
+ - Support regexps in queries.
  - Would be easy to get a list of vernacs? Things like `Print`, `Typeclasses eauto`, etc.
  - Add a cache to full document parsing..
  - enable an open CoqObject tag for plugin use (see coq/coq#209 ) ?
  - Checkstyle support.
  - ppx to enumerate datatypes. Write the help command with this and also Clément suggestions about Vernac enumeration.
 
-
 ### Technical details
 
-Coq SerAPI has two main components:
+Coq SerAPI has three main components:
 
-- `serialize` a library providing automatic de/serialization of most Coq data structures using ppx_conv_sexp. This should be eventually incorporated into Coq itself.
-- `sertop`, a toplevel implementing an modified version of the current IDE protocol. This is a simple file and largely independent of Coq itself.
+- `serapi`: an extended version of the current IDE protocol.
+- `serlib` a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress.
+- `sertop`, `sertop_js`, toplevels offering implementation of the protocol.
 
-Building your own toplevels using `serialize` is encouraged. Here, the current limit is the Ml API itself.
-
-#### Open Questions
-
-- Should we fully embrace `Core` ?
+Building your own toplevels using `serlib` and `serapi` is encouraged. Here, the current limit is the ML API itself.
 
 ## Acknowledgments
 
@@ -207,7 +180,7 @@ Mines de Paris) and partially supported by the
 
 - [misc]    : Code refactoring, miscellanenous
 - [serlib]  : Serialization lib.
-- [sertop]  : Toplevel.
+- [sertop]  : Sexp Toplevel.
 - [doc]     : Documentation.
 - [build]   : Build system.
 - [proto]   : Core protocol.

@@ -19,6 +19,7 @@ open Sexplib
     [fb_handler] *)
 val sertop_init : (Sexp.t -> unit) ->
   (string list * string * bool) list ->
+  (Names.DirPath.t * string * bool option) list ->
   unit
 
 (** [sertop_callback out input] Execute command [input] and send

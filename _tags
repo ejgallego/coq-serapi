@@ -17,15 +17,24 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/*.{ml,mli}>: package(sexplib)
 
+# Serapi building options
+<serapi/*.{ml,mli}>: coq_intf
+<serapi/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
+<serapi/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
+# For sexp_option, etc...
+<serapi/serapi_protocol.{ml,mli}>: package(sexplib)
+
 # Sertop building options
 <serlib>: include
+<serapi>: include
 
+# Specifip to init
 <sertop/*.{ml,mli}>: coq_intf
 <sertop/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
 <sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
 <sertop/*>: package(sexplib)
 
-# Specifip toplevel
+# Specifip to toplevel
 <sertop/sertop.ml>: package(cmdliner)
 <sertop/sertop.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
 

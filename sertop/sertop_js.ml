@@ -102,7 +102,7 @@ let _ =
       let pkg_to_bb cp = (cp.pkg_id, Jslib.to_dir cp,
                           length cp.cma_files > 0)              in
       let bundle_proc = List.map pkg_to_bb bundle.pkgs          in
-      sertop_init post_message bundle_proc;
+      sertop_init post_message bundle_proc [];
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit

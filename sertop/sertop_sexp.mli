@@ -14,7 +14,7 @@
 (************************************************************************)
 
 open Sexplib
-open Sertop_protocol
+open Serapi_protocol
 
 (* Sexp-serialization of the protocol *)
 
