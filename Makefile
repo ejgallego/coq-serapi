@@ -46,7 +46,7 @@ js-dist:
 	rsync -avp --exclude=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs
 
 js-release:
-	rsync -avp --exclude=.git --delete js/ ~/research/jscoq-builds
+	rsync -avp --exclude=.git --exclude=README.md --exclude=get-hashes.sh --delete js/ ~/research/jscoq-builds
 
 #####################################################
 # Misc
