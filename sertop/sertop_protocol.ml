@@ -48,7 +48,7 @@ module Extra = struct
       let prefix_len = String.length prefix in
       String.length s >= prefix_len && loop s ~prefix ~char_equal (prefix_len - 1)
 
-  let is_prefix s ~prefix = is_prefix_gen s ~prefix ~char_equal:Char.equal
+  let is_prefix s ~prefix = is_prefix_gen s ~prefix ~char_equal:(fun x y -> x = y)
 
   let split_while xs ~f =
     let rec loop acc = function
