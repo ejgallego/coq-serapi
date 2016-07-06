@@ -83,7 +83,6 @@ let _ =
     with _ ->
       Worker.post_message (Js.string "Error in input conversion")
   in
-  Worker.set_onmessage on_msg;
 
   setup_pseudo_fs    ();
   setup_std_printers post_message;
@@ -103,7 +102,10 @@ let _ =
       let pkg_to_bb cp = (cp.pkg_id, Jslib.to_dir cp,
                           length cp.cma_files > 0)              in
       let bundle_proc = List.map pkg_to_bb bundle.pkgs          in
-      return (sertop_init post_message bundle_proc)
+      sertop_init post_message bundle_proc;
+      (* We only accept messages when Coq is ready.             *)
+      Worker.set_onmessage on_msg;
+      return_unit
     );
   (* Library init *)
   ()
