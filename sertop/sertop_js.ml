@@ -95,13 +95,16 @@ let _ =
   let open Lwt   in
   let open List  in
   async (fun () ->
-      let base_path = "./"                                      in
-      let pkg       = "init"                                    in
       let out_libevent lb = post_message (sexp_of_lib_event lb) in
-      Sertop_jslib.load_pkg out_libevent base_path pkg          >>= fun bundle ->
+      let base_path = "./"                                      in
+      let pkgs      = ["init"] (*"peacoq"]*)                    in
+
       let pkg_to_bb cp = (cp.pkg_id, Jslib.to_dir cp,
                           length cp.cma_files > 0)              in
-      let bundle_proc = List.map pkg_to_bb bundle.pkgs          in
+
+      Lwt_list.map_s (Sertop_jslib.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
+      let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
+      let bundle_proc = List.map pkg_to_bb all_pkgs                      in
       sertop_init post_message bundle_proc [];
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
