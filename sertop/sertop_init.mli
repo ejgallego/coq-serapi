@@ -24,16 +24,15 @@ type coq_opts = {
   fb_handler   : Feedback.feedback -> unit;
   (* Async flags *)
   aopts        : async_flags;
+
   (* Initial LoadPath XXX: Use a record *)
   iload_path   : (string list * string * bool) list;
+  require_libs : (Names.DirPath.t * string * bool option) list;
 
-  (* Whether to load the prelude non qualified *)
+  (* Whether to load the prelude qualified *)
   implicit_prelude : bool;
 }
 
 val coq_init : coq_opts -> unit
-
-val coq_init_plugins  : string list list
-val coq_init_theories : string list list
 
 val sertop_dp : Names.DirPath.t

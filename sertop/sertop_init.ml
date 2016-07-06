@@ -29,8 +29,10 @@ type coq_opts = {
   fb_handler   : Feedback.feedback -> unit;
   (* Async flags *)
   aopts        : async_flags;
-  (* Initial LoadPath XXX: Use a record *)
+
+  (* Initial LoadPath XXX: Use the coq_pkg record? *)
   iload_path   : (string list * string * bool) list;
+  require_libs : (Names.DirPath.t * string * bool option) list;
 
   implicit_prelude : bool;
 }
@@ -63,7 +65,14 @@ let coq_init opts =
      be avoided.  *)
   Declaremods.start_library sertop_dp;
 
-  (* XXX: Should we seed Coq std loadpath here, before STM init ? *)
+  (**************************************************************************)
+  (* Load the prelude                                                       *)
+  (**************************************************************************)
+  List.iter (fun (dp, p, in_exp) ->
+      Library.require_library_from_dirpath [dp,p] in_exp
+    ) opts.require_libs;
+
+  (* Note that we don't emit feedback during this phase _by design_.        *)
 
   (**************************************************************************)
   (* Feedback setup                                                         *)
@@ -119,54 +128,4 @@ let coq_init opts =
 
   (* Flags.debug := true; *)
 
-  (* Return the initial state of the STM *)
-  (* Stm.get_current_state () *)
   ()
-
-let coq_init_plugins =
-  [ ["syntax"]
-  ; ["decl_mode"]
-  ; ["cc"]
-  ; ["firstorder"]
-  ; ["setoid_ring"]
-  ; ["extraction"]
-  ; ["funind"]
-  ; ["quote"]
-
-  ; ["fourier"]
-  ; ["omega"]
-  ; ["micromega"]
-  ; ["romega"]
-  ]
-
-let coq_init_theories =
-  [ ["Init"]
-  ; ["Unicode"]
-  ; ["Bool"]
-  ; ["Logic"]
-  ; ["Program"]
-  ; ["Classes"]
-  ; ["Structures"]
-  ; ["Relations"]
-  ; ["Setoids"]
-  ; ["Arith"]
-  ; ["PArith"]
-  ; ["NArith"]
-  ; ["ZArith"]
-  ; ["QArith"]
-  ; ["Lists"]
-  ; ["Vectors"]
-  ; ["Reals"]
-  ; ["Sets"]
-  ; ["FSets"]
-  ; ["MSets"]
-  ; ["Sorting"]
-  ; ["Wellfounded"]
-  ; ["Strings"]
-
-  ; ["Numbers"]
-  ; ["Numbers"; "NatInt"]
-  ; ["Numbers"; "Natural"; "Abstract"]
-  ; ["Numbers"; "Natural"; "Peano"]
-  ; ["Numbers"; "Integer"; "Abstract"]
-  ]

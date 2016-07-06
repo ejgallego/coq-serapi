@@ -175,22 +175,15 @@ type answer =
 
 
 (******************************************************************************)
-(* Prelude Hacks (to be removed)                                              *)
+(* Prelude Loading Hacks (to be improved)                                     *)
 (******************************************************************************)
-
-let ser_load_prelude =
-  let def_opts : add_opts = { lim = None; ontop = None; newtip = None; verb = false } in
-  [ Control (StmAdd     (def_opts, "Require Import Coq.Init.Prelude. "));
-    Control (StmObserve (Stateid.of_int 2))
-  ]
-
-let do_prelude _ =
-  List.iter (fun cmd -> ignore (SP.exec_cmd cmd)) ser_load_prelude
 
 let ser_prelude_list coq_path =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  List.map (fun p -> ("Coq" :: p, mk_path "plugins"  p, true)) Sertop_init.coq_init_plugins  @
-  List.map (fun p -> ("Coq" :: p, mk_path "theories" p, true)) Sertop_init.coq_init_theories
+  List.map (fun p -> ("Coq" :: p, mk_path "plugins"  p, true)) Sertop_prelude.coq_init_plugins  @
+  List.map (fun p -> ("Coq" :: p, mk_path "theories" p, true)) Sertop_prelude.coq_init_theories
+
+let ser_prelude_mod coq_path = [Sertop_prelude.coq_prelude_mod coq_path]
 
 (******************************************************************************)
 (* Global Protocol Options                                                    *)
@@ -279,14 +272,12 @@ let ser_loop ser_opts =
 
   (* Init Coq *)
   Sertop_init.coq_init {
-    Sertop_init.fb_handler = pp_feed;
-    Sertop_init.aopts      = ser_opts.async;
-    Sertop_init.iload_path = Option.cata ser_prelude_list [] ser_opts.coqlib;
+    Sertop_init.fb_handler   = pp_feed;
+    Sertop_init.aopts        = ser_opts.async;
+    Sertop_init.iload_path   = Option.cata ser_prelude_list [] ser_opts.coqlib;
+    Sertop_init.require_libs = Option.cata ser_prelude_mod  [] ser_opts.coqlib;
     Sertop_init.implicit_prelude = ser_opts.implicit;
   };
-
-  (* Load prelude if requested *)
-  Option.iter do_prelude ser_opts.coqlib;
 
   (* Follow the same approach than coqtop for now: allow Coq to be
    * interrupted by Ctrl-C. Not entirely safe or race free... but we

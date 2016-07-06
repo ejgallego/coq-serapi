@@ -633,29 +633,3 @@ type answer =
   | Answer    of cmd_tag * answer_kind
   | Feedback  of Feedback.feedback
 
-(******************************************************************************)
-(* Prelude Hacks (to be removed)                                              *)
-(******************************************************************************)
-
-(*
-
-(* XXX: Stid are fixed here. Move to ser_init? *)
-let _ser_prelude coq_path : cmd list =
-  let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "plugins"  p, true))) Sertop_init.coq_init_plugins  @
-  List.map (fun p -> Control (LibAdd ("Coq" :: p, mk_path "theories" p, true))) Sertop_init.coq_init_theories @
-  []
-  (* [ Control (StmAdd     (1, None, "Require Import Coq.Init.Prelude. ")); *)
-  (*   Control (StmObserve (Stateid.T.of_int 2)) *)
-  (* ] *)
-
-let ser_load_prelude =
-  let def_opts : add_opts = { lim = None; ontop = None; newtip = None; verb = false } in
-  [ Control (StmAdd     (def_opts, "Require Import Coq.Init.Prelude. "));
-    Control (StmObserve (Stateid.of_int 2))
-  ]
-
-let do_prelude _ =
-  List.iter (fun cmd -> ignore (exec_cmd cmd)) ser_load_prelude
-
-*)
