@@ -38,9 +38,9 @@ let jstop : Mltop.toplevel =
 let setup_pseudo_fs () =
   Sys_js.register_autoload ~path:"/" (fun (_,s) -> Sertop_jslib.coq_vo_req s)
 
-let setup_std_printers () =
-  Sys_js.set_channel_flusher stdout (fun _msg -> ());
-  Sys_js.set_channel_flusher stderr (fun _msg -> ());
+let setup_std_printers out_fn =
+  Sys_js.set_channel_flusher stdout (fun msg -> out_fn @@ Sexp.(List [Atom "StdOut"; Atom msg]));
+  Sys_js.set_channel_flusher stderr (fun msg -> out_fn @@ Sexp.(List [Atom "StdErr"; Atom msg]));
   ()
 
 open Sexplib.Conv
@@ -86,7 +86,7 @@ let _ =
   Worker.set_onmessage on_msg;
 
   setup_pseudo_fs    ();
-  setup_std_printers ();
+  setup_std_printers post_message;
 
   (* Before Coq Init (XXX: Is this the proper place?) *)
   Mltop.set_top jstop;
