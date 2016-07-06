@@ -1,4 +1,4 @@
-.PHONY: clean all toplevel serlib sertop force
+.PHONY: clean all toplevel serlib sertop force js-dist js-release
 
 include config.mk
 
@@ -34,13 +34,19 @@ sertop_js.byte: force
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop_js.byte
 
 JSDIR=coq-libjs
-JSFILES=$(addprefix $(JSDIR)/,mutex.js unix.js coq_vm.js)
+JSFILES=$(addprefix $(JSDIR)/,mutex.js unix.js str.js coq_vm.js)
 
 js:
 	mkdir -p js
 
 js/sertop_js.js: js sertop_js.byte
 	js_of_ocaml --dynlink +nat.js +weak.js +dynlink.js +toplevel.js $(JSFILES) sertop_js.byte -o js/sertop_js.js
+
+js-dist:
+	rsync -avp --ignore=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs
+
+js-release:
+	rsync -avp --ignore=.git --delete js/ ~/research/jscoq-builds
 
 #####################################################
 # Misc

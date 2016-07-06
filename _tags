@@ -33,7 +33,9 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <coq-libjs>: include
 
 # Js Toplevel
-<sertop/sertop_js*.*>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(js_of_ocaml.ppx)
+<sertop/sertop_jslib.ml>: package(js_of_ocaml), package(yojson)
+<sertop/sertop_js.ml>: package(js_of_ocaml.ppx)
+<sertop/sertop_js.byte>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(js_of_ocaml.ppx)
 
 # Don't mess with this.
 <js>: -traverse
