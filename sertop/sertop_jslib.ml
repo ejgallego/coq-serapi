@@ -137,8 +137,10 @@ let info_from_file out_fn base_path file =
 let info_pkg out_fn base_path pkgs =
   Lwt_list.iter_p (info_from_file out_fn base_path) pkgs
 
+(* Hack *)
 let load_pkg out_fn base_path pkg_file =
-  preload_from_file out_fn base_path pkg_file
+  preload_from_file out_fn base_path pkg_file >>= fun () ->
+  parse_bundle base_path pkg_file
 
 (* let _is_bad_url _ = false *)
 

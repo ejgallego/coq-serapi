@@ -93,13 +93,17 @@ let _ =
   Format.eprintf "Initializing Coq, please wait for the libraries to download@\n%!";
 
   (* XXX: Run this in the Lwt.monad *)
-  let open Lwt in
+  let open Lwt   in
+  let open List  in
   async (fun () ->
       let base_path = "./"                                      in
       let pkg       = "init"                                    in
       let out_libevent lb = post_message (sexp_of_lib_event lb) in
-      Sertop_jslib.load_pkg out_libevent base_path pkg          >>= fun () ->
-      return (sertop_init post_message)
+      Sertop_jslib.load_pkg out_libevent base_path pkg          >>= fun bundle ->
+      let pkg_to_bb cp = (cp.pkg_id, Jslib.to_dir cp,
+                          length cp.cma_files > 0)              in
+      let bundle_proc = List.map pkg_to_bb bundle.pkgs          in
+      return (sertop_init post_message bundle_proc)
     );
   (* Library init *)
   ()

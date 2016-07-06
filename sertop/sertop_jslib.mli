@@ -29,7 +29,7 @@ type out_fn = lib_event -> unit
 val info_pkg : out_fn -> string -> string list -> unit Lwt.t
 
 (** [load_pkg base_path pkg_file] loads package [pkg_file] *)
-val load_pkg : out_fn -> string -> string -> unit Lwt.t
+val load_pkg : out_fn -> string -> string -> Jslib.coq_bundle Lwt.t
 (** [info_pkg lib_path available_pkg ] gather package list
     [available_pkg] from directory [lib_path] *)
 

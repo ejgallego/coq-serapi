@@ -17,7 +17,9 @@ open Sexplib
 
 (** [sertop fb_handler] Initialize Coq and send serialized feedback to
     [fb_handler] *)
-val sertop_init : (Sexp.t -> unit) -> unit
+val sertop_init : (Sexp.t -> unit) ->
+  (string list * string * bool) list ->
+  unit
 
 (** [sertop_callback out input] Execute command [input] and send
     serialized output to [out]. Takes an internal mutex. *)
