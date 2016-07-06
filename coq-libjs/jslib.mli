@@ -18,16 +18,11 @@ type coq_pkg = {
   cma_files : (string * Digest.t) list;
 }
 
-(* val digest_json  : Digest.t Deriving_Json.t *)
-(* val coq_pkg_json : coq_pkg  Deriving_Json.t *)
-
 type coq_bundle = {
   desc      : string;
   deps      : string list;
   pkgs      : coq_pkg list;
 }
-
-(* val coq_bundle_json : coq_bundle Deriving_Json.t *)
 
 val to_dir  : coq_pkg -> string
 val to_desc : coq_pkg -> string
@@ -39,8 +34,8 @@ open Yojson.Safe
 
 (* XXX Use PPX *)
 val coq_pkg_to_yojson : coq_pkg -> json
-val coq_pkg_of_yojson : json -> coq_pkg
+val coq_pkg_of_yojson : json -> (coq_pkg, string) Result.result
 
 val coq_bundle_to_yojson : coq_bundle -> json
-val coq_bundle_of_yojson : json -> coq_bundle
+val coq_bundle_of_yojson : json -> (coq_bundle, string) Result.result
 

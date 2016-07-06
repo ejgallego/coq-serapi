@@ -43,10 +43,10 @@ js/sertop_js.js: js sertop_js.byte
 	js_of_ocaml --dynlink +nat.js +weak.js +dynlink.js +toplevel.js $(JSFILES) sertop_js.byte -o js/sertop_js.js
 
 js-dist:
-	rsync -avp --ignore=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs
+	rsync -avp --exclude=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs
 
 js-release:
-	rsync -avp --ignore=.git --delete js/ ~/research/jscoq-builds
+	rsync -avp --exclude=.git --delete js/ ~/research/jscoq-builds
 
 #####################################################
 # Misc

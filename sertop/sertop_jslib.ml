@@ -108,10 +108,11 @@ let preload_pkg ?(verb=false) out_fn bundle pkg : unit Lwt.t =
 let parse_bundle file : coq_bundle Lwt.t =
   let file_url = !pkg_prefix ^ file ^ ".json" in
   XmlHttpRequest.get file_url >>= (fun res ->
-      try return @@ Jslib.coq_bundle_of_yojson
-              (Yojson.Safe.from_string res.XmlHttpRequest.content)
-      with _ -> Format.eprintf "JSON error in preload_from_file\n%!";
-                Lwt.fail (Failure "JSON")
+      match Jslib.coq_bundle_of_yojson
+              (Yojson.Safe.from_string res.XmlHttpRequest.content) with
+      | Result.Ok bundle -> return bundle
+      | Result.Error s   -> Format.eprintf "JSON error in preload_from_file\n%!";
+                            Lwt.fail (Failure s)
     )
 (*
       match Jslib.coq_bundle_of_yojson

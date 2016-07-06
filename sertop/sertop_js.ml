@@ -43,6 +43,37 @@ let setup_std_printers () =
   Sys_js.set_channel_flusher stderr (fun _msg -> ());
   ()
 
+open Sexplib.Conv
+
+type progress_info =
+  [%import: Sertop_jslib.progress_info]
+  [@@deriving sexp]
+
+type _digest = string
+  [@@deriving sexp]
+
+type digest = Digest.t
+let digest_of_sexp s = Digest.from_hex (_digest_of_sexp s)
+let sexp_of_digest d = sexp_of__digest (Digest.to_hex d)
+
+type coq_pkg =
+  [%import: Jslib.coq_pkg
+  [@with
+     Digest.t := digest;
+  ]]
+  [@@deriving sexp]
+
+type coq_bundle =
+  [%import: Jslib.coq_bundle]
+  [@@deriving sexp]
+
+type lib_event =
+  [%import: Sertop_jslib.lib_event
+  [@with
+     Jslib.coq_bundle := coq_bundle;
+  ]]
+  [@@deriving sexp]
+
 (* This code is executed on Worker initialization *)
 let _ =
   let on_msg str =
@@ -61,8 +92,9 @@ let _ =
   Mltop.set_top jstop;
   sertop_init post_message;
   (* Library init *)
-  let base_path = "./"       in
-  let pkgs      = [ "init" ] in
-  let out_libevent _ = ()    in
+  let base_path = "./"                                      in
+  let pkgs      = [ "init" ]                                in
+  let out_libevent lb = post_message (sexp_of_lib_event lb) in
   Sertop_jslib.info_pkg out_libevent base_path pkgs;
+  Sertop_jslib.load_pkg out_libevent "init";
   ()

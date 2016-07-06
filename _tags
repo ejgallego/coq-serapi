@@ -1,5 +1,6 @@
 # This has to take preference over the global flags...
-# <coq-libjs/jslib.ml>: warn(-39), warn_error(-39)
+<coq-libjs/jslib.ml>: warn(-39), warn_error(-39)
+<coq-libjs/jslib.ml{,i}>: package(yojson), package(ppx_deriving_yojson)
 
 # Coq-specific linking flags
 true: rectypes, thread, package(str), package(unix), package(threads)
@@ -33,9 +34,9 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <coq-libjs>: include
 
 # Js Toplevel
-<sertop/sertop_jslib.ml>: package(js_of_ocaml), package(yojson)
-<sertop/sertop_js.ml>: package(js_of_ocaml.ppx)
-<sertop/sertop_js.byte>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(js_of_ocaml.ppx)
+<sertop/sertop_jslib.ml>: package(js_of_ocaml), package(yojson), package(ppx_deriving_yojson)
+<sertop/sertop_js.ml>: package(js_of_ocaml.ppx), package(ppx_import), package(ppx_sexp_conv)
+<sertop/sertop_js.byte>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(ppx_deriving_yojson), package(js_of_ocaml)
 
 # Don't mess with this.
 <js>: -traverse

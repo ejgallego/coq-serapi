@@ -98,7 +98,8 @@ type control_cmd =
   | StmJoin                                     (* Stm.join      *)
   | StmStopWorker of    string
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
-  | LibAdd     of string list * string * bool
+  (*              coq_path      unix_path   has_ml *)
+  | LibAdd     of string list * string    * bool
   | Quit
 
 (******************************************************************************)
