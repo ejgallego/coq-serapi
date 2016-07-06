@@ -24,12 +24,12 @@ type lib_event =
 
 type out_fn = lib_event -> unit
 
-(** [info_pkg out_fn lib_path pkgs] gathers package list [pkgs] from
+(** [info_pkg out_fn base_path lib_path pkgs] gathers package list [pkgs] from
     directory [lib_path], emits events using [out_fn].  *)
-val info_pkg : out_fn -> string -> string list -> unit
+val info_pkg : out_fn -> string -> string list -> unit Lwt.t
 
-(** [load_pkg pkg_file] loads package [pkg_file] *)
-val load_pkg : out_fn -> string -> unit
+(** [load_pkg base_path pkg_file] loads package [pkg_file] *)
+val load_pkg : out_fn -> string -> string -> unit Lwt.t
 (** [info_pkg lib_path available_pkg ] gather package list
     [available_pkg] from directory [lib_path] *)
 

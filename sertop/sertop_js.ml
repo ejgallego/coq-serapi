@@ -90,11 +90,16 @@ let _ =
 
   (* Before Coq Init (XXX: Is this the proper place?) *)
   Mltop.set_top jstop;
-  sertop_init post_message;
+  Format.eprintf "Initializing Coq, please wait for the libraries to download@\n%!";
+
+  (* XXX: Run this in the Lwt.monad *)
+  let open Lwt in
+  async (fun () ->
+      let base_path = "./"                                      in
+      let pkg       = "init"                                    in
+      let out_libevent lb = post_message (sexp_of_lib_event lb) in
+      Sertop_jslib.load_pkg out_libevent base_path pkg          >>= fun () ->
+      return (sertop_init post_message)
+    );
   (* Library init *)
-  let base_path = "./"                                      in
-  let pkgs      = [ "init" ]                                in
-  let out_libevent lb = post_message (sexp_of_lib_event lb) in
-  Sertop_jslib.info_pkg out_libevent base_path pkgs;
-  Sertop_jslib.load_pkg out_libevent "init";
   ()

@@ -13,7 +13,6 @@ open Jslib
 open Lwt
 
 let cma_verb     = false
-let pkg_prefix   = ref ""
 let coq_pkgs_dir = "coq-pkgs/"
 
 (* Main file_cache, indexed by url*)
@@ -42,11 +41,11 @@ type lib_event =
 
 type out_fn = lib_event -> unit
 
-let preload_vo_file ?(refresh=false) base_url (file, _hash) : unit Lwt.t =
-  let open XmlHttpRequest                           in
-  let full_url    = base_url  ^ "/" ^ file          in
-  let request_url = !pkg_prefix ^ full_url          in
-  let cached      = Hashtbl.mem file_cache full_url in
+let preload_vo_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t =
+  let open XmlHttpRequest                               in
+  let full_url    = base_url  ^ "/" ^ file              in
+  let request_url = base_path ^ coq_pkgs_dir ^ full_url in
+  let cached      = Hashtbl.mem file_cache full_url     in
 
   (* Only reload if not cached or a refresh is requested *)
   if not cached || refresh then begin
@@ -70,9 +69,9 @@ let preload_vo_file ?(refresh=false) base_url (file, _hash) : unit Lwt.t =
 
 (* We grab the `cma/cmo`.js version of the module, we also add it
    to the path resolution cache: *)
-let preload_cma_file base_url (file, _hash) : unit Lwt.t =
-  let js_file = file ^ ".js"                in
-  preload_vo_file base_url (js_file, _hash) >>= fun () ->
+let preload_cma_file base_path base_url (file, _hash) : unit Lwt.t =
+  let js_file = file ^ ".js"                          in
+  preload_vo_file base_path base_url (js_file, _hash) >>= fun () ->
   if cma_verb then Format.eprintf "pre-loading cma file (%s, %s)\n%!" base_url js_file;
   Hashtbl.add cma_cache file base_url;
   Lwt.return_unit
@@ -84,7 +83,7 @@ let jslib_add_load_path pkg pkg_path has_ml =
   Loadpath.add_load_path ("./" ^ pkg_path) coq_path ~implicit:false;
   if has_ml then Mltop.add_ml_dir pkg_path
 
-let preload_pkg ?(verb=false) out_fn bundle pkg : unit Lwt.t =
+let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   let pkg_dir = to_dir pkg                                           in
   let ncma    = List.length pkg.cma_files                            in
   let nfiles  = no_files pkg                                         in
@@ -92,21 +91,21 @@ let preload_pkg ?(verb=false) out_fn bundle pkg : unit Lwt.t =
     Format.eprintf "pre-loading package %s, [00/%02d] files\n%!" pkg_dir nfiles;
   (* XXX: pkg_start, we don't emit an event here *)
   let preload_vo_and_log nc i f =
-    preload_vo_file pkg_dir f >>= fun () ->
+    preload_vo_file base_path pkg_dir f >>= fun () ->
     if verb then
       Format.eprintf "pre-loading package %s, [%02d/%02d] files\n%!" pkg_dir (i+nc+1) nfiles;
     out_fn (LibProgress { bundle; pkg = pkg_dir; loaded = i+nc+1; total = nfiles });
     Lwt.return_unit
   in
-  Lwt_list.iter_s (preload_cma_file pkg_dir) pkg.cma_files    >>= fun () ->
-  Lwt_list.iteri_s (preload_vo_and_log ncma) pkg.vo_files     >>= fun () ->
+  Lwt_list.iter_s (preload_cma_file base_path pkg_dir) pkg.cma_files >>= fun () ->
+  Lwt_list.iteri_s (preload_vo_and_log ncma) pkg.vo_files            >>= fun () ->
   jslib_add_load_path pkg.pkg_id pkg_dir (ncma > 0);
   (* We dont emit a package loaded event *)
   (* out_fn (LibLoadedPkg bundle pkg); *)
   Lwt.return_unit
 
-let parse_bundle file : coq_bundle Lwt.t =
-  let file_url = !pkg_prefix ^ file ^ ".json" in
+let parse_bundle base_path file : coq_bundle Lwt.t =
+  let file_url = base_path ^ coq_pkgs_dir ^ file ^ ".json" in
   XmlHttpRequest.get file_url >>= (fun res ->
       match Jslib.coq_bundle_of_yojson
               (Yojson.Safe.from_string res.XmlHttpRequest.content) with
@@ -124,25 +123,22 @@ let parse_bundle file : coq_bundle Lwt.t =
 *)
 
 (* Load a bundle *)
-let rec preload_from_file ?(verb=false) out_fn file =
-  parse_bundle file >>= (fun bundle ->
+let rec preload_from_file ?(verb=false) out_fn base_path file =
+  parse_bundle base_path file >>= (fun bundle ->
   (* Load deps in paralell *)
-  Lwt_list.iter_p (preload_from_file ~verb:verb out_fn) bundle.deps <&>
-  Lwt_list.iter_p (preload_pkg  ~verb:verb out_fn file) bundle.pkgs     >>= fun () ->
+  Lwt_list.iter_p (preload_from_file ~verb:verb out_fn base_path) bundle.deps           <&>
+  Lwt_list.iter_p (preload_pkg ~verb:verb out_fn base_path file) bundle.pkgs  >>= fun () ->
   return @@ out_fn (LibLoaded file))
 
-let info_from_file out_fn file =
-  parse_bundle file >>= (fun bundle ->
+let info_from_file out_fn base_path file =
+  parse_bundle base_path file >>= (fun bundle ->
   return @@ out_fn (LibInfo (file, bundle)))
 
 let info_pkg out_fn base_path pkgs =
-  pkg_prefix := base_path ^ "/" ^ coq_pkgs_dir;
-  Lwt.async (fun () ->
-      Lwt_list.iter_p (info_from_file out_fn) pkgs)
+  Lwt_list.iter_p (info_from_file out_fn base_path) pkgs
 
-let load_pkg out_fn pkg_file =
-  Lwt.async (fun () ->
-    preload_from_file out_fn pkg_file)
+let load_pkg out_fn base_path pkg_file =
+  preload_from_file out_fn base_path pkg_file
 
 (* let _is_bad_url _ = false *)
 
