@@ -95,7 +95,7 @@ type coq_object =
   | CoqSList    of string list
   | CoqRichpp   of Richpp.richpp
   (* XXX: For xml-like printing, should be moved to an option... *)
-  | CoqRichXml  of Richpp.richpp
+  (* | CoqRichXml  of Richpp.richpp *)
   | CoqLoc      of Loc.t
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
@@ -138,32 +138,35 @@ let pp_implicit = function
   | None               -> Pp.str "!"
   | Some (iname, _, _) -> Names.Id.print iname
 
-let pp_obj fmt (obj : coq_object) =
-  let pr obj = Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) obj in
+let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   match obj with
-  | CoqString  s    -> pr (Pp.str s)
-  | CoqSList   s    -> pr (Pp.(pr_sequence str) s)
-  | CoqRichpp  s    -> pr (Pp.str (Richpp.raw_print s))
-  | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x)
-  | CoqLoc    _loc  -> pr (Pp.mt ())
-  | CoqOption (n,s) -> pr (pp_opt n s)
-  | CoqConstr  c    -> pr (Printer.pr_lconstr c)
-  | CoqExpr    e    -> pr (Ppconstr.pr_lconstr_expr e)
-  | CoqTactic(kn,_) -> pr (Names.KerName.print kn)
+  | CoqString  s    -> Pp.str s
+  | CoqSList   s    -> Pp.(pr_sequence str) s
+  | CoqRichpp  s    -> Pp.str (Richpp.raw_print s)
+  (* | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x) *)
+  | CoqLoc    _loc  -> Pp.mt ()
+  | CoqOption (n,s) -> pp_opt n s
+  | CoqConstr  c    -> Printer.pr_lconstr c
+  | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
+  | CoqTactic(kn,_) -> Names.KerName.print kn
   (* Fixme *)
-  | CoqGoal    g    -> pr (Pp.pr_sequence pp_goal g.Proof.fg_goals)
-  | CoqProfData _pf -> pr (Pp.str "FIXME UPSTREAM, provide pr_prof_results")
-  | CoqQualId qid   -> pr (Pp.str (Libnames.string_of_qualid qid))
-  | CoqGlobRef _gr  -> pr (Pp.str "FIXME GlobRef")
-  | CoqImplicit(_,l)-> pr (Pp.pr_sequence pp_implicit l)
+  | CoqGoal    g    -> Pp.pr_sequence pp_goal g.Proof.fg_goals
+  | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
+  | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
+  | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
+  | CoqImplicit(_,l)-> Pp.pr_sequence pp_implicit l
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
+
+let str_pp_obj fmt (obj : coq_object)  =
+  Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) (gen_pp_obj obj)
 
 (** Print output format  *)
 type print_format =
   | PpSer
   | PpStr
+  | PpRichpp
 
 (* register printer *)
 
@@ -177,14 +180,15 @@ type print_opt = {
 let obj_print pr_opt obj =
   let open Format in
   match pr_opt.pp_format with
-  | PpSer -> obj
+  | PpSer    -> obj
+  | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp (gen_pp_obj obj))
   | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
     let et      = pp_get_ellipsis_text str_formatter () in
     pp_set_max_boxes     str_formatter pr_opt.pp_depth;
     pp_set_ellipsis_text str_formatter pr_opt.pp_elide;
 
-    fprintf str_formatter "@[%a@]" pp_obj obj;
+    fprintf str_formatter "@[%a@]" str_pp_obj obj;
     let str_obj = CoqString (flush_str_formatter ())    in
 
     pp_set_max_boxes     str_formatter mb;
@@ -438,7 +442,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqString  s    -> Extra.is_prefix s ~prefix
   | CoqSList   _    -> true     (* XXX *)
   | CoqRichpp  _    -> true
-  | CoqRichXml _    -> true
+  (* | CoqRichXml _    -> true *)
   | CoqLoc     _    -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true
