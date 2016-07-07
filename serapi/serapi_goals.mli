@@ -16,3 +16,7 @@ type reified_goal = Constr.constr * Context.NamedList.Declaration.t list
 
 val get_goals : Stateid.t -> reified_goal Proof.pre_goals option
 
+type reified_egoal = Constrexpr.constr_expr * (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list
+
+val get_egoals : Stateid.t -> reified_egoal Proof.pre_goals option
+

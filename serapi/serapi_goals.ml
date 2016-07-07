@@ -45,3 +45,30 @@ let get_goals sid : reified_goal Proof.pre_goals option =
         ) ost
   end
   with Proof_global.NoCurrentProof -> None
+
+type reified_egoal = Constrexpr.constr_expr * (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list
+
+let extern_hyp env sigma (names, _def, htype) =
+  let ehtype = Constrextern.extern_constr true env sigma htype in
+  (names, None, ehtype)
+
+let process_egoal sigma g : reified_egoal =
+  let env       = Goal.V82.env sigma g                                      in
+  (* why is compaction neccesary... ? *)
+  let ctx       = Termops.compact_named_context (Environ.named_context env) in
+  let hyps      = List.map (get_hyp sigma) ctx                              in
+  let goal      = get_goal_type sigma g                                     in
+  let egoal     = Constrextern.extern_constr true env sigma goal            in
+  let ehyps     = List.map (extern_hyp env sigma) hyps                      in
+  (egoal, ehyps)
+
+let get_egoals sid : reified_egoal Proof.pre_goals option =
+  try begin
+    match Stm.state_of_id sid with
+    | `Expired | `Error _ -> None
+    | `Valid ost ->
+      Option.map (fun stm_st ->
+          Proof.map_structured_proof (Proof_global.proof_of_state stm_st.Stm.proof) process_egoal
+        ) ost
+  end
+  with Proof_global.NoCurrentProof -> None

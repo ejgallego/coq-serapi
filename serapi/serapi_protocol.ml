@@ -107,6 +107,9 @@ type coq_object =
   | CoqProfData of Profile_ltac.ltacprof_results
   (* Fixme *)
   | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
+  (* Extern goal: XXX just a trial *)
+  | CoqExtGoal  of (Constrexpr.constr_expr *
+                    (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list) Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -151,6 +154,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqTactic(kn,_) -> Names.KerName.print kn
   (* Fixme *)
   | CoqGoal    g    -> Pp.pr_sequence pp_goal g.Proof.fg_goals
+  | CoqExtGoal _    -> Pp.str "FIXME SERAPI"
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
   | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
@@ -454,6 +458,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqProfData _   -> true
   | CoqImplicit _   -> true
   | CoqGoal _       -> true
+  | CoqExtGoal _    -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -470,6 +475,7 @@ type query_cmd =
   | Option   (*  *)
   | Search                         (* Search vernacular, we only support prefix by name *)
   | Goals     of Stateid.t           (* Return goals [TODO: Add filtering/limiting options] *)
+  | EGoals    of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
   | TypeOf    of string
   | Names     of string            (* XXX Move to prefix *)
   | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
@@ -556,6 +562,7 @@ let obj_query (cmd : query_cmd) : coq_object list =
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals sid
+  | EGoals sid     -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id

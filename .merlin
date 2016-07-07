@@ -9,6 +9,9 @@ B _build/serlib
 S coq-libjs
 B _build/coq-libjs
 
+S serapi
+B _build/serapi
+
 S sertop
 B _build/sertop
 

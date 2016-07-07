@@ -38,6 +38,8 @@ type coq_object =
   | CoqProfData of Profile_ltac.ltacprof_results
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
+  | CoqExtGoal  of (Constrexpr.constr_expr *
+                    (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list) Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -124,6 +126,7 @@ type query_cmd =
   | Option
   | Search
   | Goals     of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
+  | EGoals    of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
   | TypeOf    of string           (* XXX Unimplemented *)
   | Names     of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Tactics   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
