@@ -104,12 +104,47 @@ type print_opt =
   [%import: Serapi_protocol.print_opt]
   [@@deriving sexp]
 
+type query_pred =
+  [%import: Serapi_protocol.query_pred
+  [@with
+     Stateid.t := stateid;
+  ]]
+  [@@deriving sexp]
+
+type query_opt =
+  [%import: Serapi_protocol.query_opt
+  [@with
+     Stateid.t                := stateid;
+     Sexplib.Conv.sexp_list   := sexp_list;
+     Sexplib.Conv.sexp_option := sexp_option;
+     Feedback.route_id        := route_id;
+  ]]
+  [@@deriving sexp]
+
+type query_cmd =
+  [%import: Serapi_protocol.query_cmd
+  [@with
+     Stateid.t := stateid;
+  ]]
+  [@@deriving sexp]
+
+type cmd_tag =
+  [%import: Serapi_protocol.cmd_tag]
+  [@@deriving sexp]
+
 type answer_kind =
   [%import: Serapi_protocol.answer_kind
   [@with
      Loc.t                         := loc;
      Stateid.t := stateid;
      Stm.focus := focus;
+  ]]
+  [@@deriving sexp]
+
+type answer =
+  [%import: Serapi_protocol.answer
+  [@with
+     Feedback.feedback := feedback;
   ]]
   [@@deriving sexp]
 
@@ -131,48 +166,13 @@ type control_cmd =
   ]]
   [@@deriving sexp]
 
-type query_pred =
-  [%import: Serapi_protocol.query_pred
-  [@with
-     Stateid.t := stateid;
-  ]]
-  [@@deriving sexp]
-
-type query_opt =
-  [%import: Serapi_protocol.query_opt
-  [@with
-     Stateid.t                := stateid;
-     Sexplib.Conv.sexp_list   := sexp_list;
-     Sexplib.Conv.sexp_option := sexp_option;
-  ]]
-  [@@deriving sexp]
-
-type query_cmd =
-  [%import: Serapi_protocol.query_cmd
-  [@with
-     Stateid.t := stateid;
-  ]]
-  [@@deriving sexp]
-
 type cmd =
   [%import: Serapi_protocol.cmd]
-  [@@deriving sexp]
-
-type cmd_tag =
-  [%import: Serapi_protocol.cmd_tag]
   [@@deriving sexp]
 
 type tagged_cmd =
   [%import: Serapi_protocol.tagged_cmd]
   [@@deriving sexp]
-
-type answer =
-  [%import: Serapi_protocol.answer
-  [@with
-     Feedback.feedback := feedback;
-  ]]
-  [@@deriving sexp]
-
 
 (******************************************************************************)
 (* Prelude Loading Hacks (to be improved)                                     *)

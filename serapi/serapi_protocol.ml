@@ -246,6 +246,173 @@ type answer_kind =
   | Completed
 
 (******************************************************************************)
+(* Query Sub-Protocol                                                         *)
+(******************************************************************************)
+
+(** Max number of results to return, 0 will return a summary *)
+(* type query_limit = int option *)
+
+(** Filtering predicates *)
+type query_pred =
+  | Prefix of string
+  (* Filter by type   *)
+  (* Filter by module *)
+
+let prefix_pred (prefix : string) (obj : coq_object) : bool =
+  match obj with
+  | CoqString  s    -> Extra.is_prefix s ~prefix
+  | CoqSList   _    -> true     (* XXX *)
+  | CoqRichpp  _    -> true
+  (* | CoqRichXml _    -> true *)
+  | CoqLoc     _    -> true
+  | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
+  | CoqConstr _     -> true
+  | CoqExpr _       -> true
+  | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
+  (* | CoqPhyLoc _     -> true *)
+  | CoqQualId _     -> true
+  | CoqGlobRef _    -> true
+  | CoqProfData _   -> true
+  | CoqImplicit _   -> true
+  | CoqGoal _       -> true
+  | CoqExtGoal _    -> true
+
+let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
+  | Prefix s -> prefix_pred s obj
+
+type query_opt =
+  { preds : query_pred sexp_list;
+    limit : int sexp_option;
+    sid   : Stateid.t [@default Stm.get_current_state()];
+    pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0; pp_elide = "..." } ];
+    (* Legacy/Deprecated *)
+    route : Feedback.route_id [@default Feedback.default_route];
+  }
+
+(** XXX: This should be in sync with the object tag!  *)
+type query_cmd =
+  | Option   (*  *)
+  | Search                         (* Search vernacular, we only support prefix by name *)
+  | Goals     of Stateid.t           (* Return goals [TODO: Add filtering/limiting options] *)
+  | EGoals    of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
+  | TypeOf    of string
+  | Names     of string            (* XXX Move to prefix *)
+  | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
+  | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
+  | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
+  | ProfileData
+
+module QueryUtil = struct
+
+  let _query_names prefix =
+    let acc = ref [] in
+    Search.generic_search None (fun gr _env _typ ->
+        (* Not happy with this at ALL:
+
+           String of qualid is OK, but shortest_qualid_of_global is an
+           unacceptable round-trip. I don't really see other option
+           than to maintain a prefix-specific table on the Coq side
+           capturing all the possible aliases.
+
+        *)
+        let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
+        if Extra.is_prefix name ~prefix then acc := name :: !acc
+    );
+    [CoqSList !acc]
+
+  let query_names_locate prefix =
+    let all_gr = Nametab.locate_all @@ Libnames.qualid_of_ident (Names.Id.of_string prefix) in
+    List.map (fun x -> CoqGlobRef x) all_gr
+
+  (* From @ppedrot *)
+  let query_tactics prefix =
+    let open Names           in
+
+    let prefix_long kn = Extra.is_prefix (KerName.to_string kn) ~prefix in
+    let prefix_best kn =
+      try Extra.is_prefix
+            (Libnames.string_of_qualid (Nametab.shortest_qualid_of_tactic kn)) ~prefix
+      with Not_found ->
+        (* Debug code, It is weird that shortest_qualid_of_tactic returns a Not_found... :S *)
+        (* Format.eprintf "%s has no short name@\n%!" (KerName.to_string kn); *)
+        false
+    in
+    let tpred kn _ = prefix_long kn || prefix_best kn in
+    KNmap.bindings @@ KNmap.filter tpred @@ Tacenv.ltac_entries ()
+  [@@warning "-44"]
+
+    (* let map (kn, entry) = *)
+    (*   let qid = *)
+    (*     try Some (Nametab.shortest_qualid_of_tactic kn) *)
+    (*     with Not_found -> None *)
+    (*   in *)
+    (*   match qid with *)
+    (*   | None -> None *)
+    (*   | Some qid -> Some (qid, entry.Tacenv.tac_body) *)
+    (* in *)
+    (* List.map  map entries [] *)
+
+  let locate id =
+    let open Names     in
+    let open Libnames  in
+    let open Globnames in
+    (* From prettyp.ml *)
+    let qid = qualid_of_ident @@ Id.of_string id in
+    let expand = function
+      | TrueGlobal ref ->
+        Nametab.shortest_qualid_of_global Id.Set.empty ref
+      | SynDef kn ->
+        Nametab.shortest_qualid_of_syndef Id.Set.empty kn
+    in
+    List.map expand (Nametab.locate_extended_all qid)
+
+  let implicits id =
+    let open Names     in
+    let open Libnames  in
+    try let ref = Nametab.locate (qualid_of_ident (Id.of_string id)) in
+      Impargs.implicits_of_global ref
+    with Not_found -> []
+
+end
+
+let obj_query (cmd : query_cmd) : coq_object list =
+  match cmd with
+  | Option         -> let table = Goptions.get_tables ()            in
+                      let opts  = Goptions.OptionMap.bindings table in
+                      List.map (fun (n,s) -> CoqOption(n,s)) opts
+  | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals sid
+  | EGoals sid     -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals sid
+  | Names   prefix -> QueryUtil.query_names_locate prefix
+  | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
+  | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
+  | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
+  | ProfileData    -> [CoqProfData (Profile_ltac.get_profiling_results ())]
+
+  | Search         -> [CoqString "Not Implemented"]
+  | TypeOf _       -> [CoqString "Not Implemented"]
+
+let obj_filter preds objs =
+  List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
+
+(* XXX: OCaml! .... *)
+let rec take n l =
+  if n = 0 then [] else match l with
+    | []      -> []
+    | x :: xs -> x :: take (n-1) xs
+
+let obj_limit limit objs =
+  match limit with
+  | None   -> objs
+  | Some n -> take n objs
+
+let exec_query opt cmd =
+  let res = obj_query cmd        in
+  (* XXX: Filter should move to query once we have GADT *)
+  let res = obj_filter opt.preds res in
+  let res = obj_limit  opt.limit res in
+  List.map (obj_print opt.pp) res
+
+(******************************************************************************)
 (* Control Sub-Protocol                                                       *)
 (******************************************************************************)
 
@@ -262,17 +429,17 @@ type add_opts = {
 }
 
 type control_cmd =
-  | StmState                                    (* Get the state *)
-  | StmAdd     of       add_opts * string       (* Stm.add       *)
-  | StmQuery   of       Stateid.t  * string       (* Stm.query     *)
-  | StmCancel  of       Stateid.t list            (* Cancel method *)
-  | StmEditAt  of       Stateid.t                 (* Stm.edit_at   *)
-  | StmObserve of       Stateid.t                 (* Stm.observe   *)
-  | StmJoin                                     (* Stm.join      *)
-  | StmStopWorker of    string
-  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
-  (*              prefix      * path   * implicit   *)
-  | LibAdd     of string list * string * bool
+  | StmState                                 (* Get the state *)
+  | StmAdd        of add_opts  * string      (* Stm.add       *)
+  | StmQuery      of query_opt * string      (* Stm.query     *)
+  | StmCancel     of Stateid.t list          (* Cancel method *)
+  | StmEditAt     of Stateid.t               (* Stm.edit_at   *)
+  | StmObserve    of Stateid.t               (* Stm.observe   *)
+  | StmJoin                                  (* Stm.join      *)
+  | StmStopWorker of string
+  | SetOpt        of bool option * Goptions.option_name * Goptions.option_value
+  (*                 prefix      * path   * implicit   *)
+  | LibAdd        of string list * string * bool
   | Quit
 
 let exec_setopt loc n (v : Goptions.option_value) =
@@ -411,7 +578,7 @@ let exec_ctrl ctrl =
 
   | StmEditAt st    -> ControlUtil.edit st
 
-  | StmQuery(st, s) -> Stm.query ~at:st s; []
+  | StmQuery(opt,q) -> Stm.query ~at:opt.sid ~report_with:(opt.sid,opt.route) q; []
   | StmObserve st   -> Stm.observe st; []
   | StmJoin         -> Stm.join (); []
   | StmStopWorker w -> Stm.stop_worker w; []
@@ -427,171 +594,6 @@ let exec_ctrl ctrl =
   | SetOpt(loc, n, v) -> exec_setopt loc n v; []
 
   | Quit           -> []
-
-(******************************************************************************)
-(* Query Sub-Protocol                                                         *)
-(******************************************************************************)
-
-(** Max number of results to return, 0 will return a summary *)
-(* type query_limit = int option *)
-
-(** Filtering predicates *)
-type query_pred =
-  | Prefix of string
-  (* Filter by type   *)
-  (* Filter by module *)
-
-let prefix_pred (prefix : string) (obj : coq_object) : bool =
-  match obj with
-  | CoqString  s    -> Extra.is_prefix s ~prefix
-  | CoqSList   _    -> true     (* XXX *)
-  | CoqRichpp  _    -> true
-  (* | CoqRichXml _    -> true *)
-  | CoqLoc     _    -> true
-  | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
-  | CoqConstr _     -> true
-  | CoqExpr _       -> true
-  | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
-  (* | CoqPhyLoc _     -> true *)
-  | CoqQualId _     -> true
-  | CoqGlobRef _    -> true
-  | CoqProfData _   -> true
-  | CoqImplicit _   -> true
-  | CoqGoal _       -> true
-  | CoqExtGoal _    -> true
-
-let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
-  | Prefix s -> prefix_pred s obj
-
-type query_opt =
-  { preds : query_pred sexp_list;
-    limit : int sexp_option;
-    sid   : Stateid.t [@default Stm.get_current_state()];
-    pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0; pp_elide = "..." } ];
-  }
-
-(** XXX: This should be in sync with the object tag!  *)
-type query_cmd =
-  | Option   (*  *)
-  | Search                         (* Search vernacular, we only support prefix by name *)
-  | Goals     of Stateid.t           (* Return goals [TODO: Add filtering/limiting options] *)
-  | EGoals    of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
-  | TypeOf    of string
-  | Names     of string            (* XXX Move to prefix *)
-  | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
-  | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
-  | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
-  | ProfileData
-
-module QueryUtil = struct
-
-  let _query_names prefix =
-    let acc = ref [] in
-    Search.generic_search None (fun gr _env _typ ->
-        (* Not happy with this at ALL:
-
-           String of qualid is OK, but shortest_qualid_of_global is an
-           unacceptable round-trip. I don't really see other option
-           than to maintain a prefix-specific table on the Coq side
-           capturing all the possible aliases.
-
-        *)
-        let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
-        if Extra.is_prefix name ~prefix then acc := name :: !acc
-    );
-    [CoqSList !acc]
-
-  let query_names_locate prefix =
-    let all_gr = Nametab.locate_all @@ Libnames.qualid_of_ident (Names.Id.of_string prefix) in
-    List.map (fun x -> CoqGlobRef x) all_gr
-
-  (* From @ppedrot *)
-  let query_tactics prefix =
-    let open Names           in
-
-    let prefix_long kn = Extra.is_prefix (KerName.to_string kn) ~prefix in
-    let prefix_best kn =
-      try Extra.is_prefix
-            (Libnames.string_of_qualid (Nametab.shortest_qualid_of_tactic kn)) ~prefix
-      with Not_found ->
-        (* Debug code, It is weird that shortest_qualid_of_tactic returns a Not_found... :S *)
-        (* Format.eprintf "%s has no short name@\n%!" (KerName.to_string kn); *)
-        false
-    in
-    let tpred kn _ = prefix_long kn || prefix_best kn in
-    KNmap.bindings @@ KNmap.filter tpred @@ Tacenv.ltac_entries ()
-  [@@warning "-44"]
-
-    (* let map (kn, entry) = *)
-    (*   let qid = *)
-    (*     try Some (Nametab.shortest_qualid_of_tactic kn) *)
-    (*     with Not_found -> None *)
-    (*   in *)
-    (*   match qid with *)
-    (*   | None -> None *)
-    (*   | Some qid -> Some (qid, entry.Tacenv.tac_body) *)
-    (* in *)
-    (* List.map  map entries [] *)
-
-  let locate id =
-    let open Names     in
-    let open Libnames  in
-    let open Globnames in
-    (* From prettyp.ml *)
-    let qid = qualid_of_ident @@ Id.of_string id in
-    let expand = function
-      | TrueGlobal ref ->
-        Nametab.shortest_qualid_of_global Id.Set.empty ref
-      | SynDef kn ->
-        Nametab.shortest_qualid_of_syndef Id.Set.empty kn
-    in
-    List.map expand (Nametab.locate_extended_all qid)
-
-  let implicits id =
-    let open Names     in
-    let open Libnames  in
-    try let ref = Nametab.locate (qualid_of_ident (Id.of_string id)) in
-      Impargs.implicits_of_global ref
-    with Not_found -> []
-
-end
-
-let obj_query (cmd : query_cmd) : coq_object list =
-  match cmd with
-  | Option         -> let table = Goptions.get_tables ()            in
-                      let opts  = Goptions.OptionMap.bindings table in
-                      List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals sid
-  | EGoals sid     -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals sid
-  | Names   prefix -> QueryUtil.query_names_locate prefix
-  | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
-  | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
-  | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
-  | ProfileData    -> [CoqProfData (Profile_ltac.get_profiling_results ())]
-
-  | Search         -> [CoqString "Not Implemented"]
-  | TypeOf _       -> [CoqString "Not Implemented"]
-
-let obj_filter preds objs =
-  List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
-
-(* XXX: OCaml! .... *)
-let rec take n l =
-  if n = 0 then [] else match l with
-    | []      -> []
-    | x :: xs -> x :: take (n-1) xs
-
-let obj_limit limit objs =
-  match limit with
-  | None   -> objs
-  | Some n -> take n objs
-
-let exec_query opt cmd =
-  let res = obj_query cmd        in
-  (* XXX: Filter should move to query once we have GADT *)
-  let res = obj_filter opt.preds res in
-  let res = obj_limit  opt.limit res in
-  List.map (obj_print opt.pp) res
 
 (******************************************************************************)
 (* Help                                                                       *)

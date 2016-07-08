@@ -81,31 +81,6 @@ type answer_kind =
   | Completed
 
 (******************************************************************************)
-(* Control Sub-Protocol                                                       *)
-(******************************************************************************)
-
-type add_opts = {
-  lim    : int       sexp_option;
-  ontop  : Stateid.t sexp_option;
-  newtip : Stateid.t sexp_option;
-  verb   : bool      [@default false];
-}
-
-type control_cmd =
-    StmState
-  | StmAdd     of       add_opts  * string      (* Stm.add       *)
-  | StmQuery   of       Stateid.t * string
-  | StmCancel  of       Stateid.t list
-  | StmEditAt  of       Stateid.t
-  | StmObserve of       Stateid.t
-  | StmJoin                                     (* Stm.join      *)
-  | StmStopWorker of    string
-  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
-  (*              coq_path      unix_path   has_ml *)
-  | LibAdd     of string list * string    * bool
-  | Quit
-
-(******************************************************************************)
 (* Query Sub-Protocol                                                         *)
 (******************************************************************************)
 
@@ -117,6 +92,8 @@ type query_opt =
     limit : int sexp_option;
     sid   : Stateid.t [@default Stm.get_current_state()];
     pp    : print_opt [@default { pp_format = PpSer ; pp_depth = 0; pp_elide = "..." } ];
+    (* Legacy/Deprecated *)
+    route : Feedback.route_id [@default Feedback.default_route];
   }
 
 (** We would ideally make both query_cmd and coq_object depend on a
@@ -133,6 +110,31 @@ type query_cmd =
   | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
   | ProfileData
+
+(******************************************************************************)
+(* Control Sub-Protocol                                                       *)
+(******************************************************************************)
+
+type add_opts = {
+  lim    : int       sexp_option;
+  ontop  : Stateid.t sexp_option;
+  newtip : Stateid.t sexp_option;
+  verb   : bool      [@default false];
+}
+
+type control_cmd =
+    StmState
+  | StmAdd     of       add_opts  * string      (* Stm.add       *)
+  | StmQuery   of       query_opt * string
+  | StmCancel  of       Stateid.t list
+  | StmEditAt  of       Stateid.t
+  | StmObserve of       Stateid.t
+  | StmJoin                                     (* Stm.join      *)
+  | StmStopWorker of    string
+  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
+  (*              coq_path      unix_path   has_ml *)
+  | LibAdd     of string list * string    * bool
+  | Quit
 
 (******************************************************************************)
 (* Help                                                                       *)
