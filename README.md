@@ -89,7 +89,7 @@ There are four categories of commands:
 - `(Query ((opt value) ...) kind)`:
   **API WARNING:** The Query API format is experimental and will change soon.
 
-  Queries stream Coq objects of type `kind`. This can range from options, goals and hypotheses, tactics, etc... The first argument is a list of options: `preds` is a list of conjunctive filters, `limit` specifies how many values the query may return. `pp` controls the output format: `PpSexp` for full serialization, or `PpStr` for "pretty printing". For instance:
+  Queries stream Coq objects of type `kind`. This can range from options, goals and hypotheses, tactics, etc... The first argument is a list of options: `preds` is a list of conjunctive filters, `limit` specifies how many values the query may return. `pp` controls the output format: `PpSer` for full serialization, or `PpStr` for "pretty printing". For instance:
    ```lisp
    (tag (Query ((preds (Prefix "Debug")) (limit 10) (pp PpSexp)) Option))
    ```
@@ -218,10 +218,10 @@ coq-serapi$ rlwrap ./sertop.byte --prelude ~/external/coq-git/
 > (Answer 5 Ack)
 > (Feedback((id(State 4))(contents(ProcessingIn master))(route 0)))
 > ...
-(Query ((pp ((pp_format PpStr)))) (Goals 4))
+(Query ((sid 4) (pp ((pp_format PpStr)))) Goals)
 > (Answer 6 Ack)
 > (Answer 6(ObjList((CoqString"forall n : nat, n + 0 = n"))))
-(Query ((pp ((pp_format PpSexp)))) (Goals 4))
+(Query ((sid 4) (pp ((pp_format PpSer)))) Goals)
 > (Answer 7 Ack)
 > (Answer 7(ObjList((CoqGoal()(CProdN((fname"")....))))))
 (8 (Control (StmAdd () "now induction n.")))
@@ -231,7 +231,7 @@ coq-serapi$ rlwrap ./sertop.byte --prelude ~/external/coq-git/
 > (Answer 10 Ack)
 > (Feedback((id(State 5))(contents Processed)(route 0)))
 > ...
-(Query () (Goals 4))
+(Query ((sid 4)) Goals)
 > (Answer 11 Ack)
 > (Answer 11(ObjList()))
 

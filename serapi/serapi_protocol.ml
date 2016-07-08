@@ -293,8 +293,8 @@ type query_opt =
 type query_cmd =
   | Option   (*  *)
   | Search                         (* Search vernacular, we only support prefix by name *)
-  | Goals     of Stateid.t           (* Return goals [TODO: Add filtering/limiting options] *)
-  | EGoals    of Stateid.t        (* Return goals [TODO: Add filtering/limiting options] *)
+  | Goals                          (* Return goals [TODO: Add filtering/limiting options] *)
+  | EGoals                         (* Return goals [TODO: Add filtering/limiting options] *)
   | TypeOf    of string
   | Names     of string            (* XXX Move to prefix *)
   | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
@@ -375,13 +375,13 @@ module QueryUtil = struct
 
 end
 
-let obj_query (cmd : query_cmd) : coq_object list =
+let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   match cmd with
   | Option         -> let table = Goptions.get_tables ()            in
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Goals sid      -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals sid
-  | EGoals sid     -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals sid
+  | Goals          -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals opt.sid
+  | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals opt.sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
@@ -406,7 +406,7 @@ let obj_limit limit objs =
   | Some n -> take n objs
 
 let exec_query opt cmd =
-  let res = obj_query cmd        in
+  let res = obj_query opt cmd        in
   (* XXX: Filter should move to query once we have GADT *)
   let res = obj_filter opt.preds res in
   let res = obj_limit  opt.limit res in
