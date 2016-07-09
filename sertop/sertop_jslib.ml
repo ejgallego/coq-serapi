@@ -41,9 +41,14 @@ type lib_event =
 
 type out_fn = lib_event -> unit
 
-let preload_vo_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t =
+let preload_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t =
   let open XmlHttpRequest                               in
-  let full_url    = base_url  ^ "/" ^ file              in
+  let js_file = if Filename.(check_suffix file "cma"
+                          || check_suffix file "cmo")
+                then (Hashtbl.add cma_cache file base_url;
+                      file ^ ".js")
+                else file                               in
+  let full_url    = base_url  ^ "/" ^ js_file           in
   let request_url = base_path ^ coq_pkgs_dir ^ full_url in
   let cached      = Hashtbl.mem file_cache full_url     in
 
@@ -67,15 +72,6 @@ let preload_vo_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt
   end
   else Lwt.return_unit
 
-(* We grab the `cma/cmo`.js version of the module, we also add it
-   to the path resolution cache: *)
-let preload_cma_file base_path base_url (file, _hash) : unit Lwt.t =
-  let js_file = file ^ ".js"                          in
-  preload_vo_file base_path base_url (js_file, _hash) >>= fun () ->
-  if cma_verb then Format.eprintf "pre-loading cma file (%s, %s)\n%!" base_url js_file;
-  Hashtbl.add cma_cache file base_url;
-  Lwt.return_unit
-
 (* XXX: Hack *)
 let jslib_add_load_path pkg pkg_path has_ml =
   let open Names                                                       in
@@ -90,15 +86,15 @@ let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   if verb then
     Format.eprintf "pre-loading package %s, [00/%02d] files\n%!" pkg_dir nfiles;
   (* XXX: pkg_start, we don't emit an event here *)
-  let preload_vo_and_log nc i f =
-    preload_vo_file base_path pkg_dir f >>= fun () ->
+  let preload_and_log nc i f =
+    preload_file base_path pkg_dir f >>= fun () ->
     if verb then
       Format.eprintf "pre-loading package %s, [%02d/%02d] files\n%!" pkg_dir (i+nc+1) nfiles;
     out_fn (LibProgress { bundle; pkg = pkg_dir; loaded = i+nc+1; total = nfiles });
     Lwt.return_unit
   in
-  Lwt_list.iter_s (preload_cma_file base_path pkg_dir) pkg.cma_files >>= fun () ->
-  Lwt_list.iteri_s (preload_vo_and_log ncma) pkg.vo_files            >>= fun () ->
+  Lwt_list.iteri_s (preload_and_log 0   ) pkg.cma_files >>= fun () ->
+  Lwt_list.iteri_s (preload_and_log ncma) pkg.vo_files  >>= fun () ->
   jslib_add_load_path pkg.pkg_id pkg_dir (ncma > 0);
   (* We dont emit a package loaded event *)
   (* out_fn (LibLoadedPkg bundle pkg); *)
