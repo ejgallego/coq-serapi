@@ -31,6 +31,8 @@ open Ser_proof
 open Ser_stm
 open Ser_tacenv
 open Ser_profile_ltac
+open Ser_xml
+open Ser_ppannotation
 
 module SP = Serapi_protocol
 
@@ -89,7 +91,10 @@ type coq_object =
      Profile_ltac.ltacprof_results := ltacprof_results;
      Proof.pre_goals               := pre_goals;
      Richpp.richpp                 := richpp;
+     Richpp.located                := located;
      Tacenv.ltac_entry             := ltac_entry;
+     Xml_datatype.gxml             := gxml;
+     Ppannotation.t                := ppannotation;
   ]]
   [@@deriving sexp]
 

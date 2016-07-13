@@ -94,6 +94,7 @@ type coq_object =
   | CoqString   of string
   | CoqSList    of string list
   | CoqRichpp   of Richpp.richpp
+  | CoqAnn      of Ppannotation.t Richpp.located Xml_datatype.gxml
   (* XXX: For xml-like printing, should be moved to an option... *)
   (* | CoqRichXml  of Richpp.richpp *)
   | CoqLoc      of Loc.t
@@ -125,7 +126,13 @@ let pp_goal (g, hyps) =
     pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ Printer.pr_lconstr htyp in
   pr_vertical_list pr_hyp hyps         ++
   str "============================\n" ++
-  Printer.pr_lconstr g
+    (let pr_lconstr t =
+       let (sigma, env) = Pfedit.get_current_context ()                            in
+       Ppconstr.Richpp.pr_lconstr_expr (Constrextern.extern_constr false env sigma t)
+     in
+       pr_lconstr g
+    )
+    (* Printer.pr_lconstr g *)
 
 let pp_opt_value (s : Goptions.option_value) = match s with
   | Goptions.BoolValue b      -> Pp.bool b
@@ -146,6 +153,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqString  s    -> Pp.str s
   | CoqSList   s    -> Pp.(pr_sequence str) s
   | CoqRichpp  s    -> Pp.str (Richpp.raw_print s)
+  | CoqAnn     _    -> Pp.str "Fixme Ann"
   (* | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqOption (n,s) -> pp_opt n s
@@ -166,10 +174,16 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
 let str_pp_obj fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) (gen_pp_obj obj)
 
+let ann_pp_obj (obj : coq_object)  =
+  let repr     = gen_pp_obj obj                  in
+  let annp obj = Pp.Tag.prj obj Ppannotation.tag in
+  Richpp.rich_pp annp repr
+
 (** Print output format  *)
 type print_format =
   | PpSer
   | PpStr
+  | PpAnn
   | PpRichpp
 
 (* register printer *)
@@ -185,6 +199,7 @@ let obj_print pr_opt obj =
   let open Format in
   match pr_opt.pp_format with
   | PpSer    -> obj
+  | PpAnn    -> CoqAnn (ann_pp_obj obj)
   | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp (gen_pp_obj obj))
   | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
@@ -263,6 +278,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqString  s    -> Extra.is_prefix s ~prefix
   | CoqSList   _    -> true     (* XXX *)
   | CoqRichpp  _    -> true
+  | CoqAnn     _    -> true
   (* | CoqRichXml _    -> true *)
   | CoqLoc     _    -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
