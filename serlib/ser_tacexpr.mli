@@ -167,6 +167,8 @@ type ml_tactic_name = Tacexpr.ml_tactic_name
 val ml_tactic_name_of_sexp : Sexp.t -> ml_tactic_name
 val sexp_of_ml_tactic_name : ml_tactic_name -> Sexp.t
 
+type 'd gen_atomic_tactic_expr = 'd Tacexpr.gen_atomic_tactic_expr
+
 val sexp_of_gen_atomic_tactic_expr :
   ('a -> Sexplib.Sexp.t) ->
   ('c -> Sexplib.Sexp.t) ->
@@ -272,14 +274,27 @@ val gen_fun_ast_of_sexp :
     reference : 'f; tacexpr : 'h; term : 'a >
   Tacexpr.gen_tactic_fun_ast
 
+type glob_tactic_expr = Tacexpr.glob_tactic_expr
+val glob_tactic_expr_of_sexp : Sexp.t -> glob_tactic_expr
+val sexp_of_glob_tactic_expr : glob_tactic_expr -> Sexp.t
+
+type glob_atomic_tactic_expr = Tacexpr.glob_atomic_tactic_expr
+val glob_atomic_tactic_expr_of_sexp : Sexp.t -> glob_atomic_tactic_expr
+val sexp_of_glob_atomic_tactic_expr : glob_atomic_tactic_expr -> Sexp.t
+
 type raw_tactic_expr = Tacexpr.raw_tactic_expr
 val raw_tactic_expr_of_sexp : Sexp.t -> raw_tactic_expr
 val sexp_of_raw_tactic_expr : raw_tactic_expr -> Sexp.t
+
+type raw_atomic_tactic_expr = Tacexpr.raw_atomic_tactic_expr
+val raw_atomic_tactic_expr_of_sexp : Sexp.t -> raw_atomic_tactic_expr
+val sexp_of_raw_atomic_tactic_expr : raw_atomic_tactic_expr -> Sexp.t
+
+type atomic_tactic_expr = Tacexpr.atomic_tactic_expr
+val atomic_tactic_expr_of_sexp : Sexp.t -> atomic_tactic_expr
+val sexp_of_atomic_tactic_expr : atomic_tactic_expr -> Sexp.t
 
 type raw_red_expr = Tacexpr.raw_red_expr
 val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
 val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
 
-type glob_tactic_expr = Tacexpr.glob_tactic_expr
-val glob_tactic_expr_of_sexp : Sexp.t -> glob_tactic_expr
-val sexp_of_glob_tactic_expr : glob_tactic_expr -> Sexp.t

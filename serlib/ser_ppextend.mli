@@ -13,15 +13,34 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Sexplib
 
-open Ser_xml
+type precedence = Ppextend.precedence
 
-type richpp = Richpp.richpp
+val precedence_of_sexp : Sexp.t -> precedence
+val sexp_of_precedence : precedence -> Sexp.t
 
-let richpp_of_sexp sexp = Richpp.richpp_of_xml (xml_of_sexp sexp)
-let sexp_of_richpp rpp  = sexp_of_xml (Richpp.repr rpp)
+type parenRelation = Ppextend.parenRelation
 
-type located =
-  [%import: 'a Richpp.located]
-  [@@deriving sexp]
+val parenRelation_of_sexp : Sexp.t -> parenRelation
+val sexp_of_parenRelation : parenRelation -> Sexp.t
+
+type tolerability = Ppextend.tolerability
+
+val tolerability_of_sexp : Sexp.t -> tolerability
+val sexp_of_tolerability : tolerability -> Sexp.t
+
+type ppbox = Ppextend.ppbox
+
+val ppbox_of_sexp : Sexp.t -> ppbox
+val sexp_of_ppbox : ppbox -> Sexp.t
+
+type ppcut = Ppextend.ppcut
+
+val ppcut_of_sexp : Sexp.t -> ppcut
+val sexp_of_ppcut : ppcut -> Sexp.t
+
+type unparsing = Ppextend.unparsing
+
+val unparsing_of_sexp : Sexp.t -> unparsing
+val sexp_of_unparsing : unparsing -> Sexp.t

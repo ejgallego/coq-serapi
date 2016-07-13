@@ -13,15 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Sexplib
+type ppannotation = Ppannotation.t
 
-open Ser_xml
-
-type richpp = Richpp.richpp
-
-let richpp_of_sexp sexp = Richpp.richpp_of_xml (xml_of_sexp sexp)
-let sexp_of_richpp rpp  = sexp_of_xml (Richpp.repr rpp)
-
-type located =
-  [%import: 'a Richpp.located]
-  [@@deriving sexp]
+val ppannotation_of_sexp : Sexp.t -> ppannotation
+val sexp_of_ppannotation : ppannotation -> Sexp.t

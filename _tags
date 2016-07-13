@@ -13,7 +13,7 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 
 # Serlib building options
 <serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_engine, coq_pretyping, coq_interp
-<serlib/*.{ml,mli}>: coq_parsing, coq_stm, coq_proofs, coq_ltac
+<serlib/*.{ml,mli}>: coq_parsing, coq_printing, coq_stm, coq_proofs, coq_ltac
 <serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/*.{ml,mli}>: package(sexplib)
 

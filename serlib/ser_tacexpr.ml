@@ -23,6 +23,7 @@ open Ser_locus
 open Ser_nametab
 (* open Ser_decl_kinds *)
 (* open Ser_evar_kinds *)
+open Ser_constr
 open Ser_genarg
 open Ser_libnames
 open Ser_genredexpr
@@ -470,6 +471,8 @@ and _gen_tactic_fun_ast_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.
   match t with
   | (a,b) -> (a, _gen_tactic_expr_get b)
 
+type 'd gen_atomic_tactic_expr = 'd Tacexpr.gen_atomic_tactic_expr
+
 let sexp_of_gen_atomic_tactic_expr
   t d p c r n te l (tac : 'a Tacexpr.gen_atomic_tactic_expr) : Sexp.t =
   ITac.sexp_of_gen_atomic_tactic_expr t d p c r n te l (_gen_atom_tactic_expr_put tac)
@@ -502,41 +505,12 @@ let gen_fun_ast_of_sexp (tac : Sexp.t)
   t d p c r n te l : 'a Tacexpr.gen_tactic_fun_ast =
   _gen_tactic_fun_ast_get (ITac.gen_tactic_fun_ast_of_sexp t d p c r n te l tac)
 
-type raw_tactic_expr = Tacexpr.raw_tactic_expr
+(************************************************************************)
+(* Main tactics types, we follow tacexpr and provide glob,raw, and      *)
+(* atomic                                                               *)
+(************************************************************************)
 
-type u = loc * id
-  [@@deriving sexp]
-
-let raw_tactic_expr_of_sexp tac =
-  let rec _raw_tactic_expr_of_sexp tac =
-    gen_tactic_expr_of_sexp
-      tac
-      (* constr_expr_of_sexp *)
-      constr_expr_of_sexp
-      constr_expr_of_sexp
-      constr_pattern_expr_of_sexp
-      (or_by_notation_of_sexp reference_of_sexp)
-      reference_of_sexp
-      u_of_sexp
-      _raw_tactic_expr_of_sexp
-      rlevel_of_sexp
-  in _raw_tactic_expr_of_sexp tac
-
-let sexp_of_raw_tactic_expr (tac : raw_tactic_expr) =
-  let rec _sexp_of_raw_tactic_expr tac =
-    sexp_of_gen_tactic_expr
-      sexp_of_constr_expr
-      (* sexp_of_constr_expr *)
-      sexp_of_constr_expr
-      sexp_of_constr_pattern_expr
-      (sexp_of_or_by_notation sexp_of_reference)
-      sexp_of_reference
-      sexp_of_u
-      _sexp_of_raw_tactic_expr
-      sexp_of_rlevel
-      tac
-  in _sexp_of_raw_tactic_expr tac
-
+(* Glob *)
 type glob_constr_and_expr =
   [%import: Tacexpr.glob_constr_and_expr
   [@with
@@ -562,48 +536,141 @@ type glob_constr_pattern_and_expr =
   [@@deriving sexp]
 
 type glob_tactic_expr = Tacexpr.glob_tactic_expr
+type glob_atomic_tactic_expr = Tacexpr.glob_atomic_tactic_expr
 
-let glob_tactic_expr_of_sexp tac =
-  let rec _glob_tactic_expr_of_sexp tac =
-    gen_tactic_expr_of_sexp
-      tac
-      glob_constr_and_expr_of_sexp
-      glob_constr_and_expr_of_sexp
-      glob_constr_pattern_and_expr_of_sexp
-      (or_var_of_sexp (and_short_name_of_sexp evaluable_global_reference_of_sexp))
-      (or_var_of_sexp (located_of_sexp ltac_constant_of_sexp))
-      (located_of_sexp id_of_sexp)
-      _glob_tactic_expr_of_sexp
-      glevel_of_sexp
-  in _glob_tactic_expr_of_sexp tac
+let rec glob_tactic_expr_of_sexp tac =
+  gen_tactic_expr_of_sexp
+    tac
+    glob_constr_and_expr_of_sexp
+    glob_constr_and_expr_of_sexp
+    glob_constr_pattern_and_expr_of_sexp
+    (or_var_of_sexp (and_short_name_of_sexp evaluable_global_reference_of_sexp))
+    (or_var_of_sexp (located_of_sexp ltac_constant_of_sexp))
+    (located_of_sexp id_of_sexp)
+    glob_tactic_expr_of_sexp
+    glevel_of_sexp
+and glob_atomic_tactic_expr_of_sexp tac =
+  gen_atomic_tactic_expr_of_sexp
+    tac
+    glob_constr_and_expr_of_sexp
+    glob_constr_and_expr_of_sexp
+    glob_constr_pattern_and_expr_of_sexp
+    (or_var_of_sexp (and_short_name_of_sexp evaluable_global_reference_of_sexp))
+    (or_var_of_sexp (located_of_sexp ltac_constant_of_sexp))
+    (located_of_sexp id_of_sexp)
+    glob_tactic_expr_of_sexp
+    glevel_of_sexp
 
-let sexp_of_glob_tactic_expr (tac : glob_tactic_expr) =
-  let rec _sexp_of_glob_tactic_expr tac =
-    sexp_of_gen_tactic_expr
-      sexp_of_glob_constr_and_expr
-      sexp_of_glob_constr_and_expr
-      sexp_of_glob_constr_pattern_and_expr
-      (sexp_of_or_var (sexp_of_and_short_name sexp_of_evaluable_global_reference))
-      (sexp_of_or_var (sexp_of_located sexp_of_ltac_constant))
-      (sexp_of_located sexp_of_id)
-      _sexp_of_glob_tactic_expr
-      sexp_of_glevel
-      tac
-  in _sexp_of_glob_tactic_expr tac
+let rec sexp_of_glob_tactic_expr (tac : glob_tactic_expr) =
+  sexp_of_gen_tactic_expr
+    sexp_of_glob_constr_and_expr
+    sexp_of_glob_constr_and_expr
+    sexp_of_glob_constr_pattern_and_expr
+    (sexp_of_or_var (sexp_of_and_short_name sexp_of_evaluable_global_reference))
+    (sexp_of_or_var (sexp_of_located sexp_of_ltac_constant))
+    (sexp_of_located sexp_of_id)
+    sexp_of_glob_tactic_expr
+    sexp_of_glevel
+    tac
+and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
+  sexp_of_gen_atomic_tactic_expr
+    sexp_of_glob_constr_and_expr
+    sexp_of_glob_constr_and_expr
+    sexp_of_glob_constr_pattern_and_expr
+    (sexp_of_or_var (sexp_of_and_short_name sexp_of_evaluable_global_reference))
+    (sexp_of_or_var (sexp_of_located sexp_of_ltac_constant))
+    (sexp_of_located sexp_of_id)
+    sexp_of_glob_tactic_expr
+    sexp_of_glevel
+    tac
 
-(* XXX: Move to the proper place *)
-(* type glob_constr_and_expr = *)
-(*   [%import: Tacexpr.glob_constr_and_expr] *)
+(* Raw *)
+type raw_tactic_expr = Tacexpr.raw_tactic_expr
+type raw_atomic_tactic_expr = Tacexpr.raw_atomic_tactic_expr
 
-(* type glob_constr_pattern_and_expr = *)
-(*   [%import: Tacexpr.glob_constr_pattern_and_expr] *)
+type u = loc * id
+  [@@deriving sexp]
 
+let rec raw_tactic_expr_of_sexp tac =
+  gen_tactic_expr_of_sexp
+    tac
+    constr_expr_of_sexp
+    constr_expr_of_sexp
+    constr_pattern_expr_of_sexp
+    (or_by_notation_of_sexp reference_of_sexp)
+    reference_of_sexp
+    u_of_sexp
+    raw_tactic_expr_of_sexp
+    rlevel_of_sexp
+and raw_atomic_tactic_expr_of_sexp tac =
+  gen_atomic_tactic_expr_of_sexp
+    tac
+    constr_expr_of_sexp
+    constr_expr_of_sexp
+    constr_pattern_expr_of_sexp
+    (or_by_notation_of_sexp reference_of_sexp)
+    reference_of_sexp
+    u_of_sexp
+    raw_tactic_expr_of_sexp
+    rlevel_of_sexp
+
+let rec sexp_of_raw_tactic_expr (tac : raw_tactic_expr) =
+  sexp_of_gen_tactic_expr
+    sexp_of_constr_expr
+    sexp_of_constr_expr
+    sexp_of_constr_pattern_expr
+    (sexp_of_or_by_notation sexp_of_reference)
+    sexp_of_reference
+    sexp_of_u
+    sexp_of_raw_tactic_expr
+    sexp_of_rlevel
+    tac
+and sexp_of_raw_atomic_tactic_expr tac =
+  sexp_of_gen_atomic_tactic_expr
+    sexp_of_constr_expr
+    sexp_of_constr_expr
+    sexp_of_constr_pattern_expr
+    (sexp_of_or_by_notation sexp_of_reference)
+    sexp_of_reference
+    sexp_of_u
+    sexp_of_raw_tactic_expr
+    sexp_of_rlevel
+    tac
+
+(* Atomic *)
+type atomic_tactic_expr = Tacexpr.atomic_tactic_expr
+
+let atomic_tactic_expr_of_sexp tac =
+  gen_atomic_tactic_expr_of_sexp tac
+    constr_of_sexp
+    glob_constr_and_expr_of_sexp
+    constr_pattern_of_sexp
+    evaluable_global_reference_of_sexp
+    (located_of_sexp ltac_constant_of_sexp)
+    id_of_sexp
+    unit_of_sexp
+    tlevel_of_sexp
+
+let sexp_of_atomic_tactic_expr tac =
+  sexp_of_gen_atomic_tactic_expr
+    sexp_of_constr
+    sexp_of_glob_constr_and_expr
+    sexp_of_constr_pattern
+    sexp_of_evaluable_global_reference
+    (sexp_of_located sexp_of_ltac_constant)
+    sexp_of_id
+    sexp_of_unit
+    sexp_of_tlevel
+    tac
+
+(* Helpers for raw_red_expr *)
 type r_trm =
   [%import: Tacexpr.r_trm
   [@with
      Constrexpr.constr_expr := constr_expr;
   ]]
   [@@deriving sexp]
+
 type r_cst =
   [%import: Tacexpr.r_cst
   [@with

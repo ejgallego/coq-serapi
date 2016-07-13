@@ -19,3 +19,8 @@ type richpp = Richpp.richpp
 
 val richpp_of_sexp : Sexp.t -> Richpp.richpp
 val sexp_of_richpp : Richpp.richpp -> Sexp.t
+
+type 'a located = 'a Richpp.located
+
+val located_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Richpp.located
+val sexp_of_located : ('a -> Sexp.t) -> 'a Richpp.located -> Sexp.t
