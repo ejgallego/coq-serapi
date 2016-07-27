@@ -199,6 +199,7 @@ type ser_opts = {
   in_chan  : in_channel;          (* Input/Output channels                                *)
   out_chan : out_channel;
   human    : bool;                (* Output function to use                               *)
+  custom_esc:bool;                (* Custom escaping of sexp atoms                        *)
   print0   : bool;
   lheader  : bool;
   implicit : bool;
@@ -241,8 +242,9 @@ let read_cmd cmd_id in_channel pp_error =
 
 let out_sexp opts =
   let open Format                                                               in
-  let pp_sexp = if opts.human  then Sexp.pp_hum
-                               else Sexp.pp                                     in
+  let pp_sexp = if opts.human      then Sexp.pp_hum
+           else if opts.custom_esc then Sertop_util.pp_sertop
+                                   else Sexp.pp                                 in
 
   let pp_term = if opts.print0 then fun fmt () -> fprintf fmt "%c" (Char.chr 0)
                                else fun fmt () -> fprintf fmt "@\n"             in

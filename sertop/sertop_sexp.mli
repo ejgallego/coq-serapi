@@ -60,6 +60,7 @@ type ser_opts = {
   in_chan  : in_channel;          (* Input/Output channels                                *)
   out_chan : out_channel;
   human    : bool;                (* Output function to use                               *)
+  custom_esc:bool;                (* Custom escaping of sexp atoms                        *)
   print0   : bool;
   lheader  : bool;
   implicit : bool;

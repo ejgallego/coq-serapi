@@ -21,4 +21,6 @@ B /home/egallego/external/coq-git/**
 S coq-js
 B _build/coq-js
 
+FLG -safe-string
+
 PKG threads threads.posix cmdliner ppx_import sexplib ppx_sexp_conv js_of_ocaml.ppx yojson

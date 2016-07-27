@@ -25,8 +25,10 @@ type async_flags = {
 }
 
 type coq_opts = {
+
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
+
   (* Async flags *)
   aopts        : async_flags;
 

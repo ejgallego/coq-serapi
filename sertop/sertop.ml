@@ -41,6 +41,10 @@ let human =
   let doc = "Use human-readable sexp output." in
   Arg.(value & flag & info ["human"] ~doc)
 
+let custom_escape =
+  let doc = "Use custom escaping for sexps (experimental)." in
+  Arg.(value & flag & info ["custom-escape"] ~doc)
+
 let print0 =
   let doc = "Add a \\\\0 char after every response." in
   Arg.(value & flag & info ["print0"] ~doc)
@@ -50,7 +54,7 @@ let length =
   Arg.(value & flag & info ["length"] ~doc)
 
 
-let sertop prelude human print0 length async async_full deep_edits implicit_prelude =
+let sertop prelude human custom_escape print0 length async async_full deep_edits implicit_prelude =
   let open Sertop_init         in
   let open Sertop_sexp         in
   ser_loop
@@ -58,6 +62,7 @@ let sertop prelude human print0 length async async_full deep_edits implicit_prel
        in_chan  = stdin;
        out_chan = stdout;
        human    = human;
+       custom_esc = custom_escape;
        print0   = print0;
        lheader  = length;
        implicit = implicit_prelude;
@@ -76,7 +81,7 @@ let sertop_cmd =
   ]
   in
   Term.(const sertop
-        $ prelude $ human $ print0
+        $ prelude $ human $ custom_escape $ print0
         $ length $ async $ async_full
         $ deep_edits $ implicit_stdlib ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
