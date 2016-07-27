@@ -84,7 +84,7 @@ There are four categories of commands:
 - `(Control `[`control_cmd`](serapi/serapi_protocol.mli#L73)`)`: control commands are similar to a function call and instruct Coq to perform some action.
   Typical actions are to check a proof, set an option, modify a `load path`, etc... Every command will produce zero or more different _tagged_ [answers](serapi/serapi_protocol.mli#52), and  a final answer `(Answer tag Completed)`, indicating that there won't be more output.
 
-  We assume the reader familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/notes/coq-notes.md) and [here](https://github.com/siegebell/vscoq/blob/master/CoqProtocol.md) you can find a few informal notes on how it works, but we are documenting some of our extensions. See the issue tracker for more details.
+  We assume the reader familiar with Coq's STM, [here](https://github.com/ejgallego/jscoq/blob/master/etc/notes/coq-notes.md) and [here](https://github.com/siegebell/vscoq/blob/master/CoqProtocol.md) you can find a few informal notes on how it works, but we are documenting some of our extensions. See the issue tracker for more details.
 
 - `(Query ((opt value) ...) kind)`:
   **API WARNING:** The Query API format is experimental and will change soon.
