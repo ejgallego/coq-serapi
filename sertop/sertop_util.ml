@@ -125,3 +125,17 @@ and pp_sertop_rest may_need_space ppf = function
   | [] -> pp_print_string ppf ")"
 
 let pp_sertop ppf sexp = ignore (pp_sertop_internal false ppf sexp)
+
+(* Adjust positions from byte to UTF-8 chars *)
+(* XXX: Move to serapi/ *)
+open Feedback
+
+(* We only do adjustement for messages for now. *)
+let feedback_content_pos_filter txt (fbc : feedback_content) : feedback_content =
+  let adjust _txt loc = loc in
+  match (fbc : feedback_content) with
+  | Message (lvl,loc,msg) -> Message (lvl, adjust txt loc, msg)
+  | _                     -> fbc
+
+let feedback_pos_filter text (fb : feedback) : feedback =
+  { fb with contents = feedback_content_pos_filter text fb.contents; }
