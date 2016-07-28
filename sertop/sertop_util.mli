@@ -14,4 +14,7 @@
 (************************************************************************)
 
 open Sexplib
+
 val pp_sertop : Format.formatter -> Sexp.t -> unit
+
+val feedback_pos_filter : string -> Feedback.feedback -> Feedback.feedback
