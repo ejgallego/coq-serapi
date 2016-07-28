@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OCAML_VER=4.03.0
+OCAML_VER=4.02.3
 
 # build 32 bits parts
 opam switch $OCAML_VER+32bit
@@ -16,3 +16,4 @@ fi
 # eval `opam config env`
 
 make js/sertop_js.js
+
