@@ -37,13 +37,20 @@ let implicit_stdlib =
   let doc = "Allow to load unqualified stdlib libraries (deprecated)." in
   Arg.(value & flag & info ["implicit"] ~doc)
 
-let human =
-  let doc = "Use human-readable sexp output." in
-  Arg.(value & flag & info ["human"] ~doc)
+let print_args = let open Sertop_sexp in
+  Arg.(enum ["sertop", SP_Sertop; "human", SP_Human; "mach", SP_Mach])
 
-let custom_escape =
-  let doc = "Use custom escaping for sexps (experimental)." in
-  Arg.(value & flag & info ["custom-escape"] ~doc)
+let print_args_doc = Arg.doc_alts
+  ["sertop's custom printer (UTF-8, strong, emacs-compatible quoting)";
+   "sexplib's mach printer";
+   "sexplib's human printer (recommended for debug sessions)"
+  ]
+
+let printer =
+  let open Sertop_sexp in
+  (* XXX Must improve argument information *)
+  (* let doc = "Select S-expression printer." in *)
+  Arg.(value & opt print_args SP_Sertop & info ["printer"] ~doc:print_args_doc)
 
 let print0 =
   let doc = "Add a \\\\0 char after every response." in
@@ -53,18 +60,18 @@ let length =
   let doc = "Adds a byte-length header to answers." in
   Arg.(value & flag & info ["length"] ~doc)
 
-
-let sertop prelude human custom_escape print0 length async async_full deep_edits implicit_prelude =
+let sertop printer print0 length prelude implicit_prelude async async_full deep_edits  =
   let open Sertop_init         in
   let open Sertop_sexp         in
   ser_loop
-    {  coqlib   = prelude;
-       in_chan  = stdin;
+    {  in_chan  = stdin;
        out_chan = stdout;
-       human    = human;
-       custom_esc = custom_escape;
+
+       printer  = printer;
        print0   = print0;
        lheader  = length;
+
+       coqlib   = prelude;
        implicit = implicit_prelude;
        async = {
          enable_async = async;
@@ -81,9 +88,8 @@ let sertop_cmd =
   ]
   in
   Term.(const sertop
-        $ prelude $ human $ custom_escape $ print0
-        $ length $ async $ async_full
-        $ deep_edits $ implicit_stdlib ),
+        $ printer $ print0 $ length $ prelude $ implicit_stdlib
+        $ async $ async_full $ deep_edits ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 
 let main () =

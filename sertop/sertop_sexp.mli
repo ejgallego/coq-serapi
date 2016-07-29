@@ -55,14 +55,22 @@ val answer_of_sexp : Sexp.t -> answer
 (* Global Protocol Options                                                    *)
 (******************************************************************************)
 
+type ser_printer =
+  | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)
+  | SP_Mach                     (* sexplib mach  printer *)
+  | SP_Human                    (* sexplib human printer *)
+
 type ser_opts = {
-  coqlib   : string option;       (* Whether we should load the prelude, and its location *)
-  in_chan  : in_channel;          (* Input/Output channels                                *)
+  (* Input output Options *)
+  in_chan  : in_channel;        (* Input/Output channels                                *)
   out_chan : out_channel;
-  human    : bool;                (* Output function to use                               *)
-  custom_esc:bool;                (* Custom escaping of sexp atoms                        *)
+  printer  : ser_printer;       (* Printers                                             *)
+
   print0   : bool;
-  lheader  : bool;
+  lheader  : bool;              (* Print lenght header (deprecated)                     *)
+
+  (* Coq options *)
+  coqlib   : string option;     (* Whether we should load the prelude, and its location *)
   implicit : bool;
   async    : Sertop_init.async_flags;
 }
