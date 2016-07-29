@@ -20,19 +20,27 @@ type async_flags = {
 }
 
 type coq_opts = {
+
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
+
+  (* Initial LoadPath XXX: Use the coq_pkg record? *)
+  iload_path   : (string list * string * bool) list;
+
+  (* Libs to require prior to STM init *)
+  require_libs : (Names.DirPath.t * string * bool option) list;
+
+  (* Whether to enable implicit in the stdlib *)
+  implicit_std : bool;
+
   (* Async flags *)
   aopts        : async_flags;
 
-  (* Initial LoadPath XXX: Use a record *)
-  iload_path   : (string list * string * bool) list;
-  require_libs : (Names.DirPath.t * string * bool option) list;
+  (* name of the top-level module *)
+  top_name     : string;
 
-  (* Whether to load the prelude qualified *)
-  implicit_prelude : bool;
+  (* callback to load cma/cmo files *)
+  ml_load      : (string -> unit) option;
 }
 
 val coq_init : coq_opts -> unit
-
-val sertop_dp : Names.DirPath.t

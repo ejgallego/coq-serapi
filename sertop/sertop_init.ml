@@ -12,10 +12,8 @@
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
-
-let sertop_dp =
-  let open Names in
-  DirPath.make [Id.of_string "SerTop"]
+(* By Emilio J. Gallego Arias, Mines ParisTech, Paris.                  *)
+(************************************************************************)
 
 (* Init options for coq *)
 type async_flags = {
@@ -29,26 +27,51 @@ type coq_opts = {
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
 
+  (* Initial LoadPath XXX: Use the coq_pkg record? *)
+  iload_path   : (string list * string * bool) list;
+
+  (* Libs to require prior to STM init *)
+  require_libs : (Names.DirPath.t * string * bool option) list;
+
+  (* Whether to enable implicit in the stdlib *)
+  implicit_std : bool;
+
   (* Async flags *)
   aopts        : async_flags;
 
-  (* Initial LoadPath XXX: Use the coq_pkg record? *)
-  iload_path   : (string list * string * bool) list;
-  require_libs : (Names.DirPath.t * string * bool option) list;
+  (* name of the top-level module *)
+  top_name     : string;
 
-  implicit_prelude : bool;
+  (* callback to load cma/cmo files *)
+  ml_load      : (string -> unit) option;
 }
 
+(**************************************************************************)
+(* Low-level, internal Coq initialization                                 *)
+(**************************************************************************)
 let coq_init opts =
+  let open Names in
 
-  (**************************************************************************)
-  (* Low-level, internal Coq initialization                                 *)
-  (**************************************************************************)
+  (* Custom toplevel is used for bytecode-to-js dynlink  *)
+  Option.iter (fun ml_load ->
+      let ser_mltop : Mltop.toplevel = let open Mltop in
+        {
+          load_obj = ml_load;
+          (* We ignore all the other operations for now. *)
+          use_file = (fun _ -> ());
+          add_dir  = (fun _ -> ());
+          ml_loop  = (fun _ -> ());
+        } in
+      Mltop.set_top ser_mltop
+    ) opts.ml_load;
+
+  (* Coq library initialization *)
   Lib.init();
+
+  (* Mltop.init_known_plugins (); *)
 
   Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
 
-  (* Mltop.init_known_plugins (); *)
   Global.set_engagement Declarations.PredicativeSet;
 
   (**************************************************************************)
@@ -59,12 +82,12 @@ let coq_init opts =
   List.iter (fun (lib, lib_path, has_ml) ->
       let open Names in
       let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
-      Loadpath.add_load_path lib_path coq_path ~implicit:opts.implicit_prelude;
+      Loadpath.add_load_path lib_path coq_path ~implicit:opts.implicit_std;
       if has_ml then Mltop.add_ml_dir lib_path
     ) opts.iload_path;
 
-  (* We need to declare a toplevel module name, not sure if this can
-     be avoided.  *)
+  (* We need to declare a toplevel module name. *)
+  let sertop_dp = DirPath.make [Id.of_string opts.top_name] in
   Declaremods.start_library sertop_dp;
 
   (**************************************************************************)
@@ -132,6 +155,9 @@ let coq_init opts =
   (* Miscellaneous tweaks *)
   Vernacentries.enable_goal_printing := false;
   Vernacentries.qed_display_script   := false;
+
+  (* Return the initial state of the STM *)
+  (* Stm.get_current_state () *)
 
   (* Flags.debug := true; *)
 

@@ -293,7 +293,9 @@ let ser_loop ser_opts =
     Sertop_init.aopts        = ser_opts.async;
     Sertop_init.iload_path   = Option.cata ser_prelude_list [] ser_opts.coqlib;
     Sertop_init.require_libs = Option.cata ser_prelude_mod  [] ser_opts.coqlib;
-    Sertop_init.implicit_prelude = ser_opts.implicit;
+    Sertop_init.implicit_std = ser_opts.implicit;
+    Sertop_init.top_name     = "SerTop";
+    Sertop_init.ml_load      = None;
   };
 
   (* Follow the same approach than coqtop for now: allow Coq to be
