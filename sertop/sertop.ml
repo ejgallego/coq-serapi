@@ -57,7 +57,7 @@ let print0 =
   Arg.(value & flag & info ["print0"] ~doc)
 
 let length =
-  let doc = "Adds a byte-length header to answers." in
+  let doc = "Adds a byte-length header to answers. (deprecated)" in
   Arg.(value & flag & info ["length"] ~doc)
 
 let sertop printer print0 length prelude implicit_prelude async async_full deep_edits  =
