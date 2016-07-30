@@ -156,9 +156,7 @@ let coq_init opts =
   Vernacentries.enable_goal_printing := false;
   Vernacentries.qed_display_script   := false;
 
-  (* Return the initial state of the STM *)
-  (* Stm.get_current_state () *)
-
   (* Flags.debug := true; *)
 
-  ()
+  (* Return the initial state of the STM *)
+  Stm.get_current_state ()

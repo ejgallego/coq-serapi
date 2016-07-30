@@ -288,7 +288,7 @@ let ser_loop ser_opts =
   let pp_feed fb   = pp_answer (Feedback fb)                           in
 
   (* Init Coq *)
-  Sertop_init.coq_init {
+  let _ = Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.aopts        = ser_opts.async;
     Sertop_init.iload_path   = Option.cata ser_prelude_list [] ser_opts.coqlib;
@@ -296,7 +296,7 @@ let ser_loop ser_opts =
     Sertop_init.implicit_std = ser_opts.implicit;
     Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
-  };
+  } in
 
   (* Follow the same approach than coqtop for now: allow Coq to be
    * interrupted by Ctrl-C. Not entirely safe or race free... but we

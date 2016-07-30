@@ -43,4 +43,4 @@ type coq_opts = {
   ml_load      : (string -> unit) option;
 }
 
-val coq_init : coq_opts -> unit
+val coq_init : coq_opts -> Stateid.t
