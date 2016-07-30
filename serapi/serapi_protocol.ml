@@ -483,8 +483,8 @@ module ControlUtil = struct
   (* let add_sentence st_id pa = *)
   let add_sentence ?newtip ~ontop verb pa sent =
     (* Workaround coq/coq#204 *)
-    let loc         = parse_sentence pa                             in
     let new_st, foc = Stm.add ~ontop ?newtip verb (- !edit_id) sent in
+    let loc         = parse_sentence pa                             in
     incr edit_id;
     cur_doc := new_st :: !cur_doc;
     new_st, loc, foc
