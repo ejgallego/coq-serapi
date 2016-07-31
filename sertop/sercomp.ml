@@ -67,7 +67,7 @@ let do_stats =
   | VernacExtend (("VernacDeclareTacticDefinition",_),_)
                                     -> stats.proofs <- incS loc stats.proofs;
 
-  | _                               -> stats.misc <- incS loc stats.misc
+  | _                               -> if Option.is_empty !proof_loc then stats.misc <- incS loc stats.misc
 
 (*
   match vrn with
