@@ -523,3 +523,26 @@ type vernac_expr =
 (*   ]] *)
 (*   [@@deriving sexp] *)
 
+(* We need to overload the Extend mechanism... *)
+let sexp_of_vernac_expr vrc = match vrc with
+  | VernacExtend (s, cl)->
+    let open Sexplib in
+    begin try
+      let rl = Egramml.get_extend_vernac_rule s in
+      let pr_str s = Sexp.Atom s     in
+      let pr_arg a =
+        let sa = Pptactic.pr_raw_generic (Global.env ()) a in
+        Sexp.Atom (Pp.string_of_ppcmds sa)
+      in
+      let rec aux rl cl =
+        match rl, cl with
+        | Egramml.GramNonTerminal _ :: rl, arg :: cl -> pr_arg arg :: aux rl cl
+        | Egramml.GramTerminal    s :: rl, cl        -> pr_str s   :: aux rl cl
+        | [], [] -> []
+        | _ -> assert false in
+      Sexp.(List [Atom "VernacExtend"; List [Atom (fst s); List (aux rl cl)]])
+    with Not_found ->
+      Sexp.(List [Atom "VernacExtend"; List [Atom (fst s); Atom " not assigned!"]])
+    end
+  | _ -> sexp_of_vernac_expr vrc
+
