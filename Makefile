@@ -48,6 +48,10 @@ js-dist:
 js-release:
 	rsync -avp --exclude=*~ --exclude=.git --exclude=README.md --exclude=get-hashes.sh --delete js/ ~/research/jscoq-builds
 
+sercomp:
+	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
+	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sercomp.$(TARGET)
+
 #####################################################
 # Misc
 
@@ -60,3 +64,4 @@ all-sub:
 
 clean-sub:
 	make -C serlib clean
+

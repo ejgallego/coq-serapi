@@ -414,10 +414,7 @@ type section_subset_expr =
   [@@deriving sexp]
 
 type extend_name =
-  [%import: Vernacexpr.extend_name
-  [@with
-    Loc.t        := loc;
-  ]]
+  [%import: Vernacexpr.extend_name]
   [@@deriving sexp]
 
 type register_kind =

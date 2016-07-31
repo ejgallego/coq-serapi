@@ -46,7 +46,7 @@ type 'a generic_argument =
   (* ]] *)
 
 let generic_argument_of_sexp _ _x = Obj.magic 0
-let sexp_of_generic_argument _ _x = Atom ""
+let sexp_of_generic_argument _ _x = Atom "XXX genarg XXX"
 
 type glob_generic_argument = [%import: Genarg.glob_generic_argument]
   [@@deriving sexp]

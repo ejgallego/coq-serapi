@@ -38,6 +38,9 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string
 <sertop/sertop.ml>: package(cmdliner)
 <sertop/sertop.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
 
+<sertop/sercomp.ml>: package(cmdliner)
+<sertop/sercomp.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
+
 # Js helpers (to go away)
 <coq-libjs/*.{ml,mli}>: package(yojson)
 <coq-libjs>: include
