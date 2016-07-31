@@ -523,16 +523,16 @@ type vernac_expr =
 (*   ]] *)
 (*   [@@deriving sexp] *)
 
-(* We need to overload the Extend mechanism... *)
+(* We need to overload the printing for the Extend mechanism... *)
 let sexp_of_vernac_expr vrc = match vrc with
   | VernacExtend (s, cl)->
     let open Sexplib in
     begin try
       let rl = Egramml.get_extend_vernac_rule s in
-      let pr_str s = Sexp.Atom s     in
+      let pr_str s = Sexp.(List [Atom "NT"; Atom s])       in
       let pr_arg a =
         let sa = Pptactic.pr_raw_generic (Global.env ()) a in
-        Sexp.Atom (Pp.string_of_ppcmds sa)
+        Sexp.(List [Atom "NT"; Atom (Pp.string_of_ppcmds sa)])
       in
       let rec aux rl cl =
         match rl, cl with
