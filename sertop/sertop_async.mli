@@ -20,7 +20,7 @@ open Sexplib
 val sertop_init : (Sexp.t -> unit) ->
   (string list * string * bool) list ->
   (Names.DirPath.t * string * bool option) list ->
-  unit
+  Stateid.t
 
 (** [sertop_callback out input] Execute command [input] and send
     serialized output to [out]. Takes an internal mutex. *)

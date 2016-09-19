@@ -43,10 +43,12 @@ let sertop_init (fb_out : Sexp.t -> unit) paths libs =
   }                                                 in
   let coq_opts = {
     fb_handler   = fb_handler;
-    aopts        = no_asyncf;
     iload_path   = paths;
+    aopts        = no_asyncf;
     require_libs = libs;
-    implicit_prelude = false;
+    implicit_std = false;
+    top_name     = "SerTopJS";
+    ml_load      = None;
   } in
   Sertop_init.coq_init coq_opts
 

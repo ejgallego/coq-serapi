@@ -105,7 +105,7 @@ let _ =
       Lwt_list.map_s (Sertop_jslib.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
       let bundle_proc = List.map pkg_to_bb all_pkgs                      in
-      sertop_init post_message bundle_proc [];
+      ignore (sertop_init post_message bundle_proc []);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit
