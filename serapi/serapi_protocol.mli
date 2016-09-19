@@ -36,7 +36,7 @@ type coq_object =
   | CoqQualId   of Libnames.qualid
   | CoqGlobRef  of Globnames.global_reference
   | CoqImplicit of Impargs.implicits_list
-  | CoqProfData of Profile_ltac.ltacprof_results
+  | CoqProfData of Profile_ltac.treenode
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
   | CoqExtGoal  of (Constrexpr.constr_expr *

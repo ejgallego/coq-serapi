@@ -105,7 +105,7 @@ type coq_object =
   | CoqQualId   of Libnames.qualid
   | CoqGlobRef  of Globnames.global_reference
   | CoqImplicit of Impargs.implicits_list
-  | CoqProfData of Profile_ltac.ltacprof_results
+  | CoqProfData of Profile_ltac.treenode
   (* Fixme *)
   | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
   (* Extern goal: XXX just a trial *)
@@ -402,7 +402,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
-  | ProfileData    -> [CoqProfData (Profile_ltac.get_profiling_results ())]
+  | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
 
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]

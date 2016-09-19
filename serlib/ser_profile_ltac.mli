@@ -15,18 +15,7 @@
 
 open Sexplib
 
-type ltacprof_entry = Profile_ltac.ltacprof_entry
+type ltacprof_treenode = Profile_ltac.treenode
 
-val ltacprof_entry_of_sexp : Sexp.t -> Profile_ltac.ltacprof_entry
-val sexp_of_ltacprof_entry : Profile_ltac.ltacprof_entry -> Sexp.t
-
-type ltacprof_tactic = Profile_ltac.ltacprof_tactic
-
-val ltacprof_tactic_of_sexp : Sexp.t -> Profile_ltac.ltacprof_tactic
-val sexp_of_ltacprof_tactic : Profile_ltac.ltacprof_tactic -> Sexp.t
-
-type ltacprof_results = Profile_ltac.ltacprof_results
-
-val ltacprof_results_of_sexp : Sexp.t -> Profile_ltac.ltacprof_results
-val sexp_of_ltacprof_results : Profile_ltac.ltacprof_results -> Sexp.t
-
+val ltacprof_treenode_of_sexp : Sexp.t -> Profile_ltac.treenode
+val sexp_of_ltacprof_treenode : Profile_ltac.treenode -> Sexp.t

@@ -15,14 +15,26 @@
 
 open Sexplib.Std
 
-type ltacprof_entry =
-  [%import: Profile_ltac.ltacprof_entry]
-  [@@deriving sexp]
+(* XXX: Move to ser_cmap *)
+type 'a cstring_map = 'a CString.Map.t
 
-type ltacprof_tactic =
-  [%import: Profile_ltac.ltacprof_tactic]
-  [@@deriving sexp]
+let from_bindings bl =
+  let open CString.Map in
+  List.fold_left (fun m (k,v) -> add k v m) empty bl
 
-type ltacprof_results =
-  [%import: Profile_ltac.ltacprof_results]
+let cstring_map_of_sexp f s =
+  let s_f = Sexplib.Conv.pair_of_sexp string_of_sexp f in
+  let bl  = list_of_sexp s_f s                         in
+  from_bindings bl
+
+let sexp_of_cstring_map f m =
+  let s_f = Sexplib.Conv.sexp_of_pair sexp_of_string f in
+  let l   = CString.Map.bindings m                     in
+  sexp_of_list s_f l
+
+type ltacprof_treenode =
+  [%import: Profile_ltac.treenode
+  [@with CString.Map.t   := cstring_map;
+         CString.Map.key := string
+  ]]
   [@@deriving sexp]

@@ -114,6 +114,7 @@ type locatable = [%import: Vernacexpr.locatable
 
 type showable =  [%import: Vernacexpr.showable
      [@with Names.Id.t := id;
+            Libnames.reference := reference;
      ]]
   [@@deriving sexp]
 
