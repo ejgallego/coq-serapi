@@ -257,7 +257,7 @@ type answer_kind =
   | StmCanceled of Stateid.t list
   | StmEdited   of                     [`NewTip | `Focus   of Stm.focus ]
   | ObjList     of coq_object list
-  | CoqExn      of exn
+  | CoqExn      of Loc.t option * (Stateid.t * Stateid.t) option * exn
   | Completed
 
 (******************************************************************************)
@@ -432,10 +432,17 @@ let exec_query opt cmd =
 (* Control Sub-Protocol                                                       *)
 (******************************************************************************)
 
+(* coq_exn info *)
+let coq_exn_info exn =
+    let (e, info) = CErrors.push exn in
+    CoqExn (Loc.get_loc info, Stateid.get info, e)
+
 (* Simple protection for Coq-generated exceptions *)
 let coq_protect e =
   try  e () @ [Completed]
-  with exn -> [CoqExn exn]
+  with exn -> [coq_exn_info exn]
+    (* let msg = str msg ++ fnl () ++ CErrors.print ~info e in *)
+    (* Richpp.richpp_of_pp msg *)
 
 type add_opts = {
   lim    : int       sexp_option;
@@ -523,7 +530,7 @@ module ControlUtil = struct
       List.rev !acc
     with
     | End_of_input  -> List.rev !acc
-    | exn           -> List.rev (CoqExn exn :: !acc)
+    | exn           -> List.rev (coq_exn_info exn :: !acc)
 
   (* We follow a suggestion by Clément to report sentence invalidation
      in a more modular way: When we issue the cancel command, we will
@@ -648,7 +655,7 @@ let exec_cmd (cmd : cmd) = match cmd with
   | Parse (num, str)  ->
     let acc = ref [] in
     begin try parse_sentences num acc str; [ObjList (List.rev !acc)]
-          with exn -> [ObjList (List.rev !acc)] @ [CoqExn exn]
+          with exn -> [ObjList (List.rev !acc)] @ [coq_exn_info exn]
     end
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
 

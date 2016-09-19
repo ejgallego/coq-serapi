@@ -79,7 +79,7 @@ type answer_kind =
   | StmCanceled  of Stateid.t list
   | StmEdited    of                     [`NewTip | `Focus   of Stm.focus ]
   | ObjList      of coq_object list
-  | CoqExn       of exn
+  | CoqExn       of Loc.t option * (Stateid.t * Stateid.t) option * exn
   | Completed
 
 (******************************************************************************)
