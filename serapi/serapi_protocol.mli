@@ -37,6 +37,8 @@ type coq_object =
   | CoqGlobRef  of Globnames.global_reference
   | CoqImplicit of Impargs.implicits_list
   | CoqProfData of Profile_ltac.treenode
+  | CoqNotation of Constrexpr.notation
+  | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
   | CoqExtGoal  of (Constrexpr.constr_expr *
@@ -111,6 +113,8 @@ type query_cmd =
   | Tactics   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
+  | Unparsing of string           (* XXX  *)
+  | PNotations                    (* XXX  *)
   | ProfileData
 
 (******************************************************************************)

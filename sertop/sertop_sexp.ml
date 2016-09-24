@@ -33,6 +33,8 @@ open Ser_tacenv
 open Ser_profile_ltac
 open Ser_xml
 open Ser_ppannotation
+open Ser_notation_term
+open Ser_notation
 
 module SP = Serapi_protocol
 
@@ -79,6 +81,7 @@ type coq_object =
   [%import: Serapi_protocol.coq_object
   [@with
      Constr.constr                 := constr;
+     Constrexpr.notation           := notation;
      Constrexpr.constr_expr        := constr_expr;
      Globnames.global_reference    := global_reference;
      Goptions.option_name          := option_name;
@@ -95,6 +98,9 @@ type coq_object =
      Tacenv.ltac_entry             := ltac_entry;
      Xml_datatype.gxml             := gxml;
      Ppannotation.t                := ppannotation;
+     Notation_term.notation_grammar:= notation_grammar;
+     Notation.unparsing_rule       := unparsing_rule;
+     Notation.extra_unparsing_rules := extra_unparsing_rules;
   ]]
   [@@deriving sexp]
 

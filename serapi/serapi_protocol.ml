@@ -106,6 +106,8 @@ type coq_object =
   | CoqGlobRef  of Globnames.global_reference
   | CoqImplicit of Impargs.implicits_list
   | CoqProfData of Profile_ltac.treenode
+  | CoqNotation of Constrexpr.notation
+  | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
   (* Fixme *)
   | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
   (* Extern goal: XXX just a trial *)
@@ -167,6 +169,9 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
   | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
   | CoqImplicit(_,l)-> Pp.pr_sequence pp_implicit l
+  | CoqNotation ntn -> Pp.str ntn
+  | CoqUnparsing _  -> Pp.str "FIXME Unparsing"
+
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
@@ -291,6 +296,8 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqProfData _   -> true
   | CoqImplicit _   -> true
   | CoqGoal _       -> true
+  | CoqNotation _   -> true
+  | CoqUnparsing _  -> true
   | CoqExtGoal _    -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
@@ -316,6 +323,8 @@ type query_cmd =
   | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
   | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
   | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
+  | Unparsing of string            (* XXX  *)
+  | PNotations                     (* XXX  *)
   | ProfileData
 
 module QueryUtil = struct
@@ -368,6 +377,16 @@ module QueryUtil = struct
     (* in *)
     (* List.map  map entries [] *)
 
+  let query_unparsing (nt : Constrexpr.notation) :
+    Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar =
+    Notation.(find_notation_printing_rule nt,
+              find_notation_extra_printing_rules nt,
+              find_notation_parsing_rules nt)
+
+  let query_pnotations () = []
+    (* Waiting for PR#289 *)
+    (* Notation.get_defined_printing_notations () *)
+
   let locate id =
     let open Names     in
     let open Libnames  in
@@ -404,6 +423,9 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
 
+  | Unparsing ntn  -> let up, upe, gr = QueryUtil.query_unparsing ntn in
+                      [CoqUnparsing(up,upe,gr)]
+  | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]
 
