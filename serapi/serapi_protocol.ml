@@ -385,7 +385,7 @@ module QueryUtil = struct
 
   let query_pnotations () = []
     (* Waiting for PR#289 *)
-    (* Notation.get_defined_printing_notations () *)
+    (* Notation.get_defined_notations () *)
 
   let locate id =
     let open Names     in
@@ -423,8 +423,13 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
 
-  | Unparsing ntn  -> let up, upe, gr = QueryUtil.query_unparsing ntn in
-                      [CoqUnparsing(up,upe,gr)]
+  | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
+                       * To keep protocol promises we need to special wrap.
+                       *)
+                      begin try let up, upe, gr = QueryUtil.query_unparsing ntn in
+                                [CoqUnparsing(up,upe,gr)]
+                      with _exn -> []
+                      end
   | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]
