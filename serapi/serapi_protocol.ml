@@ -118,23 +118,20 @@ type coq_object =
 (* Printing Sub-Protocol                                                      *)
 (******************************************************************************)
 
-let pp_goal (g, hyps) =
+let pp_goal_gen pr_c (g, hyps) =
   let open Pp      in
-  let open Printer in
   let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
-  let pr_lconstr_opt c = str " := " ++ pr_lconstr c in
+  let pr_lconstr_opt c = str " := " ++ pr_c c in
   let pr_hdef = Option.cata pr_lconstr_opt (mt ())  in
   let pr_hyp (idl, hdef, htyp) =
-    pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ Printer.pr_lconstr htyp in
+    pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ pr_c htyp in
   pr_vertical_list pr_hyp hyps         ++
   str "============================\n" ++
-    (let pr_lconstr t =
-       let (sigma, env) = Pfedit.get_current_context ()                            in
-       Ppconstr.Richpp.pr_lconstr_expr (Constrextern.extern_constr false env sigma t)
-     in
-       pr_lconstr g
-    )
-    (* Printer.pr_lconstr g *)
+    (* (let pr_lconstr t = *)
+    (*    let (sigma, env) = Pfedit.get_current_context ()                            in *)
+    (*    Ppconstr.Richpp.pr_lconstr_expr (Constrextern.extern_constr false env sigma t) *)
+    (*  in *)
+       pr_c g
 
 let pp_opt_value (s : Goptions.option_value) = match s with
   | Goptions.BoolValue b      -> Pp.bool b
@@ -163,8 +160,8 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
   | CoqTactic(kn,_) -> Names.KerName.print kn
   (* Fixme *)
-  | CoqGoal    g    -> Pp.pr_sequence pp_goal g.Proof.fg_goals
-  | CoqExtGoal _    -> Pp.str "FIXME SERAPI"
+  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.pr_lconstr)              g.Proof.fg_goals
+  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.Richpp.pr_lconstr_expr) g.Proof.fg_goals
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
   | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
@@ -415,7 +412,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Option         -> let table = Goptions.get_tables ()            in
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Goals          -> Option.cata (fun g -> [CoqGoal g]) [] @@ Serapi_goals.get_goals opt.sid
+  | Goals          -> Option.cata (fun g -> [CoqGoal g   ]) [] @@ Serapi_goals.get_goals  opt.sid
   | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals opt.sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
