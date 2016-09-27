@@ -98,6 +98,7 @@ type coq_object =
   (* XXX: For xml-like printing, should be moved to an option... *)
   (* | CoqRichXml  of Richpp.richpp *)
   | CoqLoc      of Loc.t
+  | CoqAst      of Loc.t * Vernacexpr.vernac_expr
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
   | CoqExpr     of Constrexpr.constr_expr
@@ -155,6 +156,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqAnn     _    -> Pp.str "Fixme Ann"
   (* | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x) *)
   | CoqLoc    _loc  -> Pp.mt ()
+  | CoqAst    _     -> Pp.str "Fixme ast"
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
@@ -283,6 +285,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqAnn     _    -> true
   (* | CoqRichXml _    -> true *)
   | CoqLoc     _    -> true
+  | CoqAst     _    -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
@@ -315,6 +318,7 @@ type query_cmd =
   | Search                         (* Search vernacular, we only support prefix by name *)
   | Goals                          (* Return goals [TODO: Add filtering/limiting options] *)
   | EGoals                         (* Return goals [TODO: Add filtering/limiting options] *)
+  | Ast       of Stateid.t         (* Return ast *)
   | TypeOf    of string
   | Names     of string            (* XXX Move to prefix *)
   | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
@@ -380,9 +384,10 @@ module QueryUtil = struct
               find_notation_extra_printing_rules nt,
               find_notation_parsing_rules nt)
 
-  let query_pnotations () = []
+  let query_pnotations () =
     (* Waiting for PR#289 *)
     (* Notation.get_defined_notations () *)
+    []
 
   let locate id =
     let open Names     in
@@ -414,6 +419,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Goals          -> Option.cata (fun g -> [CoqGoal g   ]) [] @@ Serapi_goals.get_goals  opt.sid
   | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals opt.sid
+  | Ast sid        -> Option.cata (fun (ast,loc) -> [CoqAst(loc,ast)]) [] @@ Stm.get_ast sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
@@ -445,6 +451,7 @@ let obj_limit limit objs =
   | None   -> objs
   | Some n -> take n objs
 
+(* XXX: Need to protect queries... sad *)
 let exec_query opt cmd =
   let res = obj_query opt cmd        in
   (* XXX: Filter should move to query once we have GADT *)

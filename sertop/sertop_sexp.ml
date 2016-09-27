@@ -35,6 +35,7 @@ open Ser_xml
 open Ser_ppannotation
 open Ser_notation_term
 open Ser_notation
+open Ser_vernacexpr
 
 module SP = Serapi_protocol
 
@@ -101,6 +102,7 @@ type coq_object =
      Notation_term.notation_grammar:= notation_grammar;
      Notation.unparsing_rule       := unparsing_rule;
      Notation.extra_unparsing_rules := extra_unparsing_rules;
+     Vernacexpr.vernac_expr         := vernac_expr;
   ]]
   [@@deriving sexp]
 

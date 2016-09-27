@@ -29,6 +29,7 @@ type coq_object =
   | CoqAnn      of Ppannotation.t Richpp.located Xml_datatype.gxml
   (* | CoqRichXml  of Richpp.richpp *)
   | CoqLoc      of Loc.t
+  | CoqAst      of Loc.t * Vernacexpr.vernac_expr
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
   | CoqExpr     of Constrexpr.constr_expr
@@ -108,6 +109,7 @@ type query_cmd =
   | Search
   | Goals                         (* Return goals [TODO: Add filtering/limiting options] *)
   | EGoals                        (* Return goals [TODO: Add filtering/limiting options] *)
+  | Ast       of Stateid.t        (* Return ast *)
   | TypeOf    of string           (* XXX Unimplemented *)
   | Names     of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Tactics   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
