@@ -255,14 +255,15 @@ let parse_sentences num acc s =
 
 (* XXX: Fixme: adapt to 4.03 matching? *)
 type answer_kind =
-  | Ack
-  | StmCurId    of Stateid.t
-  | StmAdded    of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
-  | StmCanceled of Stateid.t list
-  | StmEdited   of                     [`NewTip | `Focus   of Stm.focus ]
-  | ObjList     of coq_object list
-  | CoqExn      of Loc.t option * (Stateid.t * Stateid.t) option * exn
+    Ack
   | Completed
+  | StmAdded     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | StmCanceled  of Stateid.t list
+  | ObjList      of coq_object list
+  | CoqExn       of Loc.t option * (Stateid.t * Stateid.t) option * exn
+  (* Deprecated, do not use in new code *)
+  | StmCurId     of Stateid.t
+  | StmEdited    of                     [`NewTip | `Focus   of Stm.focus ]
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -483,18 +484,20 @@ type add_opts = {
 }
 
 type control_cmd =
-  | StmState                                 (* Get the state *)
-  | StmAdd        of add_opts  * string      (* Stm.add       *)
-  | StmQuery      of query_opt * string      (* Stm.query     *)
-  | StmCancel     of Stateid.t list          (* Cancel method *)
-  | StmEditAt     of Stateid.t               (* Stm.edit_at   *)
-  | StmObserve    of Stateid.t               (* Stm.observe   *)
-  | StmJoin                                  (* Stm.join      *)
-  | StmStopWorker of string
+  | StmAdd        of add_opts  * string
+  | StmCancel     of Stateid.t list
+  | StmObserve    of Stateid.t
+  (*                 coq_path      unix_path   has_ml *)
+  | LibAdd        of string list * string    * bool
+  (* Miscellanous *)
   | SetOpt        of bool option * Goptions.option_name * Goptions.option_value
-  (*                 prefix      * path   * implicit   *)
-  | LibAdd        of string list * string * bool
   | Quit
+  (* Deprecated, do not use in new code *)
+  | StmJoin
+  | StmStopWorker of string
+  | StmQuery      of query_opt * string
+  | StmEditAt     of Stateid.t
+  | StmState
 
 let exec_setopt loc n (v : Goptions.option_value) =
   let open Goptions in

@@ -77,13 +77,14 @@ exception NoSuchState of Stateid.t
 
 type answer_kind =
     Ack
-  | StmCurId     of Stateid.t
+  | Completed
   | StmAdded     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
   | StmCanceled  of Stateid.t list
-  | StmEdited    of                     [`NewTip | `Focus   of Stm.focus ]
   | ObjList      of coq_object list
   | CoqExn       of Loc.t option * (Stateid.t * Stateid.t) option * exn
-  | Completed
+  (* Deprecated, do not use in new code *)
+  | StmCurId     of Stateid.t
+  | StmEdited    of                     [`NewTip | `Focus   of Stm.focus ]
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -131,18 +132,20 @@ type add_opts = {
 }
 
 type control_cmd =
-    StmState
   | StmAdd     of       add_opts  * string      (* Stm.add       *)
-  | StmQuery   of       query_opt * string
   | StmCancel  of       Stateid.t list
-  | StmEditAt  of       Stateid.t
   | StmObserve of       Stateid.t
-  | StmJoin                                     (* Stm.join      *)
-  | StmStopWorker of    string
-  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   (*              coq_path      unix_path   has_ml *)
   | LibAdd     of string list * string    * bool
+  (* Miscellanous *)
+  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   | Quit
+  (* Deprecated, do not use in new code *)
+  | StmJoin                                     (* Stm.join      *)
+  | StmStopWorker of    string
+  | StmQuery   of       query_opt * string
+  | StmEditAt  of       Stateid.t
+  | StmState
 
 (******************************************************************************)
 (* Help                                                                       *)
