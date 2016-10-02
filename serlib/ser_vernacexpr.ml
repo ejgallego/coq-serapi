@@ -498,6 +498,8 @@ type vernac_expr =
     Genarg.raw_generic_argument := raw_generic_argument;
 
     Misctypes.or_by_notation := or_by_notation;
+    Misctypes.glob_level     := glob_level;
+
     Libnames.reference := reference;
 
     Constrexpr.constr_expr := constr_expr;
@@ -511,6 +513,13 @@ type vernac_expr =
     Conv_oracle.level   := conv_level;
     Univ.constraint_type    := constraint_type;
     ]]
+  [@@deriving sexp]
+and vernac_argument_status =
+  [%import: Vernacexpr.vernac_argument_status
+  [@with
+    Loc.t             := loc;
+    Names.Name.t      := name;
+  ]]
   [@@deriving sexp]
 
 (* and vernac_list = *)
