@@ -15,6 +15,8 @@
 
 open Sexplib
 
+open Ltac_plugin
+
 type ltac_entry = Tacenv.ltac_entry
 
 val ltac_entry_of_sexp : Sexp.t -> ltac_entry

@@ -25,6 +25,7 @@
  * embed a few utility functions in the `Extra` module below.
  *)
 
+open Ltac_plugin
 open Sexplib.Conv
 
 module Extra = struct
@@ -114,10 +115,9 @@ type coq_object =
   | CoqNotation of Constrexpr.notation
   | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
   (* Fixme *)
-  | CoqGoal     of (Constr.constr * (Names.Id.t list * Constr.constr option * Constr.constr) list) Proof.pre_goals
+  | CoqGoal     of (Constr.constr * Context.Compacted.Declaration.t list) Proof.pre_goals
   (* Extern goal: XXX just a trial *)
-  | CoqExtGoal  of (Constrexpr.constr_expr *
-                    (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list) Proof.pre_goals
+  | CoqExtGoal  of (Constrexpr.constr_expr * unit list) Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -125,11 +125,12 @@ type coq_object =
 
 let pp_goal_gen pr_c (g, hyps) =
   let open Pp      in
-  let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
-  let pr_lconstr_opt c = str " := " ++ pr_c c in
-  let pr_hdef = Option.cata pr_lconstr_opt (mt ())  in
-  let pr_hyp (idl, hdef, htyp) =
-    pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ pr_c htyp in
+  (* let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in *)
+  (* let pr_lconstr_opt c = str " := " ++ pr_c c in *)
+  (* let pr_hdef  = Option.cata pr_lconstr_opt (mt ())  in *)
+  let pr_hyp _ = str "Port to new context API"       in
+  (* let pr_hyp (idl, hdef, htyp) = *)
+  (*   pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ pr_c htyp in *)
   pr_vertical_list pr_hyp hyps         ++
   str "============================\n" ++
     (* (let pr_lconstr t = *)
@@ -167,8 +168,8 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
   | CoqTactic(kn,_) -> Names.KerName.print kn
   (* Fixme *)
-  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.pr_lconstr)              g.Proof.fg_goals
-  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.Richpp.pr_lconstr_expr) g.Proof.fg_goals
+  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.pr_lconstr)       g.Proof.fg_goals
+  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.pr_lconstr_expr) g.Proof.fg_goals
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
   | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
@@ -380,6 +381,7 @@ module QueryUtil = struct
     List.map (fun x -> CoqGlobRef x) all_gr
 
   (* From @ppedrot *)
+  (* XXX: We need to put this into a plugin, as ltac is now a plugin in 8.7. *)
   let query_tactics prefix =
     let open Names           in
 

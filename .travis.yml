@@ -15,7 +15,7 @@ addons:
 env:
   global:
   - NJOBS=2
-  - COQ_BRANCH="v8.6"
+  - COQ_BRANCH="trunk"
   # system is == 4.02.3
   - COMPILER="4.04.0"
   # Main test suites

@@ -18,8 +18,8 @@ B _build/serapi
 S sertop
 B _build/sertop
 
-S /home/egallego/external/coq-v8.6/**
-B /home/egallego/external/coq-v8.6/**
+S /home/egallego/external/coq-master/**
+B /home/egallego/external/coq-master/**
 
 S coq-js
 B _build/coq-js

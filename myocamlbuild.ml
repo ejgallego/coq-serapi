@@ -4,7 +4,7 @@ let coq_location =
   try
     getenv "SERAPI_COQ_HOME"
   with
-    _ -> "/home/egallego/external/coq-v8.6/"
+    _ -> "/home/egallego/external/coq-master/"
 
 let p s     = coq_location ^ s
 let q s lib = coq_location ^ s ^ "/" ^ lib
@@ -39,9 +39,10 @@ let () =
       ocaml_lib ~extern:true ~dir:(p "parsing")  ~tag_name:"coq_parsing"  (q "parsing"   "parsing");
       ocaml_lib ~extern:true ~dir:(p "printing") ~tag_name:"coq_printing" (q "printing"  "printing");
       ocaml_lib ~extern:true ~dir:(p "tactics")  ~tag_name:"coq_tactics"  (q "tactics"   "tactics");
+      ocaml_lib ~extern:true ~dir:(p "vernac")   ~tag_name:"coq_vernac"   (q "vernac"    "vernac");
       ocaml_lib ~extern:true ~dir:(p "stm")      ~tag_name:"coq_stm"      (q "stm"       "stm");
       ocaml_lib ~extern:true ~dir:(p "toplevel") ~tag_name:"coq_toplevel" (q "toplevel"  "toplevel");
       ocaml_lib ~extern:true ~dir:(p "parsing")  ~tag_name:"coq_hparsing" (q "parsing"   "highparsing");
-      ocaml_lib ~extern:true ~dir:(p "ltac")     ~tag_name:"coq_ltac"     (q "ltac"      "ltac");
+      ocaml_lib ~extern:true ~dir:(p "plugins/ltac") ~tag_name:"coq_ltac" (q "plugins/ltac" "ltac_plugin");
     | _ -> ()
   end

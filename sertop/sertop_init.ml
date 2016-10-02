@@ -121,7 +121,7 @@ let coq_init opts =
   in
 
   (* Initialize logging. *)
-  Feedback.add_feeder opts.fb_handler;
+  ignore (Feedback.add_feeder opts.fb_handler);
 
   (**************************************************************************)
   (* Async setup                                                            *)

@@ -46,3 +46,19 @@ module Named : sig
   val sexp_of_t : t -> Sexp.t
 
 end
+
+module Compacted : sig
+
+  module Declaration : sig
+
+    type t = Context.Compacted.Declaration.t
+    val t_of_sexp : Sexp.t -> t
+    val sexp_of_t : t -> Sexp.t
+
+  end
+
+  type t = Context.Compacted.t
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end

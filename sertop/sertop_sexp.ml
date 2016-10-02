@@ -21,6 +21,7 @@ module Names = Ser_names
 
 module Goptions = Ser_goptions
 module Stateid  = Ser_stateid
+module Context  = Ser_context
 module Richpp   = Ser_richpp
 module Feedback = Ser_feedback
 module Libnames = Ser_libnames
@@ -32,9 +33,13 @@ module Proof      = Ser_proof
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)
 module Ser_stm    = Ser_stm
-module Tacenv     = Ser_tacenv
+
+module Ltac_plugin = struct
+  module Tacenv       = Ser_tacenv
+  module Profile_ltac = Ser_profile_ltac
+end
+
 module Notation   = Ser_notation
-module Profile_ltac = Ser_profile_ltac
 module Xml_datatype = Ser_xml_datatype
 module Ppannotation = Ser_ppannotation
 module Notation_term = Ser_notation_term
@@ -57,8 +62,9 @@ let _ =
       | SP.NoSuchState sid ->
         Some (List [Atom "NoSuchState"; Stateid.sexp_of_t sid])
       (* Errors *)
-      | CErrors.UserError(e,msg) ->
-        Some (List [Atom "CErrors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
+      | CErrors.UserError(hdr,msg) ->
+        let hdr = Option.default "" hdr in
+        Some (List [Atom "CErrors.UserError"; List [Atom hdr; sexp_of_std_ppcmds msg]])
       | CErrors.AlreadyDeclared msg ->
         Some (List [Atom "CErrors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
       (* Pretype Errors XXX what to do with _env, _envmap *)

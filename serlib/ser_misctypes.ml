@@ -100,3 +100,23 @@ type 'a or_by_notation =
 type module_kind =
   [%import: Misctypes.module_kind]
   [@@deriving sexp]
+
+type clear_flag =
+  [%import: Misctypes.clear_flag]
+  [@@deriving sexp]
+
+type multi =
+  [%import: Misctypes.multi]
+  [@@deriving sexp]
+
+type 'a core_destruction_arg =
+  [%import: 'a Misctypes.core_destruction_arg]
+  [@@deriving sexp]
+
+type 'a destruction_arg =
+  [%import: 'a Misctypes.destruction_arg]
+  [@@deriving sexp]
+
+type inversion_kind =
+  [%import: Misctypes.inversion_kind]
+  [@@deriving sexp]

@@ -22,13 +22,13 @@ module Misctypes = Ser_misctypes
 module Locus     = Ser_locus
 module Constr    = Ser_constr
 module Nametab   = Ser_nametab
+module Constr_matching = Ser_constr_matching
 module Libnames   = Ser_libnames
 module Genarg     = Ser_genarg
 module Genredexpr = Ser_genredexpr
-module Glob_term  = Ser_glob_term
 module Pattern    = Ser_pattern
 module Constrexpr = Ser_constrexpr
-
+module Tactypes   = Ser_tactypes
 
 type direction_flag =
   [%import: Tacexpr.direction_flag]
@@ -62,24 +62,32 @@ type clear_flag =
   [%import: Tacexpr.clear_flag]
   [@@deriving sexp]
 
-type debug =
-  [%import: Tacexpr.debug]
-  [@@deriving sexp]
+(* type debug = *)
+(*   [%import: Tacexpr.debug] *)
+(*   [@@deriving sexp] *)
 
 type goal_selector =
   [%import: Tacexpr.goal_selector]
   [@@deriving sexp]
 
-type 'a core_destruction_arg =
-  [%import: 'a Tacexpr.core_destruction_arg]
+type 'a core_destruction_arg = 'a Tacexpr.core_destruction_arg =
+  | ElimOnConstr of 'a
+  | ElimOnIdent of Names.Id.t Loc.located
+  | ElimOnAnonHyp of int
+(* type 'a core_destruction_arg = *)
+(*   [%import: 'a Tacexpr.core_destruction_arg] *)
   [@@deriving sexp]
 
 type 'a destruction_arg =
   [%import: 'a Tacexpr.destruction_arg]
   [@@deriving sexp]
 
-type inversion_kind =
-  [%import: Tacexpr.inversion_kind]
+type inversion_kind = Tacexpr.inversion_kind =
+  | SimpleInversion
+  | FullInversion
+  | FullInversionClear
+(* type inversion_kind = *)
+(*   [%import: Tacexpr.inversion_kind] *)
   [@@deriving sexp]
 
 type ('c,'d,'id) inversion_strength =
@@ -104,10 +112,6 @@ type ('constr,'dconstr,'id) induction_clause_list =
 
 type 'a with_bindings_arg =
   [%import: 'a Tacexpr.with_bindings_arg]
-  [@@deriving sexp]
-
-type multi =
-  [%import: Tacexpr.multi]
   [@@deriving sexp]
 
 type 'a match_pattern =
@@ -159,7 +163,7 @@ type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_exp
   | TacReduce of ('trm,'cst,'pat) Genredexpr.red_expr_gen * 'nam Locus.clause_expr
   | TacChange of 'pat option * 'dtrm * 'nam Locus.clause_expr
   | TacRewrite of evars_flag *
-      (bool * multi * 'dtrm with_bindings_arg) list * 'nam Locus.clause_expr *
+      (bool * Misctypes.multi * 'dtrm with_bindings_arg) list * 'nam Locus.clause_expr *
       'tacexpr option
   | TacInversion of ('trm,'dtrm,'nam) inversion_strength * Misctypes.quantified_hypothesis
 

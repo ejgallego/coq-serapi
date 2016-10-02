@@ -132,15 +132,15 @@ Look at the [interface file](serapi/serapi_protocol.mli) more the details. The O
 
 _The build system is work in progress. coq/coq#187 needs to be completed before we upload SerAPI to Opam._
 
-Building `sertop` requires OPAM and [Coq 8.6](https://github.com/coq/coq/releases/tag/V8.6). We will also provide an experimental branch tracking trunk soon.
+Building `sertop` requires OPAM and the development branch of [Coq 8.7](https://github.com/coq/coq/).
 
 0. The current supported ocaml version is 4.04.0
    ``$ opam switch 4.04.0 && eval `opam config env` ``.
 1. Install the needed packages:
    `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv camlp5`.
-2. Download and compile coq 8.6. We recommend:
+2. Download and compile coq 8.7. We recommend:
    `$ ./configure -local && make -j $NJOBS`.
-3. Add `SERAPI_COQ_HOME` environment variable which points to your Coq sources, e.g. `export SERAPI_COQ_HOME="/home/egallego/external/coq-v8.6/"`.
+3. Add `SERAPI_COQ_HOME` environment variable which points to your Coq sources, e.g. `export SERAPI_COQ_HOME="/home/egallego/external/coq-v8.7/"`.
 4. `make` should build `sertop`.
 
 ### Emacs mode

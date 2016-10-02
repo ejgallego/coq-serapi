@@ -15,6 +15,8 @@
 
 open Sexplib
 
+(* open Ltac_plugin *)
+
 type direction_flag = bool
 val direction_flag_of_sexp : Sexp.t -> direction_flag
 val sexp_of_direction_flag : direction_flag -> Sexp.t
@@ -47,9 +49,9 @@ type clear_flag = bool option
 val clear_flag_of_sexp : Sexp.t -> clear_flag
 val sexp_of_clear_flag : clear_flag -> Sexp.t
 
-type debug = Tacexpr.debug = Debug | Info | Off
-val debug_of_sexp : Sexp.t -> debug
-val sexp_of_debug : debug -> Sexp.t
+(* type debug = Tacexpr.debug = Debug | Info | Off *)
+(* val debug_of_sexp : Sexp.t -> debug *)
+(* val sexp_of_debug : debug -> Sexp.t *)
 
 type goal_selector = Tacexpr.goal_selector
 val goal_selector_of_sexp : Sexp.t -> goal_selector
@@ -66,6 +68,7 @@ type 'a destruction_arg = clear_flag * 'a core_destruction_arg
 
 val destruction_arg_of_sexp :
   (Sexp.t -> 'a) -> Sexp.t -> 'a destruction_arg
+
 val sexp_of_destruction_arg :
   ('a -> Sexp.t) -> 'a destruction_arg -> Sexp.t
 
@@ -143,9 +146,9 @@ type 'a with_bindings_arg = 'a Tacexpr.with_bindings_arg
 val with_bindings_arg_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_bindings_arg
 val sexp_of_with_bindings_arg : ('a -> Sexp.t) -> 'a with_bindings_arg -> Sexp.t
 
-type multi = Tacexpr.multi
-val multi_of_sexp : Sexp.t -> multi
-val sexp_of_multi : multi -> Sexp.t
+(* type multi = Tacexpr.multi *)
+(* val multi_of_sexp : Sexp.t -> multi *)
+(* val sexp_of_multi : multi -> Sexp.t *)
 
 type 'a match_pattern = 'a Tacexpr.match_pattern
 

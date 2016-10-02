@@ -15,6 +15,7 @@
 
 module Constrexpr = Ser_constrexpr
 module Ppextend   = Ser_ppextend
+module Genarg     = Ser_genarg
 module Tacexpr    = Ser_tacexpr
 module Vernacexpr = Ser_vernacexpr
 

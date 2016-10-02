@@ -15,6 +15,8 @@
 
 open Sexplib.Std
 
+open Ltac_plugin
+
 (* XXX: Move to ser_cmap *)
 type 'a cstring_map = 'a CString.Map.t
 

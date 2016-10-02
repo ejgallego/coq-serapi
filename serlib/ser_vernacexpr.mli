@@ -26,9 +26,9 @@ type lname = Vernacexpr.lname
 val lname_of_sexp : Sexp.t -> lname
 val sexp_of_lname : lname -> Sexp.t
 
-type lstring = Vernacexpr.lstring
-val lstring_of_sexp : Sexp.t -> lstring
-val sexp_of_lstring : lstring -> Sexp.t
+(* type lstring = Vernacexpr.lstring *)
+(* val lstring_of_sexp : Sexp.t -> lstring *)
+(* val sexp_of_lstring : lstring -> Sexp.t *)
 
 (* type lreference = Vernacexpr.lreference *)
 (* val lreference_of_sexp : Sexp.t -> lreference *)
@@ -230,10 +230,10 @@ val sexp_of_proof_expr : proof_expr -> Sexp.t
 (* val grammar_tactic_prod_item_expr_of_sexp : Sexp.t -> grammar_tactic_prod_item_expr *)
 (* val sexp_of_grammar_tactic_prod_item_expr : grammar_tactic_prod_item_expr -> Sexp.t *)
 
-type syntax_modifier = Vernacexpr.syntax_modifier
+(* type syntax_modifier = Vernacexpr.syntax_modifier *)
 
-val syntax_modifier_of_sexp : Sexp.t -> syntax_modifier
-val sexp_of_syntax_modifier : syntax_modifier -> Sexp.t
+(* val syntax_modifier_of_sexp : Sexp.t -> syntax_modifier *)
+(* val sexp_of_syntax_modifier : syntax_modifier -> Sexp.t *)
 
 type proof_end = Vernacexpr.proof_end
 val proof_end_of_sexp : Sexp.t -> proof_end

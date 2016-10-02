@@ -24,10 +24,10 @@ let get_goal_type
 (** gets a hypothesis *)
 let get_hyp
     (sigma : Evd.evar_map)
-    (hdecl : Context.NamedList.Declaration.t) =
-  Context.NamedList.Declaration.map_constr (Reductionops.nf_evar sigma) hdecl
+    (hdecl : Context.Compacted.Declaration.t) =
+  Context.Compacted.Declaration.map_constr (Reductionops.nf_evar sigma) hdecl
 
-type reified_goal = Constr.constr * Context.NamedList.Declaration.t list
+type reified_goal = Constr.constr * Context.Compacted.Declaration.t list
 
 let process_goal sigma g : reified_goal =
   let env       = Goal.V82.env sigma g                                      in
@@ -47,21 +47,25 @@ let get_goals sid : reified_goal Proof.pre_goals option =
   end
   with Proof_global.NoCurrentProof -> None
 
-type reified_egoal = Constrexpr.constr_expr * (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list
+(* type reified_egoal = Constrexpr.constr_expr * (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list *)
+type reified_egoal = Constrexpr.constr_expr * unit list
 
-let extern_hyp env sigma (names, _def, htype) =
-  let ehtype = Constrextern.extern_constr true env sigma htype in
-  (names, None, ehtype)
+(* let extern_hyp env sigma hyp = *)
+  (* (names, _def, htype) = *)
+  (* let ehtype = Constrextern.extern_constr true env sigma htype in *)
+  (* (names, None, ehtype) *)
 
 let process_egoal sigma g : reified_egoal =
   let env       = Goal.V82.env sigma g                                      in
   (* why is compaction neccesary... ? *)
-  let ctx       = Termops.compact_named_context (Environ.named_context env) in
-  let hyps      = List.map (get_hyp sigma) ctx                              in
   let goal      = get_goal_type sigma g                                     in
   let egoal     = Constrextern.extern_constr true env sigma goal            in
-  let ehyps     = List.map (extern_hyp env sigma) hyps                      in
-  (egoal, ehyps)
+  (* let ctx       = Termops.compact_named_context (Environ.named_context env) in *)
+  (* let hyps      = List.map (get_hyp sigma) ctx                              in *)
+  (* let ehyps     = List.map (extern_hyp env sigma) hyps                      in *)
+  (* XXX: Fixme *)
+  (* (egoal, ehyps) *)
+  (egoal, [])
 
 let get_egoals sid : reified_egoal Proof.pre_goals option =
   try begin

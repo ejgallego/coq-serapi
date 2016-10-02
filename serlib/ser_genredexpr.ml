@@ -35,3 +35,39 @@ type ('a,'b,'c) red_expr_gen =
 type ('a,'b,'c) may_eval =
   [%import: ('a,'b,'c) Genredexpr.may_eval]
   [@@deriving sexp]
+
+open Ser_libnames
+open Ser_constrexpr
+open Ser_misctypes
+
+(* Helpers for raw_red_expr *)
+type r_trm =
+  [%import: Tacexpr.r_trm
+  [@with
+     Constrexpr.constr_expr := constr_expr;
+  ]]
+  [@@deriving sexp]
+
+type r_cst =
+  [%import: Tacexpr.r_cst
+  [@with
+    Libnames.reference := reference;
+    Misctypes.or_by_notation := or_by_notation;
+  ]]
+  [@@deriving sexp]
+
+type r_pat =
+  [%import: Tacexpr.r_pat
+  [@with
+     Constrexpr.constr_expr := constr_expr;
+     Constrexpr.constr_pattern_expr := constr_pattern_expr;
+  ]]
+  [@@deriving sexp]
+
+type raw_red_expr =
+  [%import: Genredexpr.raw_red_expr
+  [@with
+     Genredexpr.red_expr_gen := red_expr_gen;
+  ]]
+  [@@deriving sexp]
+

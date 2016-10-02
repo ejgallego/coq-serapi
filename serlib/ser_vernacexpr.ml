@@ -29,8 +29,8 @@ module Libnames    = Ser_libnames
 module Extend      = Ser_extend
 module Stateid     = Ser_stateid
 module Constrexpr  = Ser_constrexpr
-module Tacexpr     = Ser_tacexpr
 module Goptions    = Ser_goptions
+module Genredexpr  = Ser_genredexpr
 
 type lident     = [%import: Vernacexpr.lident]
   [@@deriving sexp]
@@ -251,6 +251,7 @@ and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
   [@@deriving sexp]
 
 (* We need to overload the printing for the Extend mechanism... *)
+(*
 let sexp_of_vernac_expr vrc = match vrc with
   | VernacExtend (s, cl)->
     let open Sexplib in
@@ -273,3 +274,4 @@ let sexp_of_vernac_expr vrc = match vrc with
     end
   | _ -> sexp_of_vernac_expr vrc
 
+*)

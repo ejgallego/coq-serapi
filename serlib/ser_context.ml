@@ -50,3 +50,20 @@ module Named = struct
     [@@deriving sexp]
 
 end
+
+module Compacted = struct
+
+  module Declaration = struct
+
+  type t =
+    [%import: Context.Compacted.Declaration.t]
+    [@@deriving sexp]
+
+  end
+
+  type t =
+    [%import: Context.Compacted.t]
+    [@@deriving sexp]
+
+end
+

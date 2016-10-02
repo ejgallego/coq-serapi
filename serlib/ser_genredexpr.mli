@@ -46,3 +46,6 @@ val sexp_of_may_eval :
   ('b -> Sexp.t) ->
   ('c -> Sexp.t) -> ('a, 'b, 'c) may_eval -> Sexp.t
 
+type raw_red_expr = Genredexpr.raw_red_expr
+val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
+val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t

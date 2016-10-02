@@ -119,3 +119,23 @@ val sexp_of_or_by_notation : ('a -> Sexp.t) -> 'a or_by_notation -> Sexp.t
 type module_kind = Misctypes.module_kind
 val module_kind_of_sexp : Sexp.t -> module_kind
 val sexp_of_module_kind : module_kind -> Sexp.t
+
+type clear_flag = Misctypes.clear_flag
+val clear_flag_of_sexp : Sexp.t -> clear_flag
+val sexp_of_clear_flag : clear_flag -> Sexp.t
+
+type multi = Misctypes.multi
+val multi_of_sexp : Sexp.t -> multi
+val sexp_of_multi : multi -> Sexp.t
+
+type 'a core_destruction_arg = 'a Misctypes.core_destruction_arg
+val core_destruction_arg_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a core_destruction_arg
+val sexp_of_core_destruction_arg : ('a -> Sexp.t) -> 'a core_destruction_arg -> Sexp.t
+
+type 'a destruction_arg = 'a Misctypes.destruction_arg
+val destruction_arg_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a destruction_arg
+val sexp_of_destruction_arg : ('a -> Sexp.t) -> 'a destruction_arg -> Sexp.t
+
+type inversion_kind = Misctypes.inversion_kind
+val inversion_kind_of_sexp : Sexp.t -> inversion_kind
+val sexp_of_inversion_kind : inversion_kind -> Sexp.t

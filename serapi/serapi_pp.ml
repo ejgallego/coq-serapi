@@ -63,7 +63,6 @@ let pp_feedback_content fmt fb =
   | WorkerStatus(w1, w2) -> fprintf fmt "WorkerStatus: %s, %s" w1 w2
 
   (* Generally useful metadata *)
-  | Goals(_loc, g) -> fprintf fmt "Goals: %s" g
   | AddedAxiom     -> fprintf fmt "AddedAxiom"
 
   | GlobRef (_loc, s1, s2, s3, s4) -> fprintf fmt "GlobRef: %s,%s,%s,%s" s1 s2 s3 s4
@@ -76,7 +75,7 @@ let pp_feedback_content fmt fb =
   | Custom(_loc, msg, _xml) -> fprintf fmt "Custom: %s" msg
 
   (* Old generic messages *)
-  | Message(_lvl, _loc, m) -> fprintf fmt "Msg: %s " (Richpp.raw_print m)
+  | Message(_lvl, _loc, m) -> fprintf fmt "Msg: @[%a@]" (Pp.pp_with ?pp_tag:None) (Pp.str (Richpp.raw_print m))
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in
