@@ -547,11 +547,14 @@ module ControlUtil = struct
       if not (List.mem !stt !cur_doc) then
         raise (NoSuchState !stt);
 
+      let add_debug = false              in
       while (0 < !rem) && (check_lim !i) do
         let n_st, loc, foc =
           let sent = Extra.sub sent ~pos:!buf ~len:!rem in
-          (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.T.to_int !stt); *)
-          (* Format.eprintf "Sent: %s @\n%!" sent; *)
+          if add_debug then begin
+            Format.eprintf "*** [i:%d|buf:%d|rem:%d|stt:%d]@\n%!" !i !buf !rem (Stateid.to_int !stt);
+            Format.eprintf "*** Sent: %s @\n%!" sent
+          end;
           add_sentence ?newtip:opts.newtip ~ontop:!stt opts.verb pa sent
         in
         acc := (StmAdded (n_st, loc, foc)) :: !acc;
@@ -559,7 +562,8 @@ module ControlUtil = struct
         buf := !buf + pos !buf loc;
         stt := n_st;
         incr i;
-        (* Format.eprintf "[lim:%d|i:%d|buf:%d|rem:%d|stt:%d]@\n%!" lim !i !buf !rem (Stateid.T.to_int !stt); *)
+        if add_debug then
+            Format.eprintf "*!* [i:%d|buf:%d|rem:%d|stt:%d]@\n%!" !i !buf !rem (Stateid.to_int !stt);
       done;
       List.rev !acc
     with
