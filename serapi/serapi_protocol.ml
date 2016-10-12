@@ -310,7 +310,7 @@ type query_opt =
     sid   : Stateid.t [@default Stm.get_current_state()];
     pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0; pp_elide = "..." } ];
     (* Legacy/Deprecated *)
-    route : Feedback.route_id [@default Feedback.default_route];
+    route : Feedback.route_id [@default 0];
   }
 
 (** XXX: This should be in sync with the object tag!  *)

@@ -51,6 +51,10 @@ type debug = Tacexpr.debug = Debug | Info | Off
 val debug_of_sexp : Sexp.t -> debug
 val sexp_of_debug : debug -> Sexp.t
 
+type goal_selector = Tacexpr.goal_selector
+val goal_selector_of_sexp : Sexp.t -> goal_selector
+val sexp_of_goal_selector : goal_selector -> Sexp.t
+
 type 'a core_destruction_arg = 'a Tacexpr.core_destruction_arg
 
 val core_destruction_arg_of_sexp :

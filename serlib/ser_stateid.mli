@@ -15,7 +15,7 @@
 
 open Sexplib
 
-type stateid = Stateid.t
+type t = Stateid.t
 
-val stateid_of_sexp : Sexp.t -> Stateid.t
-val sexp_of_stateid : Stateid.t -> Sexp.t
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t

@@ -16,22 +16,23 @@
 open Sexplib
 open Sexplib.Conv
 
-open Ser_loc
-open Ser_names
-open Ser_goptions
-open Ser_stateid
-open Ser_richpp
-open Ser_feedback
-open Ser_libnames
+module Loc   = Ser_loc
+module Names = Ser_names
+
+module Goptions = Ser_goptions
+module Stateid  = Ser_stateid
+module Richpp   = Ser_richpp
+module Feedback = Ser_feedback
+module Libnames = Ser_libnames
 open Ser_impargs
-open Ser_constr
-open Ser_constrexpr
+module Constr     = Ser_constr
+module Constrexpr = Ser_constrexpr
 open Ser_globnames
 open Ser_proof
 open Ser_stm
 open Ser_tacenv
 open Ser_profile_ltac
-open Ser_xml
+module Xml_datatype = Ser_xml_datatype
 open Ser_ppannotation
 open Ser_notation_term
 open Ser_notation
@@ -51,7 +52,7 @@ let _ =
   Conv.Exn_converter.add_slow (function
       (* Own things *)
       | SP.NoSuchState sid ->
-        Some (List [Atom "NoSuchState"; sexp_of_stateid sid])
+        Some (List [Atom "NoSuchState"; Stateid.sexp_of_t sid])
       (* Errors *)
       | CErrors.UserError(e,msg) ->
         Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
@@ -81,23 +82,11 @@ let _ =
 type coq_object =
   [%import: Serapi_protocol.coq_object
   [@with
-     Constr.constr                 := constr;
-     Constrexpr.notation           := notation;
-     Constrexpr.constr_expr        := constr_expr;
      Globnames.global_reference    := global_reference;
-     Goptions.option_name          := option_name;
-     Goptions.option_state         := option_state;
      Impargs.implicits_list        := implicits_list;
-     Libnames.qualid               := qualid;
-     Loc.t                         := loc;
-     Names.Id.t                    := id;
-     Names.KerName.t               := kername;
      Profile_ltac.treenode         := ltacprof_treenode;
      Proof.pre_goals               := pre_goals;
-     Richpp.richpp                 := richpp;
-     Richpp.located                := located;
      Tacenv.ltac_entry             := ltac_entry;
-     Xml_datatype.gxml             := gxml;
      Ppannotation.t                := ppannotation;
      Notation_term.notation_grammar:= notation_grammar;
      Notation.unparsing_rule       := unparsing_rule;
@@ -118,27 +107,19 @@ type print_opt =
   [@@deriving sexp]
 
 type query_pred =
-  [%import: Serapi_protocol.query_pred
-  [@with
-     Stateid.t := stateid;
-  ]]
+  [%import: Serapi_protocol.query_pred]
   [@@deriving sexp]
 
 type query_opt =
   [%import: Serapi_protocol.query_opt
   [@with
-     Stateid.t                := stateid;
      Sexplib.Conv.sexp_list   := sexp_list;
      Sexplib.Conv.sexp_option := sexp_option;
-     Feedback.route_id        := route_id;
   ]]
   [@@deriving sexp]
 
 type query_cmd =
-  [%import: Serapi_protocol.query_cmd
-  [@with
-     Stateid.t := stateid;
-  ]]
+  [%import: Serapi_protocol.query_cmd]
   [@@deriving sexp]
 
 type cmd_tag =
@@ -148,35 +129,23 @@ type cmd_tag =
 type answer_kind =
   [%import: Serapi_protocol.answer_kind
   [@with
-     Loc.t                         := loc;
-     Stateid.t := stateid;
      Stm.focus := focus;
   ]]
   [@@deriving sexp]
 
 type answer =
-  [%import: Serapi_protocol.answer
-  [@with
-     Feedback.feedback := feedback;
-  ]]
+  [%import: Serapi_protocol.answer]
   [@@deriving sexp]
 
 type add_opts =
   [%import: Serapi_protocol.add_opts
   [@with
-     Stateid.t := stateid;
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
 
 type control_cmd =
-  [%import: Serapi_protocol.control_cmd
-  [@with
-     Goptions.option_name          := option_name;
-     Goptions.option_state         := option_state;
-     Goptions.option_value         := option_value;
-     Stateid.t                     := stateid;
-  ]]
+  [%import: Serapi_protocol.control_cmd]
   [@@deriving sexp]
 
 type cmd =

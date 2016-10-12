@@ -16,14 +16,10 @@
 open Sexplib.Std
 
 type 'a gxml =
-  [%import: 'a Xml_datatype.gxml
-  ]
+  [%import: 'a Xml_datatype.gxml]
   [@@deriving sexp]
 
 type xml =
-  [%import: Xml_datatype.xml
-  [@with
-     Xml_datatype.gxml := gxml;
-  ]]
+  [%import: Xml_datatype.xml]
   [@@deriving sexp]
 

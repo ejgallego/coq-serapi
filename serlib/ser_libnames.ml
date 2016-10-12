@@ -15,15 +15,17 @@
 
 (* open Sexplib.Std *)
 
-open Ser_loc
-open Ser_names
+module Loc   = Ser_loc
+module Names = Ser_names
 
 (* qualid: private *)
 type qualid = [%import: Libnames.qualid]
 
-type _qualid = Ser_Qualid of dirpath * id [@@deriving sexp]
+type _qualid =
+    Ser_Qualid of Names.DirPath.t * Names.Id.t
+  [@@deriving sexp]
 
-let _qualid_put qid                   = 
+let _qualid_put qid                   =
   let dp, id = Libnames.repr_qualid qid in Ser_Qualid (dp, id)
 
 let _qualid_get (Ser_Qualid (dp, id)) = Libnames.make_qualid dp id
@@ -32,10 +34,6 @@ let qualid_of_sexp sexp = _qualid_get (_qualid_of_sexp sexp)
 let sexp_of_qualid qid  = sexp_of__qualid (_qualid_put qid)
 
 (* reference: public *)
-type reference = [%import: Libnames.reference
-     [@with Loc.t       := loc;
-            Loc.located := located;
-            Names.Id.t  := id;
-     ]]
+type reference = [%import: Libnames.reference]
   [@@deriving sexp]
 

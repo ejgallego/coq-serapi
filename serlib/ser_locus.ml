@@ -15,41 +15,23 @@
 
 open Sexplib.Std
 
-(* open Ser_loc *)
-open Ser_names
-open Ser_misctypes
+module Names     = Ser_names
+module Misctypes = Ser_misctypes
 
 type 'a occurrences_gen =
-  [%import: 'a Locus.occurrences_gen
-  [@with
-    Loc.t := loc;
-    Names.Id.t := id;
-  ]]
+  [%import: 'a Locus.occurrences_gen]
   [@@deriving sexp]
 
 type occurrences_expr =
-  [%import: Locus.occurrences_expr
-  [@with
-    Loc.t := loc;
-    Names.Id.t := id;
-    Misctypes.or_var := or_var;
-  ]]
+  [%import: Locus.occurrences_expr]
   [@@deriving sexp]
 
 type 'a with_occurrences =
-  [%import: 'a Locus.with_occurrences
-  [@with
-    Loc.t := loc;
-    Names.Id.t := id;
-  ]]
+  [%import: 'a Locus.with_occurrences]
   [@@deriving sexp]
 
 type occurrences =
-  [%import: Locus.occurrences
-  [@with
-    Loc.t := loc;
-    Names.Id.t := id;
-  ]]
+  [%import: Locus.occurrences]
   [@@deriving sexp]
 
 type hyp_location_flag =
@@ -65,18 +47,11 @@ type 'id clause_expr =
   [@@deriving sexp]
 
 type clause =
-  [%import: Locus.clause
-  [@with
-    Loc.t      := loc;
-    Names.Id.t := id;
-  ]]
+  [%import: Locus.clause]
   [@@deriving sexp]
 
 type clause_atom =
-  [%import: Locus.clause_atom
-  [@with
-    Names.Id.t := id;
-  ]]
+  [%import: Locus.clause_atom]
   [@@deriving sexp]
 
 type concrete_clause =
@@ -84,10 +59,7 @@ type concrete_clause =
   [@@deriving sexp]
 
 type hyp_location =
-  [%import: Locus.clause_atom
-  [@with
-    Names.Id.t := id;
-  ]]
+  [%import: Locus.clause_atom]
   [@@deriving sexp]
 
 type goal_location =
@@ -95,10 +67,7 @@ type goal_location =
   [@@deriving sexp]
 
 type simple_clause =
-  [%import: Locus.clause_atom
-  [@with
-    Names.Id.t := id;
-  ]]
+  [%import: Locus.clause_atom]
   [@@deriving sexp]
 
 type 'a or_like_first =

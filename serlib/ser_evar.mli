@@ -15,12 +15,16 @@
 
 open Sexplib
 
-type evar = Evar.t
+type t = Evar.t
 
-val evar_of_sexp : Sexp.t -> Evar.t
-val sexp_of_evar : Evar.t -> Sexp.t
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t
 
-type evar_set = Evar.Set.t
+module Set : sig
 
-val evar_set_of_sexp : Sexp.t -> Evar.Set.t
-val sexp_of_evar_set : Evar.Set.t -> Sexp.t
+  type t = Evar.Set.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end

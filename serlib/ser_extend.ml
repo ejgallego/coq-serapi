@@ -15,7 +15,7 @@
 
 open Sexplib.Std
 
-open Ser_tok
+module Tok = Ser_tok
 
 type side =
   [%import: Extend.side]
@@ -38,9 +38,7 @@ type production_level =
   [@@deriving sexp]
 
 type ('lev,'pos) constr_entry_key_gen =
-  [%import: ('lev, 'pos) Extend.constr_entry_key_gen
-  [@with Tok.t := tok;
-  ]]
+  [%import: ('lev, 'pos) Extend.constr_entry_key_gen]
   [@@deriving sexp]
 
 type constr_entry_key =

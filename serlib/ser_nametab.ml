@@ -13,11 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ser_names
+module Names = Ser_names
 
 type ltac_constant =
-  [%import: Nametab.ltac_constant
-  [@with
-     Names.kernel_name := kername;
-  ]]
+  [%import: Nametab.ltac_constant]
   [@@deriving sexp]

@@ -15,14 +15,10 @@
 
 open Sexplib.Std
 
-open Ser_ppextend
+module Ppextend = Ser_ppextend
 
 type unparsing_rule =
-  [%import: Notation.unparsing_rule
-  [@with
-     Ppextend.unparsing  := unparsing;
-     Ppextend.precedence := precedence
-  ]]
+  [%import: Notation.unparsing_rule]
   [@@deriving sexp]
 
 type extra_unparsing_rules =

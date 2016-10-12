@@ -13,13 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ser_stateid
+module Stateid = Ser_stateid
 
 type focus =
- [%import: Stm.focus
- [@with
-    Stateid.t := stateid;
- ]]
+ [%import: Stm.focus]
  [@@deriving sexp]
 
  (* { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)

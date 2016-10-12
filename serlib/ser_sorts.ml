@@ -13,7 +13,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ser_univ
+module Univ = Ser_univ
 
 type contents =
   [%import: Sorts.contents]
@@ -24,7 +24,5 @@ type family =
   [@@deriving sexp]
 
 type sort =
-  [%import: Sorts.t
-  [@with Univ.universe := universe
-  ]]
+  [%import: Sorts.t]
   [@@deriving sexp]

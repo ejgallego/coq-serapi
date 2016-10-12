@@ -15,67 +15,33 @@
 
 open Sexplib.Std
 
-open Ser_constr
-open Ser_evd
-open Ser_evar
-open Ser_environ
-open Ser_names
-open Ser_univ
-open Ser_type_errors
+module Names = Ser_names
 
-open Ser_locus
-open Ser_evar_kinds
+module Term        = Ser_constr
+module Evd         = Ser_evd
+module Evar        = Ser_evar
+module Environ     = Ser_environ
+module Univ        = Ser_univ
+module Type_errors = Ser_type_errors
+module Locus       = Ser_locus
+module Evar_kinds  = Ser_evar_kinds
 
 type unification_error =
-  [%import: Pretype_errors.unification_error
-  [@with
-    Univ.univ_inconsistency := univ_inconsistency;
-    Evd.evar_constraint := evar_constraint;
-    Environ.env := env;
-    Term.constr := constr;
-    Term.types  := constr;
-    Term.existential_key := existential_key;
-    Term.existential     := existential;
-  ]]
+  [%import: Pretype_errors.unification_error]
   [@@deriving sexp]
 
 type position =
-  [%import: Pretype_errors.position
-  [@with
-    Names.Id.t := id;
-    Locus.hyp_location_flag := hyp_location_flag;
-    Term.constr := constr;
-    Term.types  := constr;
-  ]]
+  [%import: Pretype_errors.position]
   [@@deriving sexp]
 
 type position_reporting =
-  [%import: Pretype_errors.position_reporting
-  [@with
-    Term.constr := constr;
-  ]]
+  [%import: Pretype_errors.position_reporting]
   [@@deriving sexp]
 
 type subterm_unification_error =
-  [%import: Pretype_errors.subterm_unification_error
-  [@with
-    Term.constr := constr;
-  ]]
+  [%import: Pretype_errors.subterm_unification_error]
   [@@deriving sexp]
 
 type pretype_error =
-  [%import: Pretype_errors.pretype_error
-  [@with
-    Names.Id.t := id;
-    Names.Name.t := name;
-    Term.constr := constr;
-    Term.types  := constr;
-    Term.existential_key := existential_key;
-    Environ.unsafe_judgment := unsafe_judgment;
-    Environ.env := env;
-    Evd.unsolvability_explanation := unsolvability_explanation;
-    Type_errors.type_error := type_error;
-    Evar_kinds.t := evar_kinds;
-    Evar.Set.t   := evar_set;
-  ]]
+  [%import: Pretype_errors.pretype_error]
   [@@deriving sexp]

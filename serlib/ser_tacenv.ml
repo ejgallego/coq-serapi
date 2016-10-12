@@ -15,14 +15,10 @@
 
 open Sexplib.Std
 
-open Ser_names
-open Ser_tacexpr
+module Names   = Ser_names
+module Tacexpr = Ser_tacexpr
 
 type ltac_entry =
-  [%import: Tacenv.ltac_entry
-  [@with
-    Tacexpr.glob_tactic_expr := glob_tactic_expr;
-    Names.ModPath.t          := modpath;
-  ]]
+  [%import: Tacenv.ltac_entry]
   [@@deriving sexp]
 

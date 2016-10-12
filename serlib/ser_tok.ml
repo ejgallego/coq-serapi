@@ -15,6 +15,6 @@
 
 open Sexplib.Std
 
-type tok =
+type t =
   [%import: Tok.t]
   [@@deriving sexp]

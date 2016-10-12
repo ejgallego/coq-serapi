@@ -19,15 +19,11 @@
 
 open Sexplib.Std
 
-(* Loc: public *)
-type loc =
+type t =
   [%import: Loc.t]
   [@@deriving sexp]
 
 (* located: public *)
 type 'a located =
-  [%import: 'a Loc.located
-  [@with
-    t := loc
-  ]]
+  [%import: 'a Loc.located]
   [@@deriving sexp]

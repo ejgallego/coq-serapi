@@ -15,19 +15,35 @@
 
 open Sexplib
 
-type level = Univ.Level.t
-val level_of_sexp : Sexp.t -> Univ.Level.t
-val sexp_of_level : Univ.Level.t -> Sexp.t
+module Level : sig
 
-type universe = Univ.Universe.t
+type t = Univ.Level.t
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t
 
-val universe_of_sexp : 'a -> Univ.Universe.t
-val sexp_of_universe : 'a -> Sexp.t
+end
 
-type instance = Univ.Instance.t
+module Universe : sig
 
-val instance_of_sexp : Sexp.t -> Univ.Instance.t
-val sexp_of_instance : Univ.Instance.t -> Sexp.t
+type t = Univ.Universe.t
+
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t
+
+end
+
+type universe = Universe.t
+
+val universe_of_sexp : Sexp.t -> universe
+val sexp_of_universe : universe -> Sexp.t
+
+module Instance : sig
+
+type t = Univ.Instance.t
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t
+
+end
 
 type constraint_type = Univ.constraint_type
 
@@ -44,7 +60,7 @@ type constraints = Univ.constraints
 val constraints_of_sexp : Sexp.t -> constraints
 val sexp_of_constraints : constraints -> Sexp.t
 
-type universe_instance = instance
+type universe_instance = Instance.t
 
 val universe_instance_of_sexp : Sexp.t -> universe_instance
 val sexp_of_universe_instance : universe_instance -> Sexp.t

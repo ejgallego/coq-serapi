@@ -40,11 +40,6 @@ let sexp_of_tlevel _ = Atom "GA_tlevel"
 type 'a generic_argument =
   'a Genarg.generic_argument
 
-  (* [%import: 'a Genarg.generic_argument *)
-  (* [@with *)
-  (*    Genarg.abstract_argument_type := abstract_argument_type; *)
-  (* ]] *)
-
 let generic_argument_of_sexp _ _x = Obj.magic 0
 let sexp_of_generic_argument _ _x = Atom "XXX genarg XXX"
 

@@ -16,7 +16,7 @@
 open Sexplib
 open Sexplib.Std
 
-open Ser_names
+module Names = Ser_names
 
 type argument_position =
   [%import: Impargs.argument_position]
@@ -41,10 +41,7 @@ let implicit_side_condition_of_sexp _sexp : implicit_side_condition = Obj.magic 
 let sexp_of_implicit_side_condition _isc = Sexp.Atom "impSC"
 
 type implicit_status =
-  [%import: Impargs.implicit_status
-  [@with
-     Names.Id.t := id;
-  ]]
+  [%import: Impargs.implicit_status]
   [@@deriving sexp]
 
 type implicits_list =

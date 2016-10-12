@@ -19,9 +19,10 @@
 
 open Sexplib
 
-type loc = Loc.t
-val loc_of_sexp : Sexp.t -> Loc.t
-val sexp_of_loc : Loc.t -> Sexp.t
+type t = Loc.t
+
+val t_of_sexp : Sexp.t -> Loc.t
+val sexp_of_t : Loc.t -> Sexp.t
 
 type 'a located = 'a Loc.located
 val located_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Loc.located

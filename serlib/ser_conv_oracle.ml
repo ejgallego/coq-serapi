@@ -15,6 +15,6 @@
 
 open Sexplib.Std
 
-type conv_level =
+type level =
   [%import: Conv_oracle.level]
   [@@deriving sexp]

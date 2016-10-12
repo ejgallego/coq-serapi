@@ -15,75 +15,34 @@
 
 open Sexplib.Std
 
-open Ser_names
-open Ser_globnames
-open Ser_loc
-open Ser_constr
-open Ser_misctypes
-open Ser_decl_kinds
-open Ser_genarg
-open Ser_evar_kinds
+module Loc        = Ser_loc
+module Names      = Ser_names
+module Globnames  = Ser_globnames
+module Misctypes  = Ser_misctypes
+module Decl_kinds = Ser_decl_kinds
+module Genarg     = Ser_genarg
+module Evar_kinds = Ser_evar_kinds
 
 (**********************************************************************)
 (* Glob_term                                                          *)
 (**********************************************************************)
 
 type existential_name = Glob_term.existential_name
-let existential_name_of_sexp = id_of_sexp
-let sexp_of_existential_name = sexp_of_id
+let existential_name_of_sexp = Names.Id.t_of_sexp
+let sexp_of_existential_name = Names.Id.sexp_of_t
 
-type cases_pattern = [%import: Glob_term.cases_pattern
-                     [@with Loc.t               := loc;
-                            Names.Name.t        := name;
-                            Names.constructor   := constructor
-                     ]]
+type cases_pattern = [%import: Glob_term.cases_pattern]
            [@@deriving sexp]
 
 
-type glob_constr = [%import: Glob_term.glob_constr
-                   [@with Loc.t               := loc;
-                          Names.Id.t          := id;
-                          Names.Name.t        := name;
-
-                          Evar_kinds.t        := evar_kinds;
-
-                          Globnames.global_reference := global_reference;
-
-                          Misctypes.case_style := case_style;
-                          Misctypes.cast_type  := cast_type;
-                          Misctypes.glob_level := glob_level;
-                          Misctypes.glob_sort  := glob_sort;
-                          Misctypes.patvar     := patvar;
-                          Misctypes.intro_pattern_naming_expr := intro_pattern_naming_expr;
-                          Genarg.glob_generic_argument := glob_generic_argument;
-
-                          Decl_kinds.binding_kind := binding_kind;
-                   ]]
-and glob_decl    = [%import: Glob_term.glob_decl
-                   [@with Loc.t               := loc;
-                          Names.Id.t          := id;
-                          Names.Name.t        := name;
-                          Decl_kinds.binding_kind := binding_kind;
-                   ]]
-
+type glob_constr = [%import: Glob_term.glob_constr]
+and glob_decl    = [%import: Glob_term.glob_decl]
 and fix_recursion_order = [%import: Glob_term.fix_recursion_order]
 and fix_kind            = [%import: Glob_term.fix_kind]
-and predicate_pattern   = [%import: Glob_term.predicate_pattern
-                          [@with Loc.t               := loc;
-                                 Names.Id.t          := id;
-                                 Names.Name.t        := name;
-                                 Names.inductive     := inductive;
-                                 Decl_kinds.binding_kind := binding_kind;
-                          ]]
-
+and predicate_pattern   = [%import: Glob_term.predicate_pattern]
 and tomatch_tuple  = [%import: Glob_term.tomatch_tuple]
 and tomatch_tuples = [%import: Glob_term.tomatch_tuples]
-and cases_clause   = [%import: Glob_term.cases_clause
-                     [@with Loc.t               := loc;
-                            Names.Id.t          := id;
-                            Names.Name.t        := name;
-                     ]]
-
+and cases_clause   = [%import: Glob_term.cases_clause]
 and cases_clauses  = [%import: Glob_term.cases_clauses]
   [@@deriving sexp]
 

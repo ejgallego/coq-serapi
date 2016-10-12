@@ -99,7 +99,7 @@ type query_opt =
     sid   : Stateid.t [@default Stm.get_current_state()];
     pp    : print_opt [@default { pp_format = PpSer ; pp_depth = 0; pp_elide = "..." } ];
     (* Legacy/Deprecated *)
-    route : Feedback.route_id [@default Feedback.default_route];
+    route : Feedback.route_id [@default 0];
   }
 
 (** We would ideally make both query_cmd and coq_object depend on a

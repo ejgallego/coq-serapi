@@ -23,44 +23,29 @@
 open Sexplib
 open Sexplib.Std
 
-open Ser_names
+module Names = Ser_names
 open Ser_sorts
-open Ser_evar
+module Evar  = Ser_evar
 open Ser_univ
 
 (* type 'a puniverses = *)
-(*   [%import: 'a Constr.puniverses *)
-(*   [@with *)
-(*      Univ.puniverses := puniverses; *)
-(*   ]] *)
+(*   [%import: 'a Constr.puniverses] *)
 (*   [@@deriving sexp] *)
 
 type pconstant =
-  [%import: Constr.pconstant
-  [@with
-     Names.constant := constant;
-  ]]
+  [%import: Constr.pconstant]
   [@@deriving sexp]
 
 type pinductive =
-  [%import: Constr.pinductive
-  [@with
-     Names.inductive := inductive;
-  ]]
+  [%import: Constr.pinductive]
   [@@deriving sexp]
 
 type pconstructor =
-  [%import: Constr.pconstructor
-  [@with
-     Names.constructor := constructor;
-  ]]
+  [%import: Constr.pconstructor]
   [@@deriving sexp]
 
 type existential_key =
-  [%import: Constr.existential_key
-  [@with
-    Evar.t := evar;
-  ]]
+  [%import: Constr.existential_key]
   [@@deriving sexp]
 
 type cast_kind =
@@ -76,10 +61,7 @@ type case_printing =
   [@@deriving sexp]
 
 type case_info =
-  [%import: Constr.case_info
-  [@with
-     Names.inductive := inductive;
-  ]]
+  [%import: Constr.case_info]
   [@@deriving sexp]
 
 type 'constr pexistential =
@@ -87,10 +69,7 @@ type 'constr pexistential =
   [@@deriving sexp]
 
 type ('constr, 'types) prec_declaration =
-  [%import: ('constr, 'types) Constr.prec_declaration
-  [@with
-    Names.Name.t := name;
-  ]]
+  [%import: ('constr, 'types) Constr.prec_declaration]
   [@@deriving sexp]
 
 type ('constr, 'types) pfixpoint =
@@ -102,17 +81,18 @@ type ('constr, 'types) pcofixpoint =
   [@@deriving sexp]
 
 type constr = Constr.constr
+type types  = Constr.constr
 
 type _constr =
   | Rel       of int
-  | Var       of id
+  | Var       of Names.Id.t
   | Meta      of int
   | Evar      of _constr pexistential
   | Sort      of sort
   | Cast      of _constr * cast_kind * _types
-  | Prod      of name * _types * _types
-  | Lambda    of name * _types * _constr
-  | LetIn     of name * _constr * _types * _constr
+  | Prod      of Names.Name.t * _types * _types
+  | Lambda    of Names.Name.t * _types * _constr
+  | LetIn     of Names.Name.t * _constr * _types * _constr
   | App       of _constr * _constr array
   | Const     of pconstant
   | Ind       of pinductive
@@ -120,7 +100,7 @@ type _constr =
   | Case      of case_info * _constr * _constr * _constr array
   | Fix       of (_constr, _types) pfixpoint
   | CoFix     of (_constr, _types) pcofixpoint
-  | Proj      of projection * _constr
+  | Proj      of Names.projection * _constr
 and _types = _constr
 [@@deriving sexp]
 
@@ -177,12 +157,11 @@ let constr_of_sexp (c : Sexp.t) : constr =
 let sexp_of_constr (c : constr) : Sexp.t =
   sexp_of__constr (_constr_put c)
 
+let types_of_sexp = constr_of_sexp
+let sexp_of_types = sexp_of_constr
+
 type rec_declaration =
-  [%import: Constr.rec_declaration
-  [@with
-     Names.Name.t := name;
-     types        := constr;
-  ]]
+  [%import: Constr.rec_declaration]
   [@@deriving sexp]
 
 type fixpoint =

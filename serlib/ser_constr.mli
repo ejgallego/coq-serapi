@@ -104,9 +104,13 @@ val sexp_of_pcofixpoint :
   ('constr, 'types) pcofixpoint -> Sexp.t
 
 type constr = Constr.constr
+type types  = Constr.constr
 
 val constr_of_sexp : Sexp.t -> constr
 val sexp_of_constr : constr -> Sexp.t
+
+val types_of_sexp : Sexp.t -> types
+val sexp_of_types : types -> Sexp.t
 
 type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential

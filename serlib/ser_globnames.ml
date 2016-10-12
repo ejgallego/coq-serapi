@@ -17,13 +17,8 @@
 (* Globnames.mli                                                      *)
 (**********************************************************************)
 
-open Ser_names
+module Names = Ser_names
 
-type global_reference = [%import: Globnames.global_reference
-                        [@with Names.variable    := id;
-                               Names.constant    := constant;
-                               Names.inductive   := inductive;
-                               Names.constructor := constructor;
-                        ]]
+type global_reference = [%import: Globnames.global_reference]
                         [@@deriving sexp]
 

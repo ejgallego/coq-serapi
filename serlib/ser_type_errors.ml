@@ -15,39 +15,23 @@
 
 open Sexplib.Std
 
-open Ser_constr
-open Ser_environ
-open Ser_names
-open Ser_sorts
-open Ser_univ
+module Loc     = Ser_loc
+module Names   = Ser_names
+module Term    = Ser_constr
+module Environ = Ser_environ
+module Sorts   = Ser_sorts
+module Univ    = Ser_univ
 
 type arity_error =
   [%import: Type_errors.arity_error]
   [@@deriving sexp]
 
 type guard_error =
-  [%import: Type_errors.guard_error
-  [@with
-     Environ.env := env;
-     Term.constr := constr;
-  ]]
+  [%import: Type_errors.guard_error]
   [@@deriving sexp]
 
 type type_error =
   [%import: Type_errors.type_error
-  [@with
-     Environ.env := env;
-     Environ.unsafe_judgment := unsafe_judgment;
-     Term.constr := constr;
-     Term.types  := constr;
-     Term.pinductive := pinductive;
-     Term.pconstructor := pconstructor;
-     Term.sorts_family := family;
-     Term.case_info := case_info;
-     Names.variable := id;
-     Names.Name.t := name;
-     Names.identifier := id;
-     Univ.constraints := constraints;
-  ]]
+  [@with Term.sorts_family := Sorts.family; ]]
   [@@deriving sexp]
 

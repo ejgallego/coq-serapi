@@ -15,7 +15,7 @@
 
 open Sexplib
 
-open Ser_constr
+module Term = Ser_constr
 
 type env =
   [%import: Environ.env]
@@ -23,12 +23,7 @@ type env =
 let env_of_sexp _env  = Environ.env_of_pre_env Pre_env.empty_env
 let sexp_of_env _sexp = Sexp.Atom "Env"
 
-
 type unsafe_judgment =
-  [%import: Environ.unsafe_judgment
-  [@with
-    Term.constr := constr;
-    Term.types  := constr;
-  ]]
+  [%import: Environ.unsafe_judgment]
   [@@deriving sexp]
 

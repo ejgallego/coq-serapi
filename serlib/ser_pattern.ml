@@ -15,31 +15,15 @@
 
 open Sexplib.Std
 
-open Ser_names
-open Ser_globnames
-open Ser_evar
-open Ser_constr
-open Ser_misctypes
+module Names     = Ser_names
+module Globnames = Ser_globnames
+module Term      = Ser_constr
+module Misctypes = Ser_misctypes
 
 type case_info_pattern =
-  [%import: Pattern.case_info_pattern
-  [@with
-     Names.inductive      := inductive;
-     Misctypes.case_style := case_style;
-  ]]
+  [%import: Pattern.case_info_pattern]
   [@@deriving sexp]
 
 type constr_pattern =
-  [%import: Pattern.constr_pattern
-  [@with
-     Names.Id.t                 := id;
-     Names.Name.t               := name;
-     Names.projection           := projection;
-     Globnames.global_reference := global_reference;
-     Misctypes.existential_key  := evar;
-     Misctypes.glob_sort        := glob_sort;
-     Misctypes.patvar           := patvar;
-     Term.fixpoint              := fixpoint;
-     Term.cofixpoint            := cofixpoint;
-  ]]
+  [%import: Pattern.constr_pattern]
   [@@deriving sexp]

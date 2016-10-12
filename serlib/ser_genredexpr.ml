@@ -15,10 +15,10 @@
 
 open Sexplib.Std
 
-open Ser_util
-open Ser_loc
-open Ser_names
-open Ser_locus
+module Loc   = Ser_loc
+module Names = Ser_names
+module Util  = Ser_util
+module Locus = Ser_locus
 
 type 'a red_atom =
   [%import: 'a Genredexpr.red_atom]
@@ -29,18 +29,9 @@ type 'a glob_red_flag =
   [@@deriving sexp]
 
 type ('a,'b,'c) red_expr_gen =
-  [%import: ('a,'b,'c) Genredexpr.red_expr_gen
-  [@with
-     Util.union := union;
-     Locus.with_occurrences := with_occurrences;
-  ]]
+  [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
   [@@deriving sexp]
 
 type ('a,'b,'c) may_eval =
-  [%import: ('a,'b,'c) Genredexpr.may_eval
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t   := id;
-  ]]
+  [%import: ('a,'b,'c) Genredexpr.may_eval]
   [@@deriving sexp]

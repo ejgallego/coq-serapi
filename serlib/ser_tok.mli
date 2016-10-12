@@ -15,7 +15,7 @@
 
 open Sexplib
 
-type tok = Tok.t
+type t = Tok.t
 
-val tok_of_sexp : Sexp.t -> tok
-val sexp_of_tok : tok -> Sexp.t
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t

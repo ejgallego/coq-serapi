@@ -17,136 +17,81 @@ open Sexplib.Conv
 
 let exn_of_sexp _ = Obj.magic 0
 
-open Ser_loc
-open Ser_flags
+module Loc         = Ser_loc
+module Names       = Ser_names
+module Flags       = Ser_flags
+module Misctypes   = Ser_misctypes
+module Univ        = Ser_univ
+module Conv_oracle = Ser_conv_oracle
+module Decl_kinds  = Ser_decl_kinds
+module Genarg      = Ser_genarg
+module Libnames    = Ser_libnames
+module Extend      = Ser_extend
+module Stateid     = Ser_stateid
+module Constrexpr  = Ser_constrexpr
+module Tacexpr     = Ser_tacexpr
+
 open Ser_goptions
-open Ser_names
-open Ser_misctypes
-open Ser_univ
-open Ser_conv_oracle
-open Ser_decl_kinds
-open Ser_genarg
-open Ser_libnames
-open Ser_extend
-open Ser_stateid
-open Ser_constrexpr
-open Ser_tacexpr
 
-type lident     = [%import: Vernacexpr.lident
-    [@with Loc.t        := loc;
-           Loc.located  := located;
-           Names.Id.t := id;
-    ]]
+type lident     = [%import: Vernacexpr.lident]
   [@@deriving sexp]
 
-type lname      = [%import: Vernacexpr.lname
-    [@with Loc.t        := loc;
-           Loc.located  := located;
-           Names.Name.t := name;
-    ]]
+type lname      = [%import: Vernacexpr.lname]
   [@@deriving sexp]
 
-type lstring    = [%import: Vernacexpr.lstring
-    [@with Loc.t        := loc;
-           Loc.located  := located;
-           Names.Name.t := name;
-           Names.Id.t := id;
-    ]]
+type lstring    = [%import: Vernacexpr.lstring]
   [@@deriving sexp]
 
-(* type lreference = [%import: Vernacexpr.lreference *)
-(*      [@with Names.Id.t := id; *)
-(*             Libnames.reference := reference; *)
-(*      ]] *)
-(*   [@@deriving sexp] *)
-
-type class_rawexpr = [%import: Vernacexpr.class_rawexpr
-     [@with Libnames.reference := reference;
-            Misctypes.or_by_notation := or_by_notation;
-     ]]
+type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
   [@@deriving sexp]
 
 type goal_identifier = [%import: Vernacexpr.goal_identifier]
   [@@deriving sexp]
+
 type scope_name      = [%import: Vernacexpr.scope_name]
   [@@deriving sexp]
 
-type goal_selector = [%import: Vernacexpr.goal_selector
-     [@with Names.Id.t := id;
-     ]]
+(* type goal_selector   = *)
+(*   [%import: Vernacexpr.goal_selector] *)
+(*   [@@deriving sexp] *)
+
+type goal_reference = [%import: Vernacexpr.goal_reference]
   [@@deriving sexp]
 
-type goal_reference = [%import: Vernacexpr.goal_reference
-     [@with Names.Id.t := id;
-     ]]
+type printable = [%import: Vernacexpr.printable]
   [@@deriving sexp]
 
-type printable = [%import: Vernacexpr.printable
-     [@with Names.Id.t := id;
-            Libnames.reference   := reference;
-
-            Misctypes.or_by_notation := or_by_notation;
-
-            Names.Id.t   := id;
-            Names.Name.t := name;
-            Names.DirPath.t := dirpath;
-     ]]
+type search_about_item =
+  [%import: Vernacexpr.search_about_item]
   [@@deriving sexp]
 
-type search_about_item = [%import: Vernacexpr.search_about_item
-     [@with Names.Id.t := id;
-            Constrexpr.constr_pattern_expr := constr_pattern_expr;
-     ]]
+type searchable =
+  [%import: Vernacexpr.searchable]
   [@@deriving sexp]
 
-type searchable =  [%import: Vernacexpr.searchable
-     [@with Names.Id.t := id;
-            Constrexpr.constr_pattern_expr := constr_pattern_expr;
-     ]]
+type locatable = [%import: Vernacexpr.locatable]
   [@@deriving sexp]
 
-type locatable = [%import: Vernacexpr.locatable
-     [@with Names.Id.t := id;
-            Misctypes.or_by_notation := or_by_notation;
-            Libnames.reference := reference;
-     ]]
+type showable =  [%import: Vernacexpr.showable]
   [@@deriving sexp]
 
-type showable =  [%import: Vernacexpr.showable
-     [@with Names.Id.t := id;
-            Libnames.reference := reference;
-     ]]
+type comment =
+  [%import: Vernacexpr.comment]
   [@@deriving sexp]
 
-type comment =  [%import: Vernacexpr.comment
-     [@with Names.Id.t := id;
-            Constrexpr.constr_expr := constr_expr;
-     ]]
-  [@@deriving sexp]
-
-type reference_or_constr =  [%import: Vernacexpr.reference_or_constr
-     [@with Names.Id.t := id;
-            Libnames.reference := reference;
-            Constrexpr.constr_expr := constr_expr;
-     ]]
+type reference_or_constr =
+  [%import: Vernacexpr.reference_or_constr]
   [@@deriving sexp]
 
 type hint_mode =
   [%import: Vernacexpr.hint_mode]
   [@@deriving sexp]
 
-type hints_expr =  [%import: Vernacexpr.hints_expr
-     [@with Names.Id.t := id;
-            Libnames.reference := reference;
-            Constrexpr.constr_expr := constr_expr;
-            Tacexpr.raw_tactic_expr := raw_tactic_expr;
-     ]]
+type hints_expr =
+  [%import: Vernacexpr.hints_expr]
   [@@deriving sexp]
 
-type search_restriction =  [%import: Vernacexpr.search_restriction
-     [@with Names.Id.t := id;
-            Libnames.reference := reference;
-     ]]
+type search_restriction =  [%import: Vernacexpr.search_restriction]
   [@@deriving sexp]
 
 
@@ -154,31 +99,19 @@ type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving se
 type verbose_flag      = [%import: Vernacexpr.verbose_flag      ] [@@deriving sexp]
 type opacity_flag      = [%import: Vernacexpr.opacity_flag      ] [@@deriving sexp]
 type coercion_flag     = [%import: Vernacexpr.coercion_flag     ] [@@deriving sexp]
-type inductive_flag    = [%import: Vernacexpr.inductive_flag
-     [@with Decl_kinds.recursivity_kind := recursivity_kind;
-     ]]
-  [@@deriving sexp]
+type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp]
 type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving sexp]
 type export_flag       = [%import: Vernacexpr.export_flag       ] [@@deriving sexp]
-type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag
-     [@with Flags.compat_version := compat_version;
-     ]]
-  [@@deriving sexp]
-
+type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp]
 type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp]
 type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp]
 
-
 type option_value =
-  [%import: Vernacexpr.option_value
-  ]
+  [%import: Vernacexpr.option_value]
   [@@deriving sexp]
 
 type option_ref_value =
-  [%import: Vernacexpr.option_ref_value
-  [@with
-    Libnames.reference := reference;
-  ]]
+  [%import: Vernacexpr.option_ref_value]
   [@@deriving sexp]
 
 type plident =
@@ -186,232 +119,91 @@ type plident =
   [@@deriving sexp]
 
 type sort_expr =
-  [%import: Vernacexpr.sort_expr
-  [@with Misctypes.glob_sort := glob_sort;
-  ]]
+  [%import: Vernacexpr.sort_expr]
   [@@deriving sexp]
 
 type definition_expr =
-  [%import: Vernacexpr.definition_expr
-  [@with
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Tacexpr.raw_red_expr := raw_red_expr;
-  ]]
+  [%import: Vernacexpr.definition_expr]
   [@@deriving sexp]
 
 type fixpoint_expr =
-  [%import: Vernacexpr.fixpoint_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.fixpoint_expr]
   [@@deriving sexp]
 
 type cofixpoint_expr =
-  [%import: Vernacexpr.cofixpoint_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.cofixpoint_expr]
   [@@deriving sexp]
 
 type local_decl_expr =
-  [%import: Vernacexpr.local_decl_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.local_decl_expr]
   [@@deriving sexp]
 
 type inductive_kind =
-  [%import: Vernacexpr.inductive_kind
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.inductive_kind]
   [@@deriving sexp]
 
 type decl_notation =
-  [%import: Vernacexpr.decl_notation
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.decl_notation]
   [@@deriving sexp]
 
 type simple_binder =
-  [%import: Vernacexpr.simple_binder
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.simple_binder]
   [@@deriving sexp]
 
 type class_binder =
-  [%import: Vernacexpr.class_binder
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.class_binder]
   [@@deriving sexp]
 
 type 'a with_coercion =
-  [%import: 'a Vernacexpr.with_coercion
-  (* [@with *)
-  (* ]] *)
-  ]
+  [%import: 'a Vernacexpr.with_coercion]
   [@@deriving sexp]
 
 type 'a with_instance =
-  [%import: 'a Vernacexpr.with_instance
-  (* [@with *)
-  (* ]] *)
-  ]
+  [%import: 'a Vernacexpr.with_instance]
   [@@deriving sexp]
 
 type 'a with_notation =
-  [%import: 'a Vernacexpr.with_notation
-  [@with
-    Loc.t        := loc;
-  ]]
+  [%import: 'a Vernacexpr.with_notation]
   [@@deriving sexp]
 
 type 'a with_priority =
-  [%import: 'a Vernacexpr.with_priority
-  (* [@with *)
-  (* ]] *)
-  ]
+  [%import: 'a Vernacexpr.with_priority]
   [@@deriving sexp]
 
 type constructor_expr =
-  [%import: Vernacexpr.constructor_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.constructor_expr]
   [@@deriving sexp]
 
 type constructor_list_or_record_decl_expr =
-  [%import: Vernacexpr.constructor_list_or_record_decl_expr
-  (* [@with *)
-  (* ]] *)
-  ]
+  [%import: Vernacexpr.constructor_list_or_record_decl_expr]
   [@@deriving sexp]
 
 type inductive_expr =
-  [%import: Vernacexpr.inductive_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.inductive_expr]
   [@@deriving sexp]
 
 type one_inductive_expr =
-  [%import: Vernacexpr.one_inductive_expr
-  [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-    Names.Id.t := id;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-  ]]
+  [%import: Vernacexpr.one_inductive_expr]
   [@@deriving sexp]
 
 type proof_expr =
-  [%import: Vernacexpr.proof_expr
-  [@with
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.constr_expr  := constr_expr;
-    Constrexpr.recursion_order_expr := recursion_order_expr;
-    Tacexpr.raw_red_expr := raw_red_expr;
-  ]]
+  [%import: Vernacexpr.proof_expr]
   [@@deriving sexp]
 
-(* type grammar_tactic_prod_item_expr = *)
-(*   [%import: Vernacexpr.grammar_tactic_prod_item_expr *)
-(*   [@with Loc.t        := loc; *)
-(*          Loc.located  := located; *)
-(*          Names.Id.t := id; *)
-(*          Tacexpr.raw_tactic_expr := raw_tactic_expr; *)
-(*   ]] *)
-(*   [@@deriving sexp] *)
-
 type syntax_modifier =
-  [%import: Vernacexpr.syntax_modifier
-  [@with Loc.t        := loc;
-         Loc.located  := located;
-
-         Names.Id.t   := id;
-
-         Flags.compat_version    := compat_version;
-
-         Extend.production_level := production_level;
-         Extend.gram_assoc       := gram_assoc;
-         Extend.simple_constr_prod_entry_key := simple_constr_prod_entry_key;
-  ]]
+  [%import: Vernacexpr.syntax_modifier]
   [@@deriving sexp]
 
 type proof_end =
-  [%import: Vernacexpr.proof_end
-  [@with
-    Loc.t        := loc;
-    Decl_kinds.theorem_kind := theorem_kind;
-  ]]
+  [%import: Vernacexpr.proof_end]
   [@@deriving sexp]
 
 type scheme =
-  [%import: Vernacexpr.scheme
-  [@with
-    Loc.t        := loc;
-    Libnames.reference := reference;
-    Misctypes.or_by_notation := or_by_notation;
-  ]]
+  [%import: Vernacexpr.scheme]
   [@@deriving sexp]
 
 type section_subset_expr =
-  [%import: Vernacexpr.section_subset_expr
-  [@with
-    Loc.t        := loc;
-    Misctypes.or_by_notation := or_by_notation;
-  ]]
+  [%import: Vernacexpr.section_subset_expr]
   [@@deriving sexp]
 
 type extend_name =
@@ -419,119 +211,45 @@ type extend_name =
   [@@deriving sexp]
 
 type register_kind =
-  [%import: Vernacexpr.register_kind
-  [@with
-    Loc.t        := loc;
-  ]]
+  [%import: Vernacexpr.register_kind]
   [@@deriving sexp]
 
 type bullet =
-  [%import: Vernacexpr.bullet
-  [@with
-    Loc.t        := loc;
-  ]]
+  [%import: Vernacexpr.bullet]
   [@@deriving sexp]
 
 type 'a stm_vernac =
-  [%import: 'a Vernacexpr.stm_vernac
-  [@with
-    Loc.t        := loc;
-    Stateid.t    := stateid;
-  ]]
+  [%import: 'a Vernacexpr.stm_vernac]
   [@@deriving sexp]
 
 type 'a module_signature =
-  [%import: 'a Vernacexpr.module_signature
-  [@with
-    Loc.t        := loc;
-  ]]
+  [%import: 'a Vernacexpr.module_signature]
   [@@deriving sexp]
 
 type inline =
-  [%import: Vernacexpr.inline
-  [@with
-    Loc.t        := loc;
-    Libnames.reference := reference;
-    Misctypes.or_by_notation := or_by_notation;
-  ]]
+  [%import: Vernacexpr.inline]
   [@@deriving sexp]
 
 type module_ast_inl =
-  [%import: Vernacexpr.module_ast_inl
-  [@with
-    Loc.t        := loc;
-    Libnames.reference := reference;
-    Misctypes.or_by_notation := or_by_notation;
-    Constrexpr.module_ast := module_ast;
-  ]]
+  [%import: Vernacexpr.module_ast_inl]
   [@@deriving sexp]
 
 type module_binder =
-  [%import: Vernacexpr.module_binder
-  [@with
-    Loc.t        := loc;
-    Libnames.reference := reference;
-    Misctypes.or_by_notation := or_by_notation;
-  ]]
+  [%import: Vernacexpr.module_binder]
   [@@deriving sexp]
 
 
 type vernac_expr =
   [%import: Vernacexpr.vernac_expr
   [@with
-    Loc.t        := loc;
-    Loc.located  := located;
-
-    Names.Id.t      := id;
-    Names.Name.t    := name;
-    Names.DirPath.t := dirpath;
-
-    Decl_kinds.locality         := locality;
-    Decl_kinds.recursivity_kind := recursivity_kind;
-    Decl_kinds.definition_object_kind := definition_object_kind;
-    Decl_kinds.theorem_kind := theorem_kind;
-    Decl_kinds.assumption_object_kind := assumption_object_kind;
-    Decl_kinds.private_flag           := private_flag;
-
+    (* XXX: Something weirs is going on here *)
     Goptions.option_name := option_name;
-
-    Genarg.raw_generic_argument := raw_generic_argument;
-
-    Misctypes.or_by_notation := or_by_notation;
-    Misctypes.glob_level     := glob_level;
-
-    Libnames.reference := reference;
-
-    Constrexpr.constr_expr := constr_expr;
-    Constrexpr.explicitation := explicitation;
-    Constrexpr.local_binder := local_binder;
-    Constrexpr.typeclass_constraint := typeclass_constraint;
-
-    Tacexpr.raw_tactic_expr := raw_tactic_expr;
-    Tacexpr.raw_red_expr    := raw_red_expr;
-
-    Conv_oracle.level   := conv_level;
-    Univ.constraint_type    := constraint_type;
-    ]]
-  [@@deriving sexp]
-and vernac_argument_status =
-  [%import: Vernacexpr.vernac_argument_status
-  [@with
-    Loc.t             := loc;
-    Names.Name.t      := name;
   ]]
   [@@deriving sexp]
 
-(* and vernac_list = *)
-(*   [%import: Vernacexpr.vernac_list] *)
-
-(* and located_vernac_expr = *)
-(*   [%import: Vernacexpr.located_vernac_expr *)
-(*   [@with *)
-(*     Loc.t        := loc; *)
-(*     Loc.located  := located; *)
-(*   ]] *)
-(*   [@@deriving sexp] *)
+and vernac_argument_status =
+  [%import: Vernacexpr.vernac_argument_status]
+  [@@deriving sexp]
 
 (* We need to overload the printing for the Extend mechanism... *)
 let sexp_of_vernac_expr vrc = match vrc with

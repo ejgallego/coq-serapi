@@ -15,9 +15,9 @@
 
 open Sexplib.Std
 
-open Ser_names
-open Ser_globnames
-open Ser_evar
+module Names     = Ser_names
+module Globnames = Ser_globnames
+module Constr    = Ser_constr
 
 (**********************************************************************)
 (* Evar_kinds                                                         *)
@@ -27,12 +27,7 @@ type obligation_definition_status =
   [%import: Evar_kinds.obligation_definition_status]
   [@@deriving sexp]
 
-type evar_kinds = [%import: Evar_kinds.t
-                  [@with Globnames.global_reference := global_reference;
-                         Names.Id.t        := id;
-                         Names.Name.t      := name;
-                         Names.inductive   := inductive;
-                         Constr.existential_key := evar;
-                  ]]
-    [@@deriving sexp]
+type t =
+  [%import: Evar_kinds.t]
+  [@@deriving sexp]
 

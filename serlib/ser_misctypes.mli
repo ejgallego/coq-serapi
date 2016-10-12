@@ -19,7 +19,7 @@
 
 open Sexplib
 
-type patvar = Names.Id.t
+type patvar = Misctypes.patvar
 val patvar_of_sexp : Sexp.t -> Names.Id.t
 val sexp_of_patvar : Names.Id.t -> Sexp.t
 
@@ -67,14 +67,19 @@ val glob_level_of_sexp : Sexp.t -> glob_level
 val sexp_of_glob_level : glob_level -> Sexp.t
 
 (* Shadows the one in Constr. *)
-(* type case_style = Constr.case_style *)
-(* val case_style_of_sexp : Sexp.t -> case_style *)
-(* val sexp_of_case_style : case_style -> Sexp.t *)
+type case_style = Misctypes.case_style
+val case_style_of_sexp : Sexp.t -> case_style
+val sexp_of_case_style : case_style -> Sexp.t
 
 type 'a cast_type = 'a Misctypes.cast_type
 
 val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a cast_type
 val sexp_of_cast_type : ('a -> Sexp.t) -> 'a cast_type -> Sexp.t
+
+type existential_key = Misctypes.existential_key
+
+val existential_key_of_sexp : Sexp.t -> existential_key
+val sexp_of_existential_key : existential_key -> Sexp.t
 
 type quantified_hypothesis = Misctypes.quantified_hypothesis
 
@@ -114,4 +119,3 @@ val sexp_of_or_by_notation : ('a -> Sexp.t) -> 'a or_by_notation -> Sexp.t
 type module_kind = Misctypes.module_kind
 val module_kind_of_sexp : Sexp.t -> module_kind
 val sexp_of_module_kind : module_kind -> Sexp.t
-

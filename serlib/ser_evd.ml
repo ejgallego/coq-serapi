@@ -15,16 +15,15 @@
 
 open Sexplib.Std
 
-open Ser_environ
-open Ser_reduction
-open Ser_constr
+module Environ   = Ser_environ
+module Reduction = Ser_reduction
+module Term      = Ser_constr
+
+type conv_pb = Reduction.conv_pb
+  [@@deriving sexp]
 
 type evar_constraint =
-  [%import: Evd.evar_constraint
-  [@with
-     Environ.env := env;
-     Term.constr := constr;
-  ]]
+  [%import: Evd.evar_constraint]
   [@@deriving sexp]
 
 type unsolvability_explanation =

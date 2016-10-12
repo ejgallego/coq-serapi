@@ -15,10 +15,11 @@
 
 open Sexplib.Std
 
-open Ser_loc
-open Ser_xml
-open Ser_richpp
-open Ser_stateid
+module Loc = Ser_loc
+
+module Xml_datatype = Ser_xml_datatype
+module Richpp       = Ser_richpp
+module Stateid      = Ser_stateid
 
 type level =
   [%import: Feedback.level]
@@ -28,33 +29,23 @@ type edit_id =
   [%import: Feedback.edit_id]
   [@@deriving sexp]
 
+type state_id =
+  [%import: Feedback.state_id]
+  [@@deriving sexp]
+
 type route_id =
   [%import: Feedback.route_id]
   [@@deriving sexp]
 
 type edit_or_state_id =
-  [%import: Feedback.edit_or_state_id
-  [@with
-     Feedback.edit_id := edit_id;
-     state_id := stateid;
-  ]]
+  [%import: Feedback.edit_or_state_id]
   [@@deriving sexp]
 
 type feedback_content =
-  [%import: Feedback.feedback_content
-  [@with
-     Stateid.t := stateid;
-     Loc.t := loc;
-     Xml_datatype.xml := xml;
-     Richpp.richpp    := richpp;
-  ]]
+  [%import: Feedback.feedback_content]
   [@@deriving sexp]
 
 type feedback =
-  [%import: Feedback.feedback
-  [@with
-     Stateid.t := stateid;
-     Feedback.route_id := route_id;
-  ]]
+  [%import: Feedback.feedback]
   [@@deriving sexp]
 

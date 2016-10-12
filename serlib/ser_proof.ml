@@ -16,9 +16,6 @@
 open Sexplib.Conv
 
 type 'a pre_goals =
-  [%import: 'a Proof.pre_goals
-  [@with
-     Evar.t := evar;
-  ]]
+  [%import: 'a Proof.pre_goals]
   [@@deriving sexp]
 

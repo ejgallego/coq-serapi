@@ -13,26 +13,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ser_constrexpr
-open Ser_ppextend
-open Ser_tacexpr
-open Ser_vernacexpr
+module Constrexpr = Ser_constrexpr
+module Ppextend   = Ser_ppextend
+module Tacexpr    = Ser_tacexpr
+module Vernacexpr = Ser_vernacexpr
 
 type ppannotation =
-  [%import: Ppannotation.t
-  [@with
-     Ppextend.unparsing       := unparsing;
-     Constrexpr.constr_expr   := constr_expr;
-     Vernacexpr.vernac_expr   := vernac_expr;
-
-     Tacexpr.atomic_tactic_expr := atomic_tactic_expr;
-
-     Tacexpr.raw_tactic_expr  := raw_tactic_expr;
-     Tacexpr.raw_atomic_tactic_expr  := raw_atomic_tactic_expr;
-
-     Tacexpr.glob_tactic_expr := glob_tactic_expr;
-     Tacexpr.glob_atomic_tactic_expr := glob_atomic_tactic_expr;
-  ]]
+  [%import: Ppannotation.t]
   [@@deriving sexp]
 
 (* type t = *)

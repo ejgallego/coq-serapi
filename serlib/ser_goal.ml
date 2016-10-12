@@ -13,11 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ser_evar
+module Evar = Ser_evar
 
 type goal =
-  [%import: Goal.goal
-  [@with
-     Evar.t := evar;
-  ]]
+  [%import: Goal.goal]
   [@@deriving sexp]

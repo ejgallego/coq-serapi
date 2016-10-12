@@ -15,18 +15,13 @@
 
 open Sexplib.Std
 
-open Ser_names
-open Ser_constrexpr
-open Ser_tok
-open Ser_extend
+module Names      = Ser_names
+module Constrexpr = Ser_constrexpr
+module Tok        = Ser_tok
+module Extend     = Ser_extend
 
 type grammar_constr_prod_item =
-  [%import: Notation_term.grammar_constr_prod_item
-  [@with
-     Names.Id.t                   := id;
-     Tok.t                        := tok;
-     Extend.constr_prod_entry_key := constr_prod_entry_key;
-  ]]
+  [%import: Notation_term.grammar_constr_prod_item]
   [@@deriving sexp]
 
 type notation_var_internalization_type =
@@ -34,10 +29,6 @@ type notation_var_internalization_type =
   [@@deriving sexp]
 
 type notation_grammar =
-  [%import: Notation_term.notation_grammar
-  [@with
-     Constrexpr.notation    := notation;
-     Extend.gram_assoc      := gram_assoc;
-  ]]
+  [%import: Notation_term.notation_grammar]
   [@@deriving sexp]
 
