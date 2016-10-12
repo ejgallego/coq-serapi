@@ -15,8 +15,8 @@ B _build/serapi
 S sertop
 B _build/sertop
 
-S /home/egallego/external/coq-git/**
-B /home/egallego/external/coq-git/**
+S /home/egallego/external/coq-v8.6/**
+B /home/egallego/external/coq-v8.6/**
 
 S coq-js
 B _build/coq-js
