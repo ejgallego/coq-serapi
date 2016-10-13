@@ -24,13 +24,11 @@ open Sexplib
 open Sexplib.Std
 
 module Names = Ser_names
-open Ser_sorts
+module Sorts = Ser_sorts
 module Evar  = Ser_evar
-open Ser_univ
+module Univ  = Ser_univ
 
-(* type 'a puniverses = *)
-(*   [%import: 'a Constr.puniverses] *)
-(*   [@@deriving sexp] *)
+open Univ
 
 type pconstant =
   [%import: Constr.pconstant]
@@ -88,7 +86,7 @@ type _constr =
   | Var       of Names.Id.t
   | Meta      of int
   | Evar      of _constr pexistential
-  | Sort      of sort
+  | Sort      of Sorts.sort
   | Cast      of _constr * cast_kind * _types
   | Prod      of Names.Name.t * _types * _types
   | Lambda    of Names.Name.t * _types * _constr
@@ -175,3 +173,7 @@ type cofixpoint =
 type existential =
   [%import: Constr.existential]
   [@@deriving sexp]
+
+type sorts_family = Sorts.family
+let sorts_family_of_sexp = Sorts.family_of_sexp
+let sexp_of_sorts_family = Sorts.sexp_of_family

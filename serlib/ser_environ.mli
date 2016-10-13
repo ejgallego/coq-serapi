@@ -13,6 +13,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type conv_pb =
-  [%import: Reduction.conv_pb]
-  [@@deriving sexp]
+open Sexplib
+
+type env = Environ.env
+
+val env_of_sexp : Sexp.t -> env
+val sexp_of_env : env -> Sexp.t
+
+type unsafe_judgment = Environ.unsafe_judgment
+val unsafe_judgment_of_sexp : Sexp.t -> unsafe_judgment
+val sexp_of_unsafe_judgment : unsafe_judgment -> Sexp.t
+
+
+

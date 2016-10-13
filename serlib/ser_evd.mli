@@ -13,6 +13,18 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type conv_pb =
-  [%import: Reduction.conv_pb]
-  [@@deriving sexp]
+open Sexplib
+
+type conv_pb = Evd.conv_pb
+val conv_pb_of_sexp : Sexp.t -> conv_pb
+val sexp_of_conv_pb : conv_pb -> Sexp.t
+
+type evar_constraint = Evd.evar_constraint
+
+val evar_constraint_of_sexp : Sexp.t -> evar_constraint
+val sexp_of_evar_constraint : evar_constraint -> Sexp.t
+
+type unsolvability_explanation = Evd.unsolvability_explanation
+
+val unsolvability_explanation_of_sexp : Sexp.t -> unsolvability_explanation
+val sexp_of_unsolvability_explanation : unsolvability_explanation -> Sexp.t

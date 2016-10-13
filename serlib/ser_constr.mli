@@ -116,4 +116,6 @@ type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential
 val sexp_of_existential : existential -> Sexp.t
 
-
+type sorts_family = Sorts.family
+val sorts_family_of_sexp : Sexp.t -> sorts_family
+val sexp_of_sorts_family : sorts_family -> Sexp.t

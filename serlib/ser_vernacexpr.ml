@@ -30,8 +30,7 @@ module Extend      = Ser_extend
 module Stateid     = Ser_stateid
 module Constrexpr  = Ser_constrexpr
 module Tacexpr     = Ser_tacexpr
-
-open Ser_goptions
+module Goptions    = Ser_goptions
 
 type lident     = [%import: Vernacexpr.lident]
   [@@deriving sexp]
@@ -106,9 +105,9 @@ type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving se
 type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp]
 type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp]
 
-type option_value =
-  [%import: Vernacexpr.option_value]
+type option_value = Goptions.option_value
   [@@deriving sexp]
+  (* [%import: Vernacexpr.option_value] *)
 
 type option_ref_value =
   [%import: Vernacexpr.option_ref_value]
@@ -240,11 +239,7 @@ type module_binder =
 
 
 type vernac_expr =
-  [%import: Vernacexpr.vernac_expr
-  [@with
-    (* XXX: Something weirs is going on here *)
-    Goptions.option_name := option_name;
-  ]]
+  [%import: Vernacexpr.vernac_expr]
   [@@deriving sexp]
 
 and vernac_argument_status =
