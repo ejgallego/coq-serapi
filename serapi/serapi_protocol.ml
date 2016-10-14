@@ -386,9 +386,7 @@ module QueryUtil = struct
               find_notation_parsing_rules nt)
 
   let query_pnotations () =
-    (* Waiting for PR#289 *)
-    (* Notation.get_defined_notations () *)
-    []
+    Notation.get_defined_notations ()
 
   let locate id =
     let open Names     in
