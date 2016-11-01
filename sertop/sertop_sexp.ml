@@ -55,9 +55,9 @@ let _ =
         Some (List [Atom "NoSuchState"; Stateid.sexp_of_t sid])
       (* Errors *)
       | CErrors.UserError(e,msg) ->
-        Some (List [Atom "Errors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
+        Some (List [Atom "CErrors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
       | CErrors.AlreadyDeclared msg ->
-        Some (List [Atom "Errors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
+        Some (List [Atom "CErrors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
       (* Pretype Errors XXX what to do with _env, _envmap *)
       | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
         Some (List [Atom "Pretype_errors.PretypeError";
@@ -65,8 +65,8 @@ let _ =
       (* Cerrors *)
       | ExplainErr.EvaluatedError(msg, exn) -> Some (
           match exn with
-          | Some exn -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
-          | None     -> List [Atom "Cerrors.EvaluatedError"; sexp_of_std_ppcmds msg]
+          | Some exn -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
+          | None     -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg]
         )
       | Proof_global.NoCurrentProof ->
         Some (Atom "NoCurrentProof")

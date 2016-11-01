@@ -13,13 +13,15 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* Cost analysis: in the past we used to pay almost 3MiB of overload.
- * Now, thanks to smarter linking flags we are paying ~500k for the whole
- * of SerTOP when compared with jsCoq which is IMHO amazing.
+(* Cost analysis: in the past we used to pay almost 3MiB of overload
+ * in SerAPI.
  *
- * Unfortunately Core_kernel makes us pay ~1.8MiB of size, so it is too
+ * Now, thanks to smarter linking flags we are paying ~500k for the whole
+ * of SerTOP when compared to jsCoq, it is IMHO great.
+ *
+ * Unfortunately, Core_kernel would cost us ~1.8MiB more, it is too
  * much for now until we figure out a better linking strategy. We manually
- * embed a few utilities functions in the below `Extra` module meanwhile.
+ * embed a few utility functions in the `Extra` module below.
  *)
 
 open Sexplib.Conv
@@ -37,7 +39,7 @@ module Extra = struct
   let value_map x ~default ~f = Option.cata f default x
 
   (******************************************************************************)
-  (* Taken from Core_kernel, (c) Jane Street, releaser under Apache License 2.0 *)
+  (* Taken from Core_kernel, (c) Jane Street, released under Apache License 2.0 *)
   let is_prefix_gen =
     let rec loop s ~prefix ~char_equal i =
       i < 0
@@ -393,7 +395,7 @@ module QueryUtil = struct
     let open Libnames  in
     let open Globnames in
     (* From prettyp.ml *)
-    let qid = qualid_of_ident @@ Id.of_string id in
+    let qid = qualid_of_string id in
     let expand = function
       | TrueGlobal ref ->
         Nametab.shortest_qualid_of_global Id.Set.empty ref
