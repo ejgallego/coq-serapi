@@ -237,9 +237,12 @@ type module_binder =
   [%import: Vernacexpr.module_binder]
   [@@deriving sexp]
 
-
 type vernac_expr =
   [%import: Vernacexpr.vernac_expr]
+  [@@deriving sexp]
+
+and vernac_implicit_status =
+  [%import: Vernacexpr.vernac_implicit_status]
   [@@deriving sexp]
 
 and vernac_argument_status =
