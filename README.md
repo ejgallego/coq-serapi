@@ -130,6 +130,10 @@ Open `sertop.el` and run `M-x eval-buffer` followed by `M-x sertop` to get a ser
 
 You may want to configure the variable `sertop-coq-directory` to point out the location of Coq's stdlib.
 
+### Technical Report
+
+There is a brief technical report at https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408
+
 ### Roadmap/Changelog:
 
 See also the [CHANGELOG.md](CHANGELOG.md).
