@@ -86,6 +86,14 @@ type hint_mode =
   [%import: Vernacexpr.hint_mode]
   [@@deriving sexp]
 
+type 'a hint_info_gen =
+  [%import: 'a Vernacexpr.hint_info_gen]
+  [@@deriving sexp]
+
+type hint_info_expr =
+  [%import: Vernacexpr.hint_info_expr]
+  [@@deriving sexp]
+
 type hints_expr =
   [%import: Vernacexpr.hints_expr]
   [@@deriving sexp]
