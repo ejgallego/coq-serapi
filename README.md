@@ -116,12 +116,12 @@ _The build system is work in progress. coq/coq#187 needs to be completed before 
 Building `sertop` requires OPAM and Coq 8.6. We will also provide an experimental branch tracking trunk soon.
 
 0. The current supported ocaml version is 4.02.3
-   ``$ opam switch 4.02.3 && eval `opam config env` ``
+   ``$ opam switch 4.02.3 && eval `opam config env` ``.
 1. Install the needed packages:
-   `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv`
+   `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv`.
 2. Download and compile coq 8.6. We recommend:
-   `$ ./configure -local && make -j $NJOBS`
-3. Edit the `myocamlbuild.ml` file to add the location of your Coq sources.
+   `$ ./configure -local && make -j $NJOBS`.
+3. Add `SERAPI_COQ_HOME` environment variable which points to your Coq sources, e.g. `export SERAPI_COQ_HOME="/home/egallego/external/coq-v8.6/"`.
 4. `make` should build `sertop`.
 
 ### Emacs mode
