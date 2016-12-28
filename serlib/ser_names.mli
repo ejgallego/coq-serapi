@@ -104,6 +104,11 @@ module MutInd : sig
 
 end
 
+type 'a tableKey = 'a Names.tableKey
+
+val tableKey_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a tableKey
+val sexp_of_tableKey : ('a -> Sexp.t) -> 'a tableKey -> Sexp.t
+
 (* mostly deprecated alias *)
 type kernel_name = Names.kernel_name
 type identifier  = Names.identifier

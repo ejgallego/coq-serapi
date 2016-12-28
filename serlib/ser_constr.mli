@@ -15,6 +15,11 @@
 
 open Sexplib
 
+type 'a puniverses = 'a Constr.puniverses
+
+val puniverses_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a puniverses
+val sexp_of_puniverses : ('a -> Sexp.t) -> 'a puniverses -> Sexp.t
+
 type pconstant = Constr.pconstant
 
 val pconstant_of_sexp : Sexp.t -> pconstant

@@ -18,6 +18,8 @@ open Sexplib.Std
 
 open Names
 
+module Int = Ser_int
+
 (************************************************************************)
 (* Serialization of Names.mli                                           *)
 (************************************************************************)
@@ -158,6 +160,10 @@ let t_of_sexp sexp = _mutind_get (_mutind_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__mutind (_mutind_put dp)
 
 end
+
+type 'a tableKey =
+  [%import: 'a Names.tableKey]
+  [@@deriving sexp]
 
 type kernel_name = [%import: Names.kernel_name]
                    [@@deriving sexp]

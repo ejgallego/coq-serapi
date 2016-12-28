@@ -28,7 +28,9 @@ module Sorts = Ser_sorts
 module Evar  = Ser_evar
 module Univ  = Ser_univ
 
-open Univ
+type 'a puniverses =
+  [%import: 'a Constr.puniverses]
+  [@@deriving sexp]
 
 type pconstant =
   [%import: Constr.pconstant]
