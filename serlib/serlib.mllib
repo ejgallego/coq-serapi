@@ -1,7 +1,7 @@
 ser_util
 ser_bigint
 ser_loc
-ser_xml
+ser_xml_datatype
 ser_flags
 ser_goptions
 ser_stateid
