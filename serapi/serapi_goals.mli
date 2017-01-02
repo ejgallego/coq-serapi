@@ -8,9 +8,11 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
+(************************************************************************)
 
 type reified_goal = Constr.constr * Context.NamedList.Declaration.t list
 
