@@ -89,7 +89,7 @@ type _constr =
   | Var       of Names.Id.t
   | Meta      of int
   | Evar      of _constr pexistential
-  | Sort      of Sorts.sort
+  | Sort      of Sorts.t
   | Cast      of _constr * cast_kind * _types
   | Prod      of Names.Name.t * _types * _types
   | Lambda    of Names.Name.t * _types * _constr
@@ -160,6 +160,11 @@ let sexp_of_constr (c : constr) : Sexp.t =
 
 let types_of_sexp = constr_of_sexp
 let sexp_of_types = sexp_of_constr
+
+type t = constr
+
+let t_of_sexp = constr_of_sexp
+let sexp_of_t = sexp_of_constr
 
 type rec_declaration =
   [%import: Constr.rec_declaration]

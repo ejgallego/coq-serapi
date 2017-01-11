@@ -8,23 +8,45 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+open Sexplib.Conv
 
-type contents = Sorts.contents
+module Names   = Ser_names
+module Constr  = Ser_constr
 
-val contents_of_sexp : Sexp.t -> contents
-val sexp_of_contents : contents -> Sexp.t
+module Rel = struct
 
-type family = Sorts.family
-val family_of_sexp : Sexp.t -> family
-val sexp_of_family : family -> Sexp.t
+  module Declaration = struct
 
-type t = Sorts.t
+  type t =
+    [%import: Context.Rel.Declaration.t]
+    [@@deriving sexp]
 
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
+  end
+
+  type t =
+    [%import: Context.Rel.t]
+    [@@deriving sexp]
+
+end
+
+module Named = struct
+
+  module Declaration = struct
+
+  type t =
+    [%import: Context.Named.Declaration.t]
+    [@@deriving sexp]
+
+  end
+
+  type t =
+    [%import: Context.Named.t]
+    [@@deriving sexp]
+
+end

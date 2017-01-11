@@ -23,6 +23,10 @@ val sexp_of_t : t -> Sexp.t
 
 end
 
+type universe_level = Level.t
+val universe_level_of_sexp : Sexp.t -> universe_level
+val sexp_of_universe_level : universe_level -> Sexp.t
+
 module Universe : sig
 
 type t = Univ.Universe.t
@@ -64,6 +68,19 @@ type universe_instance = Instance.t
 
 val universe_instance_of_sexp : Sexp.t -> universe_instance
 val sexp_of_universe_instance : universe_instance -> Sexp.t
+
+module UContext : sig
+
+  type t = Univ.UContext.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end
+
+type universe_context = UContext.t
+val universe_context_of_sexp : Sexp.t -> universe_context
+val sexp_of_universe_context : universe_context -> Sexp.t
 
 type 'a puniverses = 'a * universe_instance
 

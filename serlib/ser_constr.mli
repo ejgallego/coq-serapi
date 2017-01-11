@@ -109,12 +109,17 @@ val sexp_of_pcofixpoint :
   ('constr -> Sexp.t) -> ('types -> Sexp.t) ->
   ('constr, 'types) pcofixpoint -> Sexp.t
 
-type constr = Constr.constr
-type types  = Constr.constr
+type t = Constr.t
+
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t
+
+type constr = t
 
 val constr_of_sexp : Sexp.t -> constr
 val sexp_of_constr : constr -> Sexp.t
 
+type types  = constr
 val types_of_sexp : Sexp.t -> types
 val sexp_of_types : types -> Sexp.t
 

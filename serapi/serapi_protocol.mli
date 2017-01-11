@@ -34,6 +34,7 @@ type coq_object =
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
   | CoqExpr     of Constrexpr.constr_expr
+  | CoqMInd     of Declarations.mutual_inductive_body
   | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
   | CoqQualId   of Libnames.qualid
   | CoqGlobRef  of Globnames.global_reference
@@ -118,6 +119,7 @@ type query_cmd =
   | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
   | Unparsing of string           (* XXX  *)
+  | Inductive of string
   | PNotations                    (* XXX  *)
   | ProfileData
 

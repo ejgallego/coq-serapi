@@ -8,23 +8,41 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
 open Sexplib
 
-type contents = Sorts.contents
+module Rel : sig
+  module Declaration : sig
 
-val contents_of_sexp : Sexp.t -> contents
-val sexp_of_contents : contents -> Sexp.t
+    type t = Context.Rel.Declaration.t
+    val t_of_sexp : Sexp.t -> t
+    val sexp_of_t : t -> Sexp.t
 
-type family = Sorts.family
-val family_of_sexp : Sexp.t -> family
-val sexp_of_family : family -> Sexp.t
+  end
 
-type t = Sorts.t
+  type t = Context.Rel.t
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
 
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
+end
+
+module Named : sig
+
+  module Declaration : sig
+
+    type t = Context.Named.Declaration.t
+    val t_of_sexp : Sexp.t -> t
+    val sexp_of_t : t -> Sexp.t
+
+  end
+
+  type t = Context.Named.t
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end

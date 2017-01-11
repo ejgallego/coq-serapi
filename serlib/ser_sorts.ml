@@ -23,6 +23,6 @@ type family =
   [%import: Sorts.family]
   [@@deriving sexp]
 
-type sort =
+type t =
   [%import: Sorts.t]
   [@@deriving sexp]

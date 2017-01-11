@@ -8,23 +8,19 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
 open Sexplib
 
-type contents = Sorts.contents
+type lift = Esubst.lift
+val lift_of_sexp : Sexp.t -> lift
+val sexp_of_lift : lift -> Sexp.t
 
-val contents_of_sexp : Sexp.t -> contents
-val sexp_of_contents : contents -> Sexp.t
+type 'a subs = 'a Esubst.subs
+val subs_of_sexp : Sexp.t -> 'a subs
+val sexp_of_subs : 'a subs -> Sexp.t
 
-type family = Sorts.family
-val family_of_sexp : Sexp.t -> family
-val sexp_of_family : family -> Sexp.t
-
-type t = Sorts.t
-
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t

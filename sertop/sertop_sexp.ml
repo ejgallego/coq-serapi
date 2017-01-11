@@ -37,6 +37,7 @@ open Ser_ppannotation
 open Ser_notation_term
 open Ser_notation
 open Ser_vernacexpr
+module Declarations = Ser_declarations
 
 module SP = Serapi_protocol
 

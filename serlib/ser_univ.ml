@@ -85,6 +85,17 @@ let constraints_of_sexp sexp =
 let sexp_of_constraints cst =
   sexp_of_list sexp_of_univ_constraint (Univ.Constraint.elements cst)
 
+module UContext = struct
+  type t = Univ.UContext.t
+
+  let t_of_sexp s = Univ.UContext.make (Conv.pair_of_sexp Instance.t_of_sexp constraints_of_sexp s)
+  let sexp_of_t t = Conv.sexp_of_pair Instance.sexp_of_t sexp_of_constraints (Univ.UContext.dest t)
+
+end
+
+type universe_context = UContext.t
+  [@@deriving sexp]
+
 type universe_instance =
   [%import: Univ.universe_instance]
   [@@deriving sexp]

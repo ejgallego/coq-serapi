@@ -105,6 +105,7 @@ type coq_object =
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
   | CoqExpr     of Constrexpr.constr_expr
+  | CoqMInd     of Declarations.mutual_inductive_body
   | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
   | CoqQualId   of Libnames.qualid
   | CoqGlobRef  of Globnames.global_reference
@@ -160,6 +161,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   (* | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqAst    _     -> Pp.str "Fixme ast"
+  | CoqMInd   _     -> Pp.str "Fixme MInd"
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
@@ -293,6 +295,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
+  | CoqMInd _       -> true
   | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
@@ -329,6 +332,7 @@ type query_cmd =
   | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
   | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
   | Unparsing of string            (* XXX  *)
+  | Inductive of string
   | PNotations                     (* XXX  *)
   | ProfileData
 
@@ -436,6 +440,23 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       with _exn -> []
                       end
   | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
+  | Inductive ind  -> begin
+                      let get_ind (n : string) : Declarations.mutual_inductive_body option = begin
+                        try
+                          let qid = Libnames.qualid_of_ident (Names.Id.of_string n) in
+                          let lid = Nametab.locate qid                              in
+                          let open Globnames in
+                          begin match lid with
+                          | IndRef (sp,_) ->
+                            let env = Global.env () in
+                            let mib = Environ.lookup_mind sp env in
+                            Some mib
+                          | _              -> None
+                          end
+                        with _ -> None
+                      end in
+                      Option.cata (fun g -> [CoqMInd g]) [] @@ (get_ind ind)
+                      end
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]
 
