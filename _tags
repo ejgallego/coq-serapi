@@ -17,6 +17,9 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 <serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/*.{ml,mli}>: package(sexplib)
 
+# Sertex building options
+<sertex/*.{ml,mli}>: package(sexplib)
+
 # Serapi building options
 <serapi/*.{ml,mli}>: coq_intf
 <serapi/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
@@ -26,6 +29,7 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 
 # Sertop building options
 <serlib>: include
+<sertex>: include
 <serapi>: include
 
 # Specifip to init

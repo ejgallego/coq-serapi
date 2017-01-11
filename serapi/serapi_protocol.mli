@@ -56,6 +56,7 @@ type print_format =
   | PpSer
   | PpStr
   | PpAnn
+  | PpTex
   | PpRichpp
 
 type print_opt = {

@@ -193,6 +193,7 @@ type print_format =
   | PpSer
   | PpStr
   | PpAnn
+  | PpTex
   | PpRichpp
 
 (* register printer *)
@@ -204,12 +205,30 @@ type print_opt = {
   (* pp_margin : int; *)
 }
 
+let pp_tex (obj : coq_object) =
+  let tex_constr cst = let open Format in
+    pp_set_margin str_formatter 500;
+    pp_set_max_indent str_formatter 500;
+    Stexp.pp_sexp_to_tex str_formatter @@ Ser_constr.sexp_of_constr cst;
+    flush_str_formatter ()
+  in
+  let etex_constr cst =
+    Stexp.pp_sexp_to_tex Format.str_formatter @@ Ser_constrexpr.sexp_of_constr_expr cst;
+    Format.flush_str_formatter ()
+  in
+  match obj with
+  | CoqConstr cst -> tex_constr cst
+  | CoqGoal    gl ->  tex_constr (fst @@ List.hd gl.Proof.fg_goals)
+  | CoqExtGoal gl -> etex_constr (fst @@ List.hd gl.Proof.fg_goals)
+  | _             -> "not supported"
+
 let obj_print pr_opt obj =
   let open Format in
   match pr_opt.pp_format with
   | PpSer    -> obj
   | PpAnn    -> CoqAnn (ann_pp_obj obj)
   | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp (gen_pp_obj obj))
+  | PpTex    -> CoqString (pp_tex obj)
   | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
     let et      = pp_get_ellipsis_text str_formatter () in
