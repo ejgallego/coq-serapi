@@ -25,6 +25,11 @@ load times are less than a second.
 Feedback from Coq users and developers is very welcome, contact us by
 mail or in the issue tracker!
 
+### Roadmap
+
+We will provide a more detailed roadmap for developers soon, for now
+you can find some sparse information below.
+
 ### Quick Overview and Documentation
 
 SerAPI is meant to be a basis for developers to build Coq IDEs and
@@ -115,8 +120,8 @@ _The build system is work in progress. coq/coq#187 needs to be completed before 
 
 Building `sertop` requires OPAM and Coq 8.6. We will also provide an experimental branch tracking trunk soon.
 
-0. The current supported ocaml version is 4.02.3
-   ``$ opam switch 4.02.3 && eval `opam config env` ``.
+0. The current supported ocaml version is 4.04.0
+   ``$ opam switch 4.04.0 && eval `opam config env` ``.
 1. Install the needed packages:
    `$ opam install ocamlfind ppx_import cmdliner core_kernel sexplib ppx_sexp_conv`.
 2. Download and compile coq 8.6. We recommend:
