@@ -24,19 +24,21 @@ module Stateid  = Ser_stateid
 module Richpp   = Ser_richpp
 module Feedback = Ser_feedback
 module Libnames = Ser_libnames
-open Ser_impargs
+module Impargs  = Ser_impargs
 module Constr     = Ser_constr
 module Constrexpr = Ser_constrexpr
-open Ser_globnames
-open Ser_proof
-open Ser_stm
-open Ser_tacenv
-open Ser_profile_ltac
+module Globnames  = Ser_globnames
+module Proof      = Ser_proof
+(* Alias fails due to the [@@default in protocol] *)
+(* module Stm        = Ser_stm *)
+module Ser_stm    = Ser_stm
+module Tacenv     = Ser_tacenv
+module Notation   = Ser_notation
+module Profile_ltac = Ser_profile_ltac
 module Xml_datatype = Ser_xml_datatype
-open Ser_ppannotation
-open Ser_notation_term
-open Ser_notation
-open Ser_vernacexpr
+module Ppannotation = Ser_ppannotation
+module Notation_term = Ser_notation_term
+module Vernacexpr   = Ser_vernacexpr
 module Declarations = Ser_declarations
 
 module SP = Serapi_protocol
@@ -81,19 +83,7 @@ let _ =
 
 (* Serialization to sexp *)
 type coq_object =
-  [%import: Serapi_protocol.coq_object
-  [@with
-     Globnames.global_reference    := global_reference;
-     Impargs.implicits_list        := implicits_list;
-     Profile_ltac.treenode         := ltacprof_treenode;
-     Proof.pre_goals               := pre_goals;
-     Tacenv.ltac_entry             := ltac_entry;
-     Ppannotation.t                := ppannotation;
-     Notation_term.notation_grammar:= notation_grammar;
-     Notation.unparsing_rule       := unparsing_rule;
-     Notation.extra_unparsing_rules := extra_unparsing_rules;
-     Vernacexpr.vernac_expr         := vernac_expr;
-  ]]
+  [%import: Serapi_protocol.coq_object]
   [@@deriving sexp]
 
 exception AnswerExn of Sexp.t
@@ -130,7 +120,7 @@ type cmd_tag =
 type answer_kind =
   [%import: Serapi_protocol.answer_kind
   [@with
-     Stm.focus := focus;
+     Stm.focus := Ser_stm.focus;
   ]]
   [@@deriving sexp]
 

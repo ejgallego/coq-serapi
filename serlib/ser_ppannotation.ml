@@ -18,7 +18,7 @@ module Ppextend   = Ser_ppextend
 module Tacexpr    = Ser_tacexpr
 module Vernacexpr = Ser_vernacexpr
 
-type ppannotation =
+type t =
   [%import: Ppannotation.t]
   [@@deriving sexp]
 

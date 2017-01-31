@@ -15,7 +15,7 @@
 
 open Sexplib
 
-type ltacprof_treenode = Profile_ltac.treenode
+type treenode = Profile_ltac.treenode
 
-val ltacprof_treenode_of_sexp : Sexp.t -> Profile_ltac.treenode
-val sexp_of_ltacprof_treenode : Profile_ltac.treenode -> Sexp.t
+val treenode_of_sexp : Sexp.t -> treenode
+val sexp_of_treenode : treenode -> Sexp.t

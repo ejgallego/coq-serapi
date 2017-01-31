@@ -20,14 +20,15 @@ module Loc       = Ser_loc
 module Names     = Ser_names
 module Misctypes = Ser_misctypes
 module Locus     = Ser_locus
-open Ser_nametab
-open Ser_constr
-open Ser_genarg
+module Constr    = Ser_constr
+module Nametab   = Ser_nametab
 module Libnames   = Ser_libnames
+module Genarg     = Ser_genarg
 module Genredexpr = Ser_genredexpr
 module Glob_term  = Ser_glob_term
 module Pattern    = Ser_pattern
 module Constrexpr = Ser_constrexpr
+
 
 type direction_flag =
   [%import: Tacexpr.direction_flag]
@@ -163,7 +164,7 @@ type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_exp
   | TacInversion of ('trm,'dtrm,'nam) inversion_strength * Misctypes.quantified_hypothesis
 
 and ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_tactic_arg =
-  | TacGeneric     of 'lev generic_argument
+  | TacGeneric     of 'lev Genarg.generic_argument
   | ConstrMayEval  of ('trm,'cst,'pat) Genredexpr.may_eval
   | Reference      of 'ref
   | TacCall        of Loc.t * 'ref *
@@ -475,10 +476,10 @@ let rec glob_tactic_expr_of_sexp tac =
     glob_constr_and_expr_of_sexp
     glob_constr_pattern_and_expr_of_sexp
     (Misctypes.or_var_of_sexp (Misctypes.and_short_name_of_sexp Names.evaluable_global_reference_of_sexp))
-    (Misctypes.or_var_of_sexp (Loc.located_of_sexp ltac_constant_of_sexp))
+    (Misctypes.or_var_of_sexp (Loc.located_of_sexp Nametab.ltac_constant_of_sexp))
     (Loc.located_of_sexp Names.Id.t_of_sexp)
     glob_tactic_expr_of_sexp
-    glevel_of_sexp
+    Genarg.glevel_of_sexp
 and glob_atomic_tactic_expr_of_sexp tac =
   gen_atomic_tactic_expr_of_sexp
     tac
@@ -486,10 +487,10 @@ and glob_atomic_tactic_expr_of_sexp tac =
     glob_constr_and_expr_of_sexp
     glob_constr_pattern_and_expr_of_sexp
     (Misctypes.or_var_of_sexp (Misctypes.and_short_name_of_sexp Names.evaluable_global_reference_of_sexp))
-    (Misctypes.or_var_of_sexp (Loc.located_of_sexp ltac_constant_of_sexp))
+    (Misctypes.or_var_of_sexp (Loc.located_of_sexp Nametab.ltac_constant_of_sexp))
     (Loc.located_of_sexp Names.Id.t_of_sexp)
     glob_tactic_expr_of_sexp
-    glevel_of_sexp
+    Genarg.glevel_of_sexp
 
 let rec sexp_of_glob_tactic_expr (tac : glob_tactic_expr) =
   sexp_of_gen_tactic_expr
@@ -497,10 +498,10 @@ let rec sexp_of_glob_tactic_expr (tac : glob_tactic_expr) =
     sexp_of_glob_constr_and_expr
     sexp_of_glob_constr_pattern_and_expr
     (Misctypes.sexp_of_or_var (Misctypes.sexp_of_and_short_name Names.sexp_of_evaluable_global_reference))
-    (Misctypes.sexp_of_or_var (Loc.sexp_of_located sexp_of_ltac_constant))
+    (Misctypes.sexp_of_or_var (Loc.sexp_of_located Nametab.sexp_of_ltac_constant))
     (Loc.sexp_of_located Names.Id.sexp_of_t)
     sexp_of_glob_tactic_expr
-    sexp_of_glevel
+    Genarg.sexp_of_glevel
     tac
 and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
   sexp_of_gen_atomic_tactic_expr
@@ -508,10 +509,10 @@ and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
     sexp_of_glob_constr_and_expr
     sexp_of_glob_constr_pattern_and_expr
     (Misctypes.sexp_of_or_var (Misctypes.sexp_of_and_short_name Names.sexp_of_evaluable_global_reference))
-    (Misctypes.sexp_of_or_var (Loc.sexp_of_located sexp_of_ltac_constant))
+    (Misctypes.sexp_of_or_var (Loc.sexp_of_located Nametab.sexp_of_ltac_constant))
     (Loc.sexp_of_located Names.Id.sexp_of_t)
     sexp_of_glob_tactic_expr
-    sexp_of_glevel
+    Genarg.sexp_of_glevel
     tac
 
 (* Raw *)
@@ -531,7 +532,7 @@ let rec raw_tactic_expr_of_sexp tac =
     Libnames.reference_of_sexp
     u_of_sexp
     raw_tactic_expr_of_sexp
-    rlevel_of_sexp
+    Genarg.rlevel_of_sexp
 and raw_atomic_tactic_expr_of_sexp tac =
   gen_atomic_tactic_expr_of_sexp
     tac
@@ -542,7 +543,7 @@ and raw_atomic_tactic_expr_of_sexp tac =
     Libnames.reference_of_sexp
     u_of_sexp
     raw_tactic_expr_of_sexp
-    rlevel_of_sexp
+    Genarg.rlevel_of_sexp
 
 let rec sexp_of_raw_tactic_expr (tac : raw_tactic_expr) =
   sexp_of_gen_tactic_expr
@@ -553,7 +554,7 @@ let rec sexp_of_raw_tactic_expr (tac : raw_tactic_expr) =
     Libnames.sexp_of_reference
     sexp_of_u
     sexp_of_raw_tactic_expr
-    sexp_of_rlevel
+    Genarg.sexp_of_rlevel
     tac
 and sexp_of_raw_atomic_tactic_expr tac =
   sexp_of_gen_atomic_tactic_expr
@@ -564,7 +565,7 @@ and sexp_of_raw_atomic_tactic_expr tac =
     Libnames.sexp_of_reference
     sexp_of_u
     sexp_of_raw_tactic_expr
-    sexp_of_rlevel
+    Genarg.sexp_of_rlevel
     tac
 
 (* Atomic *)
@@ -572,25 +573,25 @@ type atomic_tactic_expr = Tacexpr.atomic_tactic_expr
 
 let atomic_tactic_expr_of_sexp tac =
   gen_atomic_tactic_expr_of_sexp tac
-    constr_of_sexp
+    Constr.constr_of_sexp
     glob_constr_and_expr_of_sexp
     Pattern.constr_pattern_of_sexp
     Names.evaluable_global_reference_of_sexp
-    (Loc.located_of_sexp ltac_constant_of_sexp)
+    (Loc.located_of_sexp Nametab.ltac_constant_of_sexp)
     Names.Id.t_of_sexp
     unit_of_sexp
-    tlevel_of_sexp
+    Genarg.tlevel_of_sexp
 
 let sexp_of_atomic_tactic_expr tac =
   sexp_of_gen_atomic_tactic_expr
-    sexp_of_constr
+    Constr.sexp_of_constr
     sexp_of_glob_constr_and_expr
     Pattern.sexp_of_constr_pattern
     Names.sexp_of_evaluable_global_reference
-    (Loc.sexp_of_located sexp_of_ltac_constant)
+    (Loc.sexp_of_located Nametab.sexp_of_ltac_constant)
     Names.Id.sexp_of_t
     sexp_of_unit
-    sexp_of_tlevel
+    Genarg.sexp_of_tlevel
     tac
 
 (* Helpers for raw_red_expr *)

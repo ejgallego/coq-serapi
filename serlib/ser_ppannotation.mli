@@ -14,7 +14,7 @@
 (************************************************************************)
 
 open Sexplib
-type ppannotation = Ppannotation.t
+type t = Ppannotation.t
 
-val ppannotation_of_sexp : Sexp.t -> ppannotation
-val sexp_of_ppannotation : ppannotation -> Sexp.t
+val t_of_sexp : Sexp.t -> t
+val sexp_of_t : t -> Sexp.t

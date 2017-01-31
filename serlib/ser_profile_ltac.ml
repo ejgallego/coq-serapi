@@ -32,7 +32,7 @@ let sexp_of_cstring_map f m =
   let l   = CString.Map.bindings m                     in
   sexp_of_list s_f l
 
-type ltacprof_treenode =
+type treenode =
   [%import: Profile_ltac.treenode
   [@with CString.Map.t   := cstring_map;
          CString.Map.key := string
