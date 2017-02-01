@@ -27,14 +27,10 @@ type patvar = [%import: Misctypes.patvar]
 let patvar_of_sexp = Names.Id.t_of_sexp
 let sexp_of_patvar = Names.Id.sexp_of_t
 
-type 'constr intro_pattern_expr =
-  [%import: 'constr Misctypes.intro_pattern_expr]
-and intro_pattern_naming_expr =
-  [%import: Misctypes.intro_pattern_naming_expr]
-and 'constr intro_pattern_action_expr =
-  [%import: 'constr Misctypes.intro_pattern_action_expr]
-and 'constr or_and_intro_pattern_expr =
-  [%import: 'constr Misctypes.or_and_intro_pattern_expr]
+type 'constr intro_pattern_expr = [%import: 'constr Misctypes.intro_pattern_expr]
+and intro_pattern_naming_expr   = [%import: Misctypes.intro_pattern_naming_expr]
+and 'constr intro_pattern_action_expr = [%import: 'constr Misctypes.intro_pattern_action_expr]
+and 'constr or_and_intro_pattern_expr = [%import: 'constr Misctypes.or_and_intro_pattern_expr]
   [@@deriving sexp]
 
 type 'id move_location =

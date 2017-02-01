@@ -47,10 +47,7 @@ type instance_expr = [%import: Constrexpr.instance_expr]
   [@@deriving sexp]
 
 type cases_pattern_expr = [%import: Constrexpr.cases_pattern_expr]
-and cases_pattern_notation_substitution =
-  [%import: Constrexpr.cases_pattern_notation_substitution]
-  [@@deriving sexp]
-
+and cases_pattern_notation_substitution = [%import: Constrexpr.cases_pattern_notation_substitution]
 and constr_expr = [%import: Constrexpr.constr_expr]
 and case_expr   = [%import: Constrexpr.case_expr]
 and branch_expr = [%import: Constrexpr.branch_expr]

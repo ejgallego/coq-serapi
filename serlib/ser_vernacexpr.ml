@@ -245,16 +245,9 @@ type module_binder =
   [%import: Vernacexpr.module_binder]
   [@@deriving sexp]
 
-type vernac_expr =
-  [%import: Vernacexpr.vernac_expr]
-  [@@deriving sexp]
-
-and vernac_implicit_status =
-  [%import: Vernacexpr.vernac_implicit_status]
-  [@@deriving sexp]
-
-and vernac_argument_status =
-  [%import: Vernacexpr.vernac_argument_status]
+type vernac_expr           = [%import: Vernacexpr.vernac_expr]
+and vernac_implicit_status = [%import: Vernacexpr.vernac_implicit_status]
+and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
   [@@deriving sexp]
 
 (* We need to overload the printing for the Extend mechanism... *)
