@@ -2,12 +2,13 @@
 
 include ../config.mk
 
-FILES=ser_util ser_bigint ser_loc ser_flags ser_goptions ser_names	\
-      ser_evar ser_univ ser_sorts ser_conv_oracle ser_globnames		\
-      ser_misctypes ser_locus ser_genredexpr ser_decl_kinds		\
-      ser_genarg ser_evar_kinds ser_tok ser_extend ser_stateid		\
-      ser_glob_term ser_libnames ser_constrexpr ser_tacexpr		\
-      ser_vernacexpr ser_constr
+FILES=ser_util ser_bigint ser_loc ser_flags ser_goptions ser_int	\
+      ser_names ser_evar ser_univ ser_sorts ser_conv_oracle		\
+      ser_globnames ser_misctypes ser_locus ser_genredexpr		\
+      ser_decl_kinds ser_genarg ser_evar_kinds ser_tok ser_extend	\
+      ser_stateid ser_glob_term ser_libnames ser_constrexpr		\
+      ser_nametab ser_constr_matching ser_pattern ser_tactypes		\
+      ser_tacexpr ser_vernacexpr ser_constr
 
 # Old-style stuff, needs review
 DUM=ser_goal
@@ -18,17 +19,19 @@ OBJS=$(addsuffix .cmo, $(FILES) $(DUM))
 all: $(MLI) $(OBJS)
 
 # Include coq files
-INCLUDETOP=-I $(COQDIR)/library/   \
-           -I $(COQDIR)/stm/       \
+INCLUDETOP=-I $(COQDIR)/config     \
            -I $(COQDIR)/lib/       \
-           -I $(COQDIR)/parsing/   \
-           -I $(COQDIR)/printing/  \
            -I $(COQDIR)/kernel/    \
            -I $(COQDIR)/intf/      \
            -I $(COQDIR)/interp/    \
+           -I $(COQDIR)/pretyping/ \
+           -I $(COQDIR)/library/   \
+           -I $(COQDIR)/parsing/   \
+           -I $(COQDIR)/printing/  \
            -I $(COQDIR)/proofs/    \
+           -I $(COQDIR)/stm/       \
            -I $(COQDIR)/toplevel   \
-           -I $(COQDIR)/config
+           -I $(COQDIR)/ltac
 
 CAMLDEBUG=
 # CAMLDEBUG=-g
