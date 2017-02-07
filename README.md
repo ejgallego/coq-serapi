@@ -1,5 +1,7 @@
 ## The Coq Se(xp)rialized Protocol
 
+[![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=master)](https://travis-ci.org/ejgallego/coq-serapi)
+
 SerAPI is a new library and communication protocol for the Coq proof
 assistant. It is based on automatic serialization of Ocaml datatypes
 from/to S-expressions; we aim to make low-level interaction with Coq
@@ -24,6 +26,18 @@ load times are less than a second.
 
 Feedback from Coq users and developers is very welcome, contact us by
 mail or in the issue tracker!
+
+## Mailing List ##
+
+SerApi development is discussed in the jsCoq mailing list, you can subscribe at:
+
+https://x80.org/cgi-bin/mailman/listinfo/jscoq
+
+The list archives should be also available at the Gmane group:
+
+`gmane.science.mathematics.logic.coq.jscoq`
+
+you can post to the list using nntp.
 
 ### Roadmap
 
