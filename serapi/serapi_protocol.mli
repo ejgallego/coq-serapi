@@ -120,7 +120,7 @@ type query_cmd =
   | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
   | Unparsing of string           (* XXX  *)
-  | Inductive of string
+  | Definition of string
   | PNotations                    (* XXX  *)
   | ProfileData
 

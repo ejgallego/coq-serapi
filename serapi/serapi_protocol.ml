@@ -351,7 +351,7 @@ type query_cmd =
   | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
   | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
   | Unparsing of string            (* XXX  *)
-  | Inductive of string
+  | Definition of string
   | PNotations                     (* XXX  *)
   | ProfileData
 
@@ -435,6 +435,30 @@ module QueryUtil = struct
       Impargs.implicits_of_global ref
     with Not_found -> []
 
+  (* Returns the definition of a constant *)
+  let definition_of_const cst =
+    Option.cata (fun cb -> [CoqConstr cb] ) [] (Global.body_of_constant cst)
+
+  (* Returns the definition of an inductive *)
+  let definition_of_ind (sp, _) =
+    let env = Global.env ()   in
+    CoqMInd (Environ.lookup_mind sp env)
+
+  (* Queries a generic definition, in the style of the `Print` vernacular *)
+  let definition id =
+    (* First step, we resolve to a qualified name *)
+    let qid = Libnames.qualid_of_ident (Names.Id.of_string id) in
+    (* Then we must locate the kind of object the name refers to *)
+    try
+      let lid = Nametab.locate qid in
+      (* We now dispatch based on type *)
+      let open Globnames in
+      match lid with
+      | VarRef       _vr -> []
+      | ConstRef      cr -> definition_of_const cr
+      | IndRef        ir -> [definition_of_ind ir]
+      | ConstructRef _cr -> []
+    with _ -> []
 end
 
 let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
@@ -459,23 +483,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       with _exn -> []
                       end
   | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
-  | Inductive ind  -> begin
-                      let get_ind (n : string) : Declarations.mutual_inductive_body option = begin
-                        try
-                          let qid = Libnames.qualid_of_ident (Names.Id.of_string n) in
-                          let lid = Nametab.locate qid                              in
-                          let open Globnames in
-                          begin match lid with
-                          | IndRef (sp,_) ->
-                            let env = Global.env () in
-                            let mib = Environ.lookup_mind sp env in
-                            Some mib
-                          | _              -> None
-                          end
-                        with _ -> None
-                      end in
-                      Option.cata (fun g -> [CoqMInd g]) [] @@ (get_ind ind)
-                      end
+  | Definition id  -> QueryUtil.definition id
   | Search         -> [CoqString "Not Implemented"]
   | TypeOf _       -> [CoqString "Not Implemented"]
 
