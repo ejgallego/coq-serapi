@@ -206,20 +206,22 @@ type print_opt = {
 }
 
 let pp_tex (obj : coq_object) =
-  let tex_constr cst = let open Format in
-    pp_set_margin str_formatter 500;
-    pp_set_max_indent str_formatter 500;
-    Stexp.pp_sexp_to_tex str_formatter @@ Ser_constr.sexp_of_constr cst;
+  let tex_sexp c = let open Format in
+    pp_set_margin     str_formatter 300;
+    pp_set_max_indent str_formatter 300;
+    Stexp.pp_sexp_to_tex str_formatter c;
     flush_str_formatter ()
   in
-  let etex_constr cst =
-    Stexp.pp_sexp_to_tex Format.str_formatter @@ Ser_constrexpr.sexp_of_constr_expr cst;
-    Format.flush_str_formatter ()
-  in
+  let open List           in
+  let open Proof          in
+  let open Ser_constr     in
+  let open Ser_constrexpr in
   match obj with
-  | CoqConstr cst -> tex_constr cst
-  | CoqGoal    gl ->  tex_constr (fst @@ List.hd gl.Proof.fg_goals)
-  | CoqExtGoal gl -> etex_constr (fst @@ List.hd gl.Proof.fg_goals)
+  | CoqConstr cst -> sexp_of_constr      cst |> tex_sexp
+  | CoqGoal    gl -> let cst = fst @@ hd gl.fg_goals in
+                     sexp_of_constr      cst |> tex_sexp
+  | CoqExtGoal gl -> let cst = fst @@ hd gl.fg_goals in
+                     sexp_of_constr_expr cst |> tex_sexp
   | _             -> "not supported"
 
 let obj_print pr_opt obj =
@@ -441,8 +443,7 @@ module QueryUtil = struct
 
   (* Returns the definition of an inductive *)
   let definition_of_ind (sp, _) =
-    let env = Global.env ()   in
-    CoqMInd (Environ.lookup_mind sp env)
+    CoqMInd (Global.lookup_mind sp)
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
   let definition id =
