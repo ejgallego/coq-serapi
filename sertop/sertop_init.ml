@@ -69,7 +69,8 @@ let coq_init opts =
 
   (* Mltop.init_known_plugins (); *)
 
-  Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
+  (* We link LTAC statically in SerAPI *)
+  Mltop.add_known_module "ltac_plugin";
 
   Global.set_engagement Declarations.PredicativeSet;
 

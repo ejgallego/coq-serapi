@@ -12,8 +12,7 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 <sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
 
 # Serlib building options
-<serlib/*.{ml,mli}>: coq_lib, coq_clib, coq_kernel, coq_library, coq_intf, coq_engine, coq_pretyping, coq_interp
-<serlib/*.{ml,mli}>: coq_parsing, coq_printing, coq_vernac, coq_stm, coq_proofs, coq_ltac
+<serlib/*.{ml,mli}>: package(coq.intf), package(coq.ltac)
 <serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/*.{ml,mli}>: package(sexplib)
 
@@ -21,9 +20,8 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
-<serapi/*.{ml,mli}>: coq_intf
-<serapi/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
-<serapi/*>: coq_parsing, coq_printing, coq_tactics, coq_vernac, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
+<serapi/*.{ml,mli}>: package(coq.intf)
+<serapi/*>: package(coq.toplevel), package(coq.ltac)
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
 
@@ -33,14 +31,13 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 <serapi>: include
 
 # Specifip to init
-<sertop/*.{ml,mli}>: coq_intf
-<sertop/*>: coq_config, coq_lib, coq_clib, coq_kernel, coq_vm, coq_library, coq_engine, coq_pretyping, coq_interp
-<sertop/*>: coq_parsing, coq_printing, coq_tactics, coq_vernac, coq_stm, coq_proofs, coq_toplevel, coq_hparsing, coq_ltac
+<sertop/*.{ml,mli}>: package(coq.intf)
+<sertop/*>: package(coq.toplevel), package(coq.ltac)
 <sertop/*>: package(sexplib), debug
 
 # Specifip to toplevel
 <sertop/sertop.ml>: package(cmdliner)
-<sertop/sertop.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
+<sertop/sertop.{byte,native}>: linkall, package(str), package(dynlink), package(camlp5.gramlib), package(cmdliner)
 
 <sertop/sercomp.ml>: package(cmdliner)
 <sertop/sercomp.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)

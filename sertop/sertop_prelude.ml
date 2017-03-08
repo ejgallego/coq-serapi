@@ -2,6 +2,7 @@
 
 let coq_init_plugins =
   [ ["syntax"]
+  ; ["ltac"]
   ; ["decl_mode"]
   ; ["cc"]
   ; ["firstorder"]
