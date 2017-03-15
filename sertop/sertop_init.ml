@@ -80,7 +80,6 @@ let coq_init opts =
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
 
   List.iter (fun (lib, lib_path, has_ml) ->
-      let open Names in
       let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
       Loadpath.add_load_path lib_path coq_path ~implicit:opts.implicit_std;
       if has_ml then Mltop.add_ml_dir lib_path
@@ -95,7 +94,7 @@ let coq_init opts =
   (**************************************************************************)
 
   (* We must prevent output to stdout when loading the libs... but it
-   * will be lost.
+   * will be lost... Maybe wrap in StdErr??
    *)
   Feedback.set_logger Feedback.feedback_logger;
 
