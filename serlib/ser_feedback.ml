@@ -25,20 +25,8 @@ type level =
   [%import: Feedback.level]
   [@@deriving sexp]
 
-type edit_id =
-  [%import: Feedback.edit_id]
-  [@@deriving sexp]
-
-type state_id =
-  [%import: Feedback.state_id]
-  [@@deriving sexp]
-
 type route_id =
   [%import: Feedback.route_id]
-  [@@deriving sexp]
-
-type edit_or_state_id =
-  [%import: Feedback.edit_or_state_id]
   [@@deriving sexp]
 
 type feedback_content =

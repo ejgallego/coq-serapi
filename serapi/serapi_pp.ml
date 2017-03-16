@@ -40,12 +40,6 @@ let rec pp_list ?sep pp fmt l = match l with
 (************************************************************************)
 let pp_stateid fmt id = fprintf fmt "%d" (Stateid.to_int id)
 
-let pp_eosid fmt esid =
-  let open Feedback in
-  match esid with
-  | Edit  eid -> fprintf fmt "edit__id: %2d" eid
-  | State sid -> fprintf fmt "state_id: %2d" (Stateid.to_int sid)
-
 (************************************************************************)
 (* Feedback                                                             *)
 (************************************************************************)
@@ -79,7 +73,7 @@ let pp_feedback_content fmt fb =
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in
-  fprintf fmt "feedback for [%a]: @[%a@]" pp_eosid fb.id pp_feedback_content fb.Feedback.contents
+  fprintf fmt "feedback for [%a]: @[%a@]" pp_stateid fb.id pp_feedback_content fb.Feedback.contents
 
 (************************************************************************)
 (* Xml                                                                  *)

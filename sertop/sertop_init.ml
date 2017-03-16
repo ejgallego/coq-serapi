@@ -151,10 +151,6 @@ let coq_init opts =
   (**************************************************************************)
   Stm.init();
 
-  (* Miscellaneous tweaks *)
-  Vernacentries.enable_goal_printing := false;
-  Vernacentries.qed_display_script   := false;
-
   (* Flags.debug := true; *)
 
   (* Return the initial state of the STM *)

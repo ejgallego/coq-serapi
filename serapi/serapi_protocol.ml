@@ -35,7 +35,7 @@ module Extra = struct
     | x :: _ -> Some x
 
   let mem l e = List.mem e l
-  let sub s ~pos ~len = String.sub s pos len
+  (* let sub s ~pos ~len = String.sub s pos len *)
 
   let value     x ~default    = Option.default default x
   let value_map x ~default ~f = Option.cata f default x
@@ -244,37 +244,6 @@ let obj_print pr_opt obj =
     pp_set_max_boxes     str_formatter mb;
     pp_set_ellipsis_text str_formatter et;
     str_obj
-
-(******************************************************************************)
-(* Parsing Sub-Protocol                                                       *)
-(******************************************************************************)
-
-(* Sadly this is not properly exported from Stm/Vernac *)
-exception End_of_input
-
-let parse_sentence = Flags.with_option Flags.we_are_parsing
-  (fun pa ->
-    match Pcoq.Gram.entry_parse Pcoq.main_entry pa with
-    | Some (loc, _ast) -> loc
-    | None             -> raise End_of_input
-  )
-
-(* Accumulate at most num succesful parsing attemps in acc *)
-let parse_sentences num acc s =
-  let pa = Pcoq.Gram.parsable (Stream.of_string s) in
-  (* Not strictly needed *)
-  try
-    for _i = 1 to num do
-      let loc = parse_sentence pa in
-      acc := CoqLoc loc :: !acc
-    done;
-  with
-  | End_of_input -> ()
-  | e when CErrors.noncritical e ->
-    let (e, info) = CErrors.push e in
-    Util.iraise (e, info)
-
-(* TODO *)
 
 (******************************************************************************)
 (* Answer Types                                                               *)
@@ -575,8 +544,6 @@ let exec_setopt loc n (v : Goptions.option_value) =
 
 module ControlUtil = struct
 
-  let edit_id = ref 0
-
   type doc    = Stateid.t list
   let cur_doc : doc ref = ref [Stateid.of_int 1]
 
@@ -587,54 +554,30 @@ module ControlUtil = struct
   let _dump_doc () =
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
-  (* let add_sentence st_id pa = *)
-  let add_sentence ?newtip ~ontop verb pa sent =
-    (* Workaround coq/coq#204 *)
-    let new_st, foc = Stm.add ~ontop ?newtip verb (- !edit_id) sent in
-    let loc         = parse_sentence pa                             in
-    incr edit_id;
-    cur_doc := new_st :: !cur_doc;
-    new_st, loc, foc
-
   let add_sentences opts sent =
-    (* Workaround coq/coq#204 *)
     let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
-    let pos p l = l.Loc.ep - p         in
     let i   = ref 1                    in
-    let buf = ref 0                    in
     let acc = ref []                   in
-    let rem = ref (String.length sent) in
     let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ())) in
     let check_lim i = Extra.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
     try
-      (* XXX: We check that the ontop state is actually in the
-       * document to avoid an Anomaly exception.
-       *)
-      if not (List.mem !stt !cur_doc) then
-        raise (NoSuchState !stt);
-
-      let add_debug = false              in
-      while (0 < !rem) && (check_lim !i) do
-        let n_st, loc, foc =
-          let sent = Extra.sub sent ~pos:!buf ~len:!rem in
-          if add_debug then begin
-            Format.eprintf "*** [i:%d|buf:%d|rem:%d|stt:%d]@\n%!" !i !buf !rem (Stateid.to_int !stt);
-            Format.eprintf "*** Sent: %s @\n%!" sent
-          end;
-          add_sentence ?newtip:opts.newtip ~ontop:!stt opts.verb pa sent
-        in
-        acc := (StmAdded (n_st, loc, foc)) :: !acc;
-        rem := !rem - pos !buf loc;
-        buf := !buf + pos !buf loc;
+      while check_lim !i do
+        (* XXX: We check that the ontop state is actually in the
+         * document to avoid an Anomaly exception.
+         *)
+        if not (List.mem !stt !cur_doc) then
+          raise (NoSuchState !stt);
+        let east      = Stm.parse_sentence !stt pa in
+        let n_st, foc = Stm.add ?newtip:opts.newtip ~ontop:!stt opts.verb east in
+        cur_doc := n_st :: !cur_doc;
+        acc := (StmAdded (n_st, fst east, foc)) :: !acc;
         stt := n_st;
-        incr i;
-        if add_debug then
-            Format.eprintf "*!* [i:%d|buf:%d|rem:%d|stt:%d]@\n%!" !i !buf !rem (Stateid.to_int !stt);
+        incr i
       done;
       List.rev !acc
     with
-    | End_of_input  -> List.rev !acc
-    | exn           -> List.rev (coq_exn_info exn :: !acc)
+    | Stm.End_of_input -> List.rev !acc
+    | exn              -> List.rev (coq_exn_info exn :: !acc)
 
   (* We follow a suggestion by Clément to report sentence invalidation
      in a more modular way: When we issue the cancel command, we will
@@ -705,7 +648,8 @@ let exec_ctrl ctrl =
 
   | StmEditAt st    -> ControlUtil.edit st
 
-  | StmQuery(opt,q) -> Stm.query ~at:opt.sid ~report_with:(opt.sid,opt.route) q; []
+  | StmQuery(opt,q) -> let pa = Pcoq.Gram.parsable (Stream.of_string q) in
+                       Stm.query ~at:opt.sid ~report_with:(opt.sid,opt.route) pa; []
   | StmObserve st   -> Stm.observe st; []
   | StmJoin         -> Stm.join (); []
   | StmStopWorker w -> Stm.stop_worker w; []
@@ -756,11 +700,12 @@ let exec_cmd (cmd : cmd) = match cmd with
 
   (* We try to do a bit better here than a coq_protect would do, by
      trying to keep partial results. *)
-  | Parse (num, str)  ->
-    let acc = ref [] in
-    begin try parse_sentences num acc str; [ObjList (List.rev !acc)]
-          with exn -> [ObjList (List.rev !acc)] @ [coq_exn_info exn]
-    end
+  | Parse (_num, _str)  -> []
+    (* Not really possible to do parsing of more sentence without execution. *)
+    (* let acc = ref [] in *)
+    (* begin try parse_sentences num acc str; [ObjList (List.rev !acc)] *)
+    (*       with exn -> [ObjList (List.rev !acc)] @ [coq_exn_info exn] *)
+    (* end *)
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
 
   | Noop              -> []

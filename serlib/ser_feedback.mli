@@ -20,18 +20,9 @@ type level = Feedback.level
 val level_of_sexp : Sexp.t -> level
 val sexp_of_level : level -> Sexp.t
 
-type edit_id = Feedback.edit_id
-val edit_id_of_sexp : Sexp.t -> edit_id
-val sexp_of_edit_id : edit_id -> Sexp.t
-
 type route_id = Feedback.route_id
 val route_id_of_sexp : Sexp.t -> route_id
 val sexp_of_route_id : route_id -> Sexp.t
-
-type edit_or_state_id = Feedback.edit_or_state_id
-
-val edit_or_state_id_of_sexp : Sexp.t -> edit_or_state_id
-val sexp_of_edit_or_state_id : edit_or_state_id -> Sexp.t
 
 type feedback_content = Feedback.feedback_content
 
