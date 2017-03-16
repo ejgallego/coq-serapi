@@ -41,7 +41,28 @@ type 'a generic_argument =
   'a Genarg.generic_argument
 
 let generic_argument_of_sexp _ _x = Obj.magic 0
-let sexp_of_generic_argument _ _x = Atom "XXX genarg XXX"
+
+open Genarg
+
+(*   if has_type (rawwit Stdarg.wit_constr) g then *)
+(*     let a = Genarg.out_gen g (topwit Stdarg.wit_constr) in *)
+
+let rec sexp_of_genarg_type : type a b c. string -> (a, b, c) genarg_type -> t = fun lvl gt ->
+  match gt with
+  | ExtraArg tag   -> List [Atom "ExtraArg"; Atom lvl; Atom (ArgT.repr tag)]
+  | ListArg rt     -> List [Atom "ListArg"; sexp_of_genarg_type lvl rt]
+  | OptArg  rt     -> List [Atom "OptArg";  sexp_of_genarg_type lvl rt]
+  | PairArg(t1,t2) -> List [Atom "PairArg"; sexp_of_genarg_type lvl t1; sexp_of_genarg_type lvl t2]
+
+let sexp_of_generic_argument : type a. (a -> t) -> a Genarg.generic_argument -> t =
+  fun _ g ->
+  match g with
+  | GenArg (aat, _ax) -> begin
+      match aat with
+      | Glbwit gt -> sexp_of_genarg_type "glb" gt
+      | Topwit gt -> sexp_of_genarg_type "top" gt
+      | Rawwit gt -> sexp_of_genarg_type "raw" gt
+    end
 
 type glob_generic_argument = [%import: Genarg.glob_generic_argument]
   [@@deriving sexp]
