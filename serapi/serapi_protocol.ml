@@ -525,17 +525,6 @@ type add_opts = {
   verb   : bool      [@default false];
 }
 
-type control_cmd =
-  | Add        of add_opts  * string
-  | Cancel     of Stateid.t list
-  | Exec       of Stateid.t
-  (* XXX: We want to have query / update and fuse these two under it *)
-  (*              coq_path      unix_path   has_ml *)
-  | LibAdd     of string list * string    * bool
-  (* Miscellanous *)
-  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
-  | Quit
-
 let exec_setopt loc n (v : Goptions.option_value) =
   let open Goptions in
   match v with
@@ -625,23 +614,6 @@ module ControlUtil = struct
 
 end
 
-let exec_ctrl ctrl =
-  coq_protect @@ fun () -> match ctrl with
-  | Add (opt, s) -> ControlUtil.add_sentences opt s
-  | Cancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
-  | Exec st      -> Stm.observe st; []
-  | LibAdd(lib, lib_path, has_ml) ->
-    let open Names in
-    let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
-    (* XXX [upstream]: Unify ML and .vo library paths.  *)
-    Loadpath.add_load_path lib_path coq_path ~implicit:false;
-    if has_ml then Mltop.add_ml_dir lib_path;
-    []
-
-  | SetOpt(loc, n, v) -> exec_setopt loc n v; []
-
-  | Quit           -> []
-
 (******************************************************************************)
 (* Help                                                                       *)
 (******************************************************************************)
@@ -661,21 +633,46 @@ let serproto_help () =
 (* Top-Level Commands                                                         *)
 (******************************************************************************)
 
-(* TODO: Remove this in the future and make a flat command hierachy *)
 type cmd =
-  | Control    of control_cmd
+  | Add        of add_opts  * string
+  | Cancel     of Stateid.t list
+  | Exec       of Stateid.t
   | Query      of query_opt * query_cmd
   | Print      of print_opt * coq_object
+  (*******************************************************************)
+  (* XXX: We want to have query / update and fuse these two under it *)
+  (*              coq_path      unix_path   has_ml                   *)
+  | LibAdd     of string list * string    * bool
+  (* Miscellanous *)
+  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
+  (*******************************************************************)
   | Noop
   | Help
+  | Quit
 
-let exec_cmd (cmd : cmd) = match cmd with
-  | Control ctrl      -> exec_ctrl ctrl
+
+let exec_cmd (cmd : cmd) =
+  coq_protect @@ fun () -> match cmd with
+  | Add (opt, s) -> ControlUtil.add_sentences opt s
+  | Cancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
+  | Exec st      -> Stm.observe st; []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
 
-  | Noop              -> []
-  | Help              -> serproto_help (); []
+  (*******************************************************************)
+  | LibAdd(lib, lib_path, has_ml) ->
+    let open Names in
+    let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
+    (* XXX [upstream]: Unify ML and .vo library paths.  *)
+    Loadpath.add_load_path lib_path coq_path ~implicit:false;
+    if has_ml then Mltop.add_ml_dir lib_path;
+    []
+
+  | SetOpt(loc, n, v) -> exec_setopt loc n v; []
+  (*******************************************************************)
+  | Help           -> serproto_help (); []
+  | Noop           -> []
+  | Quit           -> []
 
 type cmd_tag    = string
 type tagged_cmd = cmd_tag * cmd

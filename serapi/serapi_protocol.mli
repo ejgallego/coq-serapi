@@ -134,16 +134,6 @@ type add_opts = {
   verb   : bool      [@default false];
 }
 
-type control_cmd =
-  | Add     of       add_opts  * string      (* Stm.add       *)
-  | Cancel  of       Stateid.t list
-  | Exec    of       Stateid.t
-  (*           coq_path      unix_path   has_ml *)
-  | LibAdd  of string list * string    * bool
-  (* Miscellanous *)
-  | SetOpt  of bool option * Goptions.option_name * Goptions.option_value
-  | Quit
-
 (******************************************************************************)
 (* Help                                                                       *)
 (******************************************************************************)
@@ -155,11 +145,21 @@ type control_cmd =
 (******************************************************************************)
 
 type cmd =
-    Control of control_cmd
-  | Query   of query_opt * query_cmd
-  | Print   of print_opt * coq_object
+  | Add        of add_opts  * string
+  | Cancel     of Stateid.t list
+  | Exec       of Stateid.t
+  | Query      of query_opt * query_cmd
+  | Print      of print_opt * coq_object
+  (*******************************************************************)
+  (* XXX: We want to have query / update and fuse these two under it *)
+  (*              coq_path      unix_path   has_ml                   *)
+  | LibAdd     of string list * string    * bool
+  (* Miscellanous *)
+  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
+  (*******************************************************************)
   | Noop
   | Help
+  | Quit
 
 val exec_cmd : cmd -> answer_kind list
 

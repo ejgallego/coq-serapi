@@ -30,9 +30,6 @@ val sexp_of_print_opt : print_opt -> Sexp.t
 val sexp_of_answer_kind : answer_kind -> Sexp.t
 val answer_kind_of_sexp : Sexp.t -> answer_kind
 
-val sexp_of_control_cmd : control_cmd -> Sexp.t
-val control_cmd_of_sexp : Sexp.t -> control_cmd
-
 val query_pred_of_sexp : Sexp.t -> query_pred
 val sexp_of_query_pred : query_pred -> Sexp.t
 

@@ -5,8 +5,11 @@ _Version 0.2_:
 _Version 0.1_:
 
  * Serialization-independent protocol core.
- * Javascript worker toplevel.
+ * [js] Javascript worker.
  * [lib] Better Prelude support.
+ * [proto] Add is not a synchronous call anymore.
+ * [proto] Refactor into a flat command hierarchy.
+ * [proto] More useful queries.
  * [proto] Guarantee initial state is 1.
  * [proto] Support for ltac profiling.
  * [proto] Printing: add depth limiting.

@@ -153,10 +153,6 @@ type add_opts =
   ]]
   [@@deriving sexp]
 
-type control_cmd =
-  [%import: Serapi_protocol.control_cmd]
-  [@@deriving sexp]
-
 type cmd =
   [%import: Serapi_protocol.cmd]
   [@@deriving sexp]
@@ -213,8 +209,8 @@ type ser_opts = {
 (******************************************************************************)
 
 let is_cmd_quit cmd = match cmd with
-  | Control Quit -> true
-  | _            -> false
+  | Quit -> true
+  | _    -> false
 
 (* XXX: Improve by using manual tag parsing. *)
 let read_cmd cmd_id in_channel pp_error =
@@ -224,12 +220,12 @@ let read_cmd cmd_id in_channel pp_error =
       begin
         try tagged_cmd_of_sexp cmd_sexp
         with
-        | End_of_file   -> "EOF", Control Quit
+        | End_of_file   -> "EOF", Quit
         | _exn ->
           (string_of_int cmd_id), cmd_of_sexp cmd_sexp
       end
     with
-    | End_of_file   -> "EOF", Control Quit
+    | End_of_file   -> "EOF", Quit
     | exn           -> pp_error (sexp_of_exn exn);
                        read_loop ()
   in read_loop ()
