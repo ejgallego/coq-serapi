@@ -14,12 +14,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type reified_goal = Constr.constr * Context.Compacted.Declaration.t list
+(* We ship our own type due to Context lack of support for anything
+   other than Constr.t *)
+type 'a hyp = (Names.Id.t list * 'a option * 'a)
+type 'a reified_goal = 'a * 'a hyp list
 
-val get_goals : Stateid.t -> reified_goal Proof.pre_goals option
+(* Ready to make into a GADT *)
+val get_goals  : Stateid.t -> Constr.t               reified_goal Proof.pre_goals option
+val get_egoals : Stateid.t -> Constrexpr.constr_expr reified_goal Proof.pre_goals option
 
-(* type reified_egoal = Constrexpr.constr_expr * (Names.Id.t list * Constrexpr.constr_expr option * Constrexpr.constr_expr) list *)
-type reified_egoal = Constrexpr.constr_expr * unit list
-
-val get_egoals : Stateid.t -> reified_egoal Proof.pre_goals option
 

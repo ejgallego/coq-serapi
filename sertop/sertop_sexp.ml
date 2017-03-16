@@ -87,6 +87,18 @@ let _ =
 
     )
 
+module Serapi_goals = struct
+
+  type 'a hyp =
+    [%import: 'a Serapi_goals.hyp]
+    [@@deriving sexp]
+
+  type 'a reified_goal =
+    [%import: 'a Serapi_goals.reified_goal]
+    [@@deriving sexp]
+
+end
+
 (* Serialization to sexp *)
 type coq_object =
   [%import: Serapi_protocol.coq_object]

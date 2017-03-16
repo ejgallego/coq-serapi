@@ -114,10 +114,8 @@ type coq_object =
   | CoqProfData of Profile_ltac.treenode
   | CoqNotation of Constrexpr.notation
   | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
-  (* Fixme *)
-  | CoqGoal     of (Constr.constr * Context.Compacted.Declaration.t list) Proof.pre_goals
-  (* Extern goal: XXX just a trial *)
-  | CoqExtGoal  of (Constrexpr.constr_expr * unit list) Proof.pre_goals
+  | CoqGoal     of Constr.t Serapi_goals.reified_goal Proof.pre_goals
+  | CoqExtGoal  of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -125,12 +123,11 @@ type coq_object =
 
 let pp_goal_gen pr_c (g, hyps) =
   let open Pp      in
-  (* let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in *)
-  (* let pr_lconstr_opt c = str " := " ++ pr_c c in *)
-  (* let pr_hdef  = Option.cata pr_lconstr_opt (mt ())  in *)
-  let pr_hyp _ = str "Port to new context API"       in
-  (* let pr_hyp (idl, hdef, htyp) = *)
-  (*   pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ pr_c htyp in *)
+  let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
+  let pr_lconstr_opt c = str " := " ++ pr_c c in
+  let pr_hdef  = Option.cata pr_lconstr_opt (mt ())  in
+  let pr_hyp (idl, hdef, htyp) =
+    pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ pr_c htyp in
   pr_vertical_list pr_hyp hyps         ++
   str "============================\n" ++
     (* (let pr_lconstr t = *)
