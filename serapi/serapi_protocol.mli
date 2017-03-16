@@ -36,7 +36,7 @@ type coq_object =
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
   | CoqExpr     of Constrexpr.constr_expr
-  | CoqMInd     of Declarations.mutual_inductive_body
+  | CoqMInd     of Names.MutInd.t * Declarations.mutual_inductive_body
   | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
   | CoqQualId   of Libnames.qualid
   | CoqGlobRef  of Globnames.global_reference

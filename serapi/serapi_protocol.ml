@@ -106,7 +106,7 @@ type coq_object =
   | CoqOption   of Goptions.option_name * Goptions.option_state
   | CoqConstr   of Constr.constr
   | CoqExpr     of Constrexpr.constr_expr
-  | CoqMInd     of Declarations.mutual_inductive_body
+  | CoqMInd     of Names.MutInd.t * Declarations.mutual_inductive_body
   | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
   | CoqQualId   of Libnames.qualid
   | CoqGlobRef  of Globnames.global_reference
@@ -121,6 +121,9 @@ type coq_object =
 (* Printing Sub-Protocol                                                      *)
 (******************************************************************************)
 
+(* Basically every function here should be an straightforward call to
+ * Coq's printing. Coq bug if that is not the case.
+ *)
 let pp_goal_gen pr_c (g, hyps) =
   let open Pp      in
   let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
@@ -159,7 +162,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   (* | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqAst    _     -> Pp.str "Fixme ast"
-  | CoqMInd   _     -> Pp.str "Fixme MInd"
+  | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body (Global.env ()) m mind
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
@@ -436,16 +439,29 @@ module QueryUtil = struct
       Impargs.implicits_of_global ref
     with Not_found -> []
 
-  (* Returns the definition of a constant *)
-  let definition_of_const cst =
-    Option.cata (fun cb -> [CoqConstr cb] ) [] (Global.body_of_constant cst)
+  (* Copied from Coq. XXX *)
+  let type_of_constant cb = match cb.Declarations.const_type with
+    | Declarations.RegularArity ty -> ty
+    | Declarations.TemplateArity (ctx, arity) ->
+      Term.mkArity (ctx, Sorts.sort_of_univ arity.Declarations.template_level)
 
   (* Returns the definition of an inductive *)
-  let definition_of_ind (sp, _) =
-    CoqMInd (Global.lookup_mind sp)
+  let info_of_ind (sp, _) =
+    [CoqMInd (sp, Global.lookup_mind sp)], []
+
+  let info_of_const cr =
+    let cdef = Global.lookup_constant cr in
+    Option.cata (fun cb -> [CoqConstr cb] ) [] (Global.body_of_constant cr),
+    [CoqConstr(type_of_constant cdef)]
+
+  let info_of_var vr =
+    let vdef = Global.lookup_named vr in
+    Option.cata (fun cb -> [CoqConstr cb] ) [] (Context.Named.Declaration.get_value vdef),
+    [CoqConstr(Context.Named.Declaration.get_type vdef)]
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
-  let definition id =
+  (*                  definition        type                              *)
+  let info_of_id id : coq_object list * coq_object list =
     (* First step, we resolve to a qualified name *)
     let qid = Libnames.qualid_of_ident (Names.Id.of_string id) in
     (* Then we must locate the kind of object the name refers to *)
@@ -454,11 +470,12 @@ module QueryUtil = struct
       (* We now dispatch based on type *)
       let open Globnames in
       match lid with
-      | VarRef       _vr -> []
-      | ConstRef      cr -> definition_of_const cr
-      | IndRef        ir -> [definition_of_ind ir]
-      | ConstructRef _cr -> []
-    with _ -> []
+      | VarRef        vr -> info_of_var vr
+      | ConstRef      cr -> info_of_const cr
+      | IndRef        ir -> info_of_ind ir
+      | ConstructRef _cr -> [],[]
+    with _ -> [],[]
+
 end
 
 let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
@@ -483,9 +500,9 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       with _exn -> []
                       end
   | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
-  | Definition id  -> QueryUtil.definition id
+  | Definition id  -> fst (QueryUtil.info_of_id id)
+  | TypeOf id      -> snd (QueryUtil.info_of_id id)
   | Search         -> [CoqString "Not Implemented"]
-  | TypeOf _       -> [CoqString "Not Implemented"]
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
