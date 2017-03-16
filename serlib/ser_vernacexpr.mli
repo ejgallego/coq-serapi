@@ -46,9 +46,9 @@ type scope_name = Vernacexpr.scope_name
 val scope_name_of_sexp : Sexp.t -> scope_name
 val sexp_of_scope_name : scope_name -> Sexp.t
 
-(* type goal_selector = Vernacexpr.goal_selector *)
-(* val goal_selector_of_sexp : Sexp.t -> goal_selector *)
-(* val sexp_of_goal_selector : goal_selector -> Sexp.t *)
+type goal_selector = Vernacexpr.goal_selector
+val goal_selector_of_sexp : Sexp.t -> goal_selector
+val sexp_of_goal_selector : goal_selector -> Sexp.t
 
 type goal_reference = Vernacexpr.goal_reference
 val goal_reference_of_sexp : Sexp.t -> goal_reference

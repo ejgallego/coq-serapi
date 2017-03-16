@@ -15,7 +15,9 @@
 
 open Sexplib
 
-(* open Ser_loc *)
+(* XXX: We need to link tacexpr so its genargs serializers are
+   registered... *)
+module Tacexpr = Ser_tacexpr
 open Ser_vernacexpr
 
 type stats = {
@@ -164,8 +166,12 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-let process_vernac st (loc, vrn) =
-  let open Sexp   in
+type ser_printer =
+  | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)
+  | SP_Mach                     (* sexplib mach  printer *)
+  | SP_Human                    (* sexplib human printer *)
+
+let process_vernac pp st (loc, vrn) =
   let open Format in
   let n_st, tip = Stm.add ~ontop:st false (loc, vrn) in
   if tip <> `NewTip then
@@ -175,11 +181,11 @@ let process_vernac st (loc, vrn) =
                                pp (sexp_of_vernac_expr vrn);
   n_st
 
-let parse_document in_pa =
+let parse_document pp in_pa =
   let stt = ref (Stm.get_current_state ()) in
   try while true do
       let east = Stm.parse_sentence !stt in_pa in
-      stt := process_vernac !stt east
+      stt := process_vernac pp !stt east
     done
   with any ->
     let (e, _info) = CErrors.push any in
@@ -243,7 +249,12 @@ let input_file =
   Arg.(value & pos 0 string "" & info [] ~doc)
 
 (* XXX Reuse sertop_args *)
-let sercomp coq_lib in_file =
+let sercomp printer coq_lib in_file =
+  let pp_sexp = match printer with
+    | SP_Sertop -> Sertop_util.pp_sertop
+    | SP_Mach   -> Sexp.pp
+    | SP_Human  -> Sexp.pp_hum
+  in
   let in_chan = open_in in_file            in
   let in_strm = Stream.of_channel in_chan  in
   let in_pa   = Pcoq.Gram.parsable ~file:in_file in_strm in
@@ -253,11 +264,24 @@ let sercomp coq_lib in_file =
      let (e, info) = CErrors.push any in
      Format.eprintf "%a@\n%!" (Pp.pp_with ?pp_tag:None) (CErrors.iprint (e, info))
   );
-  parse_document in_pa;
+  parse_document pp_sexp in_pa;
   close_in in_chan;
   close_document ()
 
 let sercomp_version = ".0001"
+
+let print_args = 
+  Arg.(enum ["sertop", SP_Sertop; "human", SP_Human; "mach", SP_Mach])
+
+let print_args_doc = Arg.doc_alts
+  ["sertop, a custom printer (UTF-8 with emacs-compatible quoting)";
+   "human, sexplib's human-format printer (recommended for debug sessions)";
+   "mach, sexplib's machine-format printer"
+  ]
+
+let printer =
+  (* let doc = "Select S-expression printer." in *)
+  Arg.(value & opt print_args SP_Sertop & info ["printer"] ~doc:print_args_doc)
 
 let sertop_cmd =
   let doc = "SerComp Coq Compiler" in
@@ -266,7 +290,7 @@ let sertop_cmd =
     `P "Experimental Coq Compiler with serialization support"
   ]
   in
-  Term.(const sercomp $ prelude $ input_file ),
+  Term.(const sercomp $ printer $ prelude $ input_file ),
   Term.info "sertop" ~version:sercomp_version ~doc ~man
 
 let main () =

@@ -305,3 +305,7 @@ type raw_red_expr = Tacexpr.raw_red_expr
 val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
 val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
 
+type tacdef_body = Tacexpr.tacdef_body
+val tacdef_body_of_sexp : Sexp.t -> tacdef_body
+val sexp_of_tacdef_body : tacdef_body -> Sexp.t
+

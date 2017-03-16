@@ -615,3 +615,15 @@ type raw_red_expr =
   [%import: Tacexpr.raw_red_expr]
   [@@deriving sexp]
 
+type tacdef_body =
+  [%import: Tacexpr.tacdef_body]
+  [@@deriving sexp]
+
+(* XXX Global effects: this is really unfortunate but this is the way
+   Coq works for the moment. If you don't link this module, you get no
+   fun. Sad. *)
+
+(* XXX: Should be moved to ser_tacarg *)
+let _ =
+  Ser_genarg.sexp_of_raw_tactic_expr := sexp_of_raw_tactic_expr;
+  Ser_genarg.sexp_of_tacdef_body     := sexp_of_tacdef_body

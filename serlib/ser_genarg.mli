@@ -15,6 +15,10 @@
 
 open Sexplib
 
+val sexp_of_raw_tactic_expr : (Tacexpr.raw_tactic_expr -> Sexp.t) ref
+val sexp_of_tacdef_body     : (Tacexpr.tacdef_body     -> Sexp.t) ref
+val sexp_of_goal_selector   : (Vernacexpr.goal_selector-> Sexp.t) ref
+
 (**********************************************************************)
 (* GenArg                                                             *)
 (**********************************************************************)

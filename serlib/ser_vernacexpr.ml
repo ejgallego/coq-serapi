@@ -50,9 +50,9 @@ type goal_identifier = [%import: Vernacexpr.goal_identifier]
 type scope_name      = [%import: Vernacexpr.scope_name]
   [@@deriving sexp]
 
-(* type goal_selector   = *)
-(*   [%import: Vernacexpr.goal_selector] *)
-(*   [@@deriving sexp] *)
+type goal_selector   =
+  [%import: Vernacexpr.goal_selector]
+  [@@deriving sexp]
 
 type goal_reference = [%import: Vernacexpr.goal_reference]
   [@@deriving sexp]
@@ -250,28 +250,8 @@ and vernac_implicit_status = [%import: Vernacexpr.vernac_implicit_status]
 and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
   [@@deriving sexp]
 
-(* We need to overload the printing for the Extend mechanism... *)
-(*
-let sexp_of_vernac_expr vrc = match vrc with
-  | VernacExtend (s, cl)->
-    let open Sexplib in
-    begin try
-      let rl = Egramml.get_extend_vernac_rule s in
-      let pr_str s = Sexp.(List [Atom "NT"; Atom s])       in
-      let pr_arg a =
-        let sa = Pptactic.pr_raw_generic (Global.env ()) a in
-        Sexp.(List [Atom "NT"; Atom (Pp.string_of_ppcmds sa)])
-      in
-      let rec aux rl cl =
-        match rl, cl with
-        | Egramml.GramNonTerminal _ :: rl, arg :: cl -> pr_arg arg :: aux rl cl
-        | Egramml.GramTerminal    s :: rl, cl        -> pr_str s   :: aux rl cl
-        | [], [] -> []
-        | _ -> assert false in
-      Sexp.(List [Atom "VernacExtend"; List [Atom (fst s); List (aux rl cl)]])
-    with Not_found ->
-      Sexp.(List [Atom "VernacExtend"; List [Atom (fst s); Atom " not assigned!"]])
-    end
-  | _ -> sexp_of_vernac_expr vrc
-
-*)
+(* XXX Global effects: this is really unfortunate but this is the way
+   Coq works for the moment. If you don't link this module, you get no
+   fun. Sad. *)
+let _ =
+  Ser_genarg.sexp_of_goal_selector := sexp_of_goal_selector

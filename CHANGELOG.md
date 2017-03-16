@@ -7,6 +7,7 @@ _Version 0.1_:
  * Serialization-independent protocol core.
  * [js] Javascript worker.
  * [lib] Better Prelude support.
+ * [serlib] Full Serialization of generic arguments.
  * [proto] Add is not a synchronous call anymore.
  * [proto] Refactor into a flat command hierarchy.
  * [proto] More useful queries.

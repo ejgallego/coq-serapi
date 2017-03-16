@@ -42,9 +42,9 @@ let print_args = let open Sertop_sexp in
   Arg.(enum ["sertop", SP_Sertop; "human", SP_Human; "mach", SP_Mach])
 
 let print_args_doc = Arg.doc_alts
-  ["sertop's custom printer (UTF-8, strong, emacs-compatible quoting)";
-   "sexplib's mach printer";
-   "sexplib's human printer (recommended for debug sessions)"
+  ["sertop, a custom printer (UTF-8 with emacs-compatible quoting)";
+   "human, sexplib's human-format printer (recommended for debug sessions)";
+   "mach, sexplib's machine-format printer"
   ]
 
 let printer =

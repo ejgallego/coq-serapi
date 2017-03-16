@@ -1,4 +1,4 @@
-FLG -rectypes -thread -w @1..50@59
+FLG -rectypes -thread -w @1..50@59-4
 
 S .
 B _build/
