@@ -13,8 +13,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-exception End_of_input
-
 open Sexplib
 
 (* open Ser_loc *)
@@ -166,30 +164,27 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-let parse_sentence = Flags.with_option Flags.we_are_parsing
-  (fun pa ->
-    match Pcoq.Gram.entry_parse Pcoq.main_entry pa with
-    | Some (loc, ast) -> loc, ast
-    | None            -> raise End_of_input
-  )
-
-let process_vernac (loc : Loc.t) (vrn : Vernacexpr.vernac_expr) =
+let process_vernac st (loc, vrn) =
   let open Sexp   in
   let open Format in
-  Stm.interp false (loc, vrn);
+  let n_st, tip = Stm.add ~ontop:st false (loc, vrn) in
+  if tip <> `NewTip then
+    (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   do_stats loc vrn;
   printf "@[%a@] @[%a@]@\n%!" (Pp.pp_with ?pp_tag:None) (Pp.pr_loc loc)
-                               pp (sexp_of_vernac_expr vrn)
+                               pp (sexp_of_vernac_expr vrn);
+  n_st
 
 let parse_document in_pa =
+  let stt = ref (Stm.get_current_state ()) in
   try while true do
-      let loc, ast = parse_sentence in_pa in
-      process_vernac loc ast
+      let east = Stm.parse_sentence !stt in_pa in
+      stt := process_vernac !stt east
     done
   with any ->
     let (e, _info) = CErrors.push any in
     match e with
-    | End_of_input -> ()
+    | Stm.End_of_input -> ()
     | any          ->
       let (e, info) = CErrors.push any in
       Format.eprintf "%a@\n%!" (Pp.pp_with ?pp_tag:None) (CErrors.iprint (e, info))
@@ -201,6 +196,9 @@ let parse_document in_pa =
 let coq_init coq_lib =
 
   Lib.init ();
+
+  (* We link LTAC statically in SerAPI *)
+  Mltop.add_known_module "ltac_plugin";
 
   Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
   Global.set_engagement Declarations.PredicativeSet;
@@ -247,9 +245,8 @@ let input_file =
 (* XXX Reuse sertop_args *)
 let sercomp coq_lib in_file =
   let in_chan = open_in in_file            in
-  CLexer.set_current_file ~fname:in_file;
   let in_strm = Stream.of_channel in_chan  in
-  let in_pa   = Pcoq.Gram.parsable in_strm in
+  let in_pa   = Pcoq.Gram.parsable ~file:in_file in_strm in
   (try
      coq_init coq_lib
    with any ->
@@ -260,7 +257,7 @@ let sercomp coq_lib in_file =
   close_in in_chan;
   close_document ()
 
-let sercomp_version = ".0000"
+let sercomp_version = ".0001"
 
 let sertop_cmd =
   let doc = "SerComp Coq Compiler" in

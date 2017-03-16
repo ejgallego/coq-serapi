@@ -15,7 +15,10 @@ addons:
 env:
   global:
   - NJOBS=2
-  - COQ_BRANCH="trunk"
+  # - COQ_BRANCH="trunk"
+  # - COQ_REPOS=git://scm.gforge.inria.fr/coq/coq.git
+  - COQ_BRANCH="stm+parsing_api"
+  - COQ_REPOS=https://github.com/ejgallego/coq.git
   # system is == 4.02.3
   - COMPILER="4.04.0"
   # Main test suites
@@ -29,7 +32,7 @@ install:
 - opam config var root
 - opam install -j ${NJOBS} -y camlp5 cmdliner ppx_import ppx_sexp_conv sexplib ${EXTRA_OPAM} # yojson ppx_deriving_yojson
 - opam list
-- git clone --depth=3 -b ${COQ_BRANCH} git://scm.gforge.inria.fr/coq/coq.git ${HOME}/coq-${COQ_BRANCH}
+- git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_BRANCH}
 - pushd ${HOME}/coq-${COQ_BRANCH}
 - ./configure -local -native-compiler no -coqide no
 - make -j ${NJOBS}
@@ -37,6 +40,10 @@ install:
 
 script:
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_BRANCH}/" serlib
+- ls -l _build/serlib/serlib.cmxa
 - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_BRANCH}/"
 - ls -l _build/sertop/sertop.native
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_BRANCH}/" sercomp
+- ls -l _build/sertop/sercomp.native
 - echo -en 'travis_fold:end:serapi.build\\r'
