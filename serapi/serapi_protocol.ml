@@ -94,6 +94,7 @@ exception NoSuchState of Stateid.t
  *   [@@deriving sexp]
  *)
 
+(* XXX: Use a module here to have Coq.String etc...? *)
 type coq_object =
   | CoqString    of string
   | CoqSList     of string list
@@ -336,7 +337,6 @@ module QueryUtil = struct
            unacceptable round-trip. I don't really see other option
            than to maintain a prefix-specific table on the Coq side
            capturing all the possible aliases.
-
         *)
         let name = Libnames.string_of_qualid (Nametab.shortest_qualid_of_global Names.Id.Set.empty gr) in
         if Extra.is_prefix name ~prefix then acc := name :: !acc
@@ -412,7 +412,7 @@ module QueryUtil = struct
     | Declarations.TemplateArity (ctx, arity) ->
       Term.mkArity (ctx, Sorts.sort_of_univ arity.Declarations.template_level)
 
-  (* Returns the definition of an inductive *)
+  (* Definition of an inductive *)
   let info_of_ind (sp, _) =
     [CoqMInd (sp, Global.lookup_mind sp)], []
 
@@ -426,21 +426,27 @@ module QueryUtil = struct
     Option.cata (fun cb -> [CoqConstr cb] ) [] (Context.Named.Declaration.get_value vdef),
     [CoqConstr(Context.Named.Declaration.get_type vdef)]
 
+  (* XXX: Some work to do wrt Global.type_of_global_unsafe  *)
+  let info_of_constructor cr =
+    (* let cdef = Global.lookup_pinductive (cn, cu) in *)
+    let ctype = Global.type_of_global_unsafe (Globnames.ConstructRef cr) in
+    [],[CoqConstr ctype]
+
   (* Queries a generic definition, in the style of the `Print` vernacular *)
   (*                  definition        type                              *)
   let info_of_id id : coq_object list * coq_object list =
-    (* First step, we resolve to a qualified name *)
+    (* parse to a qualified name                        *)
     let qid = Libnames.qualid_of_ident (Names.Id.of_string id) in
-    (* Then we must locate the kind of object the name refers to *)
+    (* try locate the kind of object the name refers to *)
     try
       let lid = Nametab.locate qid in
-      (* We now dispatch based on type *)
+      (* dispatch based on type *)
       let open Globnames in
       match lid with
       | VarRef        vr -> info_of_var vr
       | ConstRef      cr -> info_of_const cr
       | IndRef        ir -> info_of_ind ir
-      | ConstructRef _cr -> [],[]
+      | ConstructRef  cr -> info_of_constructor cr
     with _ -> [],[]
 
 end
