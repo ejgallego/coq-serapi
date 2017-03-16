@@ -95,27 +95,27 @@ exception NoSuchState of Stateid.t
  *)
 
 type coq_object =
-  | CoqString   of string
-  | CoqSList    of string list
-  | CoqRichpp   of Richpp.richpp
-  | CoqAnn      of Ppannotation.t Richpp.located Xml_datatype.gxml
+  | CoqString    of string
+  | CoqSList     of string list
+  | CoqRichpp    of Richpp.richpp
+  | CoqAnn       of Ppannotation.t Richpp.located Xml_datatype.gxml
   (* XXX: For xml-like printing, should be moved to an option... *)
   (* | CoqRichXml  of Richpp.richpp *)
-  | CoqLoc      of Loc.t
-  | CoqAst      of Loc.t * Vernacexpr.vernac_expr
-  | CoqOption   of Goptions.option_name * Goptions.option_state
-  | CoqConstr   of Constr.constr
-  | CoqExpr     of Constrexpr.constr_expr
-  | CoqMInd     of Names.MutInd.t * Declarations.mutual_inductive_body
-  | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
-  | CoqQualId   of Libnames.qualid
-  | CoqGlobRef  of Globnames.global_reference
-  | CoqImplicit of Impargs.implicits_list
-  | CoqProfData of Profile_ltac.treenode
-  | CoqNotation of Constrexpr.notation
+  | CoqLoc       of Loc.t
+  | CoqAst       of Loc.t * Vernacexpr.vernac_expr
+  | CoqOption    of Goptions.option_name * Goptions.option_state
+  | CoqConstr    of Constr.constr
+  | CoqExpr      of Constrexpr.constr_expr
+  | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
+  | CoqTactic    of Names.KerName.t * Tacenv.ltac_entry
+  | CoqQualId    of Libnames.qualid
+  | CoqGlobRef   of Globnames.global_reference
+  | CoqImplicit  of Impargs.implicits_list
+  | CoqProfData  of Profile_ltac.treenode
+  | CoqNotation  of Constrexpr.notation
   | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
-  | CoqGoal     of Constr.t Serapi_goals.reified_goal Proof.pre_goals
-  | CoqExtGoal  of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
+  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -253,13 +253,10 @@ let obj_print pr_opt obj =
 type answer_kind =
     Ack
   | Completed
-  | StmAdded     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
-  | StmCanceled  of Stateid.t list
-  | ObjList      of coq_object list
-  | CoqExn       of Loc.t option * (Stateid.t * Stateid.t) option * exn
-  (* Deprecated, do not use in new code *)
-  | StmCurId     of Stateid.t
-  | StmEdited    of                     [`NewTip | `Focus   of Stm.focus ]
+  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | Canceled  of Stateid.t list
+  | ObjList   of coq_object list
+  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * exn
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -316,16 +313,17 @@ type query_cmd =
   | Search                         (* Search vernacular, we only support prefix by name *)
   | Goals                          (* Return goals [TODO: Add filtering/limiting options] *)
   | EGoals                         (* Return goals [TODO: Add filtering/limiting options] *)
-  | Ast       of Stateid.t         (* Return ast *)
-  | TypeOf    of string
-  | Names     of string            (* XXX Move to prefix *)
-  | Tactics   of string            (* XXX Print LTAC signatures (with prefix) *)
-  | Locate    of string            (* XXX Print LTAC signatures (with prefix) *)
-  | Implicits of string            (* XXX Print LTAC signatures (with prefix) *)
-  | Unparsing of string            (* XXX  *)
+  | Ast        of Stateid.t        (* Return ast *)
+  | TypeOf     of string
+  | Names      of string           (* XXX Move to prefix *)
+  | Tactics    of string           (* XXX Print LTAC signatures (with prefix) *)
+  | Locate     of string           (* XXX Print LTAC signatures (with prefix) *)
+  | Implicits  of string           (* XXX Print LTAC signatures (with prefix) *)
+  | Unparsing  of string           (* XXX  *)
   | Definition of string
   | PNotations                     (* XXX  *)
   | ProfileData
+  | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
 
 module QueryUtil = struct
 
@@ -462,7 +460,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
 
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
-                       * To keep protocol promises we need to special wrap.
+                       * To keep protocol promises we need to special wrap it.
                        *)
                       begin try let up, upe, gr = QueryUtil.query_unparsing ntn in
                                 [CoqUnparsing(up,upe,gr)]
@@ -472,6 +470,9 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Definition id  -> fst (QueryUtil.info_of_id id)
   | TypeOf id      -> snd (QueryUtil.info_of_id id)
   | Search         -> [CoqString "Not Implemented"]
+  (* XXX: should set printing options in all queries *)
+  | Vernac q       -> let pa = Pcoq.Gram.parsable (Stream.of_string q) in
+                      Stm.query ~at:opt.sid ~report_with:(opt.sid,opt.route) pa; []
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
@@ -519,20 +520,15 @@ type add_opts = {
 }
 
 type control_cmd =
-  | StmAdd        of add_opts  * string
-  | StmCancel     of Stateid.t list
-  | StmObserve    of Stateid.t
-  (*                 coq_path      unix_path   has_ml *)
-  | LibAdd        of string list * string    * bool
+  | Add        of add_opts  * string
+  | Cancel     of Stateid.t list
+  | Exec       of Stateid.t
+  (* XXX: We want to have query / update and fuse these two under it *)
+  (*              coq_path      unix_path   has_ml *)
+  | LibAdd     of string list * string    * bool
   (* Miscellanous *)
-  | SetOpt        of bool option * Goptions.option_name * Goptions.option_value
+  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   | Quit
-  (* Deprecated, do not use in new code *)
-  | StmJoin
-  | StmStopWorker of string
-  | StmQuery      of query_opt * string
-  | StmEditAt     of Stateid.t
-  | StmState
 
 let exec_setopt loc n (v : Goptions.option_value) =
   let open Goptions in
@@ -570,7 +566,7 @@ module ControlUtil = struct
         let east      = Stm.parse_sentence !stt pa in
         let n_st, foc = Stm.add ?newtip:opts.newtip ~ontop:!stt opts.verb east in
         cur_doc := n_st :: !cur_doc;
-        acc := (StmAdded (n_st, fst east, foc)) :: !acc;
+        acc := (Added (n_st, fst east, foc)) :: !acc;
         stt := n_st;
         incr i
       done;
@@ -612,7 +608,7 @@ module ControlUtil = struct
     let prev_st      = Extra.value (Extra.hd_opt k_ran) ~default:Stateid.initial in
     match Stm.edit_at prev_st with
     | `NewTip -> cur_doc := k_ran;
-                 [StmCanceled c_ran]
+                 [Canceled c_ran]
     (* - [tip] is the new document tip.
        - [st]   -- [stop] is dropped.
        - [stop] -- [tip]  has been kept.
@@ -621,39 +617,13 @@ module ControlUtil = struct
     *)
     | `Focus foc -> cancel_interval can_st foc
 
-  let edit st =
-    (* _dump_doc (); *)
-    let foc = Stm.edit_at st in
-    (* We update our internal document *)
-    let c_ran =
-      match foc with
-      | `NewTip    ->
-        let c_ran, k_ran = invalid_range st ~incl:false in
-        cur_doc := k_ran;
-        c_ran
-      | `Focus foc -> ignore (cancel_interval st foc); []
-    in
-    (* _dump_doc (); *)
-    [StmEdited foc; StmCanceled c_ran]
-
 end
 
 let exec_ctrl ctrl =
   coq_protect @@ fun () -> match ctrl with
-  | StmState        -> [StmCurId (Stm.get_current_state ())]
-
-  | StmAdd (opt, s) -> ControlUtil.add_sentences opt s
-
-  | StmCancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
-
-  | StmEditAt st    -> ControlUtil.edit st
-
-  | StmQuery(opt,q) -> let pa = Pcoq.Gram.parsable (Stream.of_string q) in
-                       Stm.query ~at:opt.sid ~report_with:(opt.sid,opt.route) pa; []
-  | StmObserve st   -> Stm.observe st; []
-  | StmJoin         -> Stm.join (); []
-  | StmStopWorker w -> Stm.stop_worker w; []
-
+  | Add (opt, s) -> ControlUtil.add_sentences opt s
+  | Cancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
+  | Exec st      -> Stm.observe st; []
   | LibAdd(lib, lib_path, has_ml) ->
     let open Names in
     let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
@@ -685,28 +655,18 @@ let serproto_help () =
 (* Top-Level Commands                                                         *)
 (******************************************************************************)
 
+(* TODO: Remove this in the future and make a flat command hierachy *)
 type cmd =
   | Control    of control_cmd
-  | Print      of print_opt * coq_object
-  | Parse      of int * string
   | Query      of query_opt * query_cmd
+  | Print      of print_opt * coq_object
   | Noop
   | Help
 
 let exec_cmd (cmd : cmd) = match cmd with
   | Control ctrl      -> exec_ctrl ctrl
-
-  | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
-
-  (* We try to do a bit better here than a coq_protect would do, by
-     trying to keep partial results. *)
-  | Parse (_num, _str)  -> []
-    (* Not really possible to do parsing of more sentence without execution. *)
-    (* let acc = ref [] in *)
-    (* begin try parse_sentences num acc str; [ObjList (List.rev !acc)] *)
-    (*       with exn -> [ObjList (List.rev !acc)] @ [coq_exn_info exn] *)
-    (* end *)
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
+  | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
 
   | Noop              -> []
   | Help              -> serproto_help (); []

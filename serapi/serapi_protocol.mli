@@ -25,28 +25,28 @@ open Sexplib.Conv
 (* Basic Protocol Objects                                                     *)
 (******************************************************************************)
 type coq_object =
-    CoqString   of string
-  | CoqSList    of string list
-  | CoqRichpp   of Richpp.richpp
-  | CoqAnn      of Ppannotation.t Richpp.located Xml_datatype.gxml
+    CoqString    of string
+  | CoqSList     of string list
+  | CoqRichpp    of Richpp.richpp
+  | CoqAnn       of Ppannotation.t Richpp.located Xml_datatype.gxml
   (* XXX: For xml-like printing, should be moved to an option... *)
   (* | CoqRichXml  of Richpp.richpp *)
-  | CoqLoc      of Loc.t
-  | CoqAst      of Loc.t * Vernacexpr.vernac_expr
-  | CoqOption   of Goptions.option_name * Goptions.option_state
-  | CoqConstr   of Constr.constr
-  | CoqExpr     of Constrexpr.constr_expr
-  | CoqMInd     of Names.MutInd.t * Declarations.mutual_inductive_body
-  | CoqTactic   of Names.KerName.t * Tacenv.ltac_entry
-  | CoqQualId   of Libnames.qualid
-  | CoqGlobRef  of Globnames.global_reference
-  | CoqImplicit of Impargs.implicits_list
-  | CoqProfData of Profile_ltac.treenode
-  | CoqNotation of Constrexpr.notation
+  | CoqLoc       of Loc.t
+  | CoqAst       of Loc.t * Vernacexpr.vernac_expr
+  | CoqOption    of Goptions.option_name * Goptions.option_state
+  | CoqConstr    of Constr.constr
+  | CoqExpr      of Constrexpr.constr_expr
+  | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
+  | CoqTactic    of Names.KerName.t * Tacenv.ltac_entry
+  | CoqQualId    of Libnames.qualid
+  | CoqGlobRef   of Globnames.global_reference
+  | CoqImplicit  of Impargs.implicits_list
+  | CoqProfData  of Profile_ltac.treenode
+  | CoqNotation  of Constrexpr.notation
   | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
-  | CoqGoal     of Constr.t Serapi_goals.reified_goal Proof.pre_goals
-  | CoqExtGoal  of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
+  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -82,13 +82,10 @@ exception NoSuchState of Stateid.t
 type answer_kind =
     Ack
   | Completed
-  | StmAdded     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
-  | StmCanceled  of Stateid.t list
-  | ObjList      of coq_object list
-  | CoqExn       of Loc.t option * (Stateid.t * Stateid.t) option * exn
-  (* Deprecated, do not use in new code *)
-  | StmCurId     of Stateid.t
-  | StmEdited    of                     [`NewTip | `Focus   of Stm.focus ]
+  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | Canceled  of Stateid.t list
+  | ObjList   of coq_object list
+  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * exn
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -112,18 +109,19 @@ type query_opt =
 type query_cmd =
   | Option
   | Search
-  | Goals                         (* Return goals [TODO: Add filtering/limiting options] *)
-  | EGoals                        (* Return goals [TODO: Add filtering/limiting options] *)
-  | Ast       of Stateid.t        (* Return ast *)
-  | TypeOf    of string           (* XXX Unimplemented *)
-  | Names     of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
-  | Tactics   of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
-  | Locate    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
-  | Implicits of string           (* XXX Print LTAC signatures (with prefix) *)
-  | Unparsing of string           (* XXX  *)
+  | Goals                          (* Return goals [TODO: Add filtering/limiting options] *)
+  | EGoals                         (* Return goals [TODO: Add filtering/limiting options] *)
+  | Ast        of Stateid.t        (* Return ast *)
+  | TypeOf     of string           (* XXX Unimplemented *)
+  | Names      of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Tactics    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Locate     of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
+  | Implicits  of string           (* XXX Print LTAC signatures (with prefix) *)
+  | Unparsing  of string           (* XXX  *)
   | Definition of string
-  | PNotations                    (* XXX  *)
+  | PNotations                     (* XXX  *)
   | ProfileData
+  | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
@@ -137,20 +135,14 @@ type add_opts = {
 }
 
 type control_cmd =
-  | StmAdd     of       add_opts  * string      (* Stm.add       *)
-  | StmCancel  of       Stateid.t list
-  | StmObserve of       Stateid.t
-  (*              coq_path      unix_path   has_ml *)
-  | LibAdd     of string list * string    * bool
+  | Add     of       add_opts  * string      (* Stm.add       *)
+  | Cancel  of       Stateid.t list
+  | Exec    of       Stateid.t
+  (*           coq_path      unix_path   has_ml *)
+  | LibAdd  of string list * string    * bool
   (* Miscellanous *)
-  | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
+  | SetOpt  of bool option * Goptions.option_name * Goptions.option_value
   | Quit
-  (* Deprecated, do not use in new code *)
-  | StmJoin                                     (* Stm.join      *)
-  | StmStopWorker of    string
-  | StmQuery   of       query_opt * string
-  | StmEditAt  of       Stateid.t
-  | StmState
 
 (******************************************************************************)
 (* Help                                                                       *)
@@ -164,9 +156,8 @@ type control_cmd =
 
 type cmd =
     Control of control_cmd
-  | Print   of print_opt * coq_object
-  | Parse   of int * string
   | Query   of query_opt * query_cmd
+  | Print   of print_opt * coq_object
   | Noop
   | Help
 

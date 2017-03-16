@@ -124,7 +124,7 @@ There are four categories of commands:
 
 - `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
 
-- `(Parse num string)`: The `Parse` command gives access to the Coq parsing engine. We currently support detecting the end of the first num sentences, returning the corresponding `CoqPosition` objects. If you want to parse a document use the `StmAdd` control command instead.
+- `(Parse num string)`: The `Parse` command gives access to the Coq parsing engine. We currently support detecting the end of the first num sentences, returning the corresponding `CoqPosition` objects. If you want to parse a document use the `Add` control command instead.
 
 Look at the [interface file](serapi/serapi_protocol.mli) more the details. The Ocaml type definitions are often self-explanatory and are serialized in a predictable way.
 
@@ -227,20 +227,17 @@ coq-serapi$ rlwrap ./sertop.byte --prelude ~/external/coq-git/
 (0 (Print () (CoqConstr (App (Rel 0) ((Rel 0))))))
 > (Answer 0 Ack)
 > (Answer 0(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
-(1 (Control (StmQuery 2 "Print nat. ")))
+(1 (Query () (Vernac "Print nat. ")))
 > (Answer 1 Ack)
 > (Feedback((id(State 2))(contents Processed)(route 0)))
 > (Feedback((id(State 0))(contents(Message ....))))
 (2 (Print () (CoqRichpp (Element ....))))
 > (Answer 2 Ack)
 > (Answer 2(ObjList((CoqString"Inductive nat : Set :=  O : nat | S : nat -> nat\n\nFor S: Argument scope is [nat_scope]"))))
-(3 (Control StmState))
-> (Answer 3 Ack)
-> (Answer 3(StmInfo 2))
-(4 (Control (StmAdd () "Goal forall n, n + 0 = n.")))
+(4 (Control (Add () "Goal forall n, n + 0 = n.")))
 > (Answer 4 Ack)
-> (Answer 4(StmInfo 4))
-(5 (Control (StmObserve 4)))
+> (Answer 4(Added 4 loc))
+(5 (Control (Exec 4)))
 > (Answer 5 Ack)
 > (Feedback((id(State 4))(contents(ProcessingIn master))(route 0)))
 > ...
@@ -250,10 +247,10 @@ coq-serapi$ rlwrap ./sertop.byte --prelude ~/external/coq-git/
 (Query ((sid 4) (pp ((pp_format PpSer)))) Goals)
 > (Answer 7 Ack)
 > (Answer 7(ObjList((CoqGoal()(CProdN((fname"")....))))))
-(8 (Control (StmAdd () "now induction n.")))
+(8 (Control (Add () "now induction n.")))
 > (Answer 8 Ack)
-> (Answer 8(StmInfo 5))
-(10 (Control (StmObserve 5)))
+> (Answer 8(Added 5 loc))
+(10 (Control (Exec 5)))
 > (Answer 10 Ack)
 > (Feedback((id(State 5))(contents Processed)(route 0)))
 > ...
