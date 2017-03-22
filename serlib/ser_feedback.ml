@@ -18,7 +18,7 @@ open Sexplib.Std
 module Loc = Ser_loc
 
 module Xml_datatype = Ser_xml_datatype
-module Richpp       = Ser_richpp
+module Pp           = Ser_pp
 module Stateid      = Ser_stateid
 
 type level =

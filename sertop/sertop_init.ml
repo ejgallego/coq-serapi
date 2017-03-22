@@ -96,8 +96,6 @@ let coq_init opts =
   (* We must prevent output to stdout when loading the libs... but it
    * will be lost... Maybe wrap in StdErr??
    *)
-  Feedback.set_logger Feedback.feedback_logger;
-
   List.iter (fun (dp, p, in_exp) ->
       Library.require_library_from_dirpath [dp,p] in_exp
     ) opts.require_libs;

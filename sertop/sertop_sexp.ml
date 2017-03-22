@@ -22,7 +22,6 @@ module Names = Ser_names
 module Goptions = Ser_goptions
 module Stateid  = Ser_stateid
 module Context  = Ser_context
-module Richpp   = Ser_richpp
 module Feedback = Ser_feedback
 module Libnames = Ser_libnames
 module Impargs  = Ser_impargs
@@ -41,7 +40,6 @@ end
 
 module Notation   = Ser_notation
 module Xml_datatype = Ser_xml_datatype
-module Ppannotation = Ser_ppannotation
 module Notation_term = Ser_notation_term
 module Vernacexpr   = Ser_vernacexpr
 module Declarations = Ser_declarations
@@ -86,6 +84,8 @@ let _ =
       | _ -> None
 
     )
+
+module Pp            = Ser_pp
 
 module Serapi_goals = struct
 

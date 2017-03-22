@@ -98,10 +98,8 @@ exception NoSuchState of Stateid.t
 type coq_object =
   | CoqString    of string
   | CoqSList     of string list
-  | CoqRichpp    of Richpp.richpp
-  | CoqAnn       of Ppannotation.t Richpp.located Xml_datatype.gxml
-  (* XXX: For xml-like printing, should be moved to an option... *)
-  (* | CoqRichXml  of Richpp.richpp *)
+  | CoqPp        of Pp.t
+  (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
   | CoqAst       of Loc.t * Vernacexpr.vernac_expr
   | CoqOption    of Goptions.option_name * Goptions.option_state
@@ -158,9 +156,8 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   match obj with
   | CoqString  s    -> Pp.str s
   | CoqSList   s    -> Pp.(pr_sequence str) s
-  | CoqRichpp  s    -> Pp.str (Richpp.raw_print s)
-  | CoqAnn     _    -> Pp.str "Fixme Ann"
-  (* | CoqRichXml x    -> Serapi_pp.pp_xml fmt (Richpp.repr x) *)
+  | CoqPp      s    -> s
+  (* | CoqRichpp  s    -> Pp.str (Richpp.raw_print s) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqAst    _     -> Pp.str "Fixme ast"
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body (Global.env ()) m mind
@@ -182,21 +179,40 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
-let str_pp_obj fmt (obj : coq_object)  =
-  Format.fprintf fmt "%a" (Pp.pp_with ?pp_tag:None) (gen_pp_obj obj)
+(* XXX: This is terrible, but useful *)
+let rec pp_opt (d : Pp.t) = let open Pp in
+  let rec flatten_glue l = match l with
+    | []  -> []
+    | (Ppcmd_glue g :: l) -> flatten_glue (List.map repr g @ flatten_glue l)
+    | (Ppcmd_string s1 :: Ppcmd_string s2 :: l) -> flatten_glue (Ppcmd_string (s1 ^ s2) :: flatten_glue l)
+    | (x :: l) -> x :: flatten_glue l
+  in
+  (* let rec flatten_glue l = match l with *)
+  (*   | (Ppcmd_string s1 :: Ppcmd_string s2 :: l) -> Ppcmd_string (s1 ^ s2) :: flatten_glue l *)
+  unrepr (match repr d with
+      | Ppcmd_glue []   -> Ppcmd_empty
+      | Ppcmd_glue [x]  -> repr (pp_opt x)
+      | Ppcmd_glue l    -> Ppcmd_glue List.(map pp_opt (map unrepr (flatten_glue (map repr l))))
+      | Ppcmd_box(bt,d) -> Ppcmd_box(bt, pp_opt d)
+      | Ppcmd_tag(t, d) -> Ppcmd_tag(t,  pp_opt d)
+      | d -> d
+    )
 
-let ann_pp_obj (obj : coq_object)  =
-  let repr     = gen_pp_obj obj                  in
-  let annp obj = Pp.Tag.prj obj Ppannotation.tag in
-  Richpp.rich_pp annp repr
+(* Enable to optimize *)
+(* let gen_pp_obj obj : Pp.t = *)
+(*   pp_opt (gen_pp_obj obj) *)
+
+let _ = pp_opt
+
+let str_pp_obj fmt (obj : coq_object)  =
+  Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj obj)
 
 (** Print output format  *)
 type print_format =
   | PpSer
   | PpStr
-  | PpAnn
   | PpTex
-  | PpRichpp
+  | PpCoq
 
 (* register printer *)
 
@@ -230,8 +246,7 @@ let obj_print pr_opt obj =
   let open Format in
   match pr_opt.pp_format with
   | PpSer    -> obj
-  | PpAnn    -> CoqAnn (ann_pp_obj obj)
-  | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp (gen_pp_obj obj))
+  | PpCoq    -> CoqPp (gen_pp_obj obj)
   | PpTex    -> CoqString (pp_tex obj)
   | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
@@ -276,10 +291,8 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   match obj with
   | CoqString  s    -> Extra.is_prefix s ~prefix
   | CoqSList   _    -> true     (* XXX *)
-  | CoqRichpp  _    -> true
-  | CoqAnn     _    -> true
-  (* | CoqRichXml _    -> true *)
   | CoqLoc     _    -> true
+  | CoqPp      _    -> true
   | CoqAst     _    -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true

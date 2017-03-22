@@ -27,10 +27,8 @@ open Sexplib.Conv
 type coq_object =
     CoqString    of string
   | CoqSList     of string list
-  | CoqRichpp    of Richpp.richpp
-  | CoqAnn       of Ppannotation.t Richpp.located Xml_datatype.gxml
-  (* XXX: For xml-like printing, should be moved to an option... *)
-  (* | CoqRichXml  of Richpp.richpp *)
+  | CoqPp        of Pp.t
+  (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
   | CoqAst       of Loc.t * Vernacexpr.vernac_expr
   | CoqOption    of Goptions.option_name * Goptions.option_state
@@ -56,9 +54,8 @@ type coq_object =
 type print_format =
   | PpSer
   | PpStr
-  | PpAnn
   | PpTex
-  | PpRichpp
+  | PpCoq
 
 type print_opt = {
   pp_format : print_format  [@default PpStr];
