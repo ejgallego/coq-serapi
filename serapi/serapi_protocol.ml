@@ -220,7 +220,7 @@ type print_opt = {
   pp_format : print_format  [@default PpStr];
   pp_depth  : int           [@default 0];
   pp_elide  : string        [@default "..."];
-  (* pp_margin : int; *)
+  pp_margin : int           [@default 72];
 }
 
 let pp_tex (obj : coq_object) =
@@ -251,14 +251,17 @@ let obj_print pr_opt obj =
   | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
     let et      = pp_get_ellipsis_text str_formatter () in
+    let mg      = pp_get_margin        str_formatter () in
     pp_set_max_boxes     str_formatter pr_opt.pp_depth;
     pp_set_ellipsis_text str_formatter pr_opt.pp_elide;
+    pp_set_margin        str_formatter pr_opt.pp_margin;
 
     fprintf str_formatter "@[%a@]" str_pp_obj obj;
     let str_obj = CoqString (flush_str_formatter ())    in
 
     pp_set_max_boxes     str_formatter mb;
     pp_set_ellipsis_text str_formatter et;
+    pp_set_margin        str_formatter mg;
     str_obj
 
 (******************************************************************************)
@@ -316,7 +319,7 @@ type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
     sid   : Stateid.t [@default Stm.get_current_state()];
-    pp    : print_opt [@default { pp_format = PpSexp ; pp_depth = 0; pp_elide = "..." } ];
+    pp    : print_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (* Legacy/Deprecated *)
     route : Feedback.route_id [@default 0];
   }

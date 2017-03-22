@@ -61,7 +61,7 @@ type print_opt = {
   pp_format : print_format  [@default PpStr];
   pp_depth  : int           [@default 0];
   pp_elide  : string        [@default "..."];
-  (* pp_margin : int; *)
+  pp_margin : int           [@default 72];
 }
 
 (******************************************************************************)
@@ -95,7 +95,7 @@ type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
     sid   : Stateid.t [@default Stm.get_current_state()];
-    pp    : print_opt [@default { pp_format = PpSer ; pp_depth = 0; pp_elide = "..." } ];
+    pp    : print_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (* Legacy/Deprecated *)
     route : Feedback.route_id [@default 0];
   }
