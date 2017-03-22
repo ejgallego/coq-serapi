@@ -43,6 +43,7 @@ module Xml_datatype = Ser_xml_datatype
 module Notation_term = Ser_notation_term
 module Vernacexpr   = Ser_vernacexpr
 module Declarations = Ser_declarations
+module Richpp       = Ser_richpp
 
 module SP = Serapi_protocol
 

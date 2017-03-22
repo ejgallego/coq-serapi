@@ -28,7 +28,7 @@ type coq_object =
     CoqString    of string
   | CoqSList     of string list
   | CoqPp        of Pp.t
-  (* | CoqRichpp    of Richpp.richpp *)
+  | CoqRichpp    of Richpp.richpp
   | CoqLoc       of Loc.t
   | CoqAst       of Loc.t * Vernacexpr.vernac_expr
   | CoqOption    of Goptions.option_name * Goptions.option_state
@@ -56,6 +56,7 @@ type print_format =
   | PpStr
   | PpTex
   | PpCoq
+  | PpRichpp
 
 type print_opt = {
   pp_format : print_format  [@default PpStr];

@@ -17,10 +17,10 @@ open Sexplib.Std
 
 module Xml_datatype = Ser_xml_datatype
 
-type richpp = Richpp.richpp
+type richpp =
+  [%import: Richpp.richpp]
+  [@@deriving sexp]
 
-let richpp_of_sexp sexp = Richpp.richpp_of_xml (Xml_datatype.xml_of_sexp sexp)
-let sexp_of_richpp rpp  = Xml_datatype.sexp_of_xml (Richpp.repr rpp)
 
 type located =
   [%import: 'a Richpp.located]

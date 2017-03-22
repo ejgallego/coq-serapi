@@ -12,7 +12,7 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 <sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
 
 # Serlib building options
-<serlib/*.{ml,mli}>: package(coq.intf), package(coq.ltac)
+<serlib/*.{ml,mli}>: package(coq.intf), package(coq.ltac), package(coq.idetop)
 <serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/*.{ml,mli}>: package(sexplib)
 
@@ -21,7 +21,7 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 
 # Serapi building options
 <serapi/*.{ml,mli}>: package(coq.intf)
-<serapi/*>: package(coq.toplevel), package(coq.ltac)
+<serapi/*>: package(coq.toplevel), package(coq.ltac), package(coq.idetop)
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
 
@@ -32,7 +32,7 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 
 # Specifip to init
 <sertop/*.{ml,mli}>: package(coq.intf)
-<sertop/*>: package(coq.toplevel), package(coq.ltac)
+<sertop/*>: package(coq.toplevel), package(coq.ltac), package(coq.idetop)
 <sertop/*>: package(sexplib), debug
 
 # Specifip to toplevel
