@@ -177,8 +177,8 @@ let process_vernac pp st (loc, vrn) =
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   do_stats loc vrn;
-  printf "@[%a@] @[%a@]@\n%!" (Pp.pp_with ?pp_tag:None) (Pp.pr_loc loc)
-                               pp (sexp_of_vernac_expr vrn);
+  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (Pp.pr_loc loc)
+                              pp (sexp_of_vernac_expr vrn);
   n_st
 
 let parse_document pp in_pa =
@@ -193,7 +193,7 @@ let parse_document pp in_pa =
     | Stm.End_of_input -> ()
     | any          ->
       let (e, info) = CErrors.push any in
-      Format.eprintf "%a@\n%!" (Pp.pp_with ?pp_tag:None) (CErrors.iprint (e, info))
+      Format.eprintf "%a@\n%!" Pp.pp_with (CErrors.iprint (e, info))
 
  (* Format.eprintf "Error in parsing@\n%!" (\* XXX: add loc *\) *)
 
@@ -262,7 +262,7 @@ let sercomp printer coq_lib in_file =
      coq_init coq_lib
    with any ->
      let (e, info) = CErrors.push any in
-     Format.eprintf "%a@\n%!" (Pp.pp_with ?pp_tag:None) (CErrors.iprint (e, info))
+     Format.eprintf "%a@\n%!" Pp.pp_with (CErrors.iprint (e, info))
   );
   parse_document pp_sexp in_pa;
   close_in in_chan;
