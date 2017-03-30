@@ -30,7 +30,7 @@ install:
 - "[ -e .opam ] || opam init -j ${NJOBS} --compiler=${COMPILER} -n -y"
 - eval $(opam config env)
 - opam config var root
-- opam install -j ${NJOBS} -y camlp5 cmdliner ppx_import ppx_sexp_conv sexplib ${EXTRA_OPAM} # yojson ppx_deriving_yojson
+- opam install -j ${NJOBS} -y camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib ${EXTRA_OPAM} # yojson ppx_deriving_yojson
 - opam list
 - git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_BRANCH}
 - pushd ${HOME}/coq-${COQ_BRANCH}
