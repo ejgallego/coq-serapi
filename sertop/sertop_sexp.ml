@@ -52,34 +52,42 @@ let _ =
   (* XXX Finish this *)
   let open Sexp in
   let sexp_of_std_ppcmds pp = Atom (Pp.string_of_ppcmds pp) in
-  Conv.Exn_converter.add_slow (function
+  Conv.Exn_converter.add [%extension_constructor SP.NoSuchState] (function
       (* Own things *)
       | SP.NoSuchState sid ->
-        Some (List [Atom "NoSuchState"; Stateid.sexp_of_t sid])
+        List [Atom "NoSuchState"; Stateid.sexp_of_t sid]
+      | _ -> assert false);
+  Conv.Exn_converter.add [%extension_constructor CErrors.UserError] (function
       (* Errors *)
-      | CErrors.UserError(e,msg) ->
-        Some (List [Atom "CErrors.UserError"; List [Atom e; sexp_of_std_ppcmds msg]])
+      | CErrors.UserError(hdr,msg) ->
+        List [Atom "CErrors.UserError"; List [Atom hdr; sexp_of_std_ppcmds msg]]
+      | _ -> assert false);
+  Conv.Exn_converter.add [%extension_constructor CErrors.AlreadyDeclared] (function
       | CErrors.AlreadyDeclared msg ->
-        Some (List [Atom "CErrors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]])
+        List [Atom "CErrors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]]
+      | _ -> assert false);
+  Conv.Exn_converter.add [%extension_constructor Pretype_errors.PretypeError] (function
       (* Pretype Errors XXX what to do with _env, _envmap *)
       | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
-        Some (List [Atom "Pretype_errors.PretypeError";
-                    List [Ser_pretype_errors.sexp_of_pretype_error pterr]])
+        List [Atom "Pretype_errors.PretypeError";
+              List [Ser_pretype_errors.sexp_of_pretype_error pterr]]
+      | _ -> assert false);
+  Conv.Exn_converter.add [%extension_constructor ExplainErr.EvaluatedError] (function
       (* Cerrors *)
-      | ExplainErr.EvaluatedError(msg, exn) -> Some (
+      | ExplainErr.EvaluatedError(msg, exn) -> begin
           match exn with
           | Some exn -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
           | None     -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg]
-        )
+        end
+      | _ -> assert false);
+  Conv.Exn_converter.add [%extension_constructor Proof_global.NoCurrentProof] (function
       | Proof_global.NoCurrentProof ->
-        Some (Atom "NoCurrentProof")
+        Atom "NoCurrentProof"
+      | _ -> assert false)
 (* Private... request Coq devs to make them public?
       | Errors.Anomaly(msgo, pp) ->
         Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
 *)
-      | _ -> None
-
-    )
 
 (* Serialization to sexp *)
 type coq_object =
