@@ -259,10 +259,10 @@ type bullet = Vernacexpr.bullet
 val bullet_of_sexp : Sexp.t -> bullet
 val sexp_of_bullet : bullet -> Sexp.t
 
-type 'a stm_vernac = 'a Vernacexpr.stm_vernac
+type stm_vernac = Vernacexpr.stm_vernac
 
-val stm_vernac_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a stm_vernac
-val sexp_of_stm_vernac : ('a -> Sexp.t) -> 'a stm_vernac -> Sexp.t
+val stm_vernac_of_sexp : Sexp.t -> stm_vernac
+val sexp_of_stm_vernac : stm_vernac -> Sexp.t
 
 type 'a module_signature = 'a Vernacexpr.module_signature
 

@@ -66,7 +66,7 @@ and binder_expr          = Constrexpr.binder_expr
 and fix_expr             = Constrexpr.fix_expr
 and cofix_expr           = Constrexpr.cofix_expr
 and recursion_order_expr = Constrexpr.recursion_order_expr
-and local_binder         = Constrexpr.local_binder
+and local_binder_expr    = Constrexpr.local_binder_expr
 and constr_notation_substitution = Constrexpr.constr_notation_substitution
 
 val constr_expr_of_sexp : Sexp.t -> constr_expr
@@ -76,7 +76,7 @@ val binder_expr_of_sexp : Sexp.t -> binder_expr
 val fix_expr_of_sexp : Sexp.t -> fix_expr
 val cofix_expr_of_sexp : Sexp.t -> cofix_expr
 val recursion_order_expr_of_sexp : Sexp.t -> recursion_order_expr
-val local_binder_of_sexp : Sexp.t -> local_binder
+val local_binder_expr_of_sexp : Sexp.t -> local_binder_expr
 val constr_notation_substitution_of_sexp : Sexp.t -> constr_notation_substitution
 
 val sexp_of_constr_expr : constr_expr -> Sexp.t
@@ -86,7 +86,7 @@ val sexp_of_binder_expr : binder_expr -> Sexp.t
 val sexp_of_fix_expr : fix_expr -> Sexp.t
 val sexp_of_cofix_expr : cofix_expr -> Sexp.t
 val sexp_of_recursion_order_expr : recursion_order_expr -> Sexp.t
-val sexp_of_local_binder : local_binder -> Sexp.t
+val sexp_of_local_binder_expr : local_binder_expr -> Sexp.t
 val sexp_of_constr_notation_substitution : constr_notation_substitution -> Sexp.t
 
 type constr_pattern_expr = Constrexpr.constr_pattern_expr

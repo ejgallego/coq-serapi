@@ -225,8 +225,8 @@ type bullet =
   [%import: Vernacexpr.bullet]
   [@@deriving sexp]
 
-type 'a stm_vernac =
-  [%import: 'a Vernacexpr.stm_vernac]
+type stm_vernac =
+  [%import: Vernacexpr.stm_vernac]
   [@@deriving sexp]
 
 type 'a module_signature =

@@ -171,13 +171,27 @@ type ser_printer =
   | SP_Mach                     (* sexplib mach  printer *)
   | SP_Human                    (* sexplib human printer *)
 
+let pr_loc loc =
+  let open Pp in
+  if Loc.is_ghost loc then str"<unknown>"
+  else
+    let fname = loc.Loc.fname in
+    if CString.equal fname "" then
+      Loc.(str"Toplevel input, characters " ++ int loc.bp ++
+	   str"-" ++ int loc.ep ++ str":")
+    else
+      Loc.(str"File " ++ str "\"" ++ str fname ++ str "\"" ++
+	   str", line " ++ int loc.line_nb ++ str", characters " ++
+	   int (loc.bp-loc.bol_pos) ++ str"-" ++ int (loc.ep-loc.bol_pos) ++
+	   str":")
+
 let process_vernac pp st (loc, vrn) =
   let open Format in
   let n_st, tip = Stm.add ~ontop:st false (loc, vrn) in
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   do_stats loc vrn;
-  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (Pp.pr_loc loc)
+  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (pr_loc loc)
                               pp (sexp_of_vernac_expr vrn);
   n_st
 
