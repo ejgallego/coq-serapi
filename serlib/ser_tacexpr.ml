@@ -21,6 +21,7 @@ module Names     = Ser_names
 module Misctypes = Ser_misctypes
 module Locus     = Ser_locus
 module Constr    = Ser_constr
+module EConstr   = Ser_eConstr
 module Nametab   = Ser_nametab
 module Constr_matching = Ser_constr_matching
 module Libnames   = Ser_libnames
@@ -577,7 +578,7 @@ type atomic_tactic_expr = Tacexpr.atomic_tactic_expr
 
 let atomic_tactic_expr_of_sexp tac =
   gen_atomic_tactic_expr_of_sexp tac
-    Constr.constr_of_sexp
+    EConstr.t_of_sexp
     glob_constr_and_expr_of_sexp
     Pattern.constr_pattern_of_sexp
     Names.evaluable_global_reference_of_sexp
@@ -588,7 +589,7 @@ let atomic_tactic_expr_of_sexp tac =
 
 let sexp_of_atomic_tactic_expr tac =
   sexp_of_gen_atomic_tactic_expr
-    Constr.sexp_of_constr
+    EConstr.sexp_of_t
     sexp_of_glob_constr_and_expr
     Pattern.sexp_of_constr_pattern
     Names.sexp_of_evaluable_global_reference

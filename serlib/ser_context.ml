@@ -23,6 +23,10 @@ module Rel = struct
 
   module Declaration = struct
 
+  type ('constr, 'types) pt =
+    [%import: ('constr, 'types) Context.Rel.Declaration.pt]
+    [@@deriving sexp]
+
   type t =
     [%import: Context.Rel.Declaration.t]
     [@@deriving sexp]
@@ -39,6 +43,10 @@ module Named = struct
 
   module Declaration = struct
 
+  type ('constr, 'types) pt =
+    [%import: ('constr, 'types) Context.Named.Declaration.pt]
+    [@@deriving sexp]
+
   type t =
     [%import: Context.Named.Declaration.t]
     [@@deriving sexp]
@@ -54,6 +62,10 @@ end
 module Compacted = struct
 
   module Declaration = struct
+
+  type ('constr, 'types) pt =
+    [%import: ('constr, 'types) Context.Compacted.Declaration.pt]
+    [@@deriving sexp]
 
   type t =
     [%import: Context.Compacted.Declaration.t]

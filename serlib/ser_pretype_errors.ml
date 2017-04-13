@@ -21,6 +21,7 @@ module Term        = Ser_constr
 module Evd         = Ser_evd
 module Evar        = Ser_evar
 module Environ     = Ser_environ
+module EConstr     = Ser_eConstr
 module Univ        = Ser_univ
 module Type_errors = Ser_type_errors
 module Locus       = Ser_locus
@@ -40,6 +41,10 @@ type position_reporting =
 
 type subterm_unification_error =
   [%import: Pretype_errors.subterm_unification_error]
+  [@@deriving sexp]
+
+type type_error =
+  [%import: Pretype_errors.type_error]
   [@@deriving sexp]
 
 type pretype_error =

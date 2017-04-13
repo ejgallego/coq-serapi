@@ -23,6 +23,16 @@ type guard_error = Type_errors.guard_error
 val guard_error_of_sexp : Sexp.t -> guard_error
 val sexp_of_guard_error : guard_error -> Sexp.t
 
+type ('c, 't) ptype_error  = ('c, 't) Type_errors.ptype_error
+val ptype_error_of_sexp :
+  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) ->
+  Sexp.t -> ('constr, 'types) ptype_error
+
+val sexp_of_ptype_error :
+  ('constr -> Sexp.t) ->
+  ('types -> Sexp.t) ->
+  ('constr, 'types) ptype_error -> Sexp.t
+
 type type_error  = Type_errors.type_error
 val type_error_of_sexp : Sexp.t -> type_error
 val sexp_of_type_error : type_error -> Sexp.t

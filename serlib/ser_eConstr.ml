@@ -8,26 +8,35 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+(* open Sexplib *)
+(* open Sexplib.Std *)
 
-module Term = Ser_constr
+module Constr  = Ser_constr
+module Environ = Ser_environ
 
-type env =
-  [%import: Environ.env]
+type t = EConstr.t
+let t_of_sexp s = EConstr.of_constr (Ser_constr.constr_of_sexp s)
+let sexp_of_t c = Ser_constr.sexp_of_constr (EConstr.Unsafe.to_constr c)
 
-let env_of_sexp _env  = Environ.env_of_pre_env Pre_env.empty_env
-let sexp_of_env _sexp = Sexp.Atom "Env"
+type existential =
+  [%import: EConstr.existential]
+  [@@deriving sexp]
 
-type ('constr, 'term) punsafe_judgment =
-  [%import: ('constr, 'term) Environ.punsafe_judgment]
+type constr =
+  [%import: EConstr.constr]
+  [@@deriving sexp]
+
+type types =
+  [%import: EConstr.types]
   [@@deriving sexp]
 
 type unsafe_judgment =
-  [%import: Environ.unsafe_judgment]
+  [%import: EConstr.unsafe_judgment]
   [@@deriving sexp]
 

@@ -26,8 +26,17 @@ type arity_error =
   [%import: Type_errors.arity_error]
   [@@deriving sexp]
 
+type 'constr pguard_error =
+  [%import: 'constr Type_errors.pguard_error]
+  [@@deriving sexp]
+
 type guard_error =
   [%import: Type_errors.guard_error]
+  [@@deriving sexp]
+
+type ('constr, 'types) ptype_error =
+  [%import: ('constr, 'types) Type_errors.ptype_error
+  [@with Term.sorts_family := Sorts.family; ]]
   [@@deriving sexp]
 
 type type_error =

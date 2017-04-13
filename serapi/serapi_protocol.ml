@@ -169,7 +169,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqPp      s    -> s
   | CoqRichpp  s    -> Pp.str (pp_richpp s)
   | CoqLoc    _loc  -> Pp.mt ()
-  | CoqAst    _     -> Pp.str "Fixme ast"
+  | CoqAst (_l, v)  -> Ppvernac.pr_vernac v
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body (Global.env ()) m mind
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr c

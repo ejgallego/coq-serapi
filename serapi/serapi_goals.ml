@@ -21,23 +21,22 @@ type 'a reified_goal = 'a * 'a hyp list
 
 module CDC = Context.Compacted.Declaration
 
-let to_tuple ppx =
+let to_tuple ppx : CDC.t -> (Names.Id.t list * 'pc option * 'pc) =
   let open CDC in function
     | LocalAssum(idl, tm)   -> (idl, None, ppx tm)
     | LocalDef(idl,tdef,tm) -> (idl, Some (ppx tdef), ppx tm)
 
 (** gets a hypothesis *)
-let get_hyp ppx
-    (sigma : Evd.evar_map)
-    (hdecl : CDC.t) =
-  to_tuple ppx @@ CDC.map_constr (Reductionops.nf_evar sigma) hdecl
+let get_hyp (ppx : Constr.t -> 'pc)
+    (_sigma : Evd.evar_map)
+    (hdecl : CDC.t) : (Names.Id.t list * 'pc option * 'pc) =
+  to_tuple ppx hdecl
 
 (** gets the constr associated to the type of the current goal *)
-let get_goal_type ppx
+let get_goal_type (ppx : Constr.t -> 'pc)
     (sigma : Evd.evar_map)
     (g : Goal.goal) =
-  (* XXX: Why does extern_type require both an env and an evar_map ? *)
-  ppx @@ Reductionops.nf_evar sigma (Goal.V82.concl sigma g)
+  ppx @@ EConstr.to_constr sigma (Goal.V82.concl sigma g)
 
 (** Generic processor  *)
 let process_goal_gen ppx sigma g : 'a reified_goal =
