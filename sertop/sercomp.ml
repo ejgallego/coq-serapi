@@ -35,12 +35,13 @@ let stats = {
 (* XXX: Move to sertop_stats.ml *)
 let do_stats =
   let proof_loc = ref None in
-  fun (loc : Loc.t) (vrn : Vernacexpr.vernac_expr) ->
+  fun ?loc (vrn : Vernacexpr.vernac_expr) ->
   let open Vernacexpr in
-  let incS (l : Loc.t) f =
-    let n_lines = Loc.(l.line_nb_last - l.line_nb + 1) in
-    Format.eprintf "Adding %d lines @\n%!" n_lines;
-    f + n_lines
+  let incS ?loc f =
+    Option.cata (fun loc ->
+        let n_lines = Loc.(loc.line_nb_last - loc.line_nb + 1) in
+        Format.eprintf "Adding %d lines @\n%!" n_lines;
+        f + n_lines) f loc
   in
   match vrn with
   (* Definition *)
@@ -48,26 +49,26 @@ let do_stats =
   | VernacFixpoint   (_,_)
   | VernacInductive  (_,_,_)
   | VernacCoFixpoint (_,_)
-  | VernacNotation   (_,_,_,_)      -> stats.specs <- incS loc stats.specs
+  | VernacNotation   (_,_,_,_)      -> stats.specs <- incS ?loc stats.specs
 
   (* Proofs *)
   | VernacGoal _
-  | VernacStartTheoremProof (_,_,_) -> stats.specs <- incS loc stats.specs;
-                                       proof_loc := Some Loc.(loc.line_nb_last)
+  | VernacStartTheoremProof (_,_,_) -> stats.specs <- incS ?loc stats.specs;
+                                       Option.iter (fun loc -> proof_loc := Some Loc.(loc.line_nb_last)) loc
   | VernacProof (_,_)               -> ()
   (* XXX: Should we use the +1 rule here, what happens for proofs:
      Proof. exact: L. Qed.
    *)
-  | VernacEndProof _                -> Option.iter (fun ll ->
+  | VernacEndProof _                -> Option.iter (fun ll -> Option.iter (fun loc ->
                                          stats.proofs <- stats.proofs + (Loc.(loc.line_nb) - ll) + 1
-                                       ) !proof_loc;
+                                       ) loc ) !proof_loc;
                                        proof_loc := None
   (* This is tricky.. *)
   (* This is Ltac := ... *)
   | VernacExtend (("VernacDeclareTacticDefinition",_),_)
-                                    -> stats.proofs <- incS loc stats.proofs;
+                                    -> stats.proofs <- incS ?loc stats.proofs;
 
-  | _                               -> if Option.is_empty !proof_loc then stats.misc <- incS loc stats.misc
+  | _                               -> if Option.is_empty !proof_loc then stats.misc <- incS ?loc stats.misc
 
 (*
   match vrn with
@@ -171,10 +172,9 @@ type ser_printer =
   | SP_Mach                     (* sexplib mach  printer *)
   | SP_Human                    (* sexplib human printer *)
 
-let pr_loc loc =
+let pr_loc ?loc () =
   let open Pp in
-  if Loc.is_ghost loc then str"<unknown>"
-  else
+  Option.cata (fun loc ->
     let fname = loc.Loc.fname in
     if CString.equal fname "" then
       Loc.(str"Toplevel input, characters " ++ int loc.bp ++
@@ -184,14 +184,15 @@ let pr_loc loc =
 	   str", line " ++ int loc.line_nb ++ str", characters " ++
 	   int (loc.bp-loc.bol_pos) ++ str"-" ++ int (loc.ep-loc.bol_pos) ++
 	   str":")
+    ) (mt ()) loc
 
 let process_vernac pp st (loc, vrn) =
   let open Format in
   let n_st, tip = Stm.add ~ontop:st false (loc, vrn) in
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
-  do_stats loc vrn;
-  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (pr_loc loc)
+  do_stats ?loc vrn;
+  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (pr_loc ?loc ())
                               pp (sexp_of_vernac_expr vrn);
   n_st
 

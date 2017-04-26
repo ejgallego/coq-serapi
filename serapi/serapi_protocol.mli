@@ -30,7 +30,7 @@ type coq_object =
   | CoqPp        of Pp.t
   | CoqRichpp    of Richpp.richpp
   | CoqLoc       of Loc.t
-  | CoqAst       of Loc.t * Vernacexpr.vernac_expr
+  | CoqAst       of Vernacexpr.vernac_expr Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr

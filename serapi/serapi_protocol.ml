@@ -101,7 +101,7 @@ type coq_object =
   | CoqPp        of Pp.t
   | CoqRichpp    of Richpp.richpp
   | CoqLoc       of Loc.t
-  | CoqAst       of Loc.t * Vernacexpr.vernac_expr
+  | CoqAst       of Vernacexpr.vernac_expr Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr
@@ -497,7 +497,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Goals          -> Option.cata (fun g -> [CoqGoal g   ]) [] @@ Serapi_goals.get_goals  opt.sid
   | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals opt.sid
-  | Ast sid        -> Option.cata (fun (ast,loc) -> [CoqAst(loc,ast)]) [] @@ Stm.get_ast sid
+  | Ast sid        -> Option.cata (fun last -> [CoqAst last]) [] @@ Stm.get_ast sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
@@ -603,9 +603,11 @@ module ControlUtil = struct
         if not (List.mem !stt !cur_doc) then
           raise (NoSuchState !stt);
         let east      = Stm.parse_sentence !stt pa in
+        (* XXX: Must like refine the API *)
+        let eloc      = Option.get (fst east)      in
         let n_st, foc = Stm.add ?newtip:opts.newtip ~ontop:!stt opts.verb east in
         cur_doc := n_st :: !cur_doc;
-        acc := (Added (n_st, fst east, foc)) :: !acc;
+        acc := (Added (n_st, eloc, foc)) :: !acc;
         stt := n_st;
         incr i
       done;

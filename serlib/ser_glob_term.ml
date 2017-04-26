@@ -16,6 +16,7 @@
 open Sexplib.Std
 
 module Loc        = Ser_loc
+module CAst       = Ser_cAst
 module Names      = Ser_names
 module Globnames  = Ser_globnames
 module Misctypes  = Ser_misctypes
@@ -31,11 +32,12 @@ type existential_name = Glob_term.existential_name
 let existential_name_of_sexp = Names.Id.t_of_sexp
 let sexp_of_existential_name = Names.Id.sexp_of_t
 
-type cases_pattern = [%import: Glob_term.cases_pattern]
-           [@@deriving sexp]
+type cases_pattern_r = [%import: Glob_term.cases_pattern_r]
+and  cases_pattern   = [%import: Glob_term.cases_pattern]
+  [@@deriving sexp]
 
-
-type glob_constr = [%import: Glob_term.glob_constr]
+type glob_constr_r = [%import: Glob_term.glob_constr_r]
+and glob_constr = [%import: Glob_term.glob_constr]
 and glob_decl    = [%import: Glob_term.glob_decl]
 and fix_recursion_order = [%import: Glob_term.fix_recursion_order]
 and fix_kind            = [%import: Glob_term.fix_kind]

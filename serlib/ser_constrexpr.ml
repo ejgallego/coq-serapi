@@ -16,6 +16,7 @@
 open Sexplib.Std
 
 module Loc        = Ser_loc
+module CAst       = Ser_cAst
 module Names      = Ser_names
 module Bigint     = Ser_bigint
 module Misctypes  = Ser_misctypes
@@ -46,8 +47,10 @@ type prim_token = [%import: Constrexpr.prim_token]
 type instance_expr = [%import: Constrexpr.instance_expr]
   [@@deriving sexp]
 
-type cases_pattern_expr = [%import: Constrexpr.cases_pattern_expr]
+type cases_pattern_expr_r = [%import: Constrexpr.cases_pattern_expr_r]
+and cases_pattern_expr = [%import: Constrexpr.cases_pattern_expr]
 and cases_pattern_notation_substitution = [%import: Constrexpr.cases_pattern_notation_substitution]
+and constr_expr_r = [%import: Constrexpr.constr_expr_r]
 and constr_expr = [%import: Constrexpr.constr_expr]
 and case_expr   = [%import: Constrexpr.case_expr]
 and branch_expr = [%import: Constrexpr.branch_expr]
@@ -70,6 +73,7 @@ type with_declaration_ast =
   [%import: Constrexpr.with_declaration_ast]
   [@@deriving sexp]
 
-type module_ast =
+type module_ast_r = [%import: Constrexpr.module_ast_r]
+and module_ast =
   [%import: Constrexpr.module_ast]
   [@@deriving sexp]

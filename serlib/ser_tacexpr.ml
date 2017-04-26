@@ -172,14 +172,14 @@ and ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_tactic_arg =
   | TacGeneric     of 'lev Genarg.generic_argument
   | ConstrMayEval  of ('trm,'cst,'pat) Genredexpr.may_eval
   | Reference      of 'ref
-  | TacCall        of Loc.t * 'ref *
-      ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_tactic_arg list
+  | TacCall        of ('ref *
+      ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_tactic_arg list) Loc.located
   | TacFreshId of string Misctypes.or_var list
   | Tacexp of 'tacexpr
   | TacPretype of 'trm
   | TacNumgoals
 and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
-  | TacAtom of Loc.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_atomic_tactic_expr
+  | TacAtom of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_atomic_tactic_expr Loc.located
   | TacThen of
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr *
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
@@ -237,8 +237,8 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
   | TacFun of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_fun_ast
   | TacArg of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg Loc.located
   | TacSelect of goal_selector * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
-  | TacML     of Loc.t * ml_tactic_entry * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list
-  | TacAlias  of Loc.t * Names.KerName.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list
+  | TacML     of (ml_tactic_entry * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list) Loc.located
+  | TacAlias  of (Names.KerName.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list) Loc.located
 
 and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_fun_ast =
     Names.Name.t list * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
@@ -267,7 +267,7 @@ and _gen_tactic_arg_put (t : 'a Tacexpr.gen_tactic_arg) :
   | Tacexpr.TacGeneric a      -> ITac.TacGeneric a
   | Tacexpr.ConstrMayEval a   -> ITac.ConstrMayEval a
   | Tacexpr.Reference a       -> ITac.Reference a
-  | Tacexpr.TacCall (a,b,c)   -> ITac.TacCall (a,b, List.map _gen_tactic_arg_put c)
+  | Tacexpr.TacCall (a,(b,c)) -> ITac.TacCall (a,(b, List.map _gen_tactic_arg_put c))
   | Tacexpr.TacFreshId a      -> ITac.TacFreshId a
   | Tacexpr.Tacexp a          -> ITac.Tacexp a
   | Tacexpr.TacPretype a      -> ITac.TacPretype a
@@ -330,8 +330,8 @@ and _gen_tactic_expr_put (t : 'a Tacexpr.gen_tactic_expr) :
   | Tacexpr.TacFun a                 -> ITac.TacFun (_gen_tactic_fun_ast_put a)
   | Tacexpr.TacArg (l,a)             -> ITac.TacArg (l, _gen_tactic_arg_put a)
   | Tacexpr.TacSelect(gs,te)         -> ITac.TacSelect(gs, _gen_tactic_expr_put te)
-  | Tacexpr.TacML (a,b,c)            -> ITac.TacML (a,b, List.map _gen_tactic_arg_put c)
-  | Tacexpr.TacAlias (a,b,c)         -> ITac.TacAlias (a,b, List.map _gen_tactic_arg_put c)
+  | Tacexpr.TacML (a,(b,c))          -> ITac.TacML (a,(b, List.map _gen_tactic_arg_put c))
+  | Tacexpr.TacAlias (a,(b,c))       -> ITac.TacAlias (a,(b, List.map _gen_tactic_arg_put c))
 and _gen_tactic_fun_ast_put (t : 'a Tacexpr.gen_tactic_fun_ast) :
   ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_fun_ast =
   match t with
@@ -358,7 +358,7 @@ and _gen_tactic_arg_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_
   | ITac.TacGeneric a      -> Tacexpr.TacGeneric a
   | ITac.ConstrMayEval a   -> Tacexpr.ConstrMayEval a
   | ITac.Reference a       -> Tacexpr.Reference a
-  | ITac.TacCall (a,b,c)   -> Tacexpr.TacCall (a,b, List.map _gen_tactic_arg_get c)
+  | ITac.TacCall (a,(b,c)) -> Tacexpr.TacCall (a,(b, List.map _gen_tactic_arg_get c))
   | ITac.TacFreshId a      -> Tacexpr.TacFreshId a
   | ITac.Tacexp a          -> Tacexpr.Tacexp a
   | ITac.TacPretype a      -> Tacexpr.TacPretype a
@@ -412,8 +412,8 @@ and _gen_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen
   | ITac.TacFun a                 -> Tacexpr.TacFun (_gen_tactic_fun_ast_get a)
   | ITac.TacArg (l,a)             -> Tacexpr.TacArg (l, _gen_tactic_arg_get a)
   | ITac.TacSelect(gs,te)         -> Tacexpr.TacSelect(gs, _gen_tactic_expr_get te)
-  | ITac.TacML (a,b,c)            -> Tacexpr.TacML (a,b,List.map _gen_tactic_arg_get c)
-  | ITac.TacAlias (a,b,c)         -> Tacexpr.TacAlias (a,b,List.map _gen_tactic_arg_get c)
+  | ITac.TacML (a,(b,c))          -> Tacexpr.TacML (a,(b,List.map _gen_tactic_arg_get c))
+  | ITac.TacAlias (a,(b,c))       -> Tacexpr.TacAlias (a,(b,List.map _gen_tactic_arg_get c))
 and _gen_tactic_fun_ast_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_fun_ast) :
   'a Tacexpr.gen_tactic_fun_ast =
   match t with
@@ -524,7 +524,7 @@ and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
 type raw_tactic_expr = Tacexpr.raw_tactic_expr
 type raw_atomic_tactic_expr = Tacexpr.raw_atomic_tactic_expr
 
-type u = Loc.t * Names.Id.t
+type u = Loc.t option * Names.Id.t
   [@@deriving sexp]
 
 let rec raw_tactic_expr_of_sexp tac =
