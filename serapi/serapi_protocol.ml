@@ -129,20 +129,20 @@ type coq_object =
 (* Basically every function here should be an straightforward call to
  * Coq's printing. Coq bug if that is not the case.
  *)
-let pp_goal_gen pr_c (g, hyps) =
+let pp_goal_gen pr_c { Serapi_goals.ty ; hyp ; _ } =
   let open Pp      in
   let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
   let pr_lconstr_opt c = str " := " ++ pr_c c in
   let pr_hdef  = Option.cata pr_lconstr_opt (mt ())  in
   let pr_hyp (idl, hdef, htyp) =
     pr_idl idl ++ pr_hdef hdef ++ (str " : ") ++ pr_c htyp in
-  pr_vertical_list pr_hyp hyps         ++
+  pr_vertical_list pr_hyp hyp          ++
   str "============================\n" ++
     (* (let pr_lconstr t = *)
     (*    let (sigma, env) = Pfedit.get_current_context ()                            in *)
     (*    Ppconstr.Richpp.pr_lconstr_expr (Constrextern.extern_constr false env sigma t) *)
     (*  in *)
-       pr_c g
+       pr_c ty
 
 let pp_opt_value (s : Goptions.option_value) = match s with
   | Goptions.BoolValue b      -> Pp.bool b
@@ -252,11 +252,12 @@ let pp_tex (obj : coq_object) =
   let open Proof          in
   let open Ser_constr     in
   let open Ser_constrexpr in
+  let open Serapi_goals   in
   match obj with
   | CoqConstr cst -> sexp_of_constr      cst |> tex_sexp
-  | CoqGoal    gl -> let cst = fst @@ hd gl.fg_goals in
+  | CoqGoal    gl -> let cst = (hd gl.fg_goals).ty in
                      sexp_of_constr      cst |> tex_sexp
-  | CoqExtGoal gl -> let cst = fst @@ hd gl.fg_goals in
+  | CoqExtGoal gl -> let cst = (hd gl.fg_goals).ty in
                      sexp_of_constr_expr cst |> tex_sexp
   | _             -> "not supported"
 

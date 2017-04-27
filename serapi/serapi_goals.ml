@@ -15,7 +15,7 @@
 (************************************************************************)
 
 type 'a hyp = (Names.Id.t list * 'a option * 'a)
-type 'a reified_goal = 'a * 'a hyp list
+type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
 
 (** XXX: Do we need to perform evar normalization? *)
 
@@ -45,7 +45,7 @@ let process_goal_gen ppx sigma g : 'a reified_goal =
   let ctx       = Termops.compact_named_context (Environ.named_context env) in
   let ppx       = ppx env sigma                                             in
   let hyps      = List.map (get_hyp ppx sigma) ctx                          in
-  (get_goal_type ppx sigma g, hyps)
+  { name = Goal.uid g; ty = get_goal_type ppx sigma g; hyp = hyps }
 
 let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) sid
   : 'a reified_goal Proof.pre_goals option =
