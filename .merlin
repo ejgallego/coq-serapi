@@ -23,4 +23,4 @@ B _build/coq-js
 
 FLG -safe-string
 
-PKG threads threads.posix coq.intf coq.ltac cmdliner ppx_import sexplib ppx_sexp_conv js_of_ocaml.ppx yojson
+PKG threads threads.posix coq.intf coq.ltac coq.idetop cmdliner ppx_import sexplib ppx_sexp_conv js_of_ocaml.ppx yojson
