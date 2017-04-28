@@ -29,6 +29,7 @@ module Constr     = Ser_constr
 module Constrexpr = Ser_constrexpr
 module Globnames  = Ser_globnames
 module Proof      = Ser_proof
+module Goal       = Ser_goal
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)
 module Ser_stm    = Ser_stm

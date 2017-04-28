@@ -115,6 +115,12 @@ type coq_object =
   | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqProof     of Goal.goal list
+                    * (Goal.goal list * Goal.goal list) list
+                    * Goal.goal list
+                    * Goal.goal list
+                    (* We don't seralize the evar map for now... *)
+                    (* * Evd.evar_map *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -178,6 +184,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   (* Fixme *)
   | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.pr_lconstr)       g.Proof.fg_goals
   | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.pr_lconstr_expr) g.Proof.fg_goals
+  | CoqProof  _     -> Pp.str "FIXME UPSTREAM, provide pr_proof"
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
   | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
@@ -324,6 +331,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqNotation _   -> true
   | CoqUnparsing _  -> true
   | CoqExtGoal _    -> true
+  | CoqProof _      -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -353,6 +361,7 @@ type query_cmd =
   | Definition of string
   | PNotations                     (* XXX  *)
   | ProfileData
+  | Proof                          (* Return the proof object *)
   | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
 
 module QueryUtil = struct
@@ -493,7 +502,12 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
-
+  | Proof          -> begin
+                        try
+                          let (a,b,c,d,_) = Proof.proof (Proof_global.give_me_the_proof ()) in
+                          [CoqProof (a,b,c,d)]
+                        with Proof_global.NoCurrentProof -> []
+                      end
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.
                        *)

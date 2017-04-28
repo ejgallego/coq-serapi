@@ -45,6 +45,12 @@ type coq_object =
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqProof     of Goal.goal list
+                    * (Goal.goal list * Goal.goal list) list
+                    * Goal.goal list
+                    * Goal.goal list
+                    (* We don't seralize the evar map for now... *)
+                    (* * Evd.evar_map *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -119,6 +125,7 @@ type query_cmd =
   | Definition of string
   | PNotations                     (* XXX  *)
   | ProfileData
+  | Proof                          (* Return the proof object *)
   | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
 
 (******************************************************************************)
