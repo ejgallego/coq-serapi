@@ -44,10 +44,29 @@ let coq_init_theories =
   ; ["Strings"]
 
   ; ["Numbers"]
-  ; ["Numbers"; "NatInt"]
-  ; ["Numbers"; "Natural"; "Abstract"]
-  ; ["Numbers"; "Natural"; "Peano"]
+
+  ; ["Numbers"; "Cyclic"; "Abstract"]
+  ; ["Numbers"; "Cyclic"; "DoubleCyclic"]
+  ; ["Numbers"; "Cyclic"; "Int31"]
+  ; ["Numbers"; "Cyclic"; "ZModulo"]
+
   ; ["Numbers"; "Integer"; "Abstract"]
+  ; ["Numbers"; "Integer"; "BigZ"]
+  ; ["Numbers"; "Integer"; "Binary"]
+  ; ["Numbers"; "Integer"; "NatPairs"]
+  ; ["Numbers"; "Integer"; "SpecViaZ"]
+
+  ; ["Numbers"; "NatInt"]
+
+  ; ["Numbers"; "Natural"; "Abstract"]
+  ; ["Numbers"; "Natural"; "BigN"]
+  ; ["Numbers"; "Natural"; "Binary"]
+  ; ["Numbers"; "Natural"; "Peano"]
+  ; ["Numbers"; "Natural"; "SpecViaZ"]
+
+  ; ["Numbers"; "Rational"; "BigQ"]
+  ; ["Numbers"; "Rational"; "SpecViaQ"]
+
   ]
 
 let coq_prelude_mod path = (Names.(DirPath.make @@ List.rev_map Id.of_string ["Coq";"Init";"Prelude"]),
