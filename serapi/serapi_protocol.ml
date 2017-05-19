@@ -683,6 +683,8 @@ type cmd =
   | Exec       of Stateid.t
   | Query      of query_opt * query_cmd
   | Print      of print_opt * coq_object
+  (* Full document checking *)
+  | Join
   (*******************************************************************)
   (* XXX: We want to have query / update and fuse these two under it *)
   (*              coq_path      unix_path   has_ml                   *)
@@ -702,6 +704,7 @@ let exec_cmd (cmd : cmd) =
   | Exec st      -> Stm.observe st; []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
+  | Join              -> Stm.join (); []
 
   (*******************************************************************)
   | LibAdd(lib, lib_path, has_ml) ->

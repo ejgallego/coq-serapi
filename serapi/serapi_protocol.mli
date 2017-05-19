@@ -155,6 +155,8 @@ type cmd =
   | Exec       of Stateid.t
   | Query      of query_opt * query_cmd
   | Print      of print_opt * coq_object
+  (* Full document checking *)
+  | Join
   (*******************************************************************)
   (* XXX: We want to have query / update and fuse these two under it *)
   (*              coq_path      unix_path   has_ml                   *)
