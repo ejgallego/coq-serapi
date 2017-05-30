@@ -257,7 +257,7 @@ open Cmdliner
 
 let prelude =
   let doc = "Load prelude from COQPATH; plugins/ and theories/ should live there." in
-  Arg.(required & opt (some string) Coq_config.coqlib & info ["prelude"] ~docv:"COQPATH" ~doc)
+  Arg.(required & opt (some string) (Some Coq_config.coqlib) & info ["prelude"] ~docv:"COQPATH" ~doc)
 
 let input_file =
   let doc = "Input .v file." in

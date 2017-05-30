@@ -154,10 +154,10 @@ type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_exp
   | TacMutualFix of Names.Id.t * int * (Names.Id.t * int * 'trm) list
   | TacMutualCofix of Names.Id.t * (Names.Id.t * 'trm) list
   | TacAssert of
-      bool * 'tacexpr option option *
+      evars_flag * bool * 'tacexpr option option *
       'dtrm Misctypes.intro_pattern_expr Loc.located option * 'trm
   | TacGeneralize of ('trm Locus.with_occurrences * Names.Name.t) list
-  | TacLetTac of Names.Name.t * 'trm * 'nam Locus.clause_expr * letin_flag *
+  | TacLetTac of evars_flag * Names.Name.t * 'trm * 'nam Locus.clause_expr * letin_flag *
       Misctypes.intro_pattern_naming_expr Loc.located option
   | TacInductionDestruct of
       rec_flag * evars_flag * ('trm,'dtrm,'nam) induction_clause_list
@@ -254,9 +254,9 @@ let rec _gen_atom_tactic_expr_put (t : 'a Tacexpr.gen_atomic_tactic_expr) :
   | Tacexpr.TacCase (a,b)                -> ITac.TacCase (a,b)
   | Tacexpr.TacMutualFix (a,b,c)         -> ITac.TacMutualFix (a,b,c)
   | Tacexpr.TacMutualCofix (a,b)         -> ITac.TacMutualCofix (a,b)
-  | Tacexpr.TacAssert (a,b,c,d)          -> ITac.TacAssert (a,b,c,d)
+  | Tacexpr.TacAssert (a,b,c,d,e)        -> ITac.TacAssert (a,b,c,d,e)
   | Tacexpr.TacGeneralize a              -> ITac.TacGeneralize a
-  | Tacexpr.TacLetTac (a,b,c,d,e)        -> ITac.TacLetTac (a,b,c,d,e)
+  | Tacexpr.TacLetTac (a,b,c,d,e,f)      -> ITac.TacLetTac (a,b,c,d,e,f)
   | Tacexpr.TacInductionDestruct (a,b,c) -> ITac.TacInductionDestruct (a,b,c)
   | Tacexpr.TacReduce (a,b)              -> ITac.TacReduce (a,b)
   | Tacexpr.TacChange (a,b,c)            -> ITac.TacChange (a,b,c)
@@ -345,9 +345,9 @@ let rec _gen_atom_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l)
   | ITac.TacCase (a,b)                -> Tacexpr.TacCase (a,b)
   | ITac.TacMutualFix (a,b,c)         -> Tacexpr.TacMutualFix (a,b,c)
   | ITac.TacMutualCofix (a,b)         -> Tacexpr.TacMutualCofix (a,b)
-  | ITac.TacAssert (a,b,c,d)          -> Tacexpr.TacAssert (a,b,c,d)
+  | ITac.TacAssert (a,b,c,d,e)        -> Tacexpr.TacAssert (a,b,c,d,e)
   | ITac.TacGeneralize a              -> Tacexpr.TacGeneralize a
-  | ITac.TacLetTac (a,b,c,d,e)        -> Tacexpr.TacLetTac (a,b,c,d,e)
+  | ITac.TacLetTac (a,b,c,d,e,f)      -> Tacexpr.TacLetTac (a,b,c,d,e,f)
   | ITac.TacInductionDestruct (a,b,c) -> Tacexpr.TacInductionDestruct (a,b,c)
   | ITac.TacReduce (a,b)              -> Tacexpr.TacReduce (a,b)
   | ITac.TacChange (a,b,c)            -> Tacexpr.TacChange (a,b,c)

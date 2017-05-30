@@ -20,7 +20,7 @@ open Cmdliner
 
 let prelude =
   let doc = "Load prelude from COQPATH; plugins/ and theories/ should live there." in
-  Arg.(value & opt (some string) Coq_config.coqlib & info ["prelude"] ~docv:"COQPATH" ~doc)
+  Arg.(value & opt (some string) (Some Coq_config.coqlib) & info ["prelude"] ~docv:"COQPATH" ~doc)
 
 let async =
   let doc = "Enables async support with toplevel COQTOP (experimental)." in
