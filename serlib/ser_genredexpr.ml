@@ -42,14 +42,14 @@ open Ser_misctypes
 
 (* Helpers for raw_red_expr *)
 type r_trm =
-  [%import: Tacexpr.r_trm
+  [%import: Genredexpr.r_trm
   [@with
      Constrexpr.constr_expr := constr_expr;
   ]]
   [@@deriving sexp]
 
 type r_cst =
-  [%import: Tacexpr.r_cst
+  [%import: Genredexpr.r_cst
   [@with
     Libnames.reference := reference;
     Misctypes.or_by_notation := or_by_notation;
@@ -57,7 +57,7 @@ type r_cst =
   [@@deriving sexp]
 
 type r_pat =
-  [%import: Tacexpr.r_pat
+  [%import: Genredexpr.r_pat
   [@with
      Constrexpr.constr_expr := constr_expr;
      Constrexpr.constr_pattern_expr := constr_pattern_expr;

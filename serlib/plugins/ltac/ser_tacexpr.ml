@@ -16,6 +16,7 @@
 open Sexplib
 open Sexplib.Std
 
+module API = struct
 module Loc       = Ser_loc
 module Names     = Ser_names
 module Misctypes = Ser_misctypes
@@ -29,7 +30,11 @@ module Genarg     = Ser_genarg
 module Genredexpr = Ser_genredexpr
 module Pattern    = Ser_pattern
 module Constrexpr = Ser_constrexpr
+module Vernacexpr = Ser_vernacexpr
 module Tactypes   = Ser_tactypes
+end
+
+open API
 
 type direction_flag =
   [%import: Tacexpr.direction_flag]
@@ -67,9 +72,9 @@ type clear_flag =
 (*   [%import: Tacexpr.debug] *)
 (*   [@@deriving sexp] *)
 
-type goal_selector =
-  [%import: Tacexpr.goal_selector]
-  [@@deriving sexp]
+(* type goal_selector = *)
+(*   [%import: Tacexpr.goal_selector] *)
+(*   [@@deriving sexp] *)
 
 type 'a core_destruction_arg = 'a Tacexpr.core_destruction_arg =
   | ElimOnConstr of 'a
@@ -236,7 +241,7 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
       ('p,('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr) match_rule list
   | TacFun of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_fun_ast
   | TacArg of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg Loc.located
-  | TacSelect of goal_selector * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
+  | TacSelect of Vernacexpr.goal_selector * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
   | TacML     of (ml_tactic_entry * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list) Loc.located
   | TacAlias  of (Names.KerName.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list) Loc.located
 
@@ -625,6 +630,6 @@ type tacdef_body =
    fun. Sad. *)
 
 (* XXX: Should be moved to ser_tacarg *)
-let _ =
-  Ser_genarg.sexp_of_raw_tactic_expr := sexp_of_raw_tactic_expr;
-  Ser_genarg.sexp_of_tacdef_body     := sexp_of_tacdef_body
+(* let _ = *)
+(*   Ser_genarg.sexp_of_raw_tactic_expr := sexp_of_raw_tactic_expr; *)
+(*   Ser_genarg.sexp_of_tacdef_body     := sexp_of_tacdef_body *)

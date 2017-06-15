@@ -18,10 +18,15 @@ open Sexplib.Std
 module Names     = Ser_names
 module Globnames = Ser_globnames
 module Constr    = Ser_constr
+module Misctypes = Ser_misctypes
 
 (**********************************************************************)
 (* Evar_kinds                                                         *)
 (**********************************************************************)
+
+type matching_var_kind =
+  [%import: Evar_kinds.matching_var_kind]
+  [@@deriving sexp]
 
 type obligation_definition_status =
   [%import: Evar_kinds.obligation_definition_status]

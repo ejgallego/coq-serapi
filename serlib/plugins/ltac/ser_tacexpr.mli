@@ -14,7 +14,6 @@
 (************************************************************************)
 
 open Sexplib
-
 (* open Ltac_plugin *)
 
 type direction_flag = bool
@@ -53,9 +52,9 @@ val sexp_of_clear_flag : clear_flag -> Sexp.t
 (* val debug_of_sexp : Sexp.t -> debug *)
 (* val sexp_of_debug : debug -> Sexp.t *)
 
-type goal_selector = Tacexpr.goal_selector
-val goal_selector_of_sexp : Sexp.t -> goal_selector
-val sexp_of_goal_selector : goal_selector -> Sexp.t
+(* type goal_selector = Tacexpr.goal_selector *)
+(* val goal_selector_of_sexp : Sexp.t -> goal_selector *)
+(* val sexp_of_goal_selector : goal_selector -> Sexp.t *)
 
 type 'a core_destruction_arg = 'a Tacexpr.core_destruction_arg
 

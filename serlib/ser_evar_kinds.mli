@@ -18,6 +18,11 @@ open Sexplib
 (************************************************************************)
 (* Evar_kinds.mli                                                       *)
 (************************************************************************)
+type matching_var_kind = Evar_kinds.matching_var_kind
+
+val matching_var_kind_of_sexp : Sexp.t -> matching_var_kind
+val sexp_of_matching_var_kind : matching_var_kind -> Sexp.t
+
 type obligation_definition_status = Evar_kinds.obligation_definition_status
 
 val obligation_definition_status_of_sexp : Sexp.t -> obligation_definition_status

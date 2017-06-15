@@ -249,9 +249,3 @@ type vernac_expr           = [%import: Vernacexpr.vernac_expr]
 and vernac_implicit_status = [%import: Vernacexpr.vernac_implicit_status]
 and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
   [@@deriving sexp]
-
-(* XXX Global effects: this is really unfortunate but this is the way
-   Coq works for the moment. If you don't link this module, you get no
-   fun. Sad. *)
-let _ =
-  Ser_genarg.sexp_of_goal_selector := sexp_of_goal_selector

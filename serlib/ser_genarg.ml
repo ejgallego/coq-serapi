@@ -42,7 +42,7 @@ let sexp_of_tlevel _ = Atom "GA_tlevel"
 type 'a generic_argument = 'a Genarg.generic_argument
 
 let generic_argument_of_sexp _ _x = Obj.magic 0
-open Ltac_plugin
+
 
 let rec sexp_of_genarg_type : type a b c. string -> (a, b, c) genarg_type -> t = fun lvl gt ->
   match gt with
@@ -60,6 +60,8 @@ let sexp_of_genarg_type : type a. a generic_argument -> t =
       | Rawwit gt -> sexp_of_genarg_type "raw" gt
     end
 
+(*
+open Ltac_plugin
 let sexp_of_constr_expr     = ref (fun _ -> Atom "constr_expr_hook")
 let sexp_of_glob_expr       = ref (fun _ -> Atom "glob_expr_hook")
 let sexp_of_constr          = ref (fun _ -> Atom "constr_hook")
@@ -69,8 +71,9 @@ let sexp_of_glob_tactic_expr = ref (fun _ -> Atom "glob_tactic_expr_hook")
 let sexp_of_tactic_val_t     = ref (fun _ -> Atom "tactic_val_t_hook")
 
 let sexp_of_tacdef_body      = ref (fun _ -> Atom "tacdef_body_hook")
-let sexp_of_goal_selector    = ref (fun _ -> Atom "goal_selector_hook")
+*)
 
+(*
 open Sexplib.Conv
 
 (* This likely needs to be tweaked, but it is a start *)
@@ -88,13 +91,17 @@ let _ser_wit_opt fc = match fc with | Ser_tentry(f, fa, fb, fc) ->
   Ser_tentry (Genarg.wit_opt f, sexp_of_option fa, sexp_of_option fb, sexp_of_option fc)
 
 let _ser_opt_tac = _ser_wit_opt _ser_wit_tactic
+*)
 
 (* let sexp_of_extraarg_gen (GenArg (Rawwit (ExtraArg _ as wit), x)) (Ser_tentry(wit_e,s1,s2,s3)) : t = *)
 (*   match genarg_type_eq wit wit_e with *)
 (*   | None   -> Atom "Unknown ExtraArg" *)
 (*   | Some _ -> s1 x *)
 
+(* XXX use register ***)
+
 (* Needs more work, but getting there *)
+(*
 let sexp_of_extraarg g =
   (* XXX: Register mechanism needed *)
   if has_type g (rawwit Stdarg.wit_constr) then
@@ -141,6 +148,7 @@ let rec sexp_of_rawgen (GenArg (Rawwit wit, x) as g) =
   | ListArg wit      -> sexp_of_list   (ucc wit) x
   | OptArg wit       -> sexp_of_option (ucc wit) x
   | ExtraArg _       -> sexp_of_extraarg g
+*)
 
 (* We need to generalize this to use the proper printers for opt *)
 let sexp_of_genarg_val : type a. a generic_argument -> t =
@@ -149,7 +157,8 @@ let sexp_of_genarg_val : type a. a generic_argument -> t =
     match aat with
     | Glbwit _gt -> Atom "XXX Global GenARG"
     | Topwit _gt -> Atom "XXX Typed GenARG"
-    | Rawwit _gt -> sexp_of_rawgen g
+    | Rawwit _gt -> Atom "XXX Raw GenARG"
+    (* | Rawwit _gt -> sexp_of_rawgen g *)
   end
 
 let sexp_of_generic_argument : type a. (a -> t) -> a Genarg.generic_argument -> t = fun _ g ->

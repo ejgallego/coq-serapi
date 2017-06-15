@@ -15,10 +15,12 @@
 
 open Sexplib.Std
 
+module API = struct
 module Names   = Ser_names
-
 module Tacexpr = Ser_tacexpr
+end
 
+open API
 open Ltac_plugin
 
 type ltac_entry =
