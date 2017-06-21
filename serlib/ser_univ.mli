@@ -82,6 +82,47 @@ type universe_context = UContext.t
 val universe_context_of_sexp : Sexp.t -> universe_context
 val sexp_of_universe_context : universe_context -> Sexp.t
 
+module AUContext : sig
+
+  type t = Univ.AUContext.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end
+
+type abstract_universe_context = AUContext.t
+val abstract_universe_context_of_sexp : Sexp.t -> abstract_universe_context
+val sexp_of_abstract_universe_context : abstract_universe_context -> Sexp.t
+
+module CumulativityInfo :
+sig
+
+  type t = Univ.CumulativityInfo.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end
+
+type cumulativity_info = CumulativityInfo.t
+val cumulativity_info_of_sexp : Sexp.t -> cumulativity_info
+val sexp_of_cumulativity_info : cumulativity_info -> Sexp.t
+
+module ACumulativityInfo :
+sig
+
+  type t = Univ.ACumulativityInfo.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end
+
+type abstract_cumulativity_info = ACumulativityInfo.t
+val abstract_cumulativity_info_of_sexp : Sexp.t -> abstract_cumulativity_info
+val sexp_of_abstract_cumulativity_info : abstract_cumulativity_info -> Sexp.t
+
 type 'a puniverses = 'a * universe_instance
 
 val puniverses_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a puniverses

@@ -33,6 +33,10 @@ type private_flag =
   [%import: Decl_kinds.private_flag]
   [@@deriving sexp]
 
+type cumulative_inductive_flag =
+  [%import: Decl_kinds.cumulative_inductive_flag]
+  [@@deriving sexp]
+
 type theorem_kind =
   [%import: Decl_kinds.theorem_kind]
   [@@deriving sexp]

@@ -39,6 +39,11 @@ type private_flag = Decl_kinds.private_flag
 val private_flag_of_sexp : Sexp.t -> private_flag
 val sexp_of_private_flag : private_flag -> Sexp.t
 
+type cumulative_inductive_flag = Decl_kinds.cumulative_inductive_flag
+
+val cumulative_inductive_flag_of_sexp : Sexp.t -> cumulative_inductive_flag
+val sexp_of_cumulative_inductive_flag : cumulative_inductive_flag -> Sexp.t
+
 type theorem_kind = Decl_kinds.theorem_kind
 
 val theorem_kind_of_sexp : Sexp.t -> theorem_kind

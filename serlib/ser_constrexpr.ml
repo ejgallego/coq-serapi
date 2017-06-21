@@ -41,6 +41,12 @@ type abstraction_kind = [%import: Constrexpr.abstraction_kind]
 type proj_flag = [%import: Constrexpr.proj_flag]
   [@@deriving sexp]
 
+type raw_natural_number = [%import: Constrexpr.raw_natural_number]
+  [@@deriving sexp]
+
+type sign = [%import: Constrexpr.sign]
+  [@@deriving sexp]
+
 type prim_token = [%import: Constrexpr.prim_token]
   [@@deriving sexp]
 

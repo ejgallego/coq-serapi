@@ -522,7 +522,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Search         -> [CoqString "Not Implemented"]
   (* XXX: should set printing options in all queries *)
   | Vernac q       -> let pa = Pcoq.Gram.parsable (Stream.of_string q) in
-                      Stm.query ~at:opt.sid ~report_with:(opt.sid,opt.route) pa; []
+                      Stm.query ~at:opt.sid ~route:opt.route pa; []
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)

@@ -81,6 +81,10 @@ type record_body =
   [@with Context.section_context := Context.Named.t;]]
   [@@deriving sexp]
 
+type abstract_inductive_universes =
+  [%import: Declarations.abstract_inductive_universes]
+  [@@deriving sexp]
+
 type mutual_inductive_body =
   [%import: Declarations.mutual_inductive_body
   [@with Context.section_context := Context.Named.t;]]
