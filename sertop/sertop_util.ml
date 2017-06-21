@@ -31,7 +31,7 @@ let must_escape str =
   len = 0 ||
     let rec loop ix =
       match str.[ix] with
-      | '"' | '(' | ')' | ';' | '\\' | '\''-> true
+      | '"' | '(' | ')' | '[' | ']' | ';' | '\\' | '\''-> true
       (* Avoid unquoted comma at the beggining of the string *)
       | ',' -> ix = 0 || loop (ix - 1)
       | '|' -> ix > 0 && let next = ix - 1 in str.[next] = '#' || loop next
