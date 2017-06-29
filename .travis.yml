@@ -15,12 +15,14 @@ addons:
 env:
   global:
   - NJOBS=2
-  - COQ_BRANCH="trunk"
-  - COQ_REPOS=git://scm.gforge.inria.fr/coq/coq.git
-  # - COQ_BRANCH="stm+bye_proof_mode"
-  # - COQ_REPOS=https://github.com/ejgallego/coq.git
+  - COQ_VERSION="v8.7"
+  - COQ_REPOS=https://github.com/ejgallego/coq.git
+  # - COQ_REPOS="git://scm.gforge.inria.fr/coq/coq.git"
+  - COQ_BRANCH="meta+fix_api"
+  # - COQ_BRANCH="trunk"
   # system is == 4.02.3
-  - COMPILER="4.04.0"
+  - COMPILER="4.04.1"
+  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib"
   # Main test suites
   # matrix:
   # - TEST_TARGET="test1"
@@ -30,20 +32,21 @@ install:
 - "[ -e .opam ] || opam init -j ${NJOBS} --compiler=${COMPILER} -n -y"
 - eval $(opam config env)
 - opam config var root
-- opam install -j ${NJOBS} -y camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib ${EXTRA_OPAM} # yojson ppx_deriving_yojson
+- opam update
+- opam install -j ${NJOBS} -y ${BASE_OPAM} ${EXTRA_OPAM} # yojson ppx_deriving_yojson
 - opam list
-- git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_BRANCH}
-- pushd ${HOME}/coq-${COQ_BRANCH}
+- git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_VERSION}
+- pushd ${HOME}/coq-${COQ_VERSION}
 - ./configure -local -native-compiler no -coqide no
 - make -j ${NJOBS}
 - popd
 
 script:
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_BRANCH}/" serlib
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" serlib
 - ls -l _build/serlib/serlib.cmxa
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_BRANCH}/"
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
 - ls -l _build/sertop/sertop.native
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_BRANCH}/" sercomp
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" sercomp
 - ls -l _build/sertop/sercomp.native
 - echo -en 'travis_fold:end:serapi.build\\r'
