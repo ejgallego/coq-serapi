@@ -40,12 +40,11 @@ you can post to the list using nntp.
 
 ### Roadmap
 
-SerAPI 0.1 targets the development version of Coq 8.7. Our current
-efforts are focused on incorporating some crucial changes in to Coq
-upstream (coq/coq#134, coq/coq#390, coq/coq#441, coq/coq#476) to
-improve handling of documents. Our first goal is to get a robust
-document building and interaction API, then we will focus on providing
-a rich, extensible query language.
+SerAPI 0.1 targets Coq 8.7. We are focused on incorporating some
+crucial changes in to Coq upstream to improve handling of
+documents. Our first goal is to get a robust document building and
+interaction API, then we will focus on providing a rich, extensible
+query language.
 
 ### Quick Overview and Documentation
 
