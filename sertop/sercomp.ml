@@ -47,14 +47,17 @@ let do_stats =
   (* Definition *)
   | VernacDefinition (_,_,_)
   | VernacFixpoint   (_,_)
-  | VernacInductive  (_,_,_)
+  | VernacInductive  (_,_,_,_)
   | VernacCoFixpoint (_,_)
-  | VernacNotation   (_,_,_,_)      -> stats.specs <- incS ?loc stats.specs
+  | VernacNotation   (_,_,_,_) ->
+    stats.specs <- incS ?loc stats.specs
 
   (* Proofs *)
   | VernacGoal _
-  | VernacStartTheoremProof (_,_,_) -> stats.specs <- incS ?loc stats.specs;
-                                       Option.iter (fun loc -> proof_loc := Some Loc.(loc.line_nb_last)) loc
+  | VernacStartTheoremProof (_,_) ->
+    stats.specs <- incS ?loc stats.specs;
+    Option.iter (fun loc -> proof_loc := Some Loc.(loc.line_nb_last)) loc
+
   | VernacProof (_,_)               -> ()
   (* XXX: Should we use the +1 rule here, what happens for proofs:
      Proof. exact: L. Qed.
