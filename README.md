@@ -133,8 +133,8 @@ There are four categories of [commands](serapi/serapi_protocol.mli#L147):
 
 Building `sertop` requires OPAM and the development branch of [Coq 8.7](https://github.com/coq/coq/).
 
-0. The current supported ocaml version is 4.04.1
-   ``$ opam switch 4.04.1 && eval `opam config env` ``.
+0. The current supported ocaml version is 4.05.0
+   ``$ opam switch 4.05.0 && eval `opam config env` ``.
 1. Install the needed packages:
    `$ opam install ocamlfind ocamlbuild ppx_import cmdliner core_kernel sexplib ppx_sexp_conv camlp5`.
    Note the _hard_ version dependency: `ppx_sexp_conv >= v0.9.0`.
@@ -146,6 +146,16 @@ Building `sertop` requires OPAM and the development branch of [Coq 8.7](https://
    your `findlib.conf` to add the Coq path to findlib's search
    path. If you install Coq globally these steps may not be needed. YMMV.
 4. Type `make` to build `sertop`.
+
+The above instructions assume that you used `~/external/coq-master`
+directory to place the coq build that SerAPI will use; you can modify
+the `SERAPI_COQ_HOME` variable in `Makefile` to make this change
+permanent, or override the provided default.
+
+Another alternative is to modify your `findlib.conf` file to add Coq's
+path to findlib's search path. This is convenient for using
+`merlin`. If you install Coq globally these steps may not be needed,
+and finlib may be able to locate Coq for you; YMMV.
 
 ### Emacs mode
 
