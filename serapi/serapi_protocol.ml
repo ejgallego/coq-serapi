@@ -694,12 +694,15 @@ type cmd =
   (* Miscellanous *)
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   (*******************************************************************)
+  (* Non-supported command, only for convenience. *)
+  | ReadFile   of string
   | Noop
   | Help
   | Quit
 
 
 let exec_cmd (cmd : cmd) =
+  Format.eprintf "uu\n%!";
   coq_protect @@ fun () -> match cmd with
   | Add (opt, s) -> ControlUtil.add_sentences opt s
   | Cancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
@@ -719,6 +722,16 @@ let exec_cmd (cmd : cmd) =
 
   | SetOpt(loc, n, v) -> exec_setopt loc n v; []
   (*******************************************************************)
+  | ReadFile f ->
+    Pervasives.(
+      let inc = open_in f in
+      try
+        let faddopts = { lim = None; ontop = None; newtip = None; verb = false; } in
+        let fsize    = in_channel_length inc         in
+        let fcontent = really_input_string inc fsize in
+        ControlUtil.add_sentences faddopts fcontent
+      with _ -> close_in inc; []
+    )
   | Help           -> serproto_help (); []
   | Noop           -> []
   | Quit           -> []
