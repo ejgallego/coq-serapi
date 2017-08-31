@@ -37,6 +37,11 @@ type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]
   [@@deriving sexp]
 
+
+type one_notation_grammar =
+  [%import: Notation_term.one_notation_grammar]
+  [@@deriving sexp]
+
 type notation_grammar =
   [%import: Notation_term.notation_grammar]
   [@@deriving sexp]
