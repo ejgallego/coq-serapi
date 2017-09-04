@@ -81,8 +81,8 @@ If you are a developer, you can use SerAPI in 3 different ways:
   direct interaction.
 
 - As an Ocaml library. You can directly link against the low-level
-  serialization library `serlib/`, or against the higher-level SerAPI
-  protocol in `sertop/sertop_protocol.mli`.
+  serialization library [`serlib/`](/serlib), or against the higher-level SerAPI
+  protocol in [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli).
 
 See [build instructions](#building) but information about
 installation. We will provide an OPAM real soon now.
