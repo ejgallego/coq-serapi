@@ -81,8 +81,8 @@ If you are a developer, you can use SerAPI in 3 different ways:
   direct interaction.
 
 - As an Ocaml library. You can directly link against the low-level
-  serialization library `serlib/`, or against the higher-level SerAPI
-  protocol in `serapi/serapi_protocol.mli`.
+  serialization library [`serlib/`](/serlib), or against the higher-level SerAPI
+  protocol in [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli).
 
 See [build instructions](#building) but information about
 installation. We will provide an OPAM real soon now.
@@ -131,21 +131,35 @@ There are four categories of [commands](serapi/serapi_protocol.mli#L147):
 
 ### Building
 
-Building `sertop` requires OPAM and the development branch of [Coq 8.7](https://github.com/coq/coq/).
+`sertop` usually comes in different flavors, depending on the
+branch. The `master` branch usually targets Coq `master`, and while
+unstable this is usually the right branch to use if you are interested
+in advanced features. However, we provide branches for Coq 8.7 and Coq
+8.6, usually the build process is pretty similar. You can look at the
+`.travis.yml` files to see more details of how a particular branch is
+built.
+
+In order to build `sertop`, you will need to use OPAM and the `master`
+of [Coq](https://github.com/coq/coq/).
 
 0. The current supported ocaml version is 4.05.0
    ``$ opam switch 4.05.0 && eval `opam config env` ``.
 1. Install the needed packages:
    `$ opam install ocamlfind ocamlbuild ppx_import cmdliner core_kernel sexplib ppx_sexp_conv camlp5`.
    Note the _hard_ version dependency: `ppx_sexp_conv >= v0.9.0`.
-2. Download and compile coq 8.7. We recommend:
-   `$ ./configure -local && make -j $NJOBS`.
-3. Edit the `SERAPI_COQ_HOME` variable in `Makefile` to add the
-   location of your Coq sources. You can also override it with `make
-   SERAPI_COQ_HOME=$path_to_coq`. Another alternative is to modify
-   your `findlib.conf` to add the Coq path to findlib's search
-   path. If you install Coq globally these steps may not be needed. YMMV.
-4. Type `make` to build `sertop`.
+2. Download and compile coq master. We recommend:
+   `$ git clone https://github.com/coq/coq.git ~/external/coq-master && cd ~/external/coq-master && ./configure -local -native-compiler no && make -j $NJOBS`.
+3. Type `make SERAPI_COQ_HOME=~/external/coq-master` to build `sertop`.
+
+The above instructions assume that you used `~/external/coq-master`
+directory to place the coq build that SerAPI will use; you can modify
+the `SERAPI_COQ_HOME` variable in `Makefile` to make this change
+permanent, or override the provided default.
+
+Another alternative is to modify your `findlib.conf` file to add Coq's
+path to findlib's search path. This is convenient for using
+`merlin`. If you install Coq globally these steps may not be needed,
+and finlib may be able to locate Coq for you; YMMV.
 
 The above instructions assume that you used `~/external/coq-master`
 directory to place the coq build that SerAPI will use; you can modify
