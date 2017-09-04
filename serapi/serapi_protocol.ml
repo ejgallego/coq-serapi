@@ -457,7 +457,7 @@ module QueryUtil = struct
 
   let info_of_const cr =
     let cdef = Global.lookup_constant cr in
-    Option.cata (fun cb -> [CoqConstr (fst cb)] ) [] (Global.body_of_constant cr),
+    Option.cata (fun cb -> [CoqConstr cb] ) [] (Global.body_of_constant cr),
     [CoqConstr(type_of_constant cdef)]
 
   let info_of_var vr =
@@ -468,8 +468,7 @@ module QueryUtil = struct
   (* XXX: Some work to do wrt Global.type_of_global_unsafe  *)
   let info_of_constructor cr =
     (* let cdef = Global.lookup_pinductive (cn, cu) in *)
-    let env = Global.env () in
-    let ctype = fst @@ Global.type_of_global_in_context env (Globnames.ConstructRef cr) in
+    let ctype = Global.type_of_global_unsafe (Globnames.ConstructRef cr) in
     [],[CoqConstr ctype]
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
