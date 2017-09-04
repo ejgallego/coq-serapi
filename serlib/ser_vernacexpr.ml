@@ -245,6 +245,10 @@ type module_binder =
   [%import: Vernacexpr.module_binder]
   [@@deriving sexp]
 
+type cumulative_inductive_parsing_flag =
+  [%import: Vernacexpr.cumulative_inductive_parsing_flag]
+  [@@deriving sexp]
+
 type vernac_expr           = [%import: Vernacexpr.vernac_expr]
 and vernac_implicit_status = [%import: Vernacexpr.vernac_implicit_status]
 and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]

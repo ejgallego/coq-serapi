@@ -35,12 +35,10 @@ type guard_error =
   [@@deriving sexp]
 
 type ('constr, 'types) ptype_error =
-  [%import: ('constr, 'types) Type_errors.ptype_error
-  [@with Term.sorts_family := Sorts.family; ]]
+  [%import: ('constr, 'types) Type_errors.ptype_error]
   [@@deriving sexp]
 
 type type_error =
-  [%import: Type_errors.type_error
-  [@with Term.sorts_family := Sorts.family; ]]
+  [%import: Type_errors.type_error]
   [@@deriving sexp]
 

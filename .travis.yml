@@ -15,13 +15,13 @@ addons:
 env:
   global:
   - NJOBS=2
-  - COQ_VERSION="v8.8~alpha"
+  - COQ_VERSION="v8.7"
   - COQ_REPOS=https://github.com/coq/coq.git
   # - COQ_REPOS="git://scm.gforge.inria.fr/coq/coq.git"
-  - COQ_BRANCH="master"
+  - COQ_BRANCH="v8.7"
   # system is == 4.02.3
-  - COMPILER="4.04.1"
-  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib"
+  - COMPILER="4.04.2"
+  - BASE_OPAM="camlp5 cmdliner ppx_deriving=4.1 ppx_import ppx_sexp_conv sexplib"
   # Main test suites
   # matrix:
   # - TEST_TARGET="test1"

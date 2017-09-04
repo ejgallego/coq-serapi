@@ -61,6 +61,6 @@ let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) sid
   with Proof_global.NoCurrentProof -> None
 
 let get_goals  = get_goals_gen (fun _ _ x -> x)
-let get_egoals = get_goals_gen (Constrextern.extern_constr true)
+let get_egoals = get_goals_gen (fun env evd ec -> Constrextern.extern_constr true env evd EConstr.(of_constr ec))
 
 

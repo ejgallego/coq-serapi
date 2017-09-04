@@ -164,6 +164,9 @@ type cmd =
   (* Miscellanous *)
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value
   (*******************************************************************)
+  (* Non-supported command, only for convenience. *)
+  | ReadFile   of string
+  (*  *)
   | Noop
   | Help
   | Quit
