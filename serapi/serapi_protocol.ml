@@ -702,7 +702,6 @@ type cmd =
 
 
 let exec_cmd (cmd : cmd) =
-  Format.eprintf "uu\n%!";
   coq_protect @@ fun () -> match cmd with
   | Add (opt, s) -> ControlUtil.add_sentences opt s
   | Cancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
