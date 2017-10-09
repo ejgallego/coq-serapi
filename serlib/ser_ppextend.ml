@@ -15,6 +15,8 @@
 
 open Sexplib.Std
 
+module Loc = Ser_loc
+
 type precedence =
   [%import: Ppextend.precedence]
   [@@deriving sexp]
