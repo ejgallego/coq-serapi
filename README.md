@@ -160,9 +160,12 @@ the `SERAPI_COQ_HOME` variable in `Makefile` to make this change
 permanent, or override the provided default.
 
 Another alternative is to modify your `findlib.conf` file to add Coq's
-path to findlib's search path. This is convenient to use
-`merlin`. If you install Coq globally, these steps may not be needed,
-findlib may be able to locate Coq for you; YMMV.
+path to findlib's search path: for example, edit the file `~/.opam/4.04.2/lib/findlib.conf` and change
+`path="/home/egallego/.opam/4.04.2/lib"` by `path="/home/egallego/.opam/4.04.2/lib:/home/egallego/external/coq-v8.7"`.
+
+This is convenient to use `merlin`. If you install Coq globally, these
+steps may not be needed, findlib may be able to locate Coq for you;
+YMMV.
 
 ### Emacs mode
 
