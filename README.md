@@ -144,12 +144,10 @@ built.
 We recommend using OPAM to build `sertop`, however Théo Zimmermann has
 also reported success in NixOS.
 
-0. The currently supported ocaml version is 4.04.2
-   ``$ opam switch 4.04.2 && eval `opam config env` ``. We also assume `COQVER=v8.7`.
+0. The currently supported ocaml version is 4.06.0
+   ``$ opam switch 4.06.0 && eval `opam config env` ``. We also assume `COQVER=v8.7`.
 1. Install the needed packages:
-   `$ opam install ocamlfind ocamlbuild ppx_import ppx_deriving=4.1 cmdliner core_kernel sexplib ppx_sexp_conv camlp5`.
-   As of today, there are some _hard_ version dependencies: `ppx_sexp_conv >=
-   v0.9.0` and `ppx_deriving=4.1`. See `.travis.yml` for more details.
+   `$ opam install ocamlfind ocamlbuild ppx_import ppx_deriving cmdliner core_kernel sexplib ppx_sexp_conv camlp5`.
 2. Download and compile coq. We recommend:
    `$ git clone -b ${COQVER} https://github.com/coq/coq.git ~/external/coq-${COQVER} && cd ~/external/coq-${COQVER} && ./configure -local -native-compiler no && make -j $NJOBS`.
 3. Type `make SERAPI_COQ_HOME=~/external/coq-${COQVER}` to build `sertop`.
@@ -160,8 +158,8 @@ the `SERAPI_COQ_HOME` variable in `Makefile` to make this change
 permanent, or override the provided default.
 
 Another alternative is to modify your `findlib.conf` file to add Coq's
-path to findlib's search path: for example, edit the file `~/.opam/4.04.2/lib/findlib.conf` and change
-`path="/home/egallego/.opam/4.04.2/lib"` by `path="/home/egallego/.opam/4.04.2/lib:/home/egallego/external/coq-v8.7"`.
+path to findlib's search path: for example, edit the file `~/.opam/4.06.0/lib/findlib.conf` and change
+`path="/home/egallego/.opam/4.06.0/lib"` by `path="/home/egallego/.opam/4.06.0/lib:/home/egallego/external/coq-v8.7"`.
 
 This is convenient to use `merlin`. If you install Coq globally, these
 steps may not be needed, findlib may be able to locate Coq for you;
