@@ -222,7 +222,9 @@ let coq_init coq_lib =
   Lib.init ();
 
   (* We link LTAC statically in SerAPI *)
-  Mltop.add_known_module "ltac_plugin";
+  (* This is not neccesary anymore as `declare plugin` should take
+     care of it *)
+  (* Mltop.add_known_module "ltac_plugin"; *)
 
   Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
   Global.set_engagement Declarations.PredicativeSet;

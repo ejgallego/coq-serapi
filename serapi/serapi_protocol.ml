@@ -99,7 +99,7 @@ type coq_object =
   | CoqString    of string
   | CoqSList     of string list
   | CoqPp        of Pp.t
-  | CoqRichpp    of Richpp.richpp
+  (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
   | CoqAst       of Vernacexpr.vernac_expr Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
@@ -158,6 +158,7 @@ let pp_implicit = function
   | None               -> Pp.str "!"
   | Some (iname, _, _) -> Names.Id.print iname
 
+(*
 let pp_richpp xml =
   let open Xml_datatype in
   let buf = Buffer.create 1024 in
@@ -167,13 +168,14 @@ let pp_richpp xml =
   in
   let () = print xml in
   Buffer.contents buf
+*)
 
 let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   match obj with
   | CoqString  s    -> Pp.str s
   | CoqSList   s    -> Pp.(pr_sequence str) s
   | CoqPp      s    -> s
-  | CoqRichpp  s    -> Pp.str (pp_richpp s)
+  (* | CoqRichpp  s    -> Pp.str (pp_richpp s) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqAst (_l, v)  -> Ppvernac.pr_vernac v
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body (Global.env ()) m mind
@@ -230,7 +232,7 @@ type print_format =
   | PpStr
   | PpTex
   | PpCoq
-  | PpRichpp
+  (* | PpRichpp *)
 
 (* register printer *)
 
@@ -267,7 +269,7 @@ let obj_print pr_opt obj =
   | PpSer    -> obj
   | PpCoq    -> CoqPp (gen_pp_obj obj)
   | PpTex    -> CoqString (pp_tex obj)
-  | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp pr_opt.pp_margin (gen_pp_obj obj))
+  (* | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp pr_opt.pp_margin (gen_pp_obj obj)) *)
   | PpStr ->
     let mb      = pp_get_max_boxes     str_formatter () in
     let et      = pp_get_ellipsis_text str_formatter () in
@@ -316,7 +318,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqSList   _    -> true     (* XXX *)
   | CoqLoc     _    -> true
   | CoqPp      _    -> true
-  | CoqRichpp  _    -> true
+  (* | CoqRichpp  _    -> true *)
   | CoqAst     _    -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true

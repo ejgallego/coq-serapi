@@ -8,6 +8,9 @@ true: rectypes, thread, package(str), package(unix), package(threads), package(n
 # Sertop/Serlib general flags
 true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, debug
 
+# Disable until we get Coq upstream more polished.
+true: warn(-58)
+
 # This needs to go first to avoid flag precedence problems.
 <sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
 
@@ -27,7 +30,8 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
-<serapi/*>: package(coq.intf), package(coq.ltac), package(coq.idetop)
+<serapi/*>: package(coq.intf), package(coq.ltac)
+#<serapi/*>: package(coq.intf), package(coq.ltac), package(coq.idetop)
 
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
@@ -42,7 +46,8 @@ true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, d
 
 # Specifip to init
 <sertop/*.{ml,mli}>: package(coq.intf)
-<sertop/*>: package(coq.intf), package(coq.stm), package(coq.idetop)
+<sertop/*>: package(coq.intf), package(coq.stm), package(coq.ltac)
+#<sertop/*>: package(coq.intf), package(coq.stm) package(coq.ltac), package(coq.idetop)
 <sertop/*>: package(sexplib), debug
 
 # Specifip to toplevel

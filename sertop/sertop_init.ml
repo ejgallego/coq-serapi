@@ -70,7 +70,7 @@ let coq_init opts =
   (* Mltop.init_known_plugins (); *)
 
   (* We link LTAC statically in SerAPI *)
-  Mltop.add_known_module "ltac_plugin";
+  (* Mltop.add_known_module "ltac_plugin"; *)
 
   Global.set_engagement Declarations.PredicativeSet;
 
