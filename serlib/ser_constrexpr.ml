@@ -15,10 +15,11 @@
 
 open Sexplib.Std
 
+module Bigint     = Ser_bigint
 module Loc        = Ser_loc
 module CAst       = Ser_cAst
 module Names      = Ser_names
-module Bigint     = Ser_bigint
+module Constr     = Ser_constr
 module Misctypes  = Ser_misctypes
 module Decl_kinds = Ser_decl_kinds
 module Evar_kinds = Ser_evar_kinds
@@ -70,10 +71,6 @@ and constr_notation_substitution = [%import: Constrexpr.constr_notation_substitu
 
 type constr_pattern_expr = [%import: Constrexpr.constr_pattern_expr]
   [@@deriving sexp]
-
-type typeclass_constraint = [%import: Constrexpr.typeclass_constraint]
-and typeclass_context     = [%import: Constrexpr.typeclass_context]
-    [@@deriving sexp]
 
 type with_declaration_ast =
   [%import: Constrexpr.with_declaration_ast]

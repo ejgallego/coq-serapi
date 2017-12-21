@@ -59,15 +59,17 @@ type univ_constraint = Univ.univ_constraint
 val univ_constraint_of_sexp : Sexp.t -> univ_constraint
 val sexp_of_univ_constraint : univ_constraint -> Sexp.t
 
-type constraints = Univ.constraints
-
-val constraints_of_sexp : Sexp.t -> constraints
-val sexp_of_constraints : constraints -> Sexp.t
-
 type universe_instance = Instance.t
 
 val universe_instance_of_sexp : Sexp.t -> universe_instance
 val sexp_of_universe_instance : universe_instance -> Sexp.t
+
+module Constraint : sig
+  type t = Univ.Constraint.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+end
 
 module UContext : sig
 
@@ -122,6 +124,14 @@ end
 type abstract_cumulativity_info = ACumulativityInfo.t
 val abstract_cumulativity_info_of_sexp : Sexp.t -> abstract_cumulativity_info
 val sexp_of_abstract_cumulativity_info : abstract_cumulativity_info -> Sexp.t
+
+module ContextSet :
+sig
+  type t = Univ.ContextSet.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+end
 
 type 'a puniverses = 'a * universe_instance
 

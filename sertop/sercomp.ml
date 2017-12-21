@@ -32,7 +32,7 @@ let stats = {
 (* XXX: Move to sertop_stats.ml *)
 let do_stats =
   let proof_loc = ref None in
-  fun ?loc (vrn : Vernacexpr.vernac_expr) ->
+  fun ?loc (vrn : Vernacexpr.vernac_control) ->
   let open Vernacexpr in
   let incS ?loc f =
     Option.cata (fun loc ->
@@ -40,17 +40,16 @@ let do_stats =
         Format.eprintf "Adding %d lines @\n%!" n_lines;
         f + n_lines) f loc
   in
-  match vrn with
+  match Vernacprop.under_control vrn with
   (* Definition *)
   | VernacDefinition (_,_,_)
   | VernacFixpoint   (_,_)
   | VernacInductive  (_,_,_,_)
   | VernacCoFixpoint (_,_)
-  | VernacNotation   (_,_,_,_) ->
+  | VernacNotation   (_,_,_) ->
     stats.specs <- incS ?loc stats.specs
 
   (* Proofs *)
-  | VernacGoal _
   | VernacStartTheoremProof (_,_) ->
     stats.specs <- incS ?loc stats.specs;
     Option.iter (fun loc -> proof_loc := Some Loc.(loc.line_nb_last)) loc
@@ -167,21 +166,21 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-let process_vernac pp st (loc, vrn) =
+let process_vernac pp ~doc st (loc, vrn) =
   let open Format in
-  let n_st, tip = Stm.add ~ontop:st false (loc, vrn) in
+  let doc, n_st, tip = Stm.add ~doc ~ontop:st false (loc, vrn) in
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   do_stats ?loc vrn;
-  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt Topfmt.pr_loc loc)
-                              pp (sexp_of_vernac_expr vrn);
-  n_st
+  printf "@[%a@]@\n @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt Topfmt.pr_loc loc)
+                                 pp (sexp_of_vernac_control vrn);
+  doc, n_st
 
-let parse_document pp in_pa =
-  let stt = ref (Stm.get_current_state ()) in
+let parse_document pp ~doc sid in_pa =
+  let stt = ref (doc, sid) in
   try while true do
-      let east = Stm.parse_sentence !stt in_pa in
-      stt := process_vernac pp !stt east
+      let east = Stm.parse_sentence ~doc:(fst !stt) (snd !stt) in_pa in
+      stt := process_vernac pp ~doc:(fst !stt) (snd !stt) east
     done
   with any ->
     let (e, _info) = CErrors.push any in
@@ -206,24 +205,24 @@ let sercomp printer coq_path in_file =
   in
   let in_chan = open_in in_file            in
   let in_strm = Stream.of_channel in_chan  in
-  let in_pa   = Pcoq.Gram.parsable ~file:in_file in_strm in
 
+  let in_pa   = Pcoq.Gram.parsable ~file:(Loc.InFile in_file) in_strm in
   let sload_path = coq_loadpath_default ~implicit:true ~coq_path in
 
-  let _ = coq_init {
+  let doc,sid = coq_init {
     fb_handler   = (fun _ -> ());
     aopts        = { enable_async = None;
                      async_full   = false;
                      deep_edits   = false;
                    };
     iload_path   = sload_path;
-    require_libs = [coq_prelude_mod ~coq_path];
+    require_libs = ["Coq.Init.Prelude", None, Some true];
     top_name     = "SerComp";
     ml_load      = None;
     debug        = false;
   } in
 
-  parse_document pp_sexp in_pa;
+  parse_document pp_sexp ~doc sid in_pa;
   close_in in_chan;
   close_document ()
 

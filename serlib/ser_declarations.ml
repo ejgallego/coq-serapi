@@ -19,11 +19,12 @@ open Sexplib.Conv
 
 module Names   = Ser_names
 module Context = Ser_context
-module Term    = Ser_constr
+module Constr  = Ser_constr
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
 module Decl_kinds = Ser_decl_kinds
 module Cbytecodes = Ser_cbytecodes
+module Conv_oracle = Ser_conv_oracle
 
 type template_arity =
   [%import: Declarations.template_arity]
@@ -83,6 +84,10 @@ type record_body =
 
 type abstract_inductive_universes =
   [%import: Declarations.abstract_inductive_universes]
+  [@@deriving sexp]
+
+type recursivity_kind =
+  [%import: Declarations.recursivity_kind]
   [@@deriving sexp]
 
 type mutual_inductive_body =

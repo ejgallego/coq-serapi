@@ -30,7 +30,7 @@ type coq_object =
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
-  | CoqAst       of Vernacexpr.vernac_expr Loc.located
+  | CoqAst       of Vernacexpr.vernac_control Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr
@@ -101,7 +101,7 @@ type query_pred =
 type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
-    sid   : Stateid.t [@default Stm.get_current_state()];
+    sid   : Stateid.t [@default Stm.get_current_state ~doc:Stm.(get_doc 0)];
     pp    : print_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (* Legacy/Deprecated *)
     route : Feedback.route_id [@default 0];
@@ -160,6 +160,7 @@ type cmd =
   (*******************************************************************)
   (* XXX: We want to have query / update and fuse these two under it *)
   (*              coq_path      unix_path   has_ml                   *)
+  (* Boht Deprecated, not working well with state handling.          *)
   | LibAdd     of string list * string    * bool
   (* Miscellanous *)
   | SetOpt     of bool option * Goptions.option_name * Goptions.option_value

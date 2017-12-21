@@ -29,6 +29,18 @@ module Extend     = Ser_extend
 (*   [%import: Notation_term.syntax_modifier] *)
 (*   [@@deriving sexp] *)
 
+type precedence =
+  [%import: Notation_term.precedence]
+  [@@deriving sexp]
+
+type parenRelation =
+  [%import: Notation_term.parenRelation]
+  [@@deriving sexp]
+
+type tolerability =
+  [%import: Notation_term.tolerability]
+  [@@deriving sexp]
+
 type grammar_constr_prod_item =
   [%import: Notation_term.grammar_constr_prod_item]
   [@@deriving sexp]
@@ -37,6 +49,9 @@ type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]
   [@@deriving sexp]
 
+type level =
+  [%import: Notation_term.level]
+  [@@deriving sexp]
 
 type one_notation_grammar =
   [%import: Notation_term.one_notation_grammar]

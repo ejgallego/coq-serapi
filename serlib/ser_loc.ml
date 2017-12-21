@@ -19,6 +19,10 @@
 
 open Sexplib.Std
 
+type source =
+  [%import: Loc.source]
+  [@@deriving sexp]
+
 type t =
   [%import: Loc.t]
   [@@deriving sexp]

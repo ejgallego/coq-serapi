@@ -94,7 +94,7 @@ let ser_wit_ltac_use_default = Ser_genarg.{
 let ser_wit_auto_using = Ser_genarg.{
     raw_ser = Sexplib.Conv.sexp_of_list Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Sexplib.Conv.sexp_of_list Ser_tactypes.sexp_of_glob_constr_and_expr;
-    top_ser = Sexplib.Conv.sexp_of_list Ser_glob_term.sexp_of_closed_glob_constr;
+    top_ser = Sexplib.Conv.sexp_of_list Ser_ltac_pretype.sexp_of_closed_glob_constr;
   }
 
 let ser_wit_hintbases =

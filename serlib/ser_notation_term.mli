@@ -15,6 +15,21 @@
 
 open Sexplib
 
+type precedence = Notation_term.precedence
+
+val precedence_of_sexp : Sexp.t -> precedence
+val sexp_of_precedence : precedence -> Sexp.t
+
+type parenRelation = Notation_term.parenRelation
+
+val parenRelation_of_sexp : Sexp.t -> parenRelation
+val sexp_of_parenRelation : parenRelation -> Sexp.t
+
+type tolerability = Notation_term.tolerability
+
+val tolerability_of_sexp : Sexp.t -> tolerability
+val sexp_of_tolerability : tolerability -> Sexp.t
+
 type grammar_constr_prod_item = Notation_term.grammar_constr_prod_item
 val grammar_constr_prod_item_of_sexp : Sexp.t -> grammar_constr_prod_item
 val sexp_of_grammar_constr_prod_item : grammar_constr_prod_item -> Sexp.t

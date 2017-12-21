@@ -83,7 +83,7 @@ let jslib_add_load_path pkg pkg_path has_ml =
   (* let implicit = try String.equal (List.hd pkg) "Coq" with _ -> false  in *)
   (* Format.eprintf "setting implicit to %b for pkg: %s\n%!" implicit (DirPath.to_string coq_path); *)
   Loadpath.add_load_path ("./" ^ pkg_path) coq_path ~implicit:false;
-  if has_ml then Mltop.add_ml_dir pkg_path
+  if has_ml then Mltop.(add_coq_path { recursive = false; path_spec = MlPath pkg_path })
 
 let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   let pkg_dir = to_dir pkg                                           in

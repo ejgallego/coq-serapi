@@ -101,7 +101,7 @@ type coq_object =
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
-  | CoqAst       of Vernacexpr.vernac_expr Loc.located
+  | CoqAst       of Vernacexpr.vernac_control Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr
@@ -170,7 +170,8 @@ let pp_richpp xml =
   Buffer.contents buf
 *)
 
-let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
+let gen_pp_obj (obj : coq_object) : Pp.t =
+  let sigma, env = Pfedit.get_current_context () in
   match obj with
   | CoqString  s    -> Pp.str s
   | CoqSList   s    -> Pp.(pr_sequence str) s
@@ -178,14 +179,14 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   (* | CoqRichpp  s    -> Pp.str (pp_richpp s) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqAst (_l, v)  -> Ppvernac.pr_vernac v
-  | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body (Global.env ()) m mind
+  | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body env m mind None
   | CoqOption (n,s) -> pp_opt n s
-  | CoqConstr  c    -> Printer.pr_lconstr c
+  | CoqConstr  c    -> Printer.pr_lconstr_env env sigma c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
   | CoqTactic(kn,_) -> Names.KerName.print kn
   (* Fixme *)
-  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.pr_lconstr)       g.Proof.fg_goals
-  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.pr_lconstr_expr) g.Proof.fg_goals
+  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.(pr_lconstr_env env sigma)) g.Proof.fg_goals
+  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.(pr_lconstr_expr))         g.Proof.fg_goals
   | CoqProof  _     -> Pp.str "FIXME UPSTREAM, provide pr_proof"
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
@@ -262,7 +263,7 @@ let pp_tex (obj : coq_object) =
                      sexp_of_constr      cst |> tex_sexp
   | CoqExtGoal gl -> let cst = (hd gl.fg_goals).ty in
                      sexp_of_constr_expr cst |> tex_sexp
-  | CoqAst(_,ast) -> sexp_of_vernac_expr ast |> tex_sexp
+  | CoqAst(_,ast) -> sexp_of_vernac_control ast |> tex_sexp
   | _             -> "not supported"
 
 let obj_print pr_opt obj =
@@ -398,7 +399,7 @@ module QueryUtil = struct
     let prefix_long kn = Extra.is_prefix (KerName.to_string kn) ~prefix in
     let prefix_best kn =
       try Extra.is_prefix
-            (Libnames.string_of_qualid (Nametab.shortest_qualid_of_tactic kn)) ~prefix
+            (Libnames.string_of_qualid (Tacenv.shortest_qualid_of_tactic kn)) ~prefix
       with Not_found ->
         (* Debug code, It is weird that shortest_qualid_of_tactic returns a Not_found... :S *)
         (* Format.eprintf "%s has no short name@\n%!" (KerName.to_string kn); *)
@@ -450,10 +451,7 @@ module QueryUtil = struct
     with Not_found -> []
 
   (* Copied from Coq. XXX *)
-  let type_of_constant cb = match cb.Declarations.const_type with
-    | Declarations.RegularArity ty -> ty
-    | Declarations.TemplateArity (ctx, arity) ->
-      Term.mkArity (ctx, Sorts.sort_of_univ arity.Declarations.template_level)
+  let type_of_constant cb = cb.Declarations.const_type
 
   (* Definition of an inductive *)
   let info_of_ind (sp, _) =
@@ -461,7 +459,7 @@ module QueryUtil = struct
 
   let info_of_const cr =
     let cdef = Global.lookup_constant cr in
-    Option.cata (fun cb -> [CoqConstr cb] ) [] (Global.body_of_constant cr),
+    Option.cata (fun (cb,_uctx) -> [CoqConstr cb] ) [] (Global.body_of_constant cr),
     [CoqConstr(type_of_constant cdef)]
 
   let info_of_var vr =
@@ -472,7 +470,7 @@ module QueryUtil = struct
   (* XXX: Some work to do wrt Global.type_of_global_unsafe  *)
   let info_of_constructor cr =
     (* let cdef = Global.lookup_pinductive (cn, cu) in *)
-    let ctype = Global.type_of_global_unsafe (Globnames.ConstructRef cr) in
+    let (ctype, _uctx) = Global.type_of_global_in_context (Global.env()) (Globnames.ConstructRef cr) in
     [],[CoqConstr ctype]
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
@@ -494,14 +492,17 @@ module QueryUtil = struct
 
 end
 
+let doc_id = ref 0
+
 let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
+  let doc = Stm.get_doc !doc_id in
   match cmd with
   | Option         -> let table = Goptions.get_tables ()            in
                       let opts  = Goptions.OptionMap.bindings table in
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
-  | Goals          -> Option.cata (fun g -> [CoqGoal g   ]) [] @@ Serapi_goals.get_goals  opt.sid
-  | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals opt.sid
-  | Ast sid        -> Option.cata (fun last -> [CoqAst last]) [] @@ Stm.get_ast sid
+  | Goals          -> Option.cata (fun g -> [CoqGoal g   ]) [] @@ Serapi_goals.get_goals  ~doc opt.sid
+  | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals ~doc opt.sid
+  | Ast sid        -> Option.cata (fun last -> [CoqAst last]) [] @@ Stm.get_ast ~doc sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
@@ -526,7 +527,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Search         -> [CoqString "Not Implemented"]
   (* XXX: should set printing options in all queries *)
   | Vernac q       -> let pa = Pcoq.Gram.parsable (Stream.of_string q) in
-                      Stm.query ~at:opt.sid ~route:opt.route pa; []
+                      Stm.query ~doc ~at:opt.sid ~route:opt.route pa; []
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
@@ -594,11 +595,12 @@ module ControlUtil = struct
   let _dump_doc () =
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
-  let add_sentences opts sent =
+  let add_sentences ~doc opts sent =
     let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
     let i   = ref 1                    in
     let acc = ref []                   in
-    let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ())) in
+    let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ~doc)) in
+    let doc = ref doc                  in
     let check_lim i = Extra.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
     try
       while check_lim !i do
@@ -607,19 +609,20 @@ module ControlUtil = struct
          *)
         if not (List.mem !stt !cur_doc) then
           raise (NoSuchState !stt);
-        let east      = Stm.parse_sentence !stt pa in
+        let east      = Stm.parse_sentence ~doc:!doc !stt pa in
         (* XXX: Must like refine the API *)
         let eloc      = Option.get (fst east)      in
-        let n_st, foc = Stm.add ?newtip:opts.newtip ~ontop:!stt opts.verb east in
+        let n_doc, n_st, foc = Stm.add ~doc:!doc ?newtip:opts.newtip ~ontop:!stt opts.verb east in
+        doc := n_doc;
         cur_doc := n_st :: !cur_doc;
         acc := (Added (n_st, eloc, foc)) :: !acc;
         stt := n_st;
         incr i
       done;
-      List.rev !acc
+      !doc, List.rev !acc
     with
-    | Stm.End_of_input -> List.rev !acc
-    | exn              -> List.rev (coq_exn_info exn :: !acc)
+    | Stm.End_of_input -> !doc, List.rev !acc
+    | exn              -> !doc, List.rev (coq_exn_info exn :: !acc)
 
   (* We follow a suggestion by Clément to report sentence invalidation
      in a more modular way: When we issue the cancel command, we will
@@ -648,20 +651,22 @@ module ControlUtil = struct
       Extra.split_while !cur_doc ~f:pred
     else [], !cur_doc
 
-  let cancel_sentence can_st =
+  let cancel_sentence ~doc can_st =
     (* dump_doc (); *)
     let c_ran, k_ran = invalid_range can_st ~incl:true in
     let prev_st      = Extra.value (Extra.hd_opt k_ran) ~default:Stateid.initial in
-    match Stm.edit_at prev_st with
-    | `NewTip -> cur_doc := k_ran;
-                 [Canceled c_ran]
+    match Stm.edit_at ~doc prev_st with
+    | doc, `NewTip ->
+      cur_doc := k_ran;
+      doc, [Canceled c_ran]
     (* - [tip] is the new document tip.
        - [st]   -- [stop] is dropped.
        - [stop] -- [tip]  has been kept.
        - [start] is where the editing zone starts
        - [add] happen on top of [id].
     *)
-    | `Focus foc -> cancel_interval can_st foc
+    | doc, `Focus foc ->
+      doc, cancel_interval can_st foc
 
 end
 
@@ -707,22 +712,23 @@ type cmd =
 
 
 let exec_cmd (cmd : cmd) =
+  let doc = Stm.get_doc !doc_id in
   coq_protect @@ fun () -> match cmd with
-  | Add (opt, s) -> ControlUtil.add_sentences opt s
-  | Cancel st    -> List.concat @@ List.map ControlUtil.cancel_sentence st
-  | Exec st      -> Stm.observe st; []
+  | Add (opt, s) -> snd @@ ControlUtil.add_sentences ~doc opt s
+  | Cancel st    -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) st
+  | Exec st      -> ignore(Stm.observe ~doc st); []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
-  | Join              -> Stm.join (); []
+  | Join              -> ignore(Stm.join ~doc); []
 
   (*******************************************************************)
-  | LibAdd(lib, lib_path, has_ml) ->
-    let open Names in
-    let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
-    (* XXX [upstream]: Unify ML and .vo library paths.  *)
-    Loadpath.add_load_path lib_path coq_path ~implicit:false;
-    if has_ml then Mltop.add_ml_dir lib_path;
-    []
+  (* Deprecated, not working well with state handling.               *)
+  | LibAdd(_lib, _lib_path, _has_ml) -> []
+    (* let open Names in
+     * let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
+     * (\* XXX [upstream]: Unify ML and .vo library paths.  *\)
+     * Loadpath.add_load_path lib_path coq_path ~implicit:false;
+     * if has_ml then Mltop.add_ml_dir lib_path; *)
 
   | SetOpt(loc, n, v) -> exec_setopt loc n v; []
   (*******************************************************************)
@@ -733,7 +739,7 @@ let exec_cmd (cmd : cmd) =
         let faddopts = { lim = None; ontop = None; newtip = None; verb = false; } in
         let fsize    = in_channel_length inc         in
         let fcontent = really_input_string inc fsize in
-        ControlUtil.add_sentences faddopts fcontent
+        snd @@ ControlUtil.add_sentences ~doc faddopts fcontent
       with _ -> close_in inc; []
     )
   | Help           -> serproto_help (); []

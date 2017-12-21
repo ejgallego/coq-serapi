@@ -21,7 +21,9 @@ open Sexplib.Std
 
 module Loc = Ser_loc
 module Names = Ser_names
+module Univ  = Ser_univ
 module Evar  = Ser_evar
+module Libnames = Ser_libnames
 
 type patvar = [%import: Misctypes.patvar]
 let patvar_of_sexp = Names.Id.t_of_sexp
@@ -41,8 +43,13 @@ type 'a glob_sort_gen =
   [%import: 'a Misctypes.glob_sort_gen]
   [@@deriving sexp]
 
+
 type sort_info =
   [%import: Misctypes.sort_info]
+  [@@deriving sexp]
+
+type 'a universe_kind =
+  [%import: 'a Misctypes.universe_kind]
   [@@deriving sexp]
 
 type level_info =
@@ -63,6 +70,10 @@ type case_style =
   [@@deriving sexp]
 
 type 'a cast_type = [%import: 'a Misctypes.cast_type]
+  [@@deriving sexp]
+
+type glob_constraint =
+  [%import: Misctypes.glob_constraint]
   [@@deriving sexp]
 
 type existential_key =
@@ -120,3 +131,8 @@ type 'a destruction_arg =
 type inversion_kind =
   [%import: Misctypes.inversion_kind]
   [@@deriving sexp]
+
+type ('a,'b) gen_universe_decl =
+  [%import: ('a,'b) Misctypes.gen_universe_decl]
+  [@@deriving sexp]
+

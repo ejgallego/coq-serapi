@@ -114,27 +114,14 @@ type 'a tableKey = 'a Names.tableKey
 val tableKey_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a tableKey
 val sexp_of_tableKey : ('a -> Sexp.t) -> 'a tableKey -> Sexp.t
 
-(* mostly deprecated alias *)
-type kernel_name = Names.kernel_name
-type identifier  = Names.identifier
 type variable    = Names.variable
-type constant    = Names.constant
 type inductive   = Names.inductive
 type constructor = Names.constructor
 type projection  = Names.Projection.t
 type evaluable_global_reference = Names.evaluable_global_reference
 
-val kernel_name_of_sexp : Sexp.t -> kernel_name
-val sexp_of_kernel_name : kernel_name -> Sexp.t
-
-val identifier_of_sexp : Sexp.t -> identifier
-val sexp_of_identifier : identifier -> Sexp.t
-
 val variable_of_sexp : Sexp.t -> variable
 val sexp_of_variable : variable -> Sexp.t
-
-val constant_of_sexp : Sexp.t -> constant
-val sexp_of_constant : constant -> Sexp.t
 
 val inductive_of_sexp : Sexp.t -> inductive
 val sexp_of_inductive : inductive -> Sexp.t

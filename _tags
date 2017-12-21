@@ -15,14 +15,14 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <serlib/ide/*.{ml,mli}>: package(sexplib,coq.intf,coq.ide)
 <serlib/ide/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.ltac)
+<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ltac)
 <serlib/plugins/ltac/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
 # Sertex building options
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
-<serapi/*>: package(coq.intf,coq.ltac)
+<serapi/*>: package(coq.intf,coq.plugins.ltac)
 
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
@@ -39,10 +39,10 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/sertop_sexp.ml>: package(ppx_import,ppx_sexp_conv)
 <sertop/sercmdopt.ml{i,}>: package(cmdliner)
 <sertop/sertop.ml>: package(cmdliner)
-<sertop/*>: package(coq.intf,coq.stm,coq.ltac,sexplib), debug
+<sertop/*>: package(coq.intf,coq.stm,coq.plugins.ltac,sexplib), debug
 
-# Some plugins need num.
-<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.ltac)
+# Note that some plugins need num.
+<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.plugins.ltac)
 
 <sertop/sercomp.ml>: package(cmdliner)
 <sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner)

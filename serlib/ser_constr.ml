@@ -29,10 +29,6 @@ module Sorts = Ser_sorts
 module Evar  = Ser_evar
 module Univ  = Ser_univ
 
-type 'a puniverses =
-  [%import: 'a Constr.puniverses]
-  [@@deriving sexp]
-
 type pconstant =
   [%import: Constr.pconstant]
   [@@deriving sexp]
@@ -43,10 +39,6 @@ type pinductive =
 
 type pconstructor =
   [%import: Constr.pconstructor]
-  [@@deriving sexp]
-
-type existential_key =
-  [%import: Constr.existential_key]
   [@@deriving sexp]
 
 type cast_kind =

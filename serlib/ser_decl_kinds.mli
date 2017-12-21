@@ -83,7 +83,8 @@ type logical_kind = Decl_kinds.logical_kind
 val logical_kind_of_sexp : Sexp.t -> logical_kind
 val sexp_of_logical_kind : logical_kind -> Sexp.t
 
-type recursivity_kind = Decl_kinds.recursivity_kind
+type discharge = Decl_kinds.discharge
 
-val recursivity_kind_of_sexp : Sexp.t -> recursivity_kind
-val sexp_of_recursivity_kind : recursivity_kind -> Sexp.t
+val discharge_of_sexp : Sexp.t -> discharge
+val sexp_of_discharge : discharge -> Sexp.t
+

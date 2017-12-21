@@ -8,23 +8,24 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
-
+open Sexplib.Conv
 module Names     = Ser_names
 module Constr    = Ser_constr
 module Misctypes = Ser_misctypes
 module Globnames = Ser_globnames
+module Glob_term = Ser_glob_term
 module EConstr   = Ser_eConstr
 
-type case_info_pattern =
-  [%import: Pattern.case_info_pattern]
+type constr_under_binders =
+  [%import: Ltac_pretype.constr_under_binders]
   [@@deriving sexp]
 
-type constr_pattern =
-  [%import: Pattern.constr_pattern]
+type closure = [%import: Ltac_pretype.closure]
+and closed_glob_constr = [%import: Ltac_pretype.closed_glob_constr]
   [@@deriving sexp]
+

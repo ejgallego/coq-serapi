@@ -23,9 +23,9 @@ let opt_answer ans =
   | Feedback fb ->
     let open! Feedback in
     begin match fb with
-      | { id; route; contents = Message (lvl, loc, msg) } ->
+      | { doc_id; span_id; route; contents = Message (lvl, loc, msg) } ->
         if pp_opt_flag then
-          Feedback {id; route; contents = Message(lvl, loc, coq_pp_opt msg) }
+          Feedback {doc_id; span_id; route; contents = Message(lvl, loc, coq_pp_opt msg) }
         else
           ans
       | _ ->
@@ -324,12 +324,14 @@ let ser_loop ser_opts =
 
   let sload_path =
     List.map (fun (dir,lp,implicit) ->
-        Sertop_init.{
-          coq_path  = Libnames.dirpath_of_string lp;
-          unix_path = dir;
-          has_ml    = true;
+        Mltop.{
           recursive = true;
-          implicit;
+          path_spec = VoPath {
+              coq_path  = Libnames.dirpath_of_string lp;
+              unix_path = dir;
+              has_ml    = AddRecML;
+              implicit;
+            }
         }) ser_opts.loadpath in
 
   let coq_path = ser_opts.coqlib in
@@ -340,7 +342,7 @@ let ser_loop ser_opts =
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.aopts        = ser_opts.async;
     Sertop_init.iload_path   = sload_path;
-    Sertop_init.require_libs = [Sertop_init.coq_prelude_mod ~coq_path];
+    Sertop_init.require_libs = ["Coq.Init.Prelude", None, Some true];
     Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
     Sertop_init.debug        = ser_opts.debug;

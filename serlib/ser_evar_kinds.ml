@@ -16,6 +16,7 @@
 open Sexplib.Std
 
 module Names     = Ser_names
+module Evar      = Ser_evar
 module Globnames = Ser_globnames
 module Constr    = Ser_constr
 module Misctypes = Ser_misctypes

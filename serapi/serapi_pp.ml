@@ -73,7 +73,7 @@ let pp_feedback_content fmt fb =
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in
-  fprintf fmt "feedback for [%a]: @[%a@]" pp_stateid fb.id pp_feedback_content fb.Feedback.contents
+  fprintf fmt "feedback for [%a]: @[%a@]" pp_stateid fb.span_id pp_feedback_content fb.Feedback.contents
 
 (************************************************************************)
 (* Xml                                                                  *)

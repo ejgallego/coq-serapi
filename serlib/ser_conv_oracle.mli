@@ -18,3 +18,7 @@ open Sexplib
 type level = Conv_oracle.level
 val level_of_sexp : Sexp.t -> level
 val sexp_of_level : level -> Sexp.t
+
+type oracle = Conv_oracle.oracle
+val oracle_of_sexp : Sexp.t -> oracle
+val sexp_of_oracle : oracle -> Sexp.t

@@ -93,14 +93,6 @@ type constr_pattern_expr = Constrexpr.constr_pattern_expr
 val constr_pattern_expr_of_sexp : Sexp.t -> constr_pattern_expr
 val sexp_of_constr_pattern_expr : constr_pattern_expr -> Sexp.t
 
-type typeclass_constraint = Constrexpr.typeclass_constraint
-and typeclass_context = Constrexpr.typeclass_context
-
-val typeclass_constraint_of_sexp : Sexp.t -> typeclass_constraint
-val typeclass_context_of_sexp : Sexp.t -> typeclass_context
-val sexp_of_typeclass_constraint : typeclass_constraint -> Sexp.t
-val sexp_of_typeclass_context : typeclass_context -> Sexp.t
-
 type with_declaration_ast = Constrexpr.with_declaration_ast
 
 val with_declaration_ast_of_sexp : Sexp.t -> with_declaration_ast

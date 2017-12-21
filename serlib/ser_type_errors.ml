@@ -17,7 +17,7 @@ open Sexplib.Std
 
 module Loc     = Ser_loc
 module Names   = Ser_names
-module Term    = Ser_constr
+module Constr  = Ser_constr
 module Environ = Ser_environ
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
