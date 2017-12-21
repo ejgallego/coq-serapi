@@ -32,7 +32,7 @@ type ser_opts = {
   coq_path : string;            (* Coq standard library location *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
                                 (* -R and -Q options                          *)
-  loadpath : Sertop_init.load_path_spec list;
+  loadpath : Mltop.coq_path list; (* From -R and -Q options usually *)
   async    : Sertop_init.async_flags;
 }
 

@@ -37,8 +37,16 @@ type production_level =
   [%import: Extend.production_level]
   [@@deriving sexp]
 
-type ('lev,'pos) constr_entry_key_gen =
-  [%import: ('lev, 'pos) Extend.constr_entry_key_gen]
+type constr_as_binder_kind =
+  [%import: Extend.constr_as_binder_kind]
+  [@@deriving sexp]
+
+type binder_entry_kind =
+  [%import: Extend.binder_entry_kind]
+  [@@deriving sexp]
+
+type 'lev constr_entry_key_gen =
+  [%import: 'lev Extend.constr_entry_key_gen]
   [@@deriving sexp]
 
 type constr_entry_key =

@@ -19,10 +19,10 @@ open Sexplib
     [fb_handler] *)
 val sertop_init :
   fb_out:(Sexp.t -> unit) ->
-  iload_path:Sertop_init.load_path_spec list ->
-  require_libs:(Names.DirPath.t * string * bool option) list ->
+  iload_path:Mltop.coq_path list ->
+  require_libs:(string * string option * bool option) list ->
   debug:bool ->
-  Stateid.t
+  Stm.doc * Stateid.t
 
 (** [sertop_callback out input] Execute command [input] and send
     serialized output to [out]. Takes an internal mutex. *)

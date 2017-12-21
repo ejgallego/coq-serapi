@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -18,11 +18,14 @@ open Sexplib.Conv
 let exn_of_sexp _ = Obj.magic 0
 
 module Loc         = Ser_loc
+module CAst        = Ser_cAst
 module Names       = Ser_names
 module Flags       = Ser_flags
 module Misctypes   = Ser_misctypes
+module Sorts       = Ser_sorts
 module Univ        = Ser_univ
 module Conv_oracle = Ser_conv_oracle
+module Declarations= Ser_declarations
 module Decl_kinds  = Ser_decl_kinds
 module Genarg      = Ser_genarg
 module Libnames    = Ser_libnames
@@ -31,15 +34,7 @@ module Stateid     = Ser_stateid
 module Constrexpr  = Ser_constrexpr
 module Goptions    = Ser_goptions
 module Genredexpr  = Ser_genredexpr
-
-type lident     = [%import: Vernacexpr.lident]
-  [@@deriving sexp]
-
-type lname      = [%import: Vernacexpr.lname]
-  [@@deriving sexp]
-
-type lstring    = [%import: Vernacexpr.lstring]
-  [@@deriving sexp]
+module Universes   = Ser_universes
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
   [@@deriving sexp]
@@ -55,6 +50,10 @@ type goal_selector   =
   [@@deriving sexp]
 
 type goal_reference = [%import: Vernacexpr.goal_reference]
+  [@@deriving sexp]
+
+type vernac_flag =
+  [%import: Vernacexpr.vernac_flag]
   [@@deriving sexp]
 
 type printable = [%import: Vernacexpr.printable]
@@ -111,7 +110,7 @@ type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving se
 type export_flag       = [%import: Vernacexpr.export_flag       ] [@@deriving sexp]
 type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp]
 type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp]
-type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp]
+(* type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp] *)
 
 type option_value = Goptions.option_value
   [@@deriving sexp]
@@ -121,12 +120,20 @@ type option_ref_value =
   [%import: Vernacexpr.option_ref_value]
   [@@deriving sexp]
 
-type plident =
-  [%import: Vernacexpr.plident ]
-  [@@deriving sexp]
+(* type plident =
+ *   [%import: Vernacexpr.plident ]
+ *   [@@deriving sexp] *)
 
 type sort_expr =
   [%import: Vernacexpr.sort_expr]
+  [@@deriving sexp]
+
+type ident_decl =
+  [%import: Vernacexpr.ident_decl]
+  [@@deriving sexp]
+
+type name_decl =
+  [%import: Vernacexpr.name_decl]
   [@@deriving sexp]
 
 type definition_expr =
@@ -225,9 +232,9 @@ type bullet =
   [%import: Vernacexpr.bullet]
   [@@deriving sexp]
 
-type stm_vernac =
-  [%import: Vernacexpr.stm_vernac]
-  [@@deriving sexp]
+(* type stm_vernac =
+ *   [%import: Vernacexpr.stm_vernac]
+ *   [@@deriving sexp] *)
 
 type 'a module_signature =
   [%import: 'a Vernacexpr.module_signature]
@@ -249,7 +256,15 @@ type cumulative_inductive_parsing_flag =
   [%import: Vernacexpr.cumulative_inductive_parsing_flag]
   [@@deriving sexp]
 
+type typeclass_constraint =
+  [%import: Vernacexpr.typeclass_constraint]
+  [@@deriving sexp]
+
 type vernac_expr           = [%import: Vernacexpr.vernac_expr]
 and vernac_implicit_status = [%import: Vernacexpr.vernac_implicit_status]
 and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
+  [@@deriving sexp]
+
+type vernac_control =
+  [%import: Vernacexpr.vernac_control]
   [@@deriving sexp]

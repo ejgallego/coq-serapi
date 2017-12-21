@@ -19,6 +19,7 @@
 
 module Names = Ser_names
 
-type global_reference = [%import: Globnames.global_reference]
-                        [@@deriving sexp]
+type global_reference = Names.global_reference
+let global_reference_of_sexp = Names.global_reference_of_sexp
+let sexp_of_global_reference = Names.sexp_of_global_reference
 

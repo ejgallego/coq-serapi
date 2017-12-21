@@ -15,14 +15,14 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <serlib/ide/*.{ml,mli}>: package(sexplib,coq.intf,coq.ide)
 <serlib/ide/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.ltac)
+<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ltac)
 <serlib/plugins/ltac/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
 # Sertex building options
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
-<serapi/*>: package(coq.intf,coq.ltac)
+<serapi/*>: package(coq.intf,coq.plugins.ltac)
 
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
@@ -39,13 +39,13 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/sertop_ser.ml>: package(ppx_import,ppx_sexp_conv)
 <sertop/sertop_arg.ml{i,}>: package(cmdliner)
 <sertop/sertop.ml>: package(cmdliner)
-<sertop/*>: package(coq.intf,coq.stm,coq.ltac,sexplib), debug
+<sertop/*>: package(coq.intf,coq.stm,sexplib), debug
 
-# Some plugins need num.
-<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.ltac)
+# Note that some plugins need num.
+<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.plugins.ltac)
 
 <sertop/sercomp.ml>: package(cmdliner)
-<sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner)
+<sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.plugins.ltac)
 
 # JsCoq helpers
 <jscoq/coq-js>: include
@@ -55,7 +55,7 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Js Toplevel
 <sertop/sertop_js.ml>: package(js_of_ocaml-lwt,ppx_import,ppx_sexp_conv)
-<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
+<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,coq.plugins.ssreflect,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
 
 # Don't mess with this.
 <js>: -traverse

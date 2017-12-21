@@ -100,12 +100,14 @@ let _ =
       let base_path = "./coq-pkgs/"                             in
       let pkgs      = ["init"] (*"peacoq"]*)                    in
 
-      let pkg_to_bb cp = Sertop_init.{
-          coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string cp.pkg_id);
-          unix_path = Jslib.to_dir cp;
+      let pkg_to_bb cp = Mltop.{
           recursive = false;
-          has_ml    = length cp.cma_files > 0;
-          implicit  = false;
+          path_spec = VoPath {
+              coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string cp.pkg_id);
+              unix_path = Jslib.to_dir cp;
+              has_ml    = if length cp.cma_files > 0 then AddRecML else AddNoML;
+              implicit  = false;
+            }
         } in
 
       Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun bundles ->

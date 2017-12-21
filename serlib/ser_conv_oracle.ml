@@ -18,3 +18,12 @@ open Sexplib.Std
 type level =
   [%import: Conv_oracle.level]
   [@@deriving sexp]
+
+(* XXX: Fixme *)
+type oracle =
+  [%import: Conv_oracle.oracle]
+
+let sexp_of_oracle _ =
+  Sexplib.Sexp.(Atom "XXX: Serialization of conv_oracle not implemented")
+
+let oracle_of_sexp _ = Conv_oracle.empty

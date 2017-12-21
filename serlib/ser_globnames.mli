@@ -19,7 +19,7 @@
 
 open Sexplib
 
-type global_reference = Globnames.global_reference
+type global_reference = Names.global_reference
 
-val global_reference_of_sexp : Sexp.t -> Globnames.global_reference
-val sexp_of_global_reference : Globnames.global_reference -> Sexp.t
+val global_reference_of_sexp : Sexp.t -> Names.global_reference
+val sexp_of_global_reference : Names.global_reference -> Sexp.t

@@ -114,27 +114,23 @@ type 'a tableKey = 'a Names.tableKey
 val tableKey_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a tableKey
 val sexp_of_tableKey : ('a -> Sexp.t) -> 'a tableKey -> Sexp.t
 
-(* mostly deprecated alias *)
-type kernel_name = Names.kernel_name
-type identifier  = Names.identifier
 type variable    = Names.variable
-type constant    = Names.constant
 type inductive   = Names.inductive
 type constructor = Names.constructor
+
+module Projection : sig
+
+  type t = Names.Projection.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end
+
 type projection  = Names.Projection.t
-type evaluable_global_reference = Names.evaluable_global_reference
-
-val kernel_name_of_sexp : Sexp.t -> kernel_name
-val sexp_of_kernel_name : kernel_name -> Sexp.t
-
-val identifier_of_sexp : Sexp.t -> identifier
-val sexp_of_identifier : identifier -> Sexp.t
 
 val variable_of_sexp : Sexp.t -> variable
 val sexp_of_variable : variable -> Sexp.t
-
-val constant_of_sexp : Sexp.t -> constant
-val sexp_of_constant : constant -> Sexp.t
 
 val inductive_of_sexp : Sexp.t -> inductive
 val sexp_of_inductive : inductive -> Sexp.t
@@ -145,5 +141,12 @@ val sexp_of_constructor : constructor -> Sexp.t
 val projection_of_sexp : Sexp.t -> projection
 val sexp_of_projection : projection -> Sexp.t
 
+type global_reference = Names.global_reference
+val global_reference_of_sexp : Sexp.t -> global_reference
+val sexp_of_global_reference : global_reference -> Sexp.t
+
+type evaluable_global_reference = Names.evaluable_global_reference
 val evaluable_global_reference_of_sexp : Sexp.t -> evaluable_global_reference
 val sexp_of_evaluable_global_reference : evaluable_global_reference -> Sexp.t
+
+

@@ -64,10 +64,6 @@ type t = Pp.t
 let t_of_sexp s = P.(to_t (_doc_view_of_sexp s))
 let sexp_of_t d = P.(sexp_of__doc_view (from_t d))
 
-type std_ppcmds =
-  [%import: Pp.std_ppcmds]
-  [@@deriving sexp]
-
 type doc_view =
   [%import: Pp.doc_view]
   [@@deriving sexp]

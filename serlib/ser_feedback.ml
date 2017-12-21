@@ -29,6 +29,10 @@ type route_id =
   [%import: Feedback.route_id]
   [@@deriving sexp]
 
+type doc_id =
+  [%import: Feedback.doc_id]
+  [@@deriving sexp]
+
 type feedback_content =
   [%import: Feedback.feedback_content]
   [@@deriving sexp]

@@ -17,13 +17,9 @@ open Sexplib
 
 type t = Pp.t
 type doc_view = Pp.doc_view
-type std_ppcmds = Pp.std_ppcmds
 
 val t_of_sexp : Sexp.t -> t
 val sexp_of_t : t -> Sexp.t
 
 val doc_view_of_sexp : Sexp.t -> doc_view
 val sexp_of_doc_view : doc_view -> Sexp.t
-
-val std_ppcmds_of_sexp : Sexp.t -> std_ppcmds
-val sexp_of_std_ppcmds : std_ppcmds -> Sexp.t

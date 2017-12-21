@@ -15,6 +15,10 @@
 
 open Sexplib.Std
 
+type option_locality =
+  [%import: Goptions.option_locality]
+  [@@deriving sexp]
+
 type option_name =
   [%import: Goptions.option_name]
   [@@deriving sexp]

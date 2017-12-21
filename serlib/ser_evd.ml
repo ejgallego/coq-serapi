@@ -17,7 +17,7 @@ open Sexplib.Std
 
 module Environ   = Ser_environ
 module Reduction = Ser_reduction
-module Term      = Ser_constr
+module Constr    = Ser_constr
 
 type conv_pb = Reduction.conv_pb
   [@@deriving sexp]

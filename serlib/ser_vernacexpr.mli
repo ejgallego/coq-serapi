@@ -17,23 +17,6 @@ open Sexplib
 
 val exn_of_sexp : Sexp.t -> exn
 
-type lident = Vernacexpr.lident
-
-val lident_of_sexp : Sexp.t -> lident
-val sexp_of_lident : lident -> Sexp.t
-
-type lname = Vernacexpr.lname
-val lname_of_sexp : Sexp.t -> lname
-val sexp_of_lname : lname -> Sexp.t
-
-(* type lstring = Vernacexpr.lstring *)
-(* val lstring_of_sexp : Sexp.t -> lstring *)
-(* val sexp_of_lstring : lstring -> Sexp.t *)
-
-(* type lreference = Vernacexpr.lreference *)
-(* val lreference_of_sexp : Sexp.t -> lreference *)
-(* val sexp_of_lreference : lreference -> Sexp.t *)
-
 type class_rawexpr = Vernacexpr.class_rawexpr
 val class_rawexpr_of_sexp : Sexp.t -> class_rawexpr
 val sexp_of_class_rawexpr : class_rawexpr -> Sexp.t
@@ -130,9 +113,9 @@ type locality_flag = Vernacexpr.locality_flag
 val locality_flag_of_sexp : Sexp.t -> locality_flag
 val sexp_of_locality_flag : locality_flag -> Sexp.t
 
-type obsolete_locality = Vernacexpr.obsolete_locality
-val obsolete_locality_of_sexp : Sexp.t -> obsolete_locality
-val sexp_of_obsolete_locality : obsolete_locality -> Sexp.t
+(* type obsolete_locality = Vernacexpr.obsolete_locality
+ * val obsolete_locality_of_sexp : Sexp.t -> obsolete_locality
+ * val sexp_of_obsolete_locality : obsolete_locality -> Sexp.t *)
 
 type option_value = Vernacexpr.option_value
 val option_value_of_sexp : Sexp.t -> option_value
@@ -142,9 +125,9 @@ type option_ref_value = Vernacexpr.option_ref_value
 val option_ref_value_of_sexp : Sexp.t -> option_ref_value
 val sexp_of_option_ref_value : option_ref_value -> Sexp.t
 
-type plident = Vernacexpr.plident
-val plident_of_sexp : Sexp.t -> plident
-val sexp_of_plident : plident -> Sexp.t
+(* type plident = Vernacexpr.plident
+ * val plident_of_sexp : Sexp.t -> plident
+ * val sexp_of_plident : plident -> Sexp.t *)
 
 type sort_expr = Vernacexpr.sort_expr
 val sort_expr_of_sexp : Sexp.t -> sort_expr
@@ -259,10 +242,9 @@ type bullet = Vernacexpr.bullet
 val bullet_of_sexp : Sexp.t -> bullet
 val sexp_of_bullet : bullet -> Sexp.t
 
-type stm_vernac = Vernacexpr.stm_vernac
-
-val stm_vernac_of_sexp : Sexp.t -> stm_vernac
-val sexp_of_stm_vernac : stm_vernac -> Sexp.t
+(* type stm_vernac = Vernacexpr.stm_vernac
+ * val stm_vernac_of_sexp : Sexp.t -> stm_vernac
+ * val sexp_of_stm_vernac : stm_vernac -> Sexp.t *)
 
 type 'a module_signature = 'a Vernacexpr.module_signature
 
@@ -297,3 +279,7 @@ val sexp_of_vernac_expr : vernac_expr -> Sexp.t
 
 (* val vernac_list_of_sexp : Sexp.t -> vernac_list *)
 (* val sexp_of_vernac_list : vernac_list -> Sexp.t *)
+
+type vernac_control = Vernacexpr.vernac_control
+val vernac_control_of_sexp : Sexp.t -> vernac_control
+val sexp_of_vernac_control : vernac_control -> Sexp.t

@@ -19,6 +19,9 @@ module Loc   = Ser_loc
 module Names = Ser_names
 module Util  = Ser_util
 module Locus = Ser_locus
+module Misctypes = Ser_misctypes
+module Libnames = Ser_libnames
+module Constrexpr = Ser_constrexpr
 
 type 'a red_atom =
   [%import: 'a Genredexpr.red_atom]
@@ -35,10 +38,6 @@ type ('a,'b,'c) red_expr_gen =
 type ('a,'b,'c) may_eval =
   [%import: ('a,'b,'c) Genredexpr.may_eval]
   [@@deriving sexp]
-
-module Libnames = Ser_libnames
-module Constrexpr = Ser_constrexpr
-module Misctypes = Ser_misctypes
 
 (* Helpers for raw_red_expr *)
 type r_trm =

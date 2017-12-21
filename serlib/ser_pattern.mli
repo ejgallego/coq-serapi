@@ -15,11 +15,6 @@
 
 open Sexplib
 
-type constr_under_binders = Pattern.constr_under_binders
-
-val constr_under_binders_of_sexp : Sexp.t -> constr_under_binders
-val sexp_of_constr_under_binders : constr_under_binders -> Sexp.t
-
 type case_info_pattern = Pattern.case_info_pattern
 
 val case_info_pattern_of_sexp : Sexp.t -> case_info_pattern

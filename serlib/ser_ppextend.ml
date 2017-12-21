@@ -16,18 +16,7 @@
 open Sexplib.Std
 
 module Loc = Ser_loc
-
-type precedence =
-  [%import: Ppextend.precedence]
-  [@@deriving sexp]
-
-type parenRelation =
-  [%import: Ppextend.parenRelation]
-  [@@deriving sexp]
-
-type tolerability =
-  [%import: Ppextend.tolerability]
-  [@@deriving sexp]
+module Notation_term = Ser_notation_term
 
 type ppbox =
   [%import: Ppextend.ppbox]

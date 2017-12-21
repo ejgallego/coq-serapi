@@ -33,11 +33,11 @@ let ser_wit_constr = Ser_genarg.{
 let ser_wit_uconstr = Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_glob_constr_and_expr;
-    top_ser = Ser_glob_term.sexp_of_closed_glob_constr;
+    top_ser = Ser_ltac_pretype.sexp_of_closed_glob_constr;
 
     raw_des = Ser_constrexpr.constr_expr_of_sexp;
     glb_des = Ser_tactypes.glob_constr_and_expr_of_sexp;
-    top_des = Ser_glob_term.closed_glob_constr_of_sexp;
+    top_des = Ser_ltac_pretype.closed_glob_constr_of_sexp;
   }
 
 let register () =

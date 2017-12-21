@@ -21,24 +21,16 @@ type async_flags = {
   deep_edits   : bool;
 }
 
-type load_path_spec = {
-  coq_path  : Names.DirPath.t;
-  unix_path : string;
-  recursive : bool;
-  has_ml    : bool;
-  implicit  : bool;
-}
-
 type coq_opts = {
 
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
 
   (* Initial LoadPath XXX: Use the coq_pkg record? *)
-  iload_path   : load_path_spec list;
+  iload_path   : Mltop.coq_path list;
 
-  (* Libs to require prior to STM init *)
-  require_libs : (Names.DirPath.t * string * bool option) list;
+  (* Libs to require in STM init *)
+  require_libs : (string * string option * bool option) list;
 
   (* Async flags *)
   aopts        : async_flags;
@@ -78,50 +70,9 @@ let coq_init opts =
       Mltop.set_top ser_mltop
     ) opts.ml_load;
 
-  (* Coq library initialization *)
+  (* Core Coq initialization *)
   Lib.init();
-
-  (* Mltop.init_known_plugins (); *)
-
-  (* We link LTAC statically in SerAPI *)
-  (* Mltop.add_known_module "ltac_plugin"; *)
-
   Global.set_engagement Declarations.PredicativeSet;
-
-  (**************************************************************************)
-  (* Library initialization                                                 *)
-  (**************************************************************************)
-  Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
-
-  List.iter (fun { coq_path; unix_path; has_ml; implicit ; recursive } ->
-      (* We follow two paths here, in the recursive case we call Coq's
-         Mltop unix-dependant routines, the non-recursive case is
-         handled by us.*)
-      if recursive then
-        let add_ml = if has_ml then Mltop.AddRecML else Mltop.AddNoML in
-        Mltop.add_rec_path add_ml ~unix_path ~coq_root:coq_path ~implicit
-      else begin
-        Loadpath.add_load_path unix_path coq_path ~implicit;
-        if has_ml then Mltop.add_ml_dir unix_path
-      end;
-    ) opts.iload_path;
-
-  (* We need to declare a toplevel module name. *)
-  let sertop_dp = DirPath.make [Id.of_string opts.top_name] in
-  Declaremods.start_library sertop_dp;
-
-  (**************************************************************************)
-  (* Load the prelude                                                       *)
-  (**************************************************************************)
-
-  (* We must prevent output to stdout when loading the libs... but it
-   * will be lost... Maybe wrap in StdErr??
-   *)
-  List.iter (fun (dp, p, in_exp) ->
-      Library.require_library_from_dirpath [dp,p] in_exp
-    ) opts.require_libs;
-
-  (* Note that we don't emit feedback during this phase _by design_.        *)
 
   (**************************************************************************)
   (* Feedback setup                                                         *)
@@ -147,57 +98,67 @@ let coq_init opts =
   (**************************************************************************)
 
   (* Set async flags; IMPORTANT, this has to happen before STM.init () ! *)
-  Option.iter (fun coqtop ->
+  let stm_options = Option.cata (fun coqtop ->
 
-      Flags.async_proofs_mode := Flags.APon;
-      (* Imitate CoqIDE *)
-      Flags.async_proofs_full := opts.aopts.async_full;
-      Flags.async_proofs_never_reopen_branch := not opts.aopts.deep_edits;
-      Flags.async_proofs_flags_for_workers := [dump_opt];
-      Flags.async_proofs_n_workers    := 3;
-      Flags.async_proofs_n_tacworkers := 3;
+      let open Stm.AsyncOpts in
+      let opts =
+        { default_opts with
+          async_proofs_mode = APon;
+          (* Imitate CoqIDE *)
+          async_proofs_full = opts.aopts.async_full;
+          async_proofs_never_reopen_branch = not opts.aopts.deep_edits;
+          async_proofs_n_workers    = 3;
+          async_proofs_n_tacworkers = 3;
+        } in
       (* async_proofs_worker_priority); *)
-      CoqworkmgrApi.(init Flags.High);
+      AsyncTaskQueue.async_proofs_flags_for_workers := [dump_opt];
+      CoqworkmgrApi.(init High);
       (* Uh! XXXX *)
       for i = 0 to Array.length Sys.argv - 1 do
         Array.set Sys.argv i "-m"
       done;
-      Array.set Sys.argv 0 coqtop
-    ) opts.aopts.enable_async;
+      Array.set Sys.argv 0 coqtop;
+      opts
+    ) Stm.AsyncOpts.default_opts opts.aopts.enable_async in
 
   (**************************************************************************)
   (* Start the STM!!                                                        *)
   (**************************************************************************)
-  Stm.init();
+  Stm.init_core ();
 
   (* Flags.debug := true; *)
 
+  (* We need to declare a toplevel module name. *)
+  let sertop_dp = DirPath.make [Id.of_string opts.top_name] in
+
   (* Return the initial state of the STM *)
-  Stm.get_current_state ()
+  let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp;
+               require_libs = opts.require_libs;
+               iload_path   = opts.iload_path;
+               stm_options;
+             } in
+  Stm.new_doc ndoc
 
 (******************************************************************************)
 (* Coq Prelude Loading Defaults (to be improved)                              *)
 (******************************************************************************)
 
 let coq_loadpath_default ~implicit ~coq_path =
+  let open Mltop in
   let mk_path prefix = coq_path ^ "/" ^ prefix in
-  let mk_lp ~ml ~root ~dir ~implicit = {
-    coq_path  = root;
-    unix_path = mk_path dir;
-    has_ml    = ml;
-    recursive = true;
-    implicit;
-  } in
+  let mk_lp ~ml ~root ~dir ~implicit =
+    { recursive = true;
+      path_spec = VoPath {
+          unix_path = mk_path dir;
+          coq_path  = root;
+          has_ml    = ml;
+          implicit;
+        };
+    } in
   (* in 8.8 we can use Libnames.default_* *)
   let coq_root     = Names.(DirPath.make [Id.of_string "Coq"]) in
   let default_root = Names.(DirPath.empty) in
-  [mk_lp ~ml:true  ~root:coq_root     ~implicit       ~dir:"plugins";
-   mk_lp ~ml:false ~root:coq_root     ~implicit       ~dir:"theories";
-   mk_lp ~ml:true  ~root:default_root ~implicit:false ~dir:"user-contrib";
+  [mk_lp ~ml:AddRecML ~root:coq_root     ~implicit       ~dir:"plugins";
+   mk_lp ~ml:AddNoML  ~root:coq_root     ~implicit       ~dir:"theories";
+   mk_lp ~ml:AddRecML ~root:default_root ~implicit:false ~dir:"user-contrib";
   ]
-
-let coq_prelude_mod ~coq_path =
-  Names.(DirPath.make @@ List.rev_map Id.of_string ["Coq";"Init";"Prelude"]),
-  coq_path ^ "/theories/Init/Prelude.vo",
-  Some true
-

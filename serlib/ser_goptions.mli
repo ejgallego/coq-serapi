@@ -16,6 +16,11 @@
 
 open Sexplib
 
+type option_locality = Goptions.option_locality
+
+val option_locality_of_sexp : Sexp.t -> option_locality
+val sexp_of_option_locality : option_locality -> Sexp.t
+
 type option_name = Goptions.option_name
 
 val option_name_of_sexp : Sexp.t -> option_name

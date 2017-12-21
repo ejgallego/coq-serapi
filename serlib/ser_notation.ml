@@ -16,6 +16,7 @@
 open Sexplib.Std
 
 module Ppextend = Ser_ppextend
+module Notation_term = Ser_notation_term
 
 type unparsing_rule =
   [%import: Notation.unparsing_rule]

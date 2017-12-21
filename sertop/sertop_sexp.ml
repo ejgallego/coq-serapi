@@ -37,7 +37,7 @@ type ser_opts = {
   coq_path : string;            (* Coq standard library location *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
                                 (* -R and -Q options                          *)
-  loadpath : Sertop_init.load_path_spec list;
+  loadpath : Mltop.coq_path list;
   async    : Sertop_init.async_flags;
 }
 
@@ -120,7 +120,7 @@ let ser_loop ser_opts =
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.aopts        = ser_opts.async;
     Sertop_init.iload_path   = sload_path;
-    Sertop_init.require_libs = [Sertop_init.coq_prelude_mod ~coq_path];
+    Sertop_init.require_libs = ["Coq.Init.Prelude", None, Some true];
     Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
     Sertop_init.debug        = ser_opts.debug;

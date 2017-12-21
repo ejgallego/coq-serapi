@@ -16,9 +16,8 @@
 open Sexplib.Std
 
 module Names   = Ser_names
-module Tacexpr = Ser_tacexpr
-
 open Ltac_plugin
+module Tacexpr = Ser_tacexpr
 
 type ltac_entry =
   [%import: Tacenv.ltac_entry]

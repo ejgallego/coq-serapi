@@ -16,6 +16,7 @@
 (* open Sexplib.Std *)
 
 module Loc   = Ser_loc
+module CAst  = Ser_cAst
 module Names = Ser_names
 
 (* qualid: private *)
@@ -34,6 +35,9 @@ let qualid_of_sexp sexp = _qualid_get (_qualid_of_sexp sexp)
 let sexp_of_qualid qid  = sexp_of__qualid (_qualid_put qid)
 
 (* reference: public *)
+type reference_r = [%import: Libnames.reference_r]
+  [@@deriving sexp]
+
 type reference = [%import: Libnames.reference]
   [@@deriving sexp]
 

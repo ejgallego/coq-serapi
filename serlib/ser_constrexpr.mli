@@ -15,6 +15,18 @@
 
 open Sexplib
 
+type universe_decl_expr = Constrexpr.universe_decl_expr
+val universe_decl_expr_of_sexp : Sexp.t -> universe_decl_expr
+val sexp_of_universe_decl_expr : universe_decl_expr -> Sexp.t
+
+type ident_decl = Constrexpr.ident_decl
+val ident_decl_of_sexp : Sexp.t -> ident_decl
+val sexp_of_ident_decl : ident_decl -> Sexp.t
+
+type name_decl = Constrexpr.name_decl
+val name_decl_of_sexp : Sexp.t -> name_decl
+val sexp_of_name_decl : name_decl -> Sexp.t
+
 type notation = Constrexpr.notation
 
 val notation_of_sexp : Sexp.t -> notation
@@ -62,7 +74,7 @@ val sexp_of_instance_expr : instance_expr -> Sexp.t
 type constr_expr         = Constrexpr.constr_expr
 and case_expr            = Constrexpr.case_expr
 and branch_expr          = Constrexpr.branch_expr
-and binder_expr          = Constrexpr.binder_expr
+(* and binder_expr          = Constrexpr.binder_expr *)
 and fix_expr             = Constrexpr.fix_expr
 and cofix_expr           = Constrexpr.cofix_expr
 and recursion_order_expr = Constrexpr.recursion_order_expr
@@ -72,7 +84,7 @@ and constr_notation_substitution = Constrexpr.constr_notation_substitution
 val constr_expr_of_sexp : Sexp.t -> constr_expr
 val case_expr_of_sexp : Sexp.t -> case_expr
 val branch_expr_of_sexp : Sexp.t -> branch_expr
-val binder_expr_of_sexp : Sexp.t -> binder_expr
+(* val binder_expr_of_sexp : Sexp.t -> binder_expr *)
 val fix_expr_of_sexp : Sexp.t -> fix_expr
 val cofix_expr_of_sexp : Sexp.t -> cofix_expr
 val recursion_order_expr_of_sexp : Sexp.t -> recursion_order_expr
@@ -82,7 +94,7 @@ val constr_notation_substitution_of_sexp : Sexp.t -> constr_notation_substitutio
 val sexp_of_constr_expr : constr_expr -> Sexp.t
 val sexp_of_case_expr : case_expr -> Sexp.t
 val sexp_of_branch_expr : branch_expr -> Sexp.t
-val sexp_of_binder_expr : binder_expr -> Sexp.t
+(* val sexp_of_binder_expr : binder_expr -> Sexp.t *)
 val sexp_of_fix_expr : fix_expr -> Sexp.t
 val sexp_of_cofix_expr : cofix_expr -> Sexp.t
 val sexp_of_recursion_order_expr : recursion_order_expr -> Sexp.t
@@ -92,14 +104,6 @@ val sexp_of_constr_notation_substitution : constr_notation_substitution -> Sexp.
 type constr_pattern_expr = Constrexpr.constr_pattern_expr
 val constr_pattern_expr_of_sexp : Sexp.t -> constr_pattern_expr
 val sexp_of_constr_pattern_expr : constr_pattern_expr -> Sexp.t
-
-type typeclass_constraint = Constrexpr.typeclass_constraint
-and typeclass_context = Constrexpr.typeclass_context
-
-val typeclass_constraint_of_sexp : Sexp.t -> typeclass_constraint
-val typeclass_context_of_sexp : Sexp.t -> typeclass_context
-val sexp_of_typeclass_constraint : typeclass_constraint -> Sexp.t
-val sexp_of_typeclass_context : typeclass_context -> Sexp.t
 
 type with_declaration_ast = Constrexpr.with_declaration_ast
 

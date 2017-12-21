@@ -77,20 +77,32 @@ type univ_constraint =
   [%import: Univ.univ_constraint]
   [@@deriving sexp]
 
-type constraints = Univ.constraints
+module Constraint = struct
 
-let constraints_of_sexp sexp =
-  Univ.Constraint.of_list (list_of_sexp univ_constraint_of_sexp sexp)
+  type t = Univ.Constraint.t
 
-let sexp_of_constraints cst =
-  sexp_of_list sexp_of_univ_constraint (Univ.Constraint.elements cst)
+  let t_of_sexp sexp =
+    Univ.Constraint.of_list (list_of_sexp univ_constraint_of_sexp sexp)
+
+  let sexp_of_t cst =
+    sexp_of_list sexp_of_univ_constraint (Univ.Constraint.elements cst)
+
+end
+
+module Variance = struct
+
+  type t =
+    [%import: Univ.Variance.t]
+    [@@deriving sexp]
+
+end
 
 module UContext = struct
 
   type t = Univ.UContext.t
 
-  let t_of_sexp s = Univ.UContext.make (Conv.pair_of_sexp Instance.t_of_sexp constraints_of_sexp s)
-  let sexp_of_t t = Conv.sexp_of_pair Instance.sexp_of_t sexp_of_constraints (Univ.UContext.dest t)
+  let t_of_sexp s = Univ.UContext.make (Conv.pair_of_sexp Instance.t_of_sexp Constraint.t_of_sexp s)
+  let sexp_of_t t = Conv.sexp_of_pair Instance.sexp_of_t Constraint.sexp_of_t (Univ.UContext.dest t)
 
 end
 
@@ -113,8 +125,10 @@ module CumulativityInfo = struct
 
   type t = Univ.CumulativityInfo.t
 
-  let t_of_sexp s = Univ.CumulativityInfo.make (Conv.pair_of_sexp universe_context_of_sexp universe_context_of_sexp s)
-  let sexp_of_t t = Conv.sexp_of_pair sexp_of_universe_context sexp_of_universe_context Univ.CumulativityInfo.(univ_context t, subtyp_context t)
+  let t_of_sexp s = Univ.CumulativityInfo.make (Conv.pair_of_sexp universe_context_of_sexp (array_of_sexp Variance.t_of_sexp) s)
+  let sexp_of_t t =
+    Conv.sexp_of_pair sexp_of_universe_context
+      (sexp_of_array Variance.sexp_of_t) Univ.CumulativityInfo.(univ_context t, variance t)
 
 end
 
@@ -127,6 +141,15 @@ module ACumulativityInfo = struct
 
   let t_of_sexp _s = Obj.magic 0
   let sexp_of_t _t = Sexp.Atom "[ACumulativityInfo: Abstract]"
+
+end
+
+module ContextSet = struct
+
+  type t = Univ.ContextSet.t
+
+  let t_of_sexp _sexp = Obj.magic 0
+  let sexp_of_t _cst = Obj.magic 0
 
 end
 

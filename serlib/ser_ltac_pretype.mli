@@ -13,18 +13,18 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Sexplib
 
-module Names     = Ser_names
-module Constr    = Ser_constr
-module Misctypes = Ser_misctypes
-module Globnames = Ser_globnames
-module EConstr   = Ser_eConstr
+type closure = Ltac_pretype.closure
+type closed_glob_constr = Ltac_pretype.closed_glob_constr
 
-type case_info_pattern =
-  [%import: Pattern.case_info_pattern]
-  [@@deriving sexp]
+val closure_of_sexp : Sexp.t -> closure
+val sexp_of_closure : closure -> Sexp.t
 
-type constr_pattern =
-  [%import: Pattern.constr_pattern]
-  [@@deriving sexp]
+val closed_glob_constr_of_sexp : Sexp.t -> closed_glob_constr
+val sexp_of_closed_glob_constr : closed_glob_constr -> Sexp.t
+
+type constr_under_binders = Ltac_pretype.constr_under_binders
+
+val constr_under_binders_of_sexp : Sexp.t -> constr_under_binders
+val sexp_of_constr_under_binders : constr_under_binders -> Sexp.t

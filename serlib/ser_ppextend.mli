@@ -15,21 +15,6 @@
 
 open Sexplib
 
-type precedence = Ppextend.precedence
-
-val precedence_of_sexp : Sexp.t -> precedence
-val sexp_of_precedence : precedence -> Sexp.t
-
-type parenRelation = Ppextend.parenRelation
-
-val parenRelation_of_sexp : Sexp.t -> parenRelation
-val sexp_of_parenRelation : parenRelation -> Sexp.t
-
-type tolerability = Ppextend.tolerability
-
-val tolerability_of_sexp : Sexp.t -> tolerability
-val sexp_of_tolerability : tolerability -> Sexp.t
-
 type ppbox = Ppextend.ppbox
 
 val ppbox_of_sexp : Sexp.t -> ppbox

@@ -16,11 +16,6 @@
 
 open Sexplib
 
-type 'a puniverses = 'a Constr.puniverses
-
-val puniverses_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a puniverses
-val sexp_of_puniverses : ('a -> Sexp.t) -> 'a puniverses -> Sexp.t
-
 type pconstant = Constr.pconstant
 
 val pconstant_of_sexp : Sexp.t -> pconstant
@@ -35,11 +30,6 @@ type pconstructor = Constr.pconstructor
 
 val pconstructor_of_sexp : Sexp.t -> pconstructor
 val sexp_of_pconstructor : pconstructor -> Sexp.t
-
-type existential_key = Constr.existential_key
-
-val existential_key_of_sexp : Sexp.t -> existential_key
-val sexp_of_existential_key : existential_key -> Sexp.t
 
 type cast_kind = Constr.cast_kind
 val cast_kind_of_sexp : Sexp.t -> cast_kind

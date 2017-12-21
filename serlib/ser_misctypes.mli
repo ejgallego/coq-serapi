@@ -1,14 +1,16 @@
 (************************************************************************)
-(*  v      *   The Coq Proof Assistant  /  The Coq Development Team     *)
-(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2016     *)
+(*         *   The Coq Proof Assistant / The Coq Development Team       *)
+(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2018       *)
+(* <O___,, *       (see CREDITS file for the list of authors)           *)
 (*   \VV/  **************************************************************)
-(*    //   *      This file is distributed under the terms of the       *)
-(*         *       GNU Lesser General Public License Version 2.1        *)
+(*    //   *    This file is distributed under the terms of the         *)
+(*         *     GNU Lesser General Public License Version 2.1          *)
+(*         *     (see LICENSE file for the text of the license)         *)
 (************************************************************************)
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -19,9 +21,21 @@
 
 open Sexplib
 
+type lident = Misctypes.lident
+val lident_of_sexp : Sexp.t -> lident
+val sexp_of_lident : lident -> Sexp.t
+
+type lname = Misctypes.lname
+val lname_of_sexp : Sexp.t -> lname
+val sexp_of_lname : lname -> Sexp.t
+
+type lstring = Misctypes.lstring
+val lstring_of_sexp : Sexp.t -> lstring
+val sexp_of_lstring : lstring -> Sexp.t
+
 type patvar = Misctypes.patvar
-val patvar_of_sexp : Sexp.t -> Names.Id.t
-val sexp_of_patvar : Names.Id.t -> Sexp.t
+val patvar_of_sexp : Sexp.t -> patvar
+val sexp_of_patvar : patvar -> Sexp.t
 
 type 'constr intro_pattern_expr = 'constr Misctypes.intro_pattern_expr
 and intro_pattern_naming_expr   = Misctypes.intro_pattern_naming_expr
@@ -66,15 +80,15 @@ type glob_level = Misctypes.glob_level
 val glob_level_of_sexp : Sexp.t -> glob_level
 val sexp_of_glob_level : glob_level -> Sexp.t
 
-(* Shadows the one in Constr. *)
-type case_style = Misctypes.case_style
-val case_style_of_sexp : Sexp.t -> case_style
-val sexp_of_case_style : case_style -> Sexp.t
-
 type 'a cast_type = 'a Misctypes.cast_type
 
 val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a cast_type
 val sexp_of_cast_type : ('a -> Sexp.t) -> 'a cast_type -> Sexp.t
+
+type glob_constraint = Misctypes.glob_constraint
+
+val glob_constraint_of_sexp : Sexp.t -> glob_constraint
+val sexp_of_glob_constraint : glob_constraint -> Sexp.t
 
 type existential_key = Misctypes.existential_key
 
@@ -139,3 +153,7 @@ val sexp_of_destruction_arg : ('a -> Sexp.t) -> 'a destruction_arg -> Sexp.t
 type inversion_kind = Misctypes.inversion_kind
 val inversion_kind_of_sexp : Sexp.t -> inversion_kind
 val sexp_of_inversion_kind : inversion_kind -> Sexp.t
+
+type ('a,'b) gen_universe_decl = ('a,'b) Misctypes.gen_universe_decl
+val gen_universe_decl_of_sexp : (Sexp.t -> 'a) -> (Sexp.t -> 'b) -> Sexp.t -> ('a,'b) gen_universe_decl
+val sexp_of_gen_universe_decl : ('a -> Sexp.t) -> ('b -> Sexp.t) -> ('a,'b) gen_universe_decl -> Sexp.t

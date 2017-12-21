@@ -13,18 +13,22 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+(* We force the thunks in serialization *)
 
-module Names     = Ser_names
-module Constr    = Ser_constr
-module Misctypes = Ser_misctypes
-module Globnames = Ser_globnames
-module EConstr   = Ser_eConstr
+open Sexplib
 
-type case_info_pattern =
-  [%import: Pattern.case_info_pattern]
-  [@@deriving sexp]
+module CAst = Ser_cAst
 
-type constr_pattern =
-  [%import: Pattern.constr_pattern]
+type ('a, 'b) thunk = [%import: ('a,'b) DAst.thunk]
+
+let sexp_of_thunk : type a b. (a -> Sexp.t) -> (b -> Sexp.t) -> (a,b) thunk -> Sexp.t =
+  fun f _ t -> match t with
+  | Value v -> f v
+  | Thunk t -> f (Lazy.force t)
+
+let thunk_of_sexp : type a b. (Sexp.t -> a) -> (Sexp.t -> b) -> Sexp.t -> (a,b) thunk =
+  fun f _ s -> Value (f s)
+
+type ('a, 'b) t =
+  [%import: ('a, 'b) DAst.t]
   [@@deriving sexp]

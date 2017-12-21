@@ -35,15 +35,19 @@ type production_level = Extend.production_level
 val production_level_of_sexp : Sexp.t -> production_level
 val sexp_of_production_level : production_level -> Sexp.t
 
-type ('lev, 'pos) constr_entry_key_gen = ('lev, 'pos) Extend.constr_entry_key_gen
-val constr_entry_key_gen_of_sexp :
-  (Sexp.t -> 'lev) ->
-  (Sexp.t -> 'pos) ->
-  Sexp.t -> ('lev, 'pos) constr_entry_key_gen
-val sexp_of_constr_entry_key_gen :
-  ('lev -> Sexp.t) ->
-  ('pos -> Sexp.t) ->
-  ('lev, 'pos) constr_entry_key_gen -> Sexp.t
+type constr_as_binder_kind = Extend.constr_as_binder_kind
+val constr_as_binder_kind_of_sexp : Sexp.t -> constr_as_binder_kind
+val sexp_of_constr_as_binder_kind : constr_as_binder_kind -> Sexp.t
+
+type binder_entry_kind = Extend.binder_entry_kind
+val binder_entry_kind_of_sexp : Sexp.t -> binder_entry_kind
+val sexp_of_binder_entry_kind : binder_entry_kind -> Sexp.t
+
+type 'lev constr_entry_key_gen = 'lev Extend.constr_entry_key_gen
+val constr_entry_key_gen_of_sexp : (Sexp.t -> 'lev) ->
+  Sexp.t -> 'lev constr_entry_key_gen
+val sexp_of_constr_entry_key_gen : ('lev -> Sexp.t) ->
+  'lev constr_entry_key_gen -> Sexp.t
 
 type constr_entry_key = Extend.constr_entry_key
 val constr_entry_key_of_sexp : Sexp.t -> constr_entry_key

@@ -64,6 +64,10 @@ type record_body = Declarations.record_body
 val record_body_of_sexp : Sexp.t -> record_body
 val sexp_of_record_body : record_body -> Sexp.t
 
+type recursivity_kind = Declarations.recursivity_kind
+val recursivity_kind_of_sexp : Sexp.t -> recursivity_kind
+val sexp_of_recursivity_kind : recursivity_kind -> Sexp.t
+
 type mutual_inductive_body = Declarations.mutual_inductive_body
 val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body
 val sexp_of_mutual_inductive_body : mutual_inductive_body -> Sexp.t

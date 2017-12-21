@@ -33,9 +33,9 @@ let opt_answer ans =
   | Feedback fb ->
     let open! Feedback in
     begin match fb with
-      | { id; route; contents = Message (lvl, loc, msg) } ->
+      | { doc_id; span_id; route; contents = Message (lvl, loc, msg) } ->
         if pp_opt_flag then
-          Feedback {id; route; contents = Message(lvl, loc, coq_pp_opt msg) }
+          Feedback {doc_id; span_id; route; contents = Message(lvl, loc, coq_pp_opt msg) }
         else
           ans
       | _ ->
@@ -123,8 +123,6 @@ module Ltac_plugin = struct
   module Profile_ltac = Ser_profile_ltac
   module Tacexpr      = Ser_tacexpr
 end
-
-open Ltac_plugin
 
 module Notation   = Ser_notation
 module Xml_datatype = Ser_xml_datatype

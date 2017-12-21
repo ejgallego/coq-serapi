@@ -201,18 +201,29 @@ type inductive   = [%import: Names.inductive]
 type constructor = [%import: Names.constructor] [@@deriving sexp]
 
 (* Projection: private *)
-type projection = [%import: Names.Projection.t]
+module Projection = struct
 
-type _projection = Projection of Constant.t * bool
-      [@@deriving sexp]
+  type t = [%import: Names.Projection.t]
 
-let _projection_put prj              =
-  let cs, uf = Projection.constant prj, Projection.unfolded prj in
-  Projection (cs, uf)
-let _projection_get (Projection (cs,uf)) = Projection.make cs uf
+  type _projection = Projection of Constant.t * bool
+  [@@deriving sexp]
 
-let projection_of_sexp sexp = _projection_get (_projection_of_sexp sexp)
-let sexp_of_projection dp   = sexp_of__projection (_projection_put dp)
+  let _projection_put prj              =
+    let cs, uf = Projection.constant prj, Projection.unfolded prj in
+    Projection (cs, uf)
+  let _projection_get (Projection (cs,uf)) = Projection.make cs uf
+
+  let t_of_sexp sexp = _projection_get (_projection_of_sexp sexp)
+  let sexp_of_t dp   = sexp_of__projection (_projection_put dp)
+
+end
+
+type projection = Projection.t
+  [@@deriving sexp]
+
+type global_reference =
+  [%import: Names.global_reference]
+  [@@deriving sexp]
 
 (* Evaluable global reference: public *)
 type evaluable_global_reference =

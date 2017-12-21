@@ -15,7 +15,7 @@
 
 open Sexplib
 
-module Term = Ser_constr
+module Constr = Ser_constr
 
 type env =
   [%import: Environ.env]

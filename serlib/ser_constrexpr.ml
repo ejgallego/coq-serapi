@@ -15,16 +15,29 @@
 
 open Sexplib.Std
 
+module Bigint     = Ser_bigint
 module Loc        = Ser_loc
 module CAst       = Ser_cAst
 module Names      = Ser_names
-module Bigint     = Ser_bigint
+module Constr     = Ser_constr
 module Misctypes  = Ser_misctypes
 module Decl_kinds = Ser_decl_kinds
 module Evar_kinds = Ser_evar_kinds
 module Genarg     = Ser_genarg
 module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
+
+type universe_decl_expr =
+  [%import: Constrexpr.universe_decl_expr]
+  [@@deriving sexp]
+
+type ident_decl =
+  [%import: Constrexpr.ident_decl]
+  [@@deriving sexp]
+
+type name_decl =
+  [%import: Constrexpr.name_decl]
+  [@@deriving sexp]
 
 type notation =  [%import: Constrexpr.notation]
   [@@deriving sexp]
@@ -60,7 +73,7 @@ and constr_expr_r = [%import: Constrexpr.constr_expr_r]
 and constr_expr = [%import: Constrexpr.constr_expr]
 and case_expr   = [%import: Constrexpr.case_expr]
 and branch_expr = [%import: Constrexpr.branch_expr]
-and binder_expr = [%import: Constrexpr.binder_expr]
+(* and binder_expr = [%import: Constrexpr.binder_expr] *)
 and fix_expr    = [%import: Constrexpr.fix_expr]
 and cofix_expr  = [%import: Constrexpr.cofix_expr]
 and recursion_order_expr = [%import: Constrexpr.recursion_order_expr]
@@ -70,10 +83,6 @@ and constr_notation_substitution = [%import: Constrexpr.constr_notation_substitu
 
 type constr_pattern_expr = [%import: Constrexpr.constr_pattern_expr]
   [@@deriving sexp]
-
-type typeclass_constraint = [%import: Constrexpr.typeclass_constraint]
-and typeclass_context     = [%import: Constrexpr.typeclass_context]
-    [@@deriving sexp]
 
 type with_declaration_ast =
   [%import: Constrexpr.with_declaration_ast]

@@ -14,7 +14,7 @@
 (************************************************************************)
 
 open Sexplib
-(* open Ltac_plugin *)
+open Ltac_plugin
 
 type direction_flag = bool
 val direction_flag_of_sexp : Sexp.t -> direction_flag

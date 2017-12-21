@@ -69,7 +69,6 @@ type logical_kind =
   [%import: Decl_kinds.logical_kind]
   [@@deriving sexp]
 
-type recursivity_kind =
-  [%import: Decl_kinds.recursivity_kind]
+type discharge =
+  [%import: Decl_kinds.discharge]
   [@@deriving sexp]
-
