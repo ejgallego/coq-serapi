@@ -2,97 +2,85 @@
 
 [![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=master)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
+```
+$ opam install coq-serapi
+```
+
 SerAPI is a library for machine-to-machine interaction with the Coq
-proof assistant, with particular emphasis on helping writing IDEs and
-code analysis tools. However, we believe that everybody can have some
-fun playing with our tool!
+proof assistant, with particular emphasis on IDE support and code
+analysis tools. SerAPI provides automatic serialization of Ocaml
+datatypes from/to S-expressions.
 
-SerAPI is based on the automatic serialization of Ocaml datatypes
-from/to S-expressions. We currently provide two frontends: a
-command-line based "Coq toplevel", **sertop**, and a JavaScript
-[Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers),
-which allows to use SerAPI directly from your browser. There is also
-plans to provide a Jupyter/IPython kernel (#17).
+SerAPI is a proof-of-concept and should be considered
+alpha-quality. However, it is fully functional and it supports
+asynchronous proof checking, full-document parsing, and serialization
+of Coq's core datatypes, among other things. SerAPI can also be run as
+an in-browser thread, with typical load times less than a second.
 
-SerAPI is still a proof-of-concept and in heavy development, but it
-already supports asynchronous processing, most of the functionality
-available in Coq's XML protocol, and some basic queries. Typical load
-times in the browser are less than a second.
+The main design philosophy of SerAPI is to **make clients life easy**,
+thus it tries to provide a convenient, robust interface that hides
+away some of the most scary details involved in interaction with Coq.
 
-SerAPI is a user-oriented tool, thus our main design philosophy is
-**make life easy** to the clients, by providing convenient, robust
-APIs and polishing out the most scary details of interaction with Coq.
-Feedback from Coq users and developers is not only very welcome, but
-essential to the project. Let us know what you think via the mailing
-list or in the issue tracker.
+As such, feedback from Coq users and developers is not only very
+welcome, but essential to the project. We are open to implementing new
+features and exploring new use cases, let us know what you think via
+the mailing list or in the issue tracker.
 
 ## Mailing List ##
 
 SerApi development is discussed in the jsCoq mailing list, you can subscribe at:
-
 https://x80.org/cgi-bin/mailman/listinfo/jscoq
 
 The list archives should be also available at the Gmane group:
-
-`gmane.science.mathematics.logic.coq.jscoq`
-
-you can post to the list using nntp.
+`gmane.science.mathematics.logic.coq.jscoq`. You can post to the list
+using nntp.
 
 ### Roadmap
 
-SerAPI 0.1 targets Coq 8.7. We are focused on incorporating some
-crucial changes in to Coq upstream to improve handling of
-documents. Our first goal is to get a robust document building and
-interaction API, then we will focus on providing a rich, extensible
-query language.
+SerAPI 0.1 targets Coq 8.8. As of today, we are focused on
+incorporating some of our tweaks into Coq proper upstream, in
+particular to improve the handling of proof documents. The first goal
+is to get a robust document building and interaction API, then we will
+focus on providing a rich, extensible query language.
 
 ### Quick Overview and Documentation
 
-If you are a Coq user, you can use:
+SerAPI for Coq 8.7 is available as the OPAM package `coq-serapi`. See
+[build instructions](#building) for instructions about manual
+installation.
 
-- [jsCoq](https://github.com/ejgallego/jscoq) allows you run Coq in
-  your browser. JsCoq is the predecessor of SerAPI and will be shortly
-  fully based on it. Meanwhile, you can access some of the technology
-  from our sister project.
-- [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
-  demo based on SerAPI by Clément Pit--Claudel. It is not fully
-  functional but already illustrates some cool features.
+Once installed, the main entry point to SerAPI is the `sertop` REPL, a
+basic toplevel that reads and writes commands (S-Expressions) from
+stdin to stdout, in a machine or human-friendly format. See
+`sertop.native --help` for an overview of the main options. `Ctrl-C`
+will interrupt a busy Coq process in the same way than in the standard
+`coqtop`.
 
-If you are a developer, you can use SerAPI in 3 different ways:
+We recommend using `rlwrap` or our [emacs mode](sertop.el) for direct
+interaction.
 
-- As a
-  [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+Additionally, if you build manually, you can use SerAPI as a:
+
+- Ocaml library. You can directly link against the low-level
+  serialization library [`serlib/`](/serlib), or against the
+  higher-level SerAPI protocol in
+  [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli).
+
+- [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
   from your web/node application. In this model, you communicate with SerAPI using
   the typical `onmessage/postMessage` worker API. Ready-to-use builds
   are typically found
   [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
-  provide an example REPL at:
+  provide an example REPL at: https://x80.org/rhino-hawk
 
-  https://x80.org/rhino-hawk
-
-- From your shell/application as a REPL: `sertop` is a basic toplevel
-  that reads and writes commands (S-Expressions) from stdin to stdout,
-  in a machine or human-friendly format.  Asynchronous processing is
-  supported. See `sertop.native --help` for an overview of the main
-  options. `Ctrl-C` will interrupt a busy Coq process in the same way
-  than in the standard `coqtop`.
-
-  We recommend using `rlwrap` or our [emacs mode](sertop.el) for
-  direct interaction.
-
-- As an Ocaml library. You can directly link against the low-level
-  serialization library [`serlib/`](/serlib), or against the higher-level SerAPI
-  protocol in [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli).
-
-See [build instructions](#building) but information about
-installation. We will provide an OPAM real soon now.
+- There is also plans to provide a [Jupyter/IPython kernel](issues/17).
 
 #### Protocol
 
-Up-to-date documentation for the protocol is in the
-[interface file](serapi/serapi_protocol.mli). The Ocaml type
-definitions are often self-explanatory and are serialized in a
-predictable way.
+Up-to-date documentation for the protocol is in the [interface
+file](serapi/serapi_protocol.mli). Given that serialization is
+automatic, the Ocaml type definitions constitute the canonical
+reference for the protocol.
 
 SerAPI's main building block is the
 [`CoqObject`](serapi/serapi_protocol.mli#L22) data type, a _sum type_
@@ -134,15 +122,13 @@ There are four categories of [commands](serapi/serapi_protocol.mli#L147):
 `sertop` is available for different Coq versions, which each of its
 branches targetting the corresponding Coq branch. The current
 development branch is `v8.7`, for Coq v8.7. The `master` branch is
-currently broken and won't be resurrected until Coq 8.8 is closer to
+often broken and won't be stable until Coq 8.8 is closer to
 release.
 
-Basic build instructions are below, we recommend having look at the
-`.travis.yml` files to see more details on how a particular branch is
-built.
-
-We recommend using OPAM to build `sertop`, however Théo Zimmermann has
-also reported success in NixOS.
+Basic build instructions are below, the `.travis.yml` files should
+contain up-to-date information in any case. We recommend using OPAM to
+setup the build environment, however Théo Zimmermann has reported
+success in NixOS.
 
 0. The currently supported ocaml version is 4.06.0
    ``$ opam switch 4.06.0 && eval `opam config env` ``. We also assume `COQVER=v8.7`.
@@ -151,6 +137,9 @@ also reported success in NixOS.
 2. Download and compile coq. We recommend:
    `$ git clone -b ${COQVER} https://github.com/coq/coq.git ~/external/coq-${COQVER} && cd ~/external/coq-${COQVER} && ./configure -local -native-compiler no && make -j $NJOBS`.
 3. Type `make SERAPI_COQ_HOME=~/external/coq-${COQVER}` to build `sertop`.
+
+Alternatively, you can build install Coq `>= 8.7.1+1` using OPAM and
+build against it using just `make`.
 
 The above instructions assume that you use `~/external/coq-${COQVER}`
 directory to place the coq build that SerAPI needs; you can modify
@@ -176,40 +165,6 @@ You may want to configure the variable `sertop-coq-directory` to point out the l
 There is a brief technical report with some details at
 https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408
 
-### Roadmap/Changelog:
-
-See also the [CHANGELOG.md](CHANGELOG.md).
-
-_Version 0.1_:
-
- - Full document parsing. Full asynchronous `Add/Cancel` protocol.
-
- - **[started]** Implement Locate -> "file name where the object is defined".
-   To improve.
-
- - Improve the handling of names and environments, see
-   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
-
-   Maybe we could add some options `Short`, `Full`, `Best` ? ...
-   Or we could even serialize the naming structure and let the ide decide if we export the current open namespace.
-
- - Help with complex codepaths:
-   Load Path parsing and completion code is probably one of the most complex part of company-coq
-
-_Version 0.2_:
-
- - Redo Query API, make objects tagged with a GADT.
-   *Critical: we hope to have gained enough experience to introduce the object tag*
-
-_More_:
-
- - Support regexps in queries.
- - Would be easy to get a list of vernacs? Things like `Print`, `Typeclasses eauto`, etc.
- - ppx to enumerate datatypes. Write the help command with this and also Clément suggestions about Vernac enumeration.
- - Add a cache to full document parsing..
- - enable an open CoqObject tag for plugin use (see coq/coq#209 ) ?
- - Checkstyle support.
-
 ### Technical details
 
 Coq SerAPI has three main components:
@@ -227,6 +182,16 @@ SerAPI has been developed at the
 [MINES ParisTech](http://www.mines-paristech.fr/) (former École de
 Mines de Paris) and partially supported by the
 [FEEVER](http://www.feever.fr) project.
+
+## Clients
+
+- [jsCoq](https://github.com/ejgallego/jscoq) allows you run Coq in
+  your browser. JsCoq is the predecessor of SerAPI and will be shortly
+  fully based on it. Meanwhile, you can access some of the technology
+  from our sister project.
+- [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
+  demo based on SerAPI by Clément Pit--Claudel. It is not fully
+  functional but already illustrates some cool features.
 
 ## Commit tag conventions [work in progress]:
 
