@@ -3,35 +3,26 @@
 <coq-libjs/jslib.ml{,i}>: package(yojson), package(ppx_deriving_yojson)
 
 # Coq-specific linking flags
-true: rectypes, thread, package(str), package(unix), package(threads), package(num)
+true: rectypes, thread, safe_string
 
 # Sertop/Serlib general flags
-true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, safe_string, debug
-
-# Disable until we get Coq upstream more polished.
-true: warn(-58)
-
-# This needs to go first to avoid flag precedence problems.
-<sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
+true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Serlib building options
-<serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.stm)
+<serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 
-<serlib/ide/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/ide/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.ide)
+<serlib/ide/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 
-<serlib/plugins/ltac/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 <serlib/plugins/ltac/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.ltac)
-
-#, package(coq.idetop)
+<serlib/plugins/ltac/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
 
 # Sertex building options
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
 <serapi/*>: package(coq.intf), package(coq.ltac)
-#<serapi/*>: package(coq.intf), package(coq.ltac), package(coq.idetop)
 
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
@@ -44,15 +35,12 @@ true: warn(-58)
 <sertex>: include
 <serapi>: include
 
-# Specifip to init
-<sertop/*.{ml,mli}>: package(coq.intf)
-<sertop/*>: package(coq.intf), package(coq.stm), package(coq.ltac)
-#<sertop/*>: package(coq.intf), package(coq.stm) package(coq.ltac), package(coq.idetop)
-<sertop/*>: package(sexplib), debug
-
 # Specifip to toplevel
+<sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
 <sertop/sertop.ml>: package(cmdliner)
-<sertop/sertop.{byte,native}>: linkall, package(str), package(dynlink), package(camlp5.gramlib), package(cmdliner), package(coq.intf), package(coq.ltac)
+<sertop/*>: package(coq.intf), package(coq.stm), package(coq.ltac), package(sexplib), debug
+
+<sertop/sertop.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner), package(coq.intf), package(coq.ltac)
 
 <sertop/sercomp.ml>: package(cmdliner)
 <sertop/sercomp.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
