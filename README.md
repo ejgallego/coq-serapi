@@ -45,7 +45,7 @@ focus on providing a rich, extensible query language.
 
 ### Quick Overview and Documentation
 
-SerAPI for Coq 8.7 is available as the OPAM package `coq-serapi`. See
+SerAPI for Coq is available as the OPAM package `coq-serapi`. See
 [build instructions](#building) for instructions about manual
 installation.
 
@@ -121,9 +121,8 @@ There are four categories of [commands](serapi/serapi_protocol.mli#L147):
 
 `sertop` is available for different Coq versions, which each of its
 branches targetting the corresponding Coq branch. The current
-development branch is `v8.7`, for Coq v8.7. The `master` branch is
-often broken and won't be stable until Coq 8.8 is closer to
-release.
+development branch is `v8.7`, for Coq v8.7. The `v8.8` branch is also
+availabe but may not be stable until Coq 8.8 is closer to release.
 
 Basic build instructions are below, the `.travis.yml` files should
 contain up-to-date information in any case. We recommend using OPAM to
