@@ -27,4 +27,3 @@ depends: [
 build:   [ make "-j%{jobs}%" "TARGET=native" ]
 install: [ "cp" "sertop.native" "%{bin}%/sertop" ]
 remove:  [ "rm" "-f" "%{bin}%/sertop" ]
-

@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -43,7 +43,6 @@ type 'a generic_argument = 'a Genarg.generic_argument
 
 let generic_argument_of_sexp _ _x = Obj.magic 0
 
-
 let rec sexp_of_genarg_type : type a b c. string -> (a, b, c) genarg_type -> t = fun lvl gt ->
   match gt with
   | ExtraArg tag   -> List [Atom "ExtraArg"; Atom lvl; Atom (ArgT.repr tag)]
@@ -51,129 +50,91 @@ let rec sexp_of_genarg_type : type a b c. string -> (a, b, c) genarg_type -> t =
   | OptArg  rt     -> List [Atom "OptArg";  sexp_of_genarg_type lvl rt]
   | PairArg(t1,t2) -> List [Atom "PairArg"; sexp_of_genarg_type lvl t1; sexp_of_genarg_type lvl t2]
 
-let sexp_of_genarg_type : type a. a generic_argument -> t =
-  fun g -> match g with
-  | GenArg (aat, _) -> begin
-      match aat with
-      | Glbwit gt -> sexp_of_genarg_type "glb" gt
-      | Topwit gt -> sexp_of_genarg_type "top" gt
-      | Rawwit gt -> sexp_of_genarg_type "raw" gt
-    end
+type ('raw, 'glb, 'top) gen_ser =
+  { raw_ser : 'raw -> Sexplib.Sexp.t;
+    glb_ser : 'glb -> Sexplib.Sexp.t;
+    top_ser : 'top -> Sexplib.Sexp.t;
+  }
 
-(*
-open Ltac_plugin
-let sexp_of_constr_expr     = ref (fun _ -> Atom "constr_expr_hook")
-let sexp_of_glob_expr       = ref (fun _ -> Atom "glob_expr_hook")
-let sexp_of_constr          = ref (fun _ -> Atom "constr_hook")
+let gen_ser_list : ('raw, 'glb, 'top) gen_ser -> ('raw list, 'glb list, 'top list) gen_ser = fun g ->
+  let open Sexplib.Conv in
+  { raw_ser = sexp_of_list g.raw_ser;
+    glb_ser = sexp_of_list g.glb_ser;
+    top_ser = sexp_of_list g.top_ser;
+  }
 
-let sexp_of_raw_tactic_expr  = ref (fun _ -> Atom "raw_tactic_expr_hook")
-let sexp_of_glob_tactic_expr = ref (fun _ -> Atom "glob_tactic_expr_hook")
-let sexp_of_tactic_val_t     = ref (fun _ -> Atom "tactic_val_t_hook")
+let gen_ser_opt : ('raw, 'glb, 'top) gen_ser -> ('raw option, 'glb option, 'top option) gen_ser = fun g ->
+  let open Sexplib.Conv in
+  { raw_ser = sexp_of_option g.raw_ser;
+    glb_ser = sexp_of_option g.glb_ser;
+    top_ser = sexp_of_option g.top_ser;
+  }
 
-let sexp_of_tacdef_body      = ref (fun _ -> Atom "tacdef_body_hook")
-*)
+let gen_ser_pair : ('raw1, 'glb1, 'top1) gen_ser -> ('raw2, 'glb2, 'top2) gen_ser ->
+  (('raw1 * 'raw2), ('glb1 * 'glb2), ('top1 * 'top2)) gen_ser = fun g1 g2 ->
+  let open Sexplib.Conv in
+  { raw_ser = sexp_of_pair g1.raw_ser g2.raw_ser;
+    glb_ser = sexp_of_pair g1.glb_ser g2.glb_ser;
+    top_ser = sexp_of_pair g1.top_ser g2.top_ser;
+  }
 
-(*
-open Sexplib.Conv
+(* Generic printer *)
+(* module SerObj : GenObj = struct *)
+module SerObj = struct
 
-(* This likely needs to be tweaked, but it is a start *)
-type (_, _, _) ser_genarg_table_entry =
-  Ser_tentry :
-    ('a, 'b, 'c) genarg_type * ('a -> t) * ('b -> t) * ('c -> t) -> ('a, 'b, 'c) ser_genarg_table_entry
+  type ('raw, 'glb, 'top) obj = ('raw, 'glb, 'top) gen_ser
 
-let _ser_wit_constr =
-  Ser_tentry (Stdarg.wit_constr, !sexp_of_constr_expr, !sexp_of_glob_expr, !sexp_of_constr)
+  let name = "ser_arg"
+  let default ga =
+    let open Sexplib in
+    Some {
+      raw_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; sexp_of_genarg_type "raw" ga]));
+      glb_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; sexp_of_genarg_type "glb" ga]));
+      top_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; sexp_of_genarg_type "top" ga]));
+    }
 
-let _ser_wit_tactic =
-  Ser_tentry (Tacarg.wit_tactic, !sexp_of_raw_tactic_expr, !sexp_of_glob_tactic_expr, !sexp_of_tactic_val_t)
+end
 
-let _ser_wit_opt fc = match fc with | Ser_tentry(f, fa, fb, fc) ->
-  Ser_tentry (Genarg.wit_opt f, sexp_of_option fa, sexp_of_option fb, sexp_of_option fc)
+module SerGen = Register(SerObj)
 
-let _ser_opt_tac = _ser_wit_opt _ser_wit_tactic
-*)
+let register_genprint ty obj = SerGen.register0 ty obj
 
-(* let sexp_of_extraarg_gen (GenArg (Rawwit (ExtraArg _ as wit), x)) (Ser_tentry(wit_e,s1,s2,s3)) : t = *)
-(*   match genarg_type_eq wit wit_e with *)
-(*   | None   -> Atom "Unknown ExtraArg" *)
-(*   | Some _ -> s1 x *)
-
-(* XXX use register ***)
-
-(* Needs more work, but getting there *)
-(*
-let sexp_of_extraarg g =
-  (* XXX: Register mechanism needed *)
-  if has_type g (rawwit Stdarg.wit_constr) then
-    begin
-      let g_out : Constrexpr.constr_expr = Genarg.out_gen (rawwit Stdarg.wit_constr) g in
-      !sexp_of_constr_expr g_out
-    end
-  else if has_type g (rawwit Tacarg.wit_ltac) then
-    begin
-      let g_out : Tacexpr.raw_tactic_expr = Genarg.out_gen (rawwit Tacarg.wit_tactic) g in
-      !sexp_of_raw_tactic_expr g_out
-    end
-  else if has_type g (rawwit G_ltac.wit_ltac_info) then
-    begin
-      let g_out : int = Genarg.out_gen (rawwit G_ltac.wit_ltac_info) g in
-      Sexplib.Conv.sexp_of_int g_out
-    end
-  else if has_type g (rawwit G_ltac.wit_ltac_selector) then
-    begin
-      let g_out : Vernacexpr.goal_selector = Genarg.out_gen (rawwit G_ltac.wit_ltac_selector) g in
-      !sexp_of_goal_selector g_out
-    end
-  else if has_type g (rawwit G_ltac.wit_ltac_use_default) then
-    begin
-      let g_out : bool = Genarg.out_gen (rawwit G_ltac.wit_ltac_use_default) g in
-      sexp_of_bool g_out
-    end
-  else if has_type g (rawwit G_ltac.wit_ltac_tacdef_body) then
-    begin
-      let g_out : Tacexpr.tacdef_body = Genarg.out_gen (rawwit G_ltac.wit_ltac_tacdef_body) g in
-      !sexp_of_tacdef_body g_out
-    end
-  else if has_type g (rawwit Tacarg.wit_tactic) then
-    begin
-      let g_out : Tacexpr.raw_tactic_expr = Genarg.out_gen (rawwit Tacarg.wit_tactic) g in
-      !sexp_of_raw_tactic_expr g_out
-    end
-  else Atom (Pp.string_of_ppcmds (pr_argument_type (genarg_tag g)))
-
-let rec sexp_of_rawgen (GenArg (Rawwit wit, x) as g) =
-  let ucc wit m = sexp_of_rawgen (in_gen (rawwit wit) m) in
-  match wit with
-  | PairArg (w1, w2) -> sexp_of_pair   (ucc w1) (ucc w2) x
-  | ListArg wit      -> sexp_of_list   (ucc wit) x
-  | OptArg wit       -> sexp_of_option (ucc wit) x
-  | ExtraArg _       -> sexp_of_extraarg g
-*)
+let rec get_gen_ser : type r g t. (r,g,t) Genarg.genarg_type -> (r,g,t) gen_ser =
+  fun gt -> match gt with
+  | Genarg.ExtraArg _      -> SerGen.obj gt
+  | Genarg.ListArg  t      -> gen_ser_list (get_gen_ser t)
+  | Genarg.OptArg   t      -> gen_ser_opt  (get_gen_ser t)
+  | Genarg.PairArg(t1, t2) -> gen_ser_pair (get_gen_ser t1) (get_gen_ser t2)
 
 (* We need to generalize this to use the proper printers for opt *)
 let sexp_of_genarg_val : type a. a generic_argument -> t =
   fun g -> match g with
-  | GenArg (aat, _x) -> begin
-    match aat with
-    | Glbwit _gt -> Atom "XXX Global GenARG"
-    | Topwit _gt -> Atom "XXX Typed GenARG"
-    | Rawwit _gt -> Atom "XXX Raw GenARG"
-    (* | Rawwit _gt -> sexp_of_rawgen g *)
-  end
+  | GenArg (g_ty, g_val) -> begin
+      match g_ty with
+      | Rawwit gt ->
+        let pr = get_gen_ser gt in
+        pr.raw_ser g_val
+      | Glbwit gt ->
+        let pr = get_gen_ser gt in
+        pr.glb_ser g_val
+      | Topwit gt ->
+        let pr = get_gen_ser gt in
+        pr.top_ser g_val
+    end
 
-let sexp_of_generic_argument : type a. (a -> t) -> a Genarg.generic_argument -> t = fun _ g ->
-  (* let gtype = sexp_of_genarg_type g in *)
-  let _ = sexp_of_genarg_type in
-  let gval  = sexp_of_genarg_val  g in
-  (* List [List [Atom "GenArgType"; gtype]; List [Atom "GenArgVal"; gval]] *)
-  gval
+let sexp_of_generic_argument : type a. (a -> t) -> a Genarg.generic_argument -> t =
+  fun _level_tag g ->
+  sexp_of_genarg_val g
 
-type glob_generic_argument = [%import: Genarg.glob_generic_argument]
+type glob_generic_argument =
+  [%import: Genarg.glob_generic_argument]
   [@@deriving sexp]
 
-type raw_generic_argument  = [%import: Genarg.raw_generic_argument]
+type raw_generic_argument =
+  [%import: Genarg.raw_generic_argument]
   [@@deriving sexp]
 
-type typed_generic_argument  = [%import: Genarg.typed_generic_argument]
+type typed_generic_argument =
+  [%import: Genarg.typed_generic_argument]
   [@@deriving sexp]
 

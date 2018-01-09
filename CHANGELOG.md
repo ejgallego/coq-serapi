@@ -1,3 +1,4 @@
+============ Old plans
 _Version 0.1_:
 
  - Full document parsing. Full asynchronous `Add/Cancel` protocol.
@@ -28,23 +29,30 @@ _More_:
  - enable an open CoqObject tag for plugin use (see coq/coq#209 ) ?
  - Checkstyle support.
 
+=============================
+
+_Version 0.4_:
+
+ * support Coq 8.7 , make use of improved upstream API,
+ * support serialization of generic arguments [#41],
+ * full file support hack
 
 _Version 0.2_:
 
- * _[planned]_ Better Query/Object system.
+ * Better Query/Object system.
 
 _Version 0.1_:
 
- * Serialization-independent protocol core.
- * [js] Javascript worker.
- * [lib] Better Prelude support.
- * [serlib] Full Serialization of generic arguments.
- * [proto] Add is not a synchronous call anymore.
- * [proto] Refactor into a flat command hierarchy.
- * [proto] More useful queries.
- * [proto] Guarantee initial state is 1.
- * [proto] Support for ltac profiling.
- * [proto] Printing: add depth limiting.
+ * Serialization-independent protocol core,
+ * [js] Javascript worker,
+ * [lib] Better Prelude support,
+ * [serlib] Full Serialization of generic arguments,
+ * [proto] Add is not a synchronous call anymore,
+ * [proto] Refactor into a flat command hierarchy,
+ * [proto] More useful queries,
+ * [proto] Guarantee initial state is 1,
+ * [proto] Support for ltac profiling,
+ * [proto] Printing: add depth limiting,
  * [proto] Better handling of options in the sexp backend.
 
 _Version 0.03_:
@@ -67,4 +75,3 @@ _Version 0.02_:
    Still we need to decide on:
    `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of
    `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
-

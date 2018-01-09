@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -52,3 +52,16 @@ val sexp_of_raw_generic_argument : Genarg.raw_generic_argument -> Sexp.t
 type typed_generic_argument = Genarg.typed_generic_argument
 val typed_generic_argument_of_sexp : Sexp.t -> Genarg.typed_generic_argument
 val sexp_of_typed_generic_argument : Genarg.typed_generic_argument -> Sexp.t
+
+(* Registering serializing functions *)
+type ('raw, 'glb, 'top) gen_ser =
+  { raw_ser : 'raw -> Sexplib.Sexp.t;
+    glb_ser : 'glb -> Sexplib.Sexp.t;
+    top_ser : 'top -> Sexplib.Sexp.t;
+  }
+
+val register_genprint :
+  ('raw, 'glb, 'top) Genarg.genarg_type ->
+  ('raw, 'glb, 'top) gen_ser ->
+  unit
+

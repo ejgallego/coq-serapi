@@ -6,6 +6,9 @@ B _build/
 S serlib
 B _build/serlib
 
+S serlib/plugins/ltac/
+B _build/serlib/plugins/ltac/
+
 S sertex
 B _build/sertex
 

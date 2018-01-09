@@ -306,3 +306,9 @@ let ser_loop ser_opts =
     with Sys.Break -> loop (1+cmd_id)
   in loop 0
 
+(* Registering of generic argument printers. These modules should be
+   linked statically but we don't use ocamlbuild trickery *)
+let _ =
+  Ser_stdarg.register ();
+  Ser_tacarg.register ();
+  ()
