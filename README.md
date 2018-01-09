@@ -1,6 +1,6 @@
 ## The Coq Se(xp)rialized Protocol
 
-[![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=master)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
+[![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=v8.7)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
 ```
 $ opam install coq-serapi
