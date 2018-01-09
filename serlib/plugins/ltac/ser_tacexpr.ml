@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -16,7 +16,6 @@
 open Sexplib
 open Sexplib.Std
 
-module API = struct
 module Loc       = Ser_loc
 module Names     = Ser_names
 module Misctypes = Ser_misctypes
@@ -32,9 +31,8 @@ module Pattern    = Ser_pattern
 module Constrexpr = Ser_constrexpr
 module Vernacexpr = Ser_vernacexpr
 module Tactypes   = Ser_tactypes
-end
 
-open API
+(* open Ltac_plugin *)
 
 type direction_flag =
   [%import: Tacexpr.direction_flag]
