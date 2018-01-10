@@ -66,8 +66,6 @@ let gen_ser_pair : ('raw1, 'glb1, 'top1) gen_ser -> ('raw2, 'glb2, 'top2) gen_se
     top_ser = sexp_of_pair g1.top_ser g2.top_ser;
   }
 
-(* Generic printer *)
-(* module SerObj : GenObj = struct *)
 module SerObj = struct
 
   type ('raw, 'glb, 'top) obj = ('raw, 'glb, 'top) gen_ser
@@ -85,7 +83,7 @@ end
 
 module SerGen = Register(SerObj)
 
-let register_genprint ty obj = SerGen.register0 ty obj
+let register_genser ty obj = SerGen.register0 ty obj
 
 let rec get_gen_ser : type r g t. (r,g,t) Genarg.genarg_type -> (r,g,t) gen_ser =
   fun gt -> match gt with
@@ -95,9 +93,6 @@ let rec get_gen_ser : type r g t. (r,g,t) Genarg.genarg_type -> (r,g,t) gen_ser 
   | Genarg.PairArg(t1, t2) -> gen_ser_pair (get_gen_ser t1) (get_gen_ser t2)
 
 type 'a generic_argument = 'a Genarg.generic_argument
-
-let generic_argument_of_sexp _ _x =
-  CErrors.user_err Pp.(str "SERAPI FIXME: cannot deserialize generic arguments yet")
 
 (* We need to generalize this to use the proper printers for opt *)
 let sexp_of_genarg_val : type a. a generic_argument -> t =
@@ -118,6 +113,33 @@ let sexp_of_genarg_val : type a. a generic_argument -> t =
 let sexp_of_generic_argument : type a. (a -> t) -> a Genarg.generic_argument -> t =
   fun _level_tag g ->
   sexp_of_genarg_val g
+
+type ('raw, 'glb, 'top) des_output =
+  | DS_Raw of 'raw
+  | DS_Glb of 'glb
+  | DS_Top of 'top
+  | DS_Fail of Sexplib.Sexp.t
+
+type ('raw, 'glb, 'top) gen_des = Sexplib.Sexp.t -> ('raw, 'glb, 'top) des_output
+
+module DesObj = struct
+
+  type ('raw, 'glb, 'top) obj = ('raw, 'glb, 'top) gen_des
+
+  let name = "des_arg"
+  let default _ga = Some (fun se -> DS_Fail se)
+
+end
+
+module DesGen = Register(DesObj)
+
+let register_gendes ty obj = DesGen.register0 ty obj
+
+let generic_argument_of_sexp _lvl _sexp =
+  (* 1. match tag on sexp
+   * 2. use some magic to overcome the weak return type in the branches!
+   *)
+  CErrors.user_err Pp.(str "SERAPI FIXME: cannot deserialize generic arguments yet")
 
 type glob_generic_argument =
   [%import: Genarg.glob_generic_argument]

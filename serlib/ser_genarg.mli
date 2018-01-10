@@ -60,8 +60,21 @@ type ('raw, 'glb, 'top) gen_ser =
     top_ser : 'top -> Sexplib.Sexp.t;
   }
 
-val register_genprint :
+val register_genser :
   ('raw, 'glb, 'top) Genarg.genarg_type ->
   ('raw, 'glb, 'top) gen_ser ->
   unit
 
+(* Registering de-serializing functions *)
+type ('raw, 'glb, 'top) des_output =
+  | DS_Raw of 'raw
+  | DS_Glb of 'glb
+  | DS_Top of 'top
+  | DS_Fail of Sexplib.Sexp.t
+
+type ('raw, 'glb, 'top) gen_des = Sexp.t -> ('raw, 'glb, 'top) des_output
+
+val register_gendes :
+  ('raw, 'glb, 'top) Genarg.genarg_type ->
+  ('raw, 'glb, 'top) gen_des ->
+  unit

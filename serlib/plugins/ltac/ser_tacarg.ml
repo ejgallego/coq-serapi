@@ -183,32 +183,32 @@ let ser_wit_withtac =
   }
 
 let register () =
-  Ser_genarg.register_genprint Tacarg.wit_destruction_arg ser_wit_destruction_arg;
-  Ser_genarg.register_genprint Tacarg.wit_tactic ser_wit_tactic;
-  Ser_genarg.register_genprint Tacarg.wit_ltac   ser_wit_ltac;
+  Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
+  Ser_genarg.register_genser Tacarg.wit_tactic ser_wit_tactic;
+  Ser_genarg.register_genser Tacarg.wit_ltac   ser_wit_ltac;
 
-  Ser_genarg.register_genprint G_ltac.wit_ltac_info ser_wit_ltac_info;
-  Ser_genarg.register_genprint G_ltac.wit_ltac_production_item ser_wit_production_item;
-  Ser_genarg.register_genprint G_ltac.wit_ltac_production_sep ser_wit_ltac_production_sep;
-  Ser_genarg.register_genprint G_ltac.wit_ltac_selector ser_wit_ltac_selector;
-  Ser_genarg.register_genprint G_ltac.wit_ltac_tacdef_body ser_wit_ltac_tacdef_body;
-  Ser_genarg.register_genprint G_ltac.wit_ltac_tactic_level ser_wit_ltac_tactic_level;
-  Ser_genarg.register_genprint G_ltac.wit_ltac_use_default ser_wit_ltac_use_default;
+  Ser_genarg.register_genser G_ltac.wit_ltac_info ser_wit_ltac_info;
+  Ser_genarg.register_genser G_ltac.wit_ltac_production_item ser_wit_production_item;
+  Ser_genarg.register_genser G_ltac.wit_ltac_production_sep ser_wit_ltac_production_sep;
+  Ser_genarg.register_genser G_ltac.wit_ltac_selector ser_wit_ltac_selector;
+  Ser_genarg.register_genser G_ltac.wit_ltac_tacdef_body ser_wit_ltac_tacdef_body;
+  Ser_genarg.register_genser G_ltac.wit_ltac_tactic_level ser_wit_ltac_tactic_level;
+  Ser_genarg.register_genser G_ltac.wit_ltac_use_default ser_wit_ltac_use_default;
 
-  Ser_genarg.register_genprint G_auto.wit_auto_using ser_wit_auto_using;
-  Ser_genarg.register_genprint G_auto.wit_hintbases ser_wit_hintbases;
-  Ser_genarg.register_genprint G_auto.wit_hints_path ser_wit_hintbases_path;
-  Ser_genarg.register_genprint G_auto.wit_hints_path_atom ser_wit_hintbases_path_atom;
-  Ser_genarg.register_genprint G_auto.wit_opthints ser_wit_opthints;
+  Ser_genarg.register_genser G_auto.wit_auto_using ser_wit_auto_using;
+  Ser_genarg.register_genser G_auto.wit_hintbases ser_wit_hintbases;
+  Ser_genarg.register_genser G_auto.wit_hints_path ser_wit_hintbases_path;
+  Ser_genarg.register_genser G_auto.wit_hints_path_atom ser_wit_hintbases_path_atom;
+  Ser_genarg.register_genser G_auto.wit_opthints ser_wit_opthints;
 
-  Ser_genarg.register_genprint G_rewrite.wit_binders ser_wit_binders;
-  Ser_genarg.register_genprint G_rewrite.wit_glob_constr_with_bindings ser_wit_glob_constr_with_bindings;
-  Ser_genarg.register_genprint G_rewrite.wit_rewstrategy ser_wit_rewstrategy;
+  Ser_genarg.register_genser G_rewrite.wit_binders ser_wit_binders;
+  Ser_genarg.register_genser G_rewrite.wit_glob_constr_with_bindings ser_wit_glob_constr_with_bindings;
+  Ser_genarg.register_genser G_rewrite.wit_rewstrategy ser_wit_rewstrategy;
 
-  Ser_genarg.register_genprint G_class.wit_debug ser_wit_debug;
-  Ser_genarg.register_genprint G_class.wit_eauto_search_strategy ser_wit_eauto_search_strategy;
+  Ser_genarg.register_genser G_class.wit_debug ser_wit_debug;
+  Ser_genarg.register_genser G_class.wit_eauto_search_strategy ser_wit_eauto_search_strategy;
 
-  Ser_genarg.register_genprint G_obligations.wit_withtac ser_wit_withtac;
+  Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
   ()
 

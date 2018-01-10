@@ -20,5 +20,5 @@ let ser_wit_constr = Ser_genarg.{
   }
 
 let register () =
-  Ser_genarg.register_genprint Stdarg.wit_constr ser_wit_constr
+  Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr
 
