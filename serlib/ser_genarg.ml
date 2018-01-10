@@ -31,16 +31,6 @@ type tlevel =
   [%import: Genarg.tlevel]
   [@@deriving sexp]
 
-(* type ('a, 'b) abstract_argument_type = *)
-(*   ('a, 'b) Genarg.abstract_argument_type *)
-  (* [%import: ('a, 'b) Genarg.abstract_argument_type *)
-  (* ] *)
-
-type 'a generic_argument = 'a Genarg.generic_argument
-
-let generic_argument_of_sexp _ _x =
-  CErrors.user_err Pp.(str "SERAPI FIXME: cannot deserialize generic arguments yet")
-
 let rec sexp_of_genarg_type : type a b c. string -> (a, b, c) genarg_type -> t = fun lvl gt ->
   match gt with
   | ExtraArg tag   -> List [Atom "ExtraArg"; Atom lvl; Atom (ArgT.repr tag)]
@@ -103,6 +93,11 @@ let rec get_gen_ser : type r g t. (r,g,t) Genarg.genarg_type -> (r,g,t) gen_ser 
   | Genarg.ListArg  t      -> gen_ser_list (get_gen_ser t)
   | Genarg.OptArg   t      -> gen_ser_opt  (get_gen_ser t)
   | Genarg.PairArg(t1, t2) -> gen_ser_pair (get_gen_ser t1) (get_gen_ser t2)
+
+type 'a generic_argument = 'a Genarg.generic_argument
+
+let generic_argument_of_sexp _ _x =
+  CErrors.user_err Pp.(str "SERAPI FIXME: cannot deserialize generic arguments yet")
 
 (* We need to generalize this to use the proper printers for opt *)
 let sexp_of_genarg_val : type a. a generic_argument -> t =

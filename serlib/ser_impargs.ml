@@ -34,11 +34,16 @@ type force_inference =
   [%import: Impargs.force_inference]
   [@@deriving sexp]
 
+(* XXX: Careful here, we break abstraction, so this must be kept in sync with Coq. *)
+type _implicit_side_condition = DefaultImpArgs | LessArgsThan of int
+  [@@deriving sexp]
+
 type implicit_side_condition = Impargs.implicit_side_condition
 
-(* XXX *)
-let implicit_side_condition_of_sexp _sexp : implicit_side_condition = Obj.magic 0
-let sexp_of_implicit_side_condition _isc = Sexp.Atom "impSC"
+let implicit_side_condition_of_sexp (sexp : Sexp.t) : implicit_side_condition =
+  Obj.magic (_implicit_side_condition_of_sexp sexp)
+let sexp_of_implicit_side_condition (isc : implicit_side_condition) : Sexp.t =
+  sexp_of__implicit_side_condition Obj.(magic isc)
 
 type implicit_status =
   [%import: Impargs.implicit_status]
