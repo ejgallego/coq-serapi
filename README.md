@@ -4,6 +4,7 @@
 
 ```
 $ opam install coq-serapi
+$ sertop --help
 ```
 
 SerAPI is a library for machine-to-machine interaction with the Coq
