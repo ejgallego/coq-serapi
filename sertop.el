@@ -20,6 +20,13 @@
 
 ;;; Commentary:
 
+;;; Open `sertop.el` and run `M-x eval-buffer` followed by `M-x
+;;; sertop` to get a sertop REPL in Emacs, with highlighting and
+;;; pretty-printing (useful for debugging).
+
+;;; You may want to configure the variable `sertop-coq-directory` to
+;;; point out the location of Coq's stdlib.
+
 ;;; Code:
 
 (require 'comint)
