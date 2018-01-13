@@ -25,13 +25,13 @@ type rlevel = [%import: Genarg.rlevel]
 type glevel = [%import: Genarg.glevel]
 type tlevel = [%import: Genarg.tlevel]
 
-let rlevel_of_sexp _ = Obj.magic 0
+let rlevel_of_sexp _ = `rlevel
 let sexp_of_rlevel _ = Atom "GA_rlevel"
 
-let glevel_of_sexp _ = Obj.magic 0
+let glevel_of_sexp _ = `glevel
 let sexp_of_glevel _ = Atom "GA_glevel"
 
-let tlevel_of_sexp _ = Obj.magic 0
+let tlevel_of_sexp _ = `tlevel
 let sexp_of_tlevel _ = Atom "GA_tlevel"
 
 (* type ('a, 'b) abstract_argument_type = *)
@@ -41,7 +41,8 @@ let sexp_of_tlevel _ = Atom "GA_tlevel"
 
 type 'a generic_argument = 'a Genarg.generic_argument
 
-let generic_argument_of_sexp _ _x = Obj.magic 0
+let generic_argument_of_sexp _ _x =
+  CErrors.user_err Pp.(str "SERAPI FIXME: cannot deserialize generic arguments yet")
 
 let rec sexp_of_genarg_type : type a b c. string -> (a, b, c) genarg_type -> t = fun lvl gt ->
   match gt with
