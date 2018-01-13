@@ -23,18 +23,11 @@ thus it tries to provide a convenient, robust interface that hides
 away some of the most scary details involved in interaction with Coq.
 
 As such, feedback from Coq users and developers is not only very
-welcome, but _essential_ to the project. We are open to implementing new
-features and exploring new use cases, let us know what you think via
-the mailing list or in the issue tracker.
-
-### Mailing List ###
-
-SerApi development is discussed in the jsCoq mailing list, you can subscribe at:
-https://x80.org/cgi-bin/mailman/listinfo/jscoq
-
-The list archives should be also available at the Gmane group:
-`gmane.science.mathematics.logic.coq.jscoq`. You can post to the list
-using nntp.
+welcome, but _essential_ to the project. We are open to implementing
+new features and exploring new use cases, let us know what you think
+via the [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq)
+or in the [issue
+tracker](https://github.com/ejgallego/coq-serapi/issues).
 
 ### Roadmap
 
@@ -57,24 +50,6 @@ process in the same way the standard `coqtop` does.
 
 We recommend using `rlwrap` or the [emacs mode](sertop.el) for direct
 interaction.
-
-### Advanced / Developer use
-
-With a bit more development effort, you can also:
-
-- Use SerAPI as an Ocaml library. The low-level serialization library
-  [`serlib/`](/serlib) and the higher-level SerAPI protocol in
-  [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli) can be
-  linked standalone.
-
-- Use SerAPI web worker [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
-  from your web/node application. In this model, you communicate with SerAPI using
-  the typical `onmessage/postMessage` worker API. Ready-to-use builds
-  may be found at
-  [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
-  provide an example REPL at: https://x80.org/rhino-hawk
-
-- We would also like to provide a [Jupyter/IPython kernel](issues/17).
 
 ## Protocol Description
 
@@ -121,8 +96,6 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 - **Printing:** `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
 
 ### Quick demo (not always up to date)
-
-Using `rlwrap` or the emacs mode is highly recommended:
 
 ```lisp
 $ rlwrap ./sertop.byte --prelude ~/external/coq-git/
@@ -194,11 +167,38 @@ Mines de Paris) and partially supported by the
 
 Coq SerAPI has three main components:
 
-- `serapi`: an extended version of the current IDE protocol.
-- `serlib` a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress.
+- `serapi`: an extended version of the current IDE protocol,
+- `serlib` a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress,
 - `sertop`, `sertop_js`, toplevels offering implementation of the protocol.
 
 Building your own toplevels using `serlib` and `serapi` is encouraged.
+
+### Advanced use cases
+
+With a bit more development effort, you can also:
+
+- use SerAPI as an Ocaml library. The low-level serialization library
+  [`serlib/`](/serlib) and the higher-level SerAPI protocol in
+  [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli) can be
+  linked standalone,
+
+- use SerAPI's web worker [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+  from your web/node application. In this model, you communicate with SerAPI using
+  the typical `onmessage/postMessage` worker API. Ready-to-use builds
+  may be found at
+  [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
+  provide an example REPL at: https://x80.org/rhino-hawk
+
+- we would also like to provide a [Jupyter/IPython kernel](issues/17).
+
+### Developer/Users Mailing List ###
+
+SerApi development is discussed in the jsCoq mailing list, you can
+subscribe at: https://x80.org/cgi-bin/mailman/listinfo/jscoq
+
+The list archives should be also available at the Gmane group:
+`gmane.science.mathematics.logic.coq.jscoq`. You can post to the list
+using nntp.
 
 ### Commit tag conventions [work in progress]:
 
