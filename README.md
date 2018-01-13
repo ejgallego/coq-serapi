@@ -27,7 +27,8 @@ welcome, but _essential_ to the project. We are open to implementing
 new features and exploring new use cases, let us know what you think
 via the [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq)
 or in the [issue
-tracker](https://github.com/ejgallego/coq-serapi/issues).
+tracker](https://github.com/ejgallego/coq-serapi/issues). See also the
+[FAQ](FAQ.md).
 
 ### Roadmap
 
@@ -130,22 +131,33 @@ $ rlwrap sertop --printer=human
   >    \nn + 0 = n"))))
   > (Answer 3 Completed)
 
+(Query ((sid 4)) Ast)
+  > (Answer 4 Ack)
+  > (Answer 4 (ObjList ((CoqAst ((((fname "") (line_nb 1) (bol_pos 0) (line_nb_last 1)
+  >                                (bol_pos_last 0) (bp 34) (ep 50)))
+  > ...
+  >            ((Tacexp
+  >              (TacAtom
+  >                (TacInductionDestruct true false
+  > ...
+  > (Answer 4 Completed)
+
 (pp_ex (Print () (CoqConstr (App (Rel 0) ((Rel 0))))))
   > (Answer pp_ex Ack)
   > (Answer pp_ex(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
 
 (Query () (Vernac "Print nat. "))
-  > (Answer 5 Ack)
+  > (Answer 6 Ack)
   > (Feedback ((id 5) (route 0) (contents
   >    (Message Notice ()
   >    ((Pp_box (Pp_hovbox 0) ...)
-  > (Answer 5 (ObjList ()))
-  > (Answer 5 Completed)
+  > (Answer 6 (ObjList ()))
+  > (Answer 6 Completed)
 
 (Query () (Definition nat))
-  > (Answer 6 Ack)
-  > (Answer 6 (ObjList ((CoqMInd (Mutind ....)))))
-  > (Answer 6 Completed)
+  > (Answer 7 Ack)
+  > (Answer 7 (ObjList ((CoqMInd (Mutind ....)))))
+  > (Answer 7 Completed)
 ```
 
 ### Technical Report

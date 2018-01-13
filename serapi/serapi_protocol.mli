@@ -118,7 +118,7 @@ type query_cmd =
   | Search
   | Goals                          (* Return goals [TODO: Add filtering/limiting options] *)
   | EGoals                         (* Return goals [TODO: Add filtering/limiting options] *)
-  | Ast        of Stateid.t        (* Return ast *)
+  | Ast                            (* Return ast *)
   | TypeOf     of string           (* XXX Unimplemented *)
   | Names      of string           (* argument is prefix -> XXX Move to use the prefix predicate *)
   | Tactics    of string           (* argument is prefix -> XXX Move to use the prefix predicate *)

@@ -10,19 +10,21 @@ stability guarantees. In fact, the protocol is expected to evolve.
 
 ## Which Coq versions does SerAPI support?
 
-At the moment, Coq 8.7 is the current supported version for the
-current protocol. Older versions (8.6) should work however the
+At the moment, Coq 8.8 is the current supported version for the
+current protocol. Older versions (8.6/8.7) should work however the
 protocol will differ.
 
 ## How can I install SerAPI?
 
-The supported way is to use OPAM. The `.travis.yml` file contains up
-to date install instructions for each branch.
+The supported way is to use the OPAM package manager. The
+`.travis.yml` file contains up to date install instructions on how to
+build it manually.
 
 ## Why does SerAPI hang with inputs larger than 4096 characters?
 
 This is due to a historical limitation of the UNIX/Linux TTY API. See
-#38. You can use
+#38. If you communicate with SerAPI using a PIPE this shouldn't be a
+problem, otherwise you can use the `ReadFile` command in interactive mode.
 
 ## Can SerAPI produce `.vo` files?
 
@@ -30,7 +32,10 @@ Not yet, but support for this is planned.
 
 ## Does SerAPI support asyncronous proof proccessing?
 
-It does, note however that it is still in experimental status upstream. In particular
+It does, note however that it is still in experimental status
+upstream. In particular there are some issues on Windows, and `EditAt`
+may be inconvenient to use. We recommend not using `EditAt` and
+instead using the less powerful `Cancel` for now.
 
 ## Does SerAPI support Coq's command line flags:
 
@@ -42,7 +47,8 @@ For 3rd party packages, SerAPI aims to adopt the package format
 developed for jsCoq.
 
 However, limited `_CoqProject` support is planned in order to
-configure load paths.
+configure load paths. We will also support some legacy options `-R` in
+order to make life bearable to some.
 
 ## What does SerAPI expose?
 

@@ -1,35 +1,7 @@
-============ Old plans
-_Version 0.1_:
+_Version 0.5_:
 
- - Full document parsing. Full asynchronous `Add/Cancel` protocol.
-
- - **[started]** Implement Locate -> "file name where the object is defined".
-   To improve.
-
- - Improve the handling of names and environments, see
-   `Coq.Init.Notations.instantiate` vs `instantiate`, the issue of `Nametab.shortest_qualid_of_global` is a very sensible one for IDEs
-
-   Maybe we could add some options `Short`, `Full`, `Best` ? ...
-   Or we could even serialize the naming structure and let the ide decide if we export the current open namespace.
-
- - Help with complex codepaths:
-   Load Path parsing and completion code is probably one of the most complex part of company-coq
-
-_Version 0.2_:
-
- - Redo Query API, make objects tagged with a GADT.
-   *Critical: we hope to have gained enough experience to introduce the object tag*
-
-_More_:
-
- - Support regexps in queries.
- - Would be easy to get a list of vernacs? Things like `Print`, `Typeclasses eauto`, etc.
- - ppx to enumerate datatypes. Write the help command with this and also Clément suggestions about Vernac enumeration.
- - Add a cache to full document parsing..
- - enable an open CoqObject tag for plugin use (see coq/coq#209 ) ?
- - Checkstyle support.
-
-=============================
+ * support Coq 8.8 , make use of improved upstream API,
+ * `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`
 
 _Version 0.4_:
 

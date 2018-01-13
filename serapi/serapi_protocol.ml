@@ -380,7 +380,7 @@ type query_cmd =
   | Search                         (* Search vernacular, we only support prefix by name *)
   | Goals                          (* Return goals [TODO: Add filtering/limiting options] *)
   | EGoals                         (* Return goals [TODO: Add filtering/limiting options] *)
-  | Ast        of Stateid.t        (* Return ast *)
+  | Ast                            (* Return ast *)
   | TypeOf     of string
   | Names      of string           (* XXX Move to prefix *)
   | Tactics    of string           (* XXX Print LTAC signatures (with prefix) *)
@@ -525,7 +525,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       List.map (fun (n,s) -> CoqOption(n,s)) opts
   | Goals          -> Option.cata (fun g -> [CoqGoal g   ]) [] @@ Serapi_goals.get_goals  ~doc opt.sid
   | EGoals         -> Option.cata (fun g -> [CoqExtGoal g]) [] @@ Serapi_goals.get_egoals ~doc opt.sid
-  | Ast sid        -> Option.cata (fun last -> [CoqAst last]) [] @@ Stm.get_ast ~doc sid
+  | Ast            -> Option.cata (fun last -> [CoqAst last]) [] @@ Stm.get_ast ~doc opt.sid
   | Names   prefix -> QueryUtil.query_names_locate prefix
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
