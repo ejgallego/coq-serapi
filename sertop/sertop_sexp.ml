@@ -16,6 +16,24 @@
 open Sexplib
 open Sexplib.Conv
 
+(* Optimize Pp.t inside feedback *)
+let opt_answer ans =
+  let open Serapi_protocol in
+  match ans with
+  | Feedback fb ->
+    let open! Feedback in
+    begin match fb with
+      | { id; route; contents = Message (lvl, loc, msg) } ->
+        if pp_opt_flag then
+          Feedback {id; route; contents = Message(lvl, loc, coq_pp_opt msg) }
+        else
+          ans
+      | _ ->
+        ans
+    end
+  | _ ->
+    ans
+
 module Loc   = Ser_loc
 module Names = Ser_names
 
@@ -155,6 +173,8 @@ type answer_kind =
 type answer =
   [%import: Serapi_protocol.answer]
   [@@deriving sexp]
+
+let sexp_of_answer ans = sexp_of_answer (opt_answer ans)
 
 type add_opts =
   [%import: Serapi_protocol.add_opts

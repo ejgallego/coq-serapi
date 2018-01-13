@@ -198,8 +198,8 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
-(* XXX: This is terrible, but useful *)
-let rec pp_opt (d : Pp.t) = let open Pp in
+(* XXX: This is terrible and doesn't work yet *)
+let rec coq_pp_opt (d : Pp.t) = let open Pp in
   let rec flatten_glue l = match l with
     | []  -> []
     | (Ppcmd_glue g :: l) -> flatten_glue (List.map repr g @ flatten_glue l)
@@ -210,18 +210,18 @@ let rec pp_opt (d : Pp.t) = let open Pp in
   (*   | (Ppcmd_string s1 :: Ppcmd_string s2 :: l) -> Ppcmd_string (s1 ^ s2) :: flatten_glue l *)
   unrepr (match repr d with
       | Ppcmd_glue []   -> Ppcmd_empty
-      | Ppcmd_glue [x]  -> repr (pp_opt x)
-      | Ppcmd_glue l    -> Ppcmd_glue List.(map pp_opt (map unrepr (flatten_glue (map repr l))))
-      | Ppcmd_box(bt,d) -> Ppcmd_box(bt, pp_opt d)
-      | Ppcmd_tag(t, d) -> Ppcmd_tag(t,  pp_opt d)
+      | Ppcmd_glue [x]  -> repr (coq_pp_opt x)
+      | Ppcmd_glue l    -> Ppcmd_glue List.(map coq_pp_opt (map unrepr (flatten_glue (map repr l))))
+      | Ppcmd_box(bt,d) -> Ppcmd_box(bt, coq_pp_opt d)
+      | Ppcmd_tag(t, d) -> Ppcmd_tag(t,  coq_pp_opt d)
       | d -> d
     )
 
 (* Enable to optimize *)
-(* let gen_pp_obj obj : Pp.t = *)
-(*   pp_opt (gen_pp_obj obj) *)
-
-let _ = pp_opt
+let pp_opt_flag = true
+let gen_pp_obj obj : Pp.t =
+  let pp = gen_pp_obj obj in
+  if pp_opt_flag then coq_pp_opt pp else pp
 
 let str_pp_obj fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj obj)
@@ -724,7 +724,7 @@ let exec_cmd (cmd : cmd) =
   | SetOpt(loc, n, v) -> exec_setopt loc n v; []
   (*******************************************************************)
   | ReadFile f ->
-    Pervasives.(
+    (
       let inc = open_in f in
       try
         let faddopts = { lim = None; ontop = None; newtip = None; verb = false; } in
