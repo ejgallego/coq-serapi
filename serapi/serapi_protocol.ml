@@ -476,8 +476,8 @@ module QueryUtil = struct
   (* Queries a generic definition, in the style of the `Print` vernacular *)
   (*                  definition        type                              *)
   let info_of_id id : coq_object list * coq_object list =
-    (* parse to a qualified name                        *)
-    let qid = Libnames.qualid_of_ident (Names.Id.of_string id) in
+    (* parse string to a qualified name                 *)
+    let qid = Libnames.qualid_of_string id in
     (* try locate the kind of object the name refers to *)
     try
       let lid = Nametab.locate qid in
