@@ -26,7 +26,7 @@
  *)
 
 open Ltac_plugin
-open Sexplib.Conv
+open! Sexplib.Conv
 
 module Extra = struct
 
@@ -297,7 +297,7 @@ type answer_kind =
   | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
   | Canceled  of Stateid.t list
   | ObjList   of coq_object list
-  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * exn
+  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -554,8 +554,9 @@ let exec_query opt cmd =
 
 (* coq_exn info *)
 let coq_exn_info exn =
-    let (e, info) = CErrors.push exn in
-    CoqExn (Loc.get_loc info, Stateid.get info, e)
+  let bt = Printexc.get_raw_backtrace () in
+  let (e, info) = CErrors.push exn in
+  CoqExn (Loc.get_loc info, Stateid.get info, bt, e)
 
 (* Simple protection for Coq-generated exceptions *)
 let coq_protect e =

@@ -18,6 +18,7 @@ let sertop_version = "0.04dev"
 
 open Cmdliner
 
+[@@@ocaml.warning "-44-45"]
 let prelude =
   let doc = "Load prelude from COQPATH; plugins/ and theories/ should live there." in
   Arg.(value & opt (some string) (Some Coq_config.coqlib) & info ["prelude"] ~docv:"COQPATH" ~doc)
@@ -53,6 +54,10 @@ let printer =
   (* let doc = "Select S-expression printer." in *)
   Arg.(value & opt print_args SP_Sertop & info ["printer"] ~doc:print_args_doc)
 
+let debug =
+  let doc = "Enable Coq debug mode." in
+  Arg.(value & flag & info ["debug"] ~doc)
+
 let print0 =
   let doc = "Add a \\\\0 char after every response." in
   Arg.(value & flag & info ["print0"] ~doc)
@@ -61,15 +66,16 @@ let length =
   let doc = "Adds a byte-length header to answers. (deprecated)" in
   Arg.(value & flag & info ["length"] ~doc)
 
-let sertop printer print0 length prelude implicit_prelude async async_full deep_edits  =
+let sertop printer print0 debug length prelude implicit_prelude async async_full deep_edits  =
   let open Sertop_init         in
   let open Sertop_sexp         in
   ser_loop
     {  in_chan  = stdin;
        out_chan = stdout;
 
-       printer  = printer;
-       print0   = print0;
+       debug;
+       printer;
+       print0;
        lheader  = length;
 
        coqlib   = prelude;
@@ -89,7 +95,7 @@ let sertop_cmd =
   ]
   in
   Term.(const sertop
-        $ printer $ print0 $ length $ prelude $ implicit_stdlib
+        $ printer $ print0 $ debug $ length $ prelude $ implicit_stdlib
         $ async $ async_full $ deep_edits ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 

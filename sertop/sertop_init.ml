@@ -43,13 +43,22 @@ type coq_opts = {
 
   (* callback to load cma/cmo files *)
   ml_load      : (string -> unit) option;
+
+  (* Enable Coq Debug mode *)
+  debug        : bool;
 }
 
 (**************************************************************************)
 (* Low-level, internal Coq initialization                                 *)
 (**************************************************************************)
 let coq_init opts =
+
   let open Names in
+
+  if opts.debug then begin
+    Printexc.record_backtrace true;
+    Flags.debug := true;
+  end;
 
   (* Custom toplevel is used for bytecode-to-js dynlink  *)
   Option.iter (fun ml_load ->

@@ -163,10 +163,39 @@ type cmd_tag =
   [%import: Serapi_protocol.cmd_tag]
   [@@deriving sexp]
 
+type location =
+  [%import: Printexc.location]
+  [@@deriving sexp]
+
+type raw_backtrace = Printexc.raw_backtrace
+let raw_backtrace_of_sexp _ = Printexc.get_raw_backtrace ()
+
+type slot_rep = {
+  slot_loc : location option;
+  slot_idx : int;
+  slot_str : string option;
+} [@@deriving sexp]
+
+let to_slot_rep idx bs = {
+  slot_loc = Printexc.Slot.location bs;
+  slot_idx = idx;
+  slot_str = Printexc.Slot.format idx bs;
+}
+
+let sexp_of_backtrace_slot idx bs =
+  sexp_of_slot_rep (to_slot_rep idx bs)
+
+let sexp_of_raw_backtrace (bt : Printexc.raw_backtrace) : Sexp.t =
+  let bt = Printexc.backtrace_slots bt in
+  let bt = Option.map Array.(mapi sexp_of_backtrace_slot) bt in
+  let bt = sexp_of_option (sexp_of_array (fun x -> x)) bt in
+  Sexp.(List [Atom "Backtrace"; bt])
+
 type answer_kind =
   [%import: Serapi_protocol.answer_kind
   [@with
      Stm.focus := Ser_stm.focus;
+     Printexc.raw_backtrace := raw_backtrace;
   ]]
   [@@deriving sexp]
 
@@ -217,6 +246,7 @@ type ser_opts = {
   out_chan : out_channel;
   printer  : ser_printer;       (* Printers                                             *)
 
+  debug    : bool;
   print0   : bool;
   lheader  : bool;              (* Print lenght header (deprecated)                     *)
 
@@ -284,6 +314,7 @@ let out_answer opts =
   fun fmt a -> pp_sexp fmt (sexp_of_answer a)
 
 let ser_loop ser_opts =
+
   let open List   in
   let open Format in
 
@@ -308,6 +339,7 @@ let ser_loop ser_opts =
     Sertop_init.implicit_std = ser_opts.implicit;
     Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
+    Sertop_init.debug        = ser_opts.debug;
   } in
 
   (* Follow the same approach than coqtop for now: allow Coq to be

@@ -6,7 +6,7 @@
 true: rectypes, thread, safe_string
 
 # Sertop/Serlib general flags
-true: warn(+1..49-4-44), warn_error(+1..49-42), bin_annot, annot, debug
+true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Serlib building options
 <serlib/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.stm)

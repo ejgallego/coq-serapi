@@ -63,6 +63,7 @@ type ser_opts = {
   out_chan : out_channel;
   printer  : ser_printer;       (* Printers                                             *)
 
+  debug    : bool;
   print0   : bool;
   lheader  : bool;              (* Print lenght header (deprecated)                     *)
 

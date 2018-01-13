@@ -42,6 +42,9 @@ type coq_opts = {
 
   (* callback to load cma/cmo files *)
   ml_load      : (string -> unit) option;
+
+  (* Enable Coq Debug mode *)
+  debug        : bool;
 }
 
 val coq_init : coq_opts -> Stateid.t

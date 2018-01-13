@@ -89,7 +89,7 @@ type answer_kind =
   | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
   | Canceled  of Stateid.t list
   | ObjList   of coq_object list
-  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * exn
+  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
