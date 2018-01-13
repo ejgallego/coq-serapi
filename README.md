@@ -98,41 +98,48 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 ### Quick demo (not always up to date)
 
 ```lisp
-$ rlwrap ./sertop.byte --prelude ~/external/coq-git/
-(0 (Print () (CoqConstr (App (Rel 0) ((Rel 0))))))
+$ rlwrap sertop --printer=human
+(Add () "Lemma addn0 n : n + 0 = n. Proof. now induction n. Qed.")
   > (Answer 0 Ack)
-  > (Answer 0(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
-(1 (Query () (Vernac "Print nat. ")))
+  > (Answer 0 (Added 2 ((fname "") (line_nb 1) (bol_pos 0) (line_nb_last 1) (bol_pos_last 0) (bp 0) (ep 26))
+  >            NewTip))
+  > ...
+  > (Answer 0 (Added 5 ... NewTip))
+  > (Answer 0 Completed)
+(Exec 5)
   > (Answer 1 Ack)
-  > (Feedback((id(State 2))(contents Processed)(route 0)))
-  > (Feedback((id(State 0))(contents(Message ....))))
-(2 (Print () (CoqRichpp (Element ....))))
+  > (Feedback ((id 5) (route 0) (contents (ProcessingIn master))))
+  > ...
+  > (Feedback ((id 5) (route 0) (contents Processed)))
+  > (Answer 1 Completed)
+(Query ((sid 3)) Goals)
   > (Answer 2 Ack)
-  > (Answer 2(ObjList((CoqString"Inductive nat : Set :=  O : nat | S : nat -> nat\n\nFor S: Argument scope is [nat_scope]"))))
-(4 (Add () "Goal forall n, n + 0 = n."))
-  > (Answer 4 Ack)
-  > (Answer 4(Added 4 loc))
-(5 (Exec 4))
+  > (Answer 2
+  >  (ObjList ((CoqGoal ((fg_goals (((name 5) (ty (App (Ind ...))))
+                         (bg_goals ()) (shelved_goals ()) (given_up_goals ()))))))
+  > (Answer 2 Completed)
+(Query ((sid 3) (pp ((pp_format PpStr)))) Goals)
+  > (Answer 3 Ack)
+  > (Answer 3 (ObjList ((CoqString
+  >   "\
+  >    \n  n : nat\
+  >    \n============================\
+  >    \nn + 0 = n"))))
+  > (Answer 3 Completed)
+(pp_ex (Print () (CoqConstr (App (Rel 0) ((Rel 0))))))
+  > (Answer pp_ex Ack)
+  > (Answer pp_ex(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
+(Query () (Vernac "Print nat. "))
   > (Answer 5 Ack)
-  > (Feedback((id(State 4))(contents(ProcessingIn master))(route 0)))
-  > ...
-(Query ((sid 4) (pp ((pp_format PpStr)))) Goals)
+  > (Feedback ((id 5) (route 0) (contents
+  >    (Message Notice ()
+  >    ((Pp_box (Pp_hovbox 0) ...)
+  > (Answer 5 (ObjList ()))
+  > (Answer 5 Completed)
+(Query () (Definition nat))
   > (Answer 6 Ack)
-  > (Answer 6(ObjList((CoqString"forall n : nat, n + 0 = n"))))
-(Query ((sid 4) (pp ((pp_format PpSer)))) Goals)
-  > (Answer 7 Ack)
-  > (Answer 7(ObjList((CoqGoal()(CProdN((fname"")....))))))
-(8 (Add () "now induction n."))
-  > (Answer 8 Ack)
-  > (Answer 8(Added 5 loc))
-(10 (Exec 5))
-  > (Answer 10 Ack)
-  > (Feedback((id(State 5))(contents Processed)(route 0)))
-  > ...
-(Query ((sid 4)) Goals)
-  > (Answer 11 Ack)
-  > (Answer 11(ObjList()))
-
+  > (Answer 6 (ObjList ((CoqMInd (Mutind ....)))))
+  > (Answer 6 Completed)
 ```
 
 ### Technical Report
