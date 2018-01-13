@@ -159,7 +159,7 @@ Mines de Paris) and partially supported by the
   demo based on SerAPI by Clément Pit--Claudel. It is not fully
   functional but already illustrates some cool features.
 
-- [peacoq][https://github.com/Ptival/PeaCoq] has a branch using SerAPI.
+- [peacoq](https://github.com/Ptival/PeaCoq) has a branch using SerAPI.
 
 ## Developer information
 
