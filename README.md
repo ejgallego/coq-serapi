@@ -106,18 +106,21 @@ $ rlwrap sertop --printer=human
   > ...
   > (Answer 0 (Added 5 ... NewTip))
   > (Answer 0 Completed)
+
 (Exec 5)
   > (Answer 1 Ack)
   > (Feedback ((id 5) (route 0) (contents (ProcessingIn master))))
   > ...
   > (Feedback ((id 5) (route 0) (contents Processed)))
   > (Answer 1 Completed)
+
 (Query ((sid 3)) Goals)
   > (Answer 2 Ack)
   > (Answer 2
   >  (ObjList ((CoqGoal ((fg_goals (((name 5) (ty (App (Ind ...))))
                          (bg_goals ()) (shelved_goals ()) (given_up_goals ()))))))
   > (Answer 2 Completed)
+
 (Query ((sid 3) (pp ((pp_format PpStr)))) Goals)
   > (Answer 3 Ack)
   > (Answer 3 (ObjList ((CoqString
@@ -126,9 +129,11 @@ $ rlwrap sertop --printer=human
   >    \n============================\
   >    \nn + 0 = n"))))
   > (Answer 3 Completed)
+
 (pp_ex (Print () (CoqConstr (App (Rel 0) ((Rel 0))))))
   > (Answer pp_ex Ack)
   > (Answer pp_ex(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
+
 (Query () (Vernac "Print nat. "))
   > (Answer 5 Ack)
   > (Feedback ((id 5) (route 0) (contents
@@ -136,6 +141,7 @@ $ rlwrap sertop --printer=human
   >    ((Pp_box (Pp_hovbox 0) ...)
   > (Answer 5 (ObjList ()))
   > (Answer 5 Completed)
+
 (Query () (Definition nat))
   > (Answer 6 Ack)
   > (Answer 6 (ObjList ((CoqMInd (Mutind ....)))))
