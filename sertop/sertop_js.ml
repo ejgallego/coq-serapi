@@ -28,7 +28,7 @@ let on_message = sertop_callback post_message
 let jstop : Mltop.toplevel =
   let open Mltop in
   {
-    load_obj = Sertop_jslib.coq_cma_link;
+    load_obj = Jslibmng.coq_cma_link;
     (* We ignore all the other operations for now *)
     use_file = (fun _ -> ());
     add_dir  = (fun _ -> ());
@@ -36,7 +36,8 @@ let jstop : Mltop.toplevel =
   }
 
 let setup_pseudo_fs () =
-  Sys_js.register_autoload ~path:"/" (fun (_,s) -> Sertop_jslib.coq_vo_req s)
+  Sys_js.unmount ~path:"/static";
+  Sys_js.mount ~path:"/static/" (fun ~prefix ~path -> ignore(prefix); Jslibmng.coq_vo_req path)
 
 let setup_std_printers out_fn =
   Sys_js.set_channel_flusher stdout (fun msg -> out_fn @@ Sexp.(List [Atom "StdOut"; Atom msg]));
@@ -46,7 +47,7 @@ let setup_std_printers out_fn =
 open Sexplib.Conv
 
 type progress_info =
-  [%import: Sertop_jslib.progress_info]
+  [%import: Jslibmng.progress_info]
   [@@deriving sexp]
 
 type _digest = string
@@ -68,7 +69,7 @@ type coq_bundle =
   [@@deriving sexp]
 
 type lib_event =
-  [%import: Sertop_jslib.lib_event
+  [%import: Jslibmng.lib_event
   [@with
      Jslib.coq_bundle := coq_bundle;
   ]]
@@ -96,16 +97,18 @@ let _ =
   let open List  in
   async (fun () ->
       let out_libevent lb = post_message (sexp_of_lib_event lb) in
-      let base_path = "./"                                      in
+      let base_path = "./coq-pkgs/"                             in
       let pkgs      = ["init"] (*"peacoq"]*)                    in
 
       let pkg_to_bb cp = (cp.pkg_id, Jslib.to_dir cp,
                           length cp.cma_files > 0)              in
 
-      Lwt_list.map_s (Sertop_jslib.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
+      Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
       let bundle_proc = List.map pkg_to_bb all_pkgs                      in
-      ignore (sertop_init post_message bundle_proc []);
+      (* Wait for the 8.8 setup method to load prelude properly *)
+      let libs_init   = []                                               in
+      ignore (sertop_init post_message bundle_proc libs_init);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit

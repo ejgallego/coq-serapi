@@ -1,6 +1,6 @@
 # This has to take preference over the global flags...
-<coq-libjs/jslib.ml>: warn(-39), warn_error(-39)
-<coq-libjs/jslib.ml{,i}>: package(yojson), package(ppx_deriving_yojson)
+<jscoq/coq-js/jslib.ml>: warn(-39), warn_error(-39)
+<jscoq/coq-js/jslib.ml{,i}>: package(yojson), package(ppx_deriving_yojson)
 
 # Coq-specific linking flags
 true: rectypes, thread, safe_string
@@ -45,15 +45,16 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/sercomp.ml>: package(cmdliner)
 <sertop/sercomp.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
 
-# Js helpers (to go away)
-<coq-libjs/*.{ml,mli}>: package(yojson)
-<coq-libjs>: include
+# JsCoq helpers
+<jscoq/coq-js>: include
+<jscoq/coq-js/*.{ml,mli}>: package(yojson)
+<jscoq/coq-js/jslibmng.mli>: package(lwt)
+<jscoq/coq-js/jslibmng.ml>: package(js_of_ocaml-lwt), package(yojson), package(ppx_deriving_yojson), package(coq.stm)
 
 # Js Toplevel
-<sertop/sertop_jslib.mli>: package(lwt)
-<sertop/sertop_jslib.ml>: package(js_of_ocaml), package(yojson), package(ppx_deriving_yojson)
-<sertop/sertop_js.ml>: package(js_of_ocaml.ppx), package(ppx_import), package(ppx_sexp_conv)
-<sertop/sertop_js.byte>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(ppx_deriving_yojson), package(js_of_ocaml)
+<sertop/sertop_js.ml>: package(js_of_ocaml-lwt), package(ppx_import), package(ppx_sexp_conv)
+<sertop/sertop_js.byte>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(ppx_deriving_yojson), package(js_of_ocaml-lwt)
 
 # Don't mess with this.
 <js>: -traverse
+<jscoq/coq-libjs>: -traverse

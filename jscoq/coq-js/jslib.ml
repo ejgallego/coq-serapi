@@ -1,6 +1,6 @@
 (* Coq JavaScript API. Based in the coq source code and js_of_ocaml.
  *
- * By Emilio J. Gallego Arias, Mines ParisTech, Paris.
+ * Copyright (C) 2016-2017 Emilio J. Gallego Arias, Mines ParisTech, Paris.
  * LICENSE: GPLv3+
  *
  * This file contains the basic coq library definitions used in jscoq.
@@ -8,7 +8,7 @@
 
 (* Information about a Coq library.
  *
- * We could have accessed Loadpath.t, etc..., but we've opted to keep
+ * We could have use Loadpath.t, etc..., but we've opted to keep
  * this module separated from Coq
  *)
 

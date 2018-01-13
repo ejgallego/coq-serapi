@@ -1,5 +1,7 @@
 (* JsCoq/SerAPI
- * Copyright (C) 2016 Emilio Gallego / Mines ParisTech
+ *
+ * Copyright (C) 2016-2018 Emilio J. Gallego Arias
+ * Copyright (C) 2016-2018 Mines ParisTech
  *
  * LICENSE: GPLv3+
  *)
@@ -12,10 +14,9 @@
 open Jslib
 open Lwt
 
-let cma_verb     = false
-let coq_pkgs_dir = "coq-pkgs/"
+let verb = false
 
-(* Main file_cache, indexed by url*)
+(* Main file_cache, indexed by url *)
 type cache_entry = {
   file_content : string  ; (* file_content is backed by a TypedArray, thanks to @hhugo *)
   md5          : Digest.t;
@@ -42,14 +43,16 @@ type lib_event =
 type out_fn = lib_event -> unit
 
 let preload_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t =
-  let open XmlHttpRequest                               in
+  let open XmlHttpRequest                           in
+  let open Lwt_xmlHttpRequest                       in
+  if verb then Format.eprintf "preload_request: %s / %s\n%!" base_path base_url;
   let js_file = if Filename.(check_suffix file "cma"
                           || check_suffix file "cmo")
                 then (Hashtbl.add cma_cache file base_url;
                       file ^ ".js")
                 else file                               in
   let full_url    = base_url  ^ "/" ^ js_file           in
-  let request_url = base_path ^ coq_pkgs_dir ^ full_url in
+  let request_url = base_path ^ full_url                in
   let cached      = Hashtbl.mem file_cache full_url     in
 
   (* Only reload if not cached or a refresh is requested *)
@@ -66,6 +69,7 @@ let preload_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t 
            file_content = Typed_array.String.of_arrayBuffer raw_array;
            md5          = Digest.string "";
          } in
+         if verb then Format.eprintf "cache_add_entry: %s\n%!" full_url;
          Hashtbl.add file_cache full_url cache_entry
       );
   Lwt.return_unit
@@ -76,6 +80,8 @@ let preload_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t 
 let jslib_add_load_path pkg pkg_path has_ml =
   let open Names                                                       in
   let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string pkg in
+  (* let implicit = try String.equal (List.hd pkg) "Coq" with _ -> false  in *)
+  (* Format.eprintf "setting implicit to %b for pkg: %s\n%!" implicit (DirPath.to_string coq_path); *)
   Loadpath.add_load_path ("./" ^ pkg_path) coq_path ~implicit:false;
   if has_ml then Mltop.add_ml_dir pkg_path
 
@@ -101,22 +107,15 @@ let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   Lwt.return_unit
 
 let parse_bundle base_path file : coq_bundle Lwt.t =
-  let file_url = base_path ^ coq_pkgs_dir ^ file ^ ".json" in
-  XmlHttpRequest.get file_url >>= (fun res ->
+  let open Lwt_xmlHttpRequest in
+  let file_url = base_path ^ file ^ ".json" in
+  get file_url >>= (fun res ->
       match Jslib.coq_bundle_of_yojson
-              (Yojson.Safe.from_string res.XmlHttpRequest.content) with
+              (Yojson.Safe.from_string res.content) with
       | Result.Ok bundle -> return bundle
       | Result.Error s   -> Format.eprintf "JSON error in preload_from_file\n%!";
                             Lwt.fail (Failure s)
     )
-(*
-      match Jslib.coq_bundle_of_yojson
-              (Yojson.Safe.from_string res.XmlHttpRequest.content) with
-      | Result.Ok bundle -> return bundle
-      | Result.Error s -> Format.eprintf "JSON error in preload_from_file\n%!";
-                          Lwt.fail (Failure s)
-    )
-*)
 
 (* Load a bundle *)
 let rec preload_from_file ?(verb=false) out_fn base_path file =
@@ -142,7 +141,7 @@ let load_pkg out_fn base_path pkg_file =
 
 (* XXX: Wait until we have enough UI support for logging *)
 let coq_vo_req url =
-  (* Format.eprintf "file %s requested\n%!" (to_string url); (\* with category info *\) *)
+  if verb then Format.eprintf "url %s requested\n%!" url; (* with category info *)
   (* if not @@ is_bad_url url then *)
   try let c_entry = Hashtbl.find file_cache url in
     (* Jslog.printf Jslog.jscoq_log "coq_resource_req %s\n%!" (Js.to_string url); *)
@@ -172,12 +171,12 @@ let coq_vo_req url =
 
 let coq_cma_link cma =
   let open Format in
-  if cma_verb then eprintf "bytecode file %s requested\n%!" cma;
+  if verb then eprintf "bytecode file %s requested\n%!" cma;
   try
     let cma_path = Hashtbl.find cma_cache cma  in
     (* Now, the js file should be in the file cache *)
     let js_file = cma_path ^ "/" ^ cma ^ ".js" in
-    if cma_verb then eprintf "requesting load of %s\n%!" js_file;
+    if verb then eprintf "requesting load of %s\n%!" js_file;
     try
       let js_code = (Hashtbl.find file_cache js_file).file_content in
       (* When eval'ed, the js_code will return a closure waiting for the

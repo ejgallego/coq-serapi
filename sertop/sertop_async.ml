@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API -- Async loop                                  *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -49,6 +49,7 @@ let sertop_init (fb_out : Sexp.t -> unit) paths libs =
     implicit_std = false;
     top_name     = "SerTopJS";
     ml_load      = None;
+    debug        = false;
   } in
   Sertop_init.coq_init coq_opts
 

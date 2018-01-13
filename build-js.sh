@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OCAML_VER=4.04.0
+OCAML_VER=4.06.0
 
 # build 32 bits parts
 opam switch $OCAML_VER+32bit

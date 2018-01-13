@@ -9,6 +9,7 @@ OPAMPATH=$(shell opam config var lib)
 # For OPAM-installed coq 8.6.dev
 SERAPI_COQ_HOME=
 # SERAPI_COQ_HOME=/home/egallego/external/coq-v8.7/
+# SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.7+32bit/
 
 all: sertop
 
@@ -40,7 +41,7 @@ sertop_js.byte: force
 	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop_js.byte
 
-JSDIR=coq-libjs
+JSDIR=jscoq/coq-libjs
 JSFILES=$(addprefix $(JSDIR)/,mutex.js unix.js str.js coq_vm.js)
 
 js:
