@@ -42,6 +42,14 @@ this case, the returned `nid` will be appended a number starting with `0`.
 
 Thus, one add can generate many `Added`.
 
+How to solve the problem of segmenting a user-provided id?
+
+Maybe Coq should reply a segmented answer?
+(Segmented id-k ((id1 pos1) (id2 pos2) .... (idn posn)))
+
+But what would happen with the typical "event before the segmented happened"?
+Maybe we want to store a "segmentation" map.
+
 ### Interrupting
 
 1. The IDE must send an interrupt signal to sertop.
@@ -52,6 +60,16 @@ Thus, one add can generate many `Added`.
 
 - Is an errored state cancelled?
 - Is it a bug in Coq to produce an exception but not an err msg?
+
+In fact, Coq sending cancel is the same than coq sending error?
+
+The key point is that what should the IDE do? It cannot add after a
+truly errored state.
+
+So in this sense, I would cancel all of them, however before
+cancelling we'd like to signal it as errored. Ummm.
+
+That is indeed not clear.
 
 ### Use cases / Examples
 
