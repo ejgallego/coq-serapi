@@ -21,18 +21,15 @@ open Sexplib.Sexp
 
 open Genarg
 
-type rlevel = [%import: Genarg.rlevel]
-type glevel = [%import: Genarg.glevel]
-type tlevel = [%import: Genarg.tlevel]
-
-let rlevel_of_sexp _ = `rlevel
-let sexp_of_rlevel _ = Atom "GA_rlevel"
-
-let glevel_of_sexp _ = `glevel
-let sexp_of_glevel _ = Atom "GA_glevel"
-
-let tlevel_of_sexp _ = `tlevel
-let sexp_of_tlevel _ = Atom "GA_tlevel"
+type rlevel =
+  [%import: Genarg.rlevel]
+  [@@deriving sexp]
+type glevel =
+  [%import: Genarg.glevel]
+  [@@deriving sexp]
+type tlevel =
+  [%import: Genarg.tlevel]
+  [@@deriving sexp]
 
 (* type ('a, 'b) abstract_argument_type = *)
 (*   ('a, 'b) Genarg.abstract_argument_type *)
