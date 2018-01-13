@@ -152,14 +152,12 @@ Mines de Paris) and partially supported by the
 
 - [jsCoq](https://github.com/ejgallego/jscoq) allows you run Coq in
   your browser. JsCoq is the predecessor of SerAPI and will be shortly
-  fully based on it. Meanwhile, you can access some of the technology
-  from our sister project.
-
+  fully based on it.
 - [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
-  demo based on SerAPI by Clément Pit--Claudel. It is not fully
-  functional but already illustrates some cool features.
-
-- [peacoq](https://github.com/Ptival/PeaCoq) has a branch using SerAPI.
+  demo based on SerAPI by [Clément Pit--Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
+  functional but illustrates some cool features of SerAPI.
+- [peacoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
+  browser has an experimental branch that uses SerAPI.
 
 ## Developer information
 
