@@ -40,7 +40,7 @@ continue towards providing a rich, extensible query language.
 
 SerAPI for Coq is available as the OPAM package `coq-serapi`. See
 [build instructions](notes/build.md) for instructions about manual
-installation.
+installation. You can also try the experimental [online version](https://x80.org/rhino-hawk).
 
 The main entry point to SerAPI is the `sertop` REPL, a basic toplevel
 that reads and writes commands (S-Expressions) from stdin to stdout,
