@@ -254,6 +254,7 @@ let pp_tex (obj : coq_object) =
   let open Proof          in
   let open Ser_constr     in
   let open Ser_constrexpr in
+  let open Ser_vernacexpr in
   let open Serapi_goals   in
   match obj with
   | CoqConstr cst -> sexp_of_constr      cst |> tex_sexp
@@ -261,6 +262,7 @@ let pp_tex (obj : coq_object) =
                      sexp_of_constr      cst |> tex_sexp
   | CoqExtGoal gl -> let cst = (hd gl.fg_goals).ty in
                      sexp_of_constr_expr cst |> tex_sexp
+  | CoqAst(_,ast) -> sexp_of_vernac_expr ast |> tex_sexp
   | _             -> "not supported"
 
 let obj_print pr_opt obj =
