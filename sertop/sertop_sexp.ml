@@ -255,6 +255,7 @@ type ser_opts = {
   (* Coq options *)
   coqlib   : string option;     (* Whether we should load the prelude, and its location *)
   implicit : bool;
+  loadpath : (string * string * bool) list;
   async    : Sertop_init.async_flags;
 }
 
@@ -332,12 +333,28 @@ let ser_loop ser_opts =
   let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
   let pp_feed fb   = pp_answer (SP.Feedback fb)                        in
 
+  (* Prepare from cmdline to default *)
+
+  (* We do the conversion from string to logical path, this needs
+     tweaking in the upstream API. *)
+  let lpparse lp =
+    let open Names in
+    let qid = Libnames.qualid_of_string lp in
+    let dp, id = Libnames.repr_qualid qid in
+    let sp = List.map Id.to_string DirPath.(repr dp) in
+    sp @ [Id.to_string id]
+  in
+
+  let sload_path =
+    List.map (fun (dir,lp,implicit) -> lpparse lp, dir, implicit) ser_opts.loadpath in
+
+  let sload_path = Option.cata ser_prelude_list [] ser_opts.coqlib @ sload_path in
 
   (* Init Coq *)
   let _ = Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.aopts        = ser_opts.async;
-    Sertop_init.iload_path   = Option.cata ser_prelude_list [] ser_opts.coqlib;
+    Sertop_init.iload_path   = sload_path;
     Sertop_init.require_libs = Option.cata ser_prelude_mod  [] ser_opts.coqlib;
     Sertop_init.implicit_std = ser_opts.implicit;
     Sertop_init.top_name     = "SerTop";

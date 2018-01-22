@@ -48,6 +48,14 @@ let print_args_doc = Arg.doc_alts
    "mach, sexplib's machine-format printer"
   ]
 
+let rload_path : (string * string) list Term.t =
+  let doc = "Bind a logical loadpath LP to a directory DIR" in
+  Arg.(value & opt_all (pair dir string) [] & info ["R"; "rec-load-path"] ~docv:"DIR,LP"~doc)
+
+let load_path : (string * string) list Term.t =
+  let doc = "Bind a logical loadpath LP to a directory DIR" in
+  Arg.(value & opt_all (pair dir string) [] & info ["Q"; "load-path"] ~docv:"DIR,LP" ~doc)
+
 let printer =
   let open Sertop_sexp in
   (* XXX Must improve argument information *)
@@ -66,7 +74,12 @@ let length =
   let doc = "Adds a byte-length header to answers. (deprecated)" in
   Arg.(value & flag & info ["length"] ~doc)
 
-let sertop printer print0 debug length prelude implicit_prelude async async_full deep_edits  =
+let sertop printer print0 debug length prelude load_path rload_path implicit_prelude async async_full deep_edits  =
+
+  (* Prepare load_paths by adding a boolean flag to mark -R or -Q *)
+  let elp f = List.map (fun (l,d) -> l,d,f) in
+  let loadpath = elp false load_path @ elp true rload_path in
+
   let open Sertop_init         in
   let open Sertop_sexp         in
   ser_loop
@@ -79,6 +92,7 @@ let sertop printer print0 debug length prelude implicit_prelude async async_full
        lheader  = length;
 
        coqlib   = prelude;
+       loadpath;
        implicit = implicit_prelude;
        async = {
          enable_async = async;
@@ -95,7 +109,7 @@ let sertop_cmd =
   ]
   in
   Term.(const sertop
-        $ printer $ print0 $ debug $ length $ prelude $ implicit_stdlib
+        $ printer $ print0 $ debug $ length $ prelude $ load_path $ rload_path $ implicit_stdlib
         $ async $ async_full $ deep_edits ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 

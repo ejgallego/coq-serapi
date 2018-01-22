@@ -73,6 +73,7 @@ type ser_opts = {
   (* Coq options *)
   coqlib   : string option;     (* Whether we should load the prelude, and its location *)
   implicit : bool;
+  loadpath : (string * string * bool) list;
   async    : Sertop_init.async_flags;
 }
 
