@@ -17,6 +17,7 @@ open Sexplib
 open Serapi_protocol
 
 (* Sexp-serialization of the protocol *)
+module ST_Sexp : sig
 
 val coq_object_of_sexp : Sexp.t -> coq_object
 val sexp_of_coq_object : coq_object -> Sexp.t
@@ -47,6 +48,8 @@ val sexp_of_tagged_cmd : tagged_cmd -> Sexp.t
 
 val sexp_of_answer : answer -> Sexp.t
 val answer_of_sexp : Sexp.t -> answer
+
+end
 
 (******************************************************************************)
 (* Global Protocol Options                                                    *)

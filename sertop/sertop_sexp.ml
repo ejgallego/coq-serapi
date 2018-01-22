@@ -34,36 +34,6 @@ let opt_answer ans =
   | _ ->
     ans
 
-module Loc   = Ser_loc
-module Names = Ser_names
-
-module Goptions = Ser_goptions
-module Stateid  = Ser_stateid
-module Context  = Ser_context
-module Feedback = Ser_feedback
-module Libnames = Ser_libnames
-module Impargs  = Ser_impargs
-module Constr     = Ser_constr
-module Constrexpr = Ser_constrexpr
-module Globnames  = Ser_globnames
-module Proof      = Ser_proof
-module Goal       = Ser_goal
-(* Alias fails due to the [@@default in protocol] *)
-(* module Stm        = Ser_stm *)
-module Ser_stm    = Ser_stm
-
-module Ltac_plugin = struct
-  module Tacenv       = Ser_tacenv
-  module Profile_ltac = Ser_profile_ltac
-end
-
-module Notation   = Ser_notation
-module Xml_datatype = Ser_xml_datatype
-module Notation_term = Ser_notation_term
-module Vernacexpr   = Ser_vernacexpr
-module Declarations = Ser_declarations
-(* module Richpp       = Ser_richpp *)
-
 module SP = Serapi_protocol
 
 (******************************************************************************)
@@ -78,7 +48,7 @@ let _ =
   Conv.Exn_converter.add [%extension_constructor SP.NoSuchState] (function
       (* Own things *)
       | SP.NoSuchState sid ->
-        List [Atom "NoSuchState"; Stateid.sexp_of_t sid]
+        List [Atom "NoSuchState"; Ser_stateid.sexp_of_t sid]
       | _ -> assert false);
   Conv.Exn_converter.add [%extension_constructor CErrors.UserError] (function
       (* Errors *)
@@ -113,7 +83,37 @@ let _ =
         Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
 *)
 
-module Pp            = Ser_pp
+module ST_Sexp = struct
+
+module Loc      = Ser_loc
+module Pp       = Ser_pp
+module Names    = Ser_names
+module Goptions = Ser_goptions
+module Stateid  = Ser_stateid
+module Context  = Ser_context
+module Feedback = Ser_feedback
+module Libnames = Ser_libnames
+module Impargs  = Ser_impargs
+module Constr     = Ser_constr
+module Constrexpr = Ser_constrexpr
+module Globnames  = Ser_globnames
+module Proof      = Ser_proof
+module Goal       = Ser_goal
+(* Alias fails due to the [@@default in protocol] *)
+(* module Stm        = Ser_stm *)
+module Ser_stm    = Ser_stm
+
+module Ltac_plugin = struct
+  module Tacenv       = Ser_tacenv
+  module Profile_ltac = Ser_profile_ltac
+end
+
+module Notation   = Ser_notation
+module Xml_datatype = Ser_xml_datatype
+module Notation_term = Ser_notation_term
+module Vernacexpr   = Ser_vernacexpr
+module Declarations = Ser_declarations
+(* module Richpp       = Ser_richpp *)
 
 module Serapi_goals = struct
 
@@ -220,6 +220,8 @@ type tagged_cmd =
   [%import: Serapi_protocol.tagged_cmd]
   [@@deriving sexp]
 
+end
+
 (******************************************************************************)
 (* Prelude Loading Hacks (to be improved)                                     *)
 (******************************************************************************)
@@ -269,7 +271,7 @@ type ser_opts = {
 (******************************************************************************)
 
 let is_cmd_quit cmd = match cmd with
-  | Quit -> true
+  | SP.Quit -> true
   | _    -> false
 
 (* XXX: Improve by using manual tag parsing. *)
@@ -278,14 +280,14 @@ let read_cmd cmd_id in_channel pp_error =
     try
       let cmd_sexp = Sexp.input_sexp in_channel in
       begin
-        try tagged_cmd_of_sexp cmd_sexp
+        try ST_Sexp.tagged_cmd_of_sexp cmd_sexp
         with
-        | End_of_file   -> "EOF", Quit
+        | End_of_file   -> "EOF", SP.Quit
         | _exn ->
-          (string_of_int cmd_id), cmd_of_sexp cmd_sexp
+          (string_of_int cmd_id), ST_Sexp.cmd_of_sexp cmd_sexp
       end
     with
-    | End_of_file   -> "EOF", Quit
+    | End_of_file   -> "EOF", SP.Quit
     | exn           -> pp_error (sexp_of_exn exn);
                        read_loop ()
   in read_loop ()
@@ -311,7 +313,7 @@ let out_sexp opts =
 (** We could use Sexp.to_string too  *)
 let out_answer opts =
   let pp_sexp = out_sexp opts in
-  fun fmt a -> pp_sexp fmt (sexp_of_answer a)
+  fun fmt a -> pp_sexp fmt (ST_Sexp.sexp_of_answer a)
 
 let ser_loop ser_opts =
 
@@ -327,8 +329,9 @@ let ser_loop ser_opts =
   let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
   let pp_answer    = ser_lock (out_answer ser_opts out_fmt)            in
   let pp_err       = ser_lock (out_sexp ser_opts out_fmt)              in
-  let pp_ack cid   = pp_answer (Answer (cid, Ack))                     in
-  let pp_feed fb   = pp_answer (Feedback fb)                           in
+  let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
+  let pp_feed fb   = pp_answer (SP.Feedback fb)                        in
+
 
   (* Init Coq *)
   let _ = Sertop_init.coq_init {
@@ -353,7 +356,7 @@ let ser_loop ser_opts =
     try
       let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_err          in
       pp_ack cmd_tag;
-      iter pp_answer @@ map (fun a -> Answer (cmd_tag, a)) (SP.exec_cmd cmd);
+      iter pp_answer @@ map (fun a -> SP.Answer (cmd_tag, a)) (SP.exec_cmd cmd);
       if not (is_cmd_quit cmd) then loop (1+cmd_id)
     with Sys.Break -> loop (1+cmd_id)
   in loop 0
