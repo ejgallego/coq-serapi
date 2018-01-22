@@ -1,6 +1,6 @@
 # This has to take preference over the global flags...
 <jscoq/coq-js/jslib.ml>: warn(-39), warn_error(-39)
-<jscoq/coq-js/jslib.ml{,i}>: package(yojson), package(ppx_deriving_yojson)
+<jscoq/coq-js/jslib.ml{,i}>: package(yojson,ppx_deriving_yojson)
 
 # Coq-specific linking flags
 true: rectypes, thread, safe_string
@@ -9,20 +9,20 @@ true: rectypes, thread, safe_string
 true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Serlib building options
-<serlib/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.stm)
-<serlib/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
+<serlib/*.{ml,mli}>: package(sexplib,coq.intf,coq.stm)
+<serlib/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/ide/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.ide)
-<serlib/ide/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
+<serlib/ide/*.{ml,mli}>: package(sexplib,coq.intf,coq.ide)
+<serlib/ide/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib), package(coq.intf), package(coq.ltac)
-<serlib/plugins/ltac/*.{ml}>: package(ppx_import), package(ppx_sexp_conv)
+<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.ltac)
+<serlib/plugins/ltac/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
 # Sertex building options
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
-<serapi/*>: package(coq.intf), package(coq.ltac)
+<serapi/*>: package(coq.intf,coq.ltac)
 
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
@@ -36,24 +36,24 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <serapi>: include
 
 # Specifip to toplevel
-<sertop/sertop_sexp.ml>: package(ppx_import), package(ppx_sexp_conv)
+<sertop/sertop_sexp.ml>: package(ppx_import,ppx_sexp_conv)
 <sertop/sertop.ml>: package(cmdliner)
-<sertop/*>: package(coq.intf), package(coq.stm), package(coq.ltac), package(sexplib), debug
+<sertop/*>: package(coq.intf,coq.stm,coq.ltac,sexplib), debug
 
-<sertop/sertop.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner), package(coq.intf), package(coq.ltac)
+<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,coq.intf,coq.ltac)
 
 <sertop/sercomp.ml>: package(cmdliner)
-<sertop/sercomp.{byte,native}>: linkall, package(dynlink), package(camlp5.gramlib), package(cmdliner)
+<sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner)
 
 # JsCoq helpers
 <jscoq/coq-js>: include
 <jscoq/coq-js/*.{ml,mli}>: package(yojson)
 <jscoq/coq-js/jslibmng.mli>: package(lwt)
-<jscoq/coq-js/jslibmng.ml>: package(js_of_ocaml-lwt), package(yojson), package(ppx_deriving_yojson), package(coq.stm)
+<jscoq/coq-js/jslibmng.ml>: package(js_of_ocaml-lwt,yojson,ppx_deriving_yojson,coq.stm)
 
 # Js Toplevel
-<sertop/sertop_js.ml>: package(js_of_ocaml-lwt), package(ppx_import), package(ppx_sexp_conv)
-<sertop/sertop_js.byte>: linkall, package(dynlink), package(camlp5.gramlib), package(yojson), package(ppx_deriving_yojson), package(js_of_ocaml-lwt)
+<sertop/sertop_js.ml>: package(js_of_ocaml-lwt,ppx_import,ppx_sexp_conv)
+<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
 
 # Don't mess with this.
 <js>: -traverse
