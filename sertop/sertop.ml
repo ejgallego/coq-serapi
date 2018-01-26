@@ -20,23 +20,23 @@ open Cmdliner
 
 [@@@ocaml.warning "-44-45"]
 let prelude =
-  let doc = "Load prelude from COQPATH; plugins/ and theories/ should live there." in
-  Arg.(value & opt (some string) (Some Coq_config.coqlib) & info ["prelude"] ~docv:"COQPATH" ~doc)
+  let doc = "Load Coq.Init.Prelude from $COQPATH; plugins/ and theories/ should live there." in
+  Arg.(value & opt (some string) (Some Coq_config.coqlib) & info ["coqlib"] ~docv:"COQPATH" ~doc)
 
 let async =
-  let doc = "Enables async support with toplevel COQTOP (experimental)." in
+  let doc = "Enable async support using Coq binary $COQTOP (experimental)." in
   Arg.(value & opt (some string) None & info ["async"] ~doc ~docv:"COQTOP")
 
 let async_full =
-  let doc = "Enable async_full in the STM." in
+  let doc = "Enable Coq's async_full option." in
   Arg.(value & flag & info ["async-full"] ~doc)
 
 let deep_edits =
-  let doc = "Enable deep edits into the document." in
+  let doc = "Enable Coq's deep document edits option." in
   Arg.(value & flag & info ["deep-edits"] ~doc)
 
 let implicit_stdlib =
-  let doc = "Allow to load unqualified stdlib libraries (deprecated)." in
+  let doc = "Allow loading unqualified stdlib libraries (deprecated)." in
   Arg.(value & flag & info ["implicit"] ~doc)
 
 let print_args = let open Sertop_sexp in
@@ -63,15 +63,15 @@ let printer =
   Arg.(value & opt print_args SP_Sertop & info ["printer"] ~doc:print_args_doc)
 
 let debug =
-  let doc = "Enable Coq debug mode." in
+  let doc = "Enable debug mode for Coq." in
   Arg.(value & flag & info ["debug"] ~doc)
 
 let print0 =
-  let doc = "Add a \\\\0 char after every response." in
+  let doc = "End responses with a \\\\0 char." in
   Arg.(value & flag & info ["print0"] ~doc)
 
 let length =
-  let doc = "Adds a byte-length header to answers. (deprecated)" in
+  let doc = "Emit a byte-length header before output. (deprecated)." in
   Arg.(value & flag & info ["length"] ~doc)
 
 let sertop printer print0 debug length prelude load_path rload_path implicit_prelude async async_full deep_edits  =
