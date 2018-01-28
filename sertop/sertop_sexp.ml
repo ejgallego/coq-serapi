@@ -227,16 +227,21 @@ end
 (******************************************************************************)
 
 let ser_prelude_list implicit coq_path =
-  let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  let mk_lp ml lib_path lp = Sertop_init.{
-    coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string ("Coq"::lp));
-    unix_path = mk_path lib_path lp;
+  let mk_path prefix = coq_path ^ "/" ^ prefix in
+  let mk_lp ~ml ~root ~dir ~implicit = Sertop_init.{
+    coq_path  = root;
+    unix_path = mk_path dir;
     has_ml    = ml;
-    recursive = false;
+    recursive = true;
     implicit;
   } in
-  List.map (mk_lp true  "plugins")  Sertop_prelude.coq_init_plugins  @
-  List.map (mk_lp false "theories") Sertop_prelude.coq_init_theories
+  (* in 8.8 we can use Libnames.default_* *)
+  let coq_root     = Names.(DirPath.make [Id.of_string "Coq"]) in
+  let default_root = Names.(DirPath.empty) in
+  [mk_lp ~ml:true  ~root:coq_root     ~implicit       ~dir:"plugins";
+   mk_lp ~ml:false ~root:coq_root     ~implicit       ~dir:"theories";
+   mk_lp ~ml:true  ~root:default_root ~implicit:false ~dir:"user-contrib";
+  ]
 
 let ser_prelude_mod coq_path = [Sertop_prelude.coq_prelude_mod coq_path]
 

@@ -94,10 +94,16 @@ let coq_init opts =
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
 
   List.iter (fun { coq_path; unix_path; has_ml; implicit ; recursive } ->
-      (* XXX: Fixme *)
-      ignore(recursive);
-      Loadpath.add_load_path unix_path coq_path ~implicit;
-      if has_ml then Mltop.add_ml_dir unix_path
+      (* We follow two paths here, in the recursive case we call Coq's
+         Mltop unix-dependant routines, the non-recursive case is
+         handled by us.*)
+      if recursive then
+        let add_ml = if has_ml then Mltop.AddRecML else Mltop.AddNoML in
+        Mltop.add_rec_path add_ml ~unix_path ~coq_root:coq_path ~implicit
+      else begin
+        Loadpath.add_load_path unix_path coq_path ~implicit;
+        if has_ml then Mltop.add_ml_dir unix_path
+      end;
     ) opts.iload_path;
 
   (* We need to declare a toplevel module name. *)
