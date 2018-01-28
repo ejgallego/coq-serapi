@@ -226,10 +226,17 @@ end
 (* Prelude Loading Hacks (to be improved)                                     *)
 (******************************************************************************)
 
-let ser_prelude_list coq_path =
+let ser_prelude_list implicit coq_path =
   let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-  List.map (fun p -> ("Coq" :: p, mk_path "plugins"  p, true)) Sertop_prelude.coq_init_plugins  @
-  List.map (fun p -> ("Coq" :: p, mk_path "theories" p, true)) Sertop_prelude.coq_init_theories
+  let mk_lp ml lib_path lp = Sertop_init.{
+    coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string ("Coq"::lp));
+    unix_path = mk_path lib_path lp;
+    has_ml    = ml;
+    recursive = false;
+    implicit;
+  } in
+  List.map (mk_lp true  "plugins")  Sertop_prelude.coq_init_plugins  @
+  List.map (mk_lp false "theories") Sertop_prelude.coq_init_theories
 
 let ser_prelude_mod coq_path = [Sertop_prelude.coq_prelude_mod coq_path]
 
@@ -253,9 +260,9 @@ type ser_opts = {
   lheader  : bool;              (* Print lenght header (deprecated)                     *)
 
   (* Coq options *)
-  coqlib   : string option;     (* Whether we should load the prelude, and its location *)
-  implicit : bool;
-  loadpath : (string * string * bool) list;
+  coqlib   : string;            (* Coq standard library location *)
+  std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
+  loadpath : (string * string * bool) list; (* -R and -Q options *)
   async    : Sertop_init.async_flags;
 }
 
@@ -337,26 +344,24 @@ let ser_loop ser_opts =
 
   (* We do the conversion from string to logical path, this needs
      tweaking in the upstream API. *)
-  let lpparse lp =
-    let open Names in
-    let qid = Libnames.qualid_of_string lp in
-    let dp, id = Libnames.repr_qualid qid in
-    let sp = List.map Id.to_string DirPath.(repr dp) in
-    sp @ [Id.to_string id]
-  in
-
   let sload_path =
-    List.map (fun (dir,lp,implicit) -> lpparse lp, dir, implicit) ser_opts.loadpath in
+    List.map (fun (dir,lp,implicit) ->
+        Sertop_init.{
+          coq_path  = Libnames.dirpath_of_string lp;
+          unix_path = dir;
+          has_ml    = true;
+          recursive = true;
+          implicit;
+        }) ser_opts.loadpath in
 
-  let sload_path = Option.cata ser_prelude_list [] ser_opts.coqlib @ sload_path in
+  let sload_path = ser_prelude_list ser_opts.std_impl ser_opts.coqlib @ sload_path in
 
   (* Init Coq *)
   let _ = Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.aopts        = ser_opts.async;
     Sertop_init.iload_path   = sload_path;
-    Sertop_init.require_libs = Option.cata ser_prelude_mod  [] ser_opts.coqlib;
-    Sertop_init.implicit_std = ser_opts.implicit;
+    Sertop_init.require_libs = ser_prelude_mod ser_opts.coqlib;
     Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
     Sertop_init.debug        = ser_opts.debug;

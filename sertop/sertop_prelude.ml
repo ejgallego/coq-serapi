@@ -16,7 +16,7 @@ let coq_init_plugins =
   ; ["omega"]
   ; ["micromega"]
   ; ["romega"]
-  ; ["Coq"; "ssrmatching"]
+  ; ["ssrmatching"]
   ]
 
 let coq_init_theories =

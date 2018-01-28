@@ -20,19 +20,24 @@ type async_flags = {
   deep_edits   : bool;
 }
 
+type load_path_spec = {
+  coq_path  : Names.DirPath.t;
+  unix_path : string;
+  recursive : bool;
+  has_ml    : bool;
+  implicit  : bool;
+}
+
 type coq_opts = {
 
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
 
   (* Initial LoadPath XXX: Use the coq_pkg record? *)
-  iload_path   : (string list * string * bool) list;
+  iload_path   : load_path_spec list;
 
   (* Libs to require prior to STM init *)
   require_libs : (Names.DirPath.t * string * bool option) list;
-
-  (* Whether to enable implicit in the stdlib *)
-  implicit_std : bool;
 
   (* Async flags *)
   aopts        : async_flags;

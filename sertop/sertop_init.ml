@@ -21,19 +21,24 @@ type async_flags = {
   deep_edits   : bool;
 }
 
+type load_path_spec = {
+  coq_path  : Names.DirPath.t;
+  unix_path : string;
+  recursive : bool;
+  has_ml    : bool;
+  implicit  : bool;
+}
+
 type coq_opts = {
 
   (* callback to handle async feedback *)
   fb_handler   : Feedback.feedback -> unit;
 
   (* Initial LoadPath XXX: Use the coq_pkg record? *)
-  iload_path   : (string list * string * bool) list;
+  iload_path   : load_path_spec list;
 
   (* Libs to require prior to STM init *)
   require_libs : (Names.DirPath.t * string * bool option) list;
-
-  (* Whether to enable implicit in the stdlib *)
-  implicit_std : bool;
 
   (* Async flags *)
   aopts        : async_flags;
@@ -88,10 +93,11 @@ let coq_init opts =
   (**************************************************************************)
   Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
 
-  List.iter (fun (lib, lib_path, has_ml) ->
-      let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
-      Loadpath.add_load_path lib_path coq_path ~implicit:opts.implicit_std;
-      if has_ml then Mltop.add_ml_dir lib_path
+  List.iter (fun { coq_path; unix_path; has_ml; implicit ; recursive } ->
+      (* XXX: Fixme *)
+      ignore(recursive);
+      Loadpath.add_load_path unix_path coq_path ~implicit;
+      if has_ml then Mltop.add_ml_dir unix_path
     ) opts.iload_path;
 
   (* We need to declare a toplevel module name. *)

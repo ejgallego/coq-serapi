@@ -21,7 +21,7 @@ open Cmdliner
 [@@@ocaml.warning "-44-45"]
 let prelude =
   let doc = "Load Coq.Init.Prelude from $COQPATH; plugins/ and theories/ should live there." in
-  Arg.(value & opt (some string) (Some Coq_config.coqlib) & info ["coqlib"] ~docv:"COQPATH" ~doc)
+  Arg.(value & opt string Coq_config.coqlib & info ["coqlib"] ~docv:"COQPATH" ~doc)
 
 let async =
   let doc = "Enable async support using Coq binary $COQTOP (experimental)." in
@@ -93,7 +93,7 @@ let sertop printer print0 debug length prelude load_path rload_path implicit_pre
 
        coqlib   = prelude;
        loadpath;
-       implicit = implicit_prelude;
+       std_impl = implicit_prelude;
        async = {
          enable_async = async;
          async_full = async_full;
