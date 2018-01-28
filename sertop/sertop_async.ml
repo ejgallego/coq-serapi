@@ -23,10 +23,10 @@ open Sertop_sexp
 let async_sid = ref 0
 
 let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
-  try         `Ok (tagged_cmd_of_sexp cmd_sexp)
+  try         `Ok (ST_Sexp.tagged_cmd_of_sexp cmd_sexp)
   with _exn ->
     try
-      let tag, cmd = string_of_int !async_sid, cmd_of_sexp cmd_sexp in
+      let tag, cmd = string_of_int !async_sid, ST_Sexp.cmd_of_sexp cmd_sexp in
       incr async_sid;
       `Ok (tag, cmd)
     with | exn ->
@@ -35,7 +35,7 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
 (* Initialize Coq. *)
 let sertop_init (fb_out : Sexp.t -> unit) paths libs =
   let open Sertop_init in
-  let fb_handler fb = sexp_of_answer (Feedback fb) |> fb_out in
+  let fb_handler fb = ST_Sexp.sexp_of_answer (Feedback fb) |> fb_out in
   let no_asyncf     = {
     enable_async = None;
     async_full   = false;
@@ -46,7 +46,6 @@ let sertop_init (fb_out : Sexp.t -> unit) paths libs =
     iload_path   = paths;
     aopts        = no_asyncf;
     require_libs = libs;
-    implicit_std = false;
     top_name     = "SerTopJS";
     ml_load      = None;
     debug        = false;
@@ -58,7 +57,7 @@ let async_mut = Mutex.create ()
 (* Callback for a command. Trying to make it thread-safe. *)
 let sertop_callback (out_fn : Sexp.t -> unit) sexp =
   Mutex.lock async_mut;
-  let out_answer a = out_fn (sexp_of_answer a) in
+  let out_answer a = out_fn (ST_Sexp.sexp_of_answer a) in
   let out_error  a = out_fn a                  in
   begin match read_cmd sexp with
   | `Error err         -> out_error  err

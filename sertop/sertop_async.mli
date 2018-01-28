@@ -17,8 +17,9 @@ open Sexplib
 
 (** [sertop fb_handler] Initialize Coq and send serialized feedback to
     [fb_handler] *)
-val sertop_init : (Sexp.t -> unit) ->
-  (string list * string * bool) list ->
+val sertop_init :
+  (Sexp.t -> unit) ->
+  Sertop_init.load_path_spec list ->
   (Names.DirPath.t * string * bool option) list ->
   Stateid.t
 
