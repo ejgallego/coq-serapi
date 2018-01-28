@@ -20,11 +20,11 @@ open Cmdliner
 
 [@@@ocaml.warning "-44-45"]
 let prelude =
-  let doc = "Load Coq.Init.Prelude from $COQPATH; plugins/ and theories/ should live there." in
+  let doc = "Load Coq.Init.Prelude from $(docv); plugins/ and theories/ should live there." in
   Arg.(value & opt string Coq_config.coqlib & info ["coqlib"] ~docv:"COQPATH" ~doc)
 
 let async =
-  let doc = "Enable async support using Coq binary $COQTOP (experimental)." in
+  let doc = "Enable async support using Coq binary $(docv) (experimental)." in
   Arg.(value & opt (some string) None & info ["async"] ~doc ~docv:"COQTOP")
 
 let async_full =
@@ -49,7 +49,7 @@ let print_args_doc = Arg.doc_alts
   ]
 
 let rload_path : (string * string) list Term.t =
-  let doc = "Bind a logical loadpath LP to a directory DIR" in
+  let doc = "Bind a logical loadpath LP to a directory DIR and implicitly open its namespace." in
   Arg.(value & opt_all (pair dir string) [] & info ["R"; "rec-load-path"] ~docv:"DIR,LP"~doc)
 
 let load_path : (string * string) list Term.t =
