@@ -38,6 +38,7 @@ install:
 - pushd ${HOME}/coq-${COQ_VERSION}
 - ./configure -local -native-compiler no -coqide no
 - make -j ${NJOBS}
+- make -j ${NJBOS} byte
 - popd
 
 script:
@@ -48,4 +49,6 @@ script:
 - ls -l _build/sertop/sertop.native
 - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" sercomp
 - ls -l _build/sertop/sercomp.native
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" sertop_js.byte
+- ls -l _build/sertop/sertop_js.byte
 - echo -en 'travis_fold:end:serapi.build\\r'
