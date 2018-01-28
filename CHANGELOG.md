@@ -33,6 +33,8 @@ _More_:
 
 _Version 0.4_:
 
+ * support `-R` and `-Q` options, note the slightly different syntax
+   wrt Coq upstream: `-R dir,path` in place of `-R dir path`
  * support Coq 8.7 , make use of improved upstream API,
  * support serialization of generic arguments [#41],
  * full file support hack
