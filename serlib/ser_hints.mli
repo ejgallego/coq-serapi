@@ -8,24 +8,14 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
 open Sexplib
 
-type constr_under_binders = Pattern.constr_under_binders
+type hint_db_name = Hints.hint_db_name
 
-val constr_under_binders_of_sexp : Sexp.t -> constr_under_binders
-val sexp_of_constr_under_binders : constr_under_binders -> Sexp.t
-
-type case_info_pattern = Pattern.case_info_pattern
-
-val case_info_pattern_of_sexp : Sexp.t -> case_info_pattern
-val sexp_of_case_info_pattern : case_info_pattern -> Sexp.t
-
-type constr_pattern = Pattern.constr_pattern
-
-val constr_pattern_of_sexp : Sexp.t -> constr_pattern
-val sexp_of_constr_pattern : constr_pattern -> Sexp.t
+val sexp_of_hint_db_name : hint_db_name -> Sexp.t
+val hint_db_name_of_sexp : Sexp.t -> hint_db_name

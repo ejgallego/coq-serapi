@@ -36,17 +36,34 @@ let _t_get (Id id) = Id.of_string id
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t id   = sexp_of__t (_t_put id)
 
-(* Id.Set.t XXX: *)
 module Set = struct
 
 type t =
   [%import: Names.Id.Set.t]
   (* [@@deriving sexp] *)
 
-let t_of_sexp _sexp = Names.Id.Set.empty
-let sexp_of_t _ids  = Sexplib.Sexp.Atom "idset"
+let t_of_sexp sexp =
+  Id.Set.of_list (list_of_sexp t_of_sexp sexp)
+
+let sexp_of_t cst =
+  sexp_of_list sexp_of_t (Id.Set.elements cst)
 
 end
+
+module Map = struct
+
+type 'a t =
+  [%import: 'a Names.Id.Map.t]
+  (* [@@deriving sexp] *)
+
+let t_of_sexp f sexp =
+  List.fold_left (fun e (k,s) -> Id.Map.add k s e) Id.Map.empty (list_of_sexp (Sexplib.Conv.pair_of_sexp t_of_sexp f) sexp)
+
+let sexp_of_t f cst =
+  sexp_of_list (Sexplib.Conv.sexp_of_pair sexp_of_t f) (Id.Map.bindings cst)
+
+end
+
 end
 
 module Name = struct

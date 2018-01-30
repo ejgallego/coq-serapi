@@ -16,9 +16,14 @@
 open Sexplib.Std
 
 module Names     = Ser_names
-module Globnames = Ser_globnames
 module Term      = Ser_constr
 module Misctypes = Ser_misctypes
+module Globnames = Ser_globnames
+module EConstr   = Ser_eConstr
+
+type constr_under_binders =
+  [%import: Pattern.constr_under_binders]
+  [@@deriving sexp]
 
 type case_info_pattern =
   [%import: Pattern.case_info_pattern]

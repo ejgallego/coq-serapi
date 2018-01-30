@@ -23,6 +23,7 @@ module Misctypes  = Ser_misctypes
 module Decl_kinds = Ser_decl_kinds
 module Genarg     = Ser_genarg
 module Evar_kinds = Ser_evar_kinds
+module Pattern    = Ser_pattern
 
 (**********************************************************************)
 (* Glob_term                                                          *)
@@ -48,3 +49,7 @@ and cases_clause   = [%import: Glob_term.cases_clause]
 and cases_clauses  = [%import: Glob_term.cases_clauses]
   [@@deriving sexp]
 
+(* XXX: To move in 8.8 *)
+type closure = [%import: Glob_term.closure]
+and closed_glob_constr = [%import: Glob_term.closed_glob_constr]
+  [@@deriving sexp]

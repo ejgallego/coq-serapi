@@ -61,3 +61,13 @@ val sexp_of_cases_clause : cases_clause -> Sexp.t
 
 val cases_clauses_of_sexp : Sexp.t -> cases_clauses
 val sexp_of_cases_clauses : cases_clauses -> Sexp.t
+
+(* XXX: To move in 8.8 *)
+type closure = Glob_term.closure
+type closed_glob_constr = Glob_term.closed_glob_constr
+
+val closure_of_sexp : Sexp.t -> closure
+val sexp_of_closure : closure -> Sexp.t
+
+val closed_glob_constr_of_sexp : Sexp.t -> closed_glob_constr
+val sexp_of_closed_glob_constr : closed_glob_constr -> Sexp.t

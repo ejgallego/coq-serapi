@@ -64,6 +64,20 @@ let ser_wit_ltac_tactic_level = Ser_genarg.{
     top_ser = Sexplib.Conv.sexp_of_unit;
   }
 
+let ser_wit_auto_using = Ser_genarg.{
+    raw_ser = Sexplib.Conv.sexp_of_list Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Sexplib.Conv.sexp_of_list Ser_tactypes.sexp_of_glob_constr_and_expr;
+    top_ser = Sexplib.Conv.sexp_of_list Ser_glob_term.sexp_of_closed_glob_constr;
+  }
+
+let ser_wit_hintbases =
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = sexp_of_option (sexp_of_list sexp_of_string);
+    glb_ser = sexp_of_option (sexp_of_list sexp_of_string);
+    top_ser = sexp_of_option (sexp_of_list Ser_hints.sexp_of_hint_db_name);
+  }
+
 let register () =
   (* Ser_genarg.register_genprint Tacarg.wit_destruction_arg ser_wit_destruction_arg; *)
   Ser_genarg.register_genprint Tacarg.wit_tactic ser_wit_tactic;
@@ -74,5 +88,7 @@ let register () =
   Ser_genarg.register_genprint G_ltac.wit_ltac_tacdef_body ser_wit_ltac_tacdef_body;
   Ser_genarg.register_genprint G_ltac.wit_ltac_tactic_level ser_wit_ltac_tactic_level;
 
+  Ser_genarg.register_genprint G_auto.wit_auto_using ser_wit_auto_using;
+  Ser_genarg.register_genprint G_auto.wit_hintbases ser_wit_hintbases;
   ()
 

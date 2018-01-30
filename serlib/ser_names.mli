@@ -31,6 +31,11 @@ module Id : sig
     val sexp_of_t : t -> Sexp.t
   end
 
+  module Map : sig
+    type 'a t = 'a Id.Map.t
+    val t_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a t
+    val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t
+  end
 end
 
 module Name : sig
