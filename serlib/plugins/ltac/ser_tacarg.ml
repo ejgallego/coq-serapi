@@ -127,6 +127,61 @@ let ser_wit_opthints =
     top_ser = sexp_of_option (sexp_of_list Ser_hints.sexp_of_hint_db_name);
   }
 
+(* G_rewrite *)
+
+let ser_wit_binders =
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = sexp_of_list Ser_constrexpr.sexp_of_local_binder_expr;
+    glb_ser = sexp_of_list Ser_constrexpr.sexp_of_local_binder_expr;
+    top_ser = sexp_of_list Ser_constrexpr.sexp_of_local_binder_expr;
+  }
+
+let ser_wit_glob_constr_with_bindings =
+  let open Sexplib.Conv in
+  let _sexp_of_interp_sign _ = Sexplib.Sexp.Atom "[XXX FUNCTIONAL VALUE INTERP SIGN]" in
+  Ser_genarg.{
+    raw_ser = Ser_misctypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Ser_misctypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr;
+    top_ser = sexp_of_pair _sexp_of_interp_sign Ser_misctypes.(sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr)
+  }
+
+let ser_wit_rewstrategy =
+  let _sexp_of_strategy _ = Sexplib.Sexp.Atom "[XXX OPAQUE STRATEGY]" in
+  Ser_genarg.{
+    raw_ser = Ser_rewrite.sexp_of_strategy_ast Ser_constrexpr.sexp_of_constr_expr Ser_tacexpr.sexp_of_raw_red_expr;
+    glb_ser = Ser_rewrite.sexp_of_strategy_ast Ser_tacexpr.sexp_of_glob_constr_and_expr Ser_tacexpr.sexp_of_raw_red_expr;
+    top_ser = _sexp_of_strategy;
+  }
+
+(* G_rewrite.raw_strategy : (Constrexpr.constr_expr, Tacexpr.raw_red_expr) Rewrite.strategy_ast
+ * G_rewrite.glob_strategy: (Tacexpr.glob_constr_and_expr, Tacexpr.raw_red_expr) Rewrite.strategy_ast
+ * Ltac_plugin.Rewrite.strategy *)
+
+let ser_wit_debug =
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = sexp_of_bool;
+    glb_ser = sexp_of_bool;
+    top_ser = sexp_of_bool;
+  }
+
+let ser_wit_eauto_search_strategy =
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = sexp_of_option Ser_class_tactics.sexp_of_search_strategy;
+    glb_ser = sexp_of_option Ser_class_tactics.sexp_of_search_strategy;
+    top_ser = sexp_of_option Ser_class_tactics.sexp_of_search_strategy;
+  }
+
+let ser_wit_withtac =
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr;
+    glb_ser = sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr;
+    top_ser = sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr;
+  }
+
 let register () =
   Ser_genarg.register_genprint Tacarg.wit_destruction_arg ser_wit_destruction_arg;
   Ser_genarg.register_genprint Tacarg.wit_tactic ser_wit_tactic;
@@ -146,16 +201,14 @@ let register () =
   Ser_genarg.register_genprint G_auto.wit_hints_path_atom ser_wit_hintbases_path_atom;
   Ser_genarg.register_genprint G_auto.wit_opthints ser_wit_opthints;
 
-(* TODO
+  Ser_genarg.register_genprint G_rewrite.wit_binders ser_wit_binders;
+  Ser_genarg.register_genprint G_rewrite.wit_glob_constr_with_bindings ser_wit_glob_constr_with_bindings;
+  Ser_genarg.register_genprint G_rewrite.wit_rewstrategy ser_wit_rewstrategy;
 
-  G_rewrite.wit_binders
-  G_rewrite.wit_glob_constr_with_bindings
-  G_rewrite.wit_rewstrategy
+  Ser_genarg.register_genprint G_class.wit_debug ser_wit_debug;
+  Ser_genarg.register_genprint G_class.wit_eauto_search_strategy ser_wit_eauto_search_strategy;
 
-  G_class.wit_debug
-  G_class.wit_eauto_search_strategy
+  Ser_genarg.register_genprint G_obligations.wit_withtac ser_wit_withtac;
 
-  G_obligations.wit_withtac
-*)
   ()
 
