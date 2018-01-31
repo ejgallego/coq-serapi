@@ -223,29 +223,6 @@ type tagged_cmd =
 end
 
 (******************************************************************************)
-(* Prelude Loading Hacks (to be improved)                                     *)
-(******************************************************************************)
-
-let ser_prelude_list implicit coq_path =
-  let mk_path prefix = coq_path ^ "/" ^ prefix in
-  let mk_lp ~ml ~root ~dir ~implicit = Sertop_init.{
-    coq_path  = root;
-    unix_path = mk_path dir;
-    has_ml    = ml;
-    recursive = true;
-    implicit;
-  } in
-  (* in 8.8 we can use Libnames.default_* *)
-  let coq_root     = Names.(DirPath.make [Id.of_string "Coq"]) in
-  let default_root = Names.(DirPath.empty) in
-  [mk_lp ~ml:true  ~root:coq_root     ~implicit       ~dir:"plugins";
-   mk_lp ~ml:false ~root:coq_root     ~implicit       ~dir:"theories";
-   mk_lp ~ml:true  ~root:default_root ~implicit:false ~dir:"user-contrib";
-  ]
-
-let ser_prelude_mod coq_path = [Sertop_prelude.coq_prelude_mod coq_path]
-
-(******************************************************************************)
 (* Global Protocol Options                                                    *)
 (******************************************************************************)
 
@@ -345,10 +322,6 @@ let ser_loop ser_opts =
   let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
   let pp_feed fb   = pp_answer (SP.Feedback fb)                        in
 
-  (* Prepare from cmdline to default *)
-
-  (* We do the conversion from string to logical path, this needs
-     tweaking in the upstream API. *)
   let sload_path =
     List.map (fun (dir,lp,implicit) ->
         Sertop_init.{
@@ -359,14 +332,15 @@ let ser_loop ser_opts =
           implicit;
         }) ser_opts.loadpath in
 
-  let sload_path = ser_prelude_list ser_opts.std_impl ser_opts.coqlib @ sload_path in
+  let coq_path = ser_opts.coqlib in
+  let sload_path = Sertop_init.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ sload_path in
 
   (* Init Coq *)
   let _ = Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
     Sertop_init.aopts        = ser_opts.async;
     Sertop_init.iload_path   = sload_path;
-    Sertop_init.require_libs = ser_prelude_mod ser_opts.coqlib;
+    Sertop_init.require_libs = [Sertop_init.coq_prelude_mod ~coq_path];
     Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
     Sertop_init.debug        = ser_opts.debug;

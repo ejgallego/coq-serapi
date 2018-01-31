@@ -15,9 +15,6 @@
 
 open Sexplib
 
-(* XXX: We need to link tacexpr so its genargs serializers are
-   registered... *)
-module Tacexpr = Ser_tacexpr
 open Ser_vernacexpr
 
 type stats = {
@@ -170,11 +167,6 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-type ser_printer =
-  | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)
-  | SP_Mach                     (* sexplib mach  printer *)
-  | SP_Human                    (* sexplib human printer *)
-
 let pr_loc ?loc () =
   let open Pp in
   Option.cata (fun loc ->
@@ -215,93 +207,48 @@ let parse_document pp in_pa =
 
  (* Format.eprintf "Error in parsing@\n%!" (\* XXX: add loc *\) *)
 
-(* XXX Reuse sertop_init *)
-
-let coq_init coq_lib =
-
-  Lib.init ();
-
-  (* We link LTAC statically in SerAPI *)
-  (* This is not neccesary anymore as `declare plugin` should take
-     care of it *)
-  (* Mltop.add_known_module "ltac_plugin"; *)
-
-  Goptions.set_string_option_value ["Default";"Proof";"Mode"] "Classic";
-  Global.set_engagement Declarations.PredicativeSet;
-  Loadpath.add_load_path "." Nameops.default_root_prefix ~implicit:false;
-
-  let ser_prelude_list coq_path =
-    let mk_path prefix l = coq_path ^ "/" ^ prefix ^ "/" ^ String.concat "/" l in
-    List.map (fun p -> ("Coq" :: p, mk_path "plugins"  p, true)) Sertop_prelude.coq_init_plugins  @
-    List.map (fun p -> ("Coq" :: p, mk_path "theories" p, true)) Sertop_prelude.coq_init_theories
-  in
-
-  List.iter (fun (lib, lib_path, has_ml) ->
-      let open Names in
-      let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string lib in
-      Loadpath.add_load_path lib_path coq_path ~implicit:true;
-      if has_ml then Mltop.add_ml_dir lib_path
-    ) (ser_prelude_list coq_lib);
-
-  let sertop_dp = Names.DirPath.make [Names.Id.of_string "SerComp"] in
-  Declaremods.start_library sertop_dp;
-
-  List.iter (fun (dp, p, in_exp) ->
-      Library.require_library_from_dirpath [dp,p] in_exp
-    ) [Sertop_prelude.coq_prelude_mod coq_lib];
-
-  Stm.init ();
-
-  ()
-
 let close_document () =
   let open Format in
   printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
 open Cmdliner
 
-let prelude =
-  let doc = "Load prelude from COQPATH; plugins/ and theories/ should live there." in
-  Arg.(required & opt (some string) (Some Coq_config.coqlib) & info ["prelude"] ~docv:"COQPATH" ~doc)
-
 let input_file =
   let doc = "Input .v file." in
   Arg.(value & pos 0 string "" & info [] ~doc)
 
 (* XXX Reuse sertop_args *)
-let sercomp printer coq_lib in_file =
+let sercomp printer coq_path in_file =
+  let open Sertop_init in
   let pp_sexp = match printer with
-    | SP_Sertop -> Sertop_util.pp_sertop
-    | SP_Mach   -> Sexp.pp
-    | SP_Human  -> Sexp.pp_hum
+    | Sertop_sexp.SP_Sertop -> Sertop_util.pp_sertop
+    | Sertop_sexp.SP_Mach   -> Sexp.pp
+    | Sertop_sexp.SP_Human  -> Sexp.pp_hum
   in
   let in_chan = open_in in_file            in
   let in_strm = Stream.of_channel in_chan  in
   let in_pa   = Pcoq.Gram.parsable ~file:in_file in_strm in
-  (try
-     coq_init coq_lib
-   with any ->
-     let (e, info) = CErrors.push any in
-     Format.eprintf "%a@\n%!" Pp.pp_with (CErrors.iprint (e, info))
-  );
+
+  let sload_path = coq_loadpath_default ~implicit:true ~coq_path in
+
+  let _ = coq_init {
+    fb_handler   = (fun _ -> ());
+    aopts        = { enable_async = None;
+                     async_full   = false;
+                     deep_edits   = false;
+                   };
+    iload_path   = sload_path;
+    require_libs = [coq_prelude_mod ~coq_path];
+    top_name     = "SerComp";
+    ml_load      = None;
+    debug        = false;
+  } in
+
   parse_document pp_sexp in_pa;
   close_in in_chan;
   close_document ()
 
-let sercomp_version = ".0001"
-
-let print_args = 
-  Arg.(enum ["sertop", SP_Sertop; "human", SP_Human; "mach", SP_Mach])
-
-let print_args_doc = Arg.doc_alts
-  ["sertop, a custom printer (UTF-8 with emacs-compatible quoting)";
-   "human, sexplib's human-format printer (recommended for debug sessions)";
-   "mach, sexplib's machine-format printer"
-  ]
-
-let printer =
-  (* let doc = "Select S-expression printer." in *)
-  Arg.(value & opt print_args SP_Sertop & info ["printer"] ~doc:print_args_doc)
+let sercomp_version = ".0002"
 
 let sertop_cmd =
   let doc = "SerComp Coq Compiler" in
@@ -310,12 +257,17 @@ let sertop_cmd =
     `P "Experimental Coq Compiler with serialization support"
   ]
   in
+  let open Sercmdopt in
   Term.(const sercomp $ printer $ prelude $ input_file ),
   Term.info "sertop" ~version:sercomp_version ~doc ~man
 
 let main () =
-  match Term.eval sertop_cmd with
-  | `Error _ -> exit 1
-  | _        -> exit 0
+  try match Term.eval sertop_cmd with
+    | `Error _ -> exit 1
+    | _        -> exit 0
+  with any ->
+    let (e, info) = CErrors.push any in
+    Format.eprintf "%a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
+    exit 1
 
 let _ = main ()

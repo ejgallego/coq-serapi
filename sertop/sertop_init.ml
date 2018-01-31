@@ -174,3 +174,30 @@ let coq_init opts =
 
   (* Return the initial state of the STM *)
   Stm.get_current_state ()
+
+(******************************************************************************)
+(* Coq Prelude Loading Defaults (to be improved)                              *)
+(******************************************************************************)
+
+let coq_loadpath_default ~implicit ~coq_path =
+  let mk_path prefix = coq_path ^ "/" ^ prefix in
+  let mk_lp ~ml ~root ~dir ~implicit = {
+    coq_path  = root;
+    unix_path = mk_path dir;
+    has_ml    = ml;
+    recursive = true;
+    implicit;
+  } in
+  (* in 8.8 we can use Libnames.default_* *)
+  let coq_root     = Names.(DirPath.make [Id.of_string "Coq"]) in
+  let default_root = Names.(DirPath.empty) in
+  [mk_lp ~ml:true  ~root:coq_root     ~implicit       ~dir:"plugins";
+   mk_lp ~ml:false ~root:coq_root     ~implicit       ~dir:"theories";
+   mk_lp ~ml:true  ~root:default_root ~implicit:false ~dir:"user-contrib";
+  ]
+
+let coq_prelude_mod ~coq_path =
+  Names.(DirPath.make @@ List.rev_map Id.of_string ["Coq";"Init";"Prelude"]),
+  coq_path ^ "/theories/Init/Prelude.vo",
+  Some true
+

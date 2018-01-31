@@ -53,3 +53,9 @@ type coq_opts = {
 }
 
 val coq_init : coq_opts -> Stateid.t
+
+(* Default load path for Coq's stdlib *)
+val coq_loadpath_default : implicit:bool -> coq_path:string -> load_path_spec list
+
+(* Coq.Init.Prelude Location [will be removed in 8.8] *)
+val coq_prelude_mod : coq_path:string -> (Names.DirPath.t * string * bool option)
