@@ -1,4 +1,4 @@
-.PHONY: clean all toplevel serlib sertop force js-dist js-release
+.PHONY: clean all serlib sertop sercomp force js-dist js-release
 
 include config.mk
 
@@ -31,6 +31,11 @@ sertop:
 	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop.$(TARGET)
 
+sercomp: sertop
+	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
+	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sercomp.$(TARGET)
+
 
 #####################################################
 # Javascript support
@@ -55,11 +60,6 @@ js-dist:
 
 js-release:
 	rsync -avp --exclude=*~ --exclude=.git --exclude=README.md --exclude=get-hashes.sh --delete js/ ~/research/jscoq-builds
-
-sercomp:
-	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sercomp.$(TARGET)
 
 #####################################################
 # Misc
