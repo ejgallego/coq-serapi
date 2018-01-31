@@ -234,18 +234,18 @@ open Cmdliner
 
 let input_file =
   let doc = "Input .v file." in
-  Arg.(value & pos 0 string "" & info [] ~doc)
+  Arg.(required & pos 0 (some string) None & info [] ~docv:"FILE.v" ~doc)
 
 let sertop_cmd =
   let doc = "SerComp Coq Compiler" in
   let man = [
     `S "DESCRIPTION";
-    `P "Experimental Coq Compiler with serialization support"
+    `P "Experimental Coq Compiler with serialization support. Currently it just prints some stats on the file."
   ]
   in
   let open Sercmdopt in
-  Term.(const sercomp $ printer $ prelude $ input_file ),
-  Term.info "sertop" ~version:sercomp_version ~doc ~man
+  Term.(const sercomp $ printer $ prelude $ input_file),
+  Term.info "sercomp" ~version:sercomp_version ~doc ~man
 
 let main () =
   try match Term.eval sertop_cmd with
