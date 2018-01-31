@@ -19,3 +19,18 @@ type hint_db_name = Hints.hint_db_name
 
 val sexp_of_hint_db_name : hint_db_name -> Sexp.t
 val hint_db_name_of_sexp : Sexp.t -> hint_db_name
+
+type 'a hints_path_gen = 'a Hints.hints_path_gen
+
+val sexp_of_hints_path_gen : ('a -> Sexp.t) -> 'a hints_path_gen -> Sexp.t
+val hints_path_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_path_gen
+
+type 'a hints_path_atom_gen = 'a Hints.hints_path_atom_gen
+
+val sexp_of_hints_path_atom_gen : ('a -> Sexp.t) -> 'a hints_path_atom_gen -> Sexp.t
+val hints_path_atom_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_path_atom_gen
+
+type hints_path = Hints.hints_path
+
+val sexp_of_hints_path : hints_path -> Sexp.t
+val hints_path_of_sexp : Sexp.t -> hints_path

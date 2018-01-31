@@ -15,20 +15,15 @@
 
 open Sexplib.Conv
 
-module Globnames = Ser_globnames
+module Loc   = Ser_loc
+module Names = Ser_names
 
-type hint_db_name =
-  [%import: Hints.hint_db_name]
+open Ltac_plugin
+
+type 'a grammar_tactic_prod_item_expr =
+  [%import: 'a Tacentries.grammar_tactic_prod_item_expr]
   [@@deriving sexp]
 
-type 'a hints_path_atom_gen =
-  [%import: 'a Hints.hints_path_atom_gen]
-  [@@deriving sexp]
-
-type 'a hints_path_gen =
-  [%import: 'a Hints.hints_path_gen]
-  [@@deriving sexp]
-
-type hints_path =
-  [%import: Hints.hints_path]
+type raw_argument =
+  [%import: Tacentries.raw_argument]
   [@@deriving sexp]

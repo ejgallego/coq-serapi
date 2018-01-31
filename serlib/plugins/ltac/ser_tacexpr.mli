@@ -308,3 +308,6 @@ type tacdef_body = Tacexpr.tacdef_body
 val tacdef_body_of_sexp : Sexp.t -> tacdef_body
 val sexp_of_tacdef_body : tacdef_body -> Sexp.t
 
+type glob_constr_and_expr = Tacexpr.glob_constr_and_expr
+val glob_constr_and_expr_of_sexp : Sexp.t -> glob_constr_and_expr
+val sexp_of_glob_constr_and_expr : glob_constr_and_expr -> Sexp.t
