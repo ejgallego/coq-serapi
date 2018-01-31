@@ -46,9 +46,8 @@ script:
 - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" serlib
 - ls -l _build/serlib/serlib.cmxa
 - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
-- ls -l _build/sertop/sertop.native
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" sercomp
-- ls -l _build/sertop/sercomp.native
+- ls -l _build/sertop/sertop.native _build/sertop/sercomp.native
+# XXX Move to a matrix build specific for js
 - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" sertop_js.byte
 - ls -l _build/sertop/sertop_js.byte
 - echo -en 'travis_fold:end:serapi.build\\r'

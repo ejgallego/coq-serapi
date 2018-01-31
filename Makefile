@@ -11,7 +11,7 @@ SERAPI_COQ_HOME=
 # SERAPI_COQ_HOME=/home/egallego/external/coq-v8.7/
 # SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.7+32bit/
 
-all: sertop
+all: sertop sercomp
 
 TARGET=native
 

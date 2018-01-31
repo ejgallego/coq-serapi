@@ -167,27 +167,13 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-let pr_loc ?loc () =
-  let open Pp in
-  Option.cata (fun loc ->
-    let fname = loc.Loc.fname in
-    if CString.equal fname "" then
-      Loc.(str"Toplevel input, characters " ++ int loc.bp ++
-	   str"-" ++ int loc.ep ++ str":")
-    else
-      Loc.(str"File " ++ str "\"" ++ str fname ++ str "\"" ++
-	   str", line " ++ int loc.line_nb ++ str", characters " ++
-	   int (loc.bp-loc.bol_pos) ++ str"-" ++ int (loc.ep-loc.bol_pos) ++
-	   str":")
-    ) (mt ()) loc
-
 let process_vernac pp st (loc, vrn) =
   let open Format in
   let n_st, tip = Stm.add ~ontop:st false (loc, vrn) in
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   do_stats ?loc vrn;
-  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (pr_loc ?loc ())
+  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt Topfmt.pr_loc loc)
                               pp (sexp_of_vernac_expr vrn);
   n_st
 
@@ -211,13 +197,6 @@ let close_document () =
   let open Format in
   printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
-open Cmdliner
-
-let input_file =
-  let doc = "Input .v file." in
-  Arg.(value & pos 0 string "" & info [] ~doc)
-
-(* XXX Reuse sertop_args *)
 let sercomp printer coq_path in_file =
   let open Sertop_init in
   let pp_sexp = match printer with
@@ -248,7 +227,14 @@ let sercomp printer coq_path in_file =
   close_in in_chan;
   close_document ()
 
+(* Command line processing *)
 let sercomp_version = ".0002"
+
+open Cmdliner
+
+let input_file =
+  let doc = "Input .v file." in
+  Arg.(value & pos 0 string "" & info [] ~doc)
 
 let sertop_cmd =
   let doc = "SerComp Coq Compiler" in

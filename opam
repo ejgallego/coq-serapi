@@ -24,6 +24,8 @@ depends: [
   "ppx_sexp_conv" { build }
 ]
 
-build:   [ make "-j%{jobs}%" "TARGET=native" ]
-install: [ "cp" "sertop.native" "%{bin}%/sertop" ]
-remove:  [ "rm" "-f" "%{bin}%/sertop" ]
+build:    [ make "-j%{jobs}%" "TARGET=native" ]
+install: [[ "cp" "sertop.native"  "%{bin}%/sertop" ]
+          [ "cp" "sercomp.native" "%{bin}%/sercomp"]]
+remove:  [[ "rm" "-f" "%{bin}%/sertop" ]
+          [ "rm" "-f" "%{bin}%/sercomp"]]
