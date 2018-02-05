@@ -41,7 +41,8 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/sertop.ml>: package(cmdliner)
 <sertop/*>: package(coq.intf,coq.stm,coq.ltac,sexplib), debug
 
-<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,coq.intf,coq.ltac)
+# Some plugins need num.
+<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.ltac)
 
 <sertop/sercomp.ml>: package(cmdliner)
 <sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner)
