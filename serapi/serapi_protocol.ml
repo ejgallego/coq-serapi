@@ -692,6 +692,7 @@ type cmd =
   | Print      of print_opt * coq_object
   (* Full document checking *)
   | Join
+  | Finish
   (*******************************************************************)
   (* XXX: We want to have query / update and fuse these two under it *)
   (*              coq_path      unix_path   has_ml                   *)
@@ -714,6 +715,7 @@ let exec_cmd (cmd : cmd) =
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
   | Join              -> Stm.join (); []
+  | Finish            -> Stm.finish (); []
 
   (*******************************************************************)
   | LibAdd(lib, lib_path, has_ml) ->

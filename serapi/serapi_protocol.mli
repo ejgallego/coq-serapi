@@ -157,6 +157,7 @@ type cmd =
   | Print      of print_opt * coq_object
   (* Full document checking *)
   | Join
+  | Finish
   (*******************************************************************)
   (* XXX: We want to have query / update and fuse these two under it *)
   (*              coq_path      unix_path   has_ml                   *)
