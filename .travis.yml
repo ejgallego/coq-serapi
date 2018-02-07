@@ -38,13 +38,14 @@ install:
 - opam install -j ${NJOBS} -y ${BASE_OPAM} ${EXTRA_OPAM} # yojson ppx_deriving_yojson
 - opam list
 - >
-  if [ -z ${SERAPI_COQ_HOME} ]; then
+  if [[ -v SERAPI_COQ_HOME ]]; then
     git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_VERSION} &&
     pushd ${HOME}/coq-${COQ_VERSION}   &&
     ./configure ${COQ_CONF} ${COQ_EXTRA_CONF} &&
     make -j ${NJOBS}                   &&
     make -j ${NJOBS} ${COQ_EXTRA_MAKE} &&
-    popd; fi
+    popd;
+  fi
 
 script:
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
