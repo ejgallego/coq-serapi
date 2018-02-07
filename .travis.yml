@@ -49,6 +49,6 @@ install:
 
 script:
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-- make -j SERAPI_COQ_HOME=${SERAPI_COQ_HOME} ${NJOBS} ${TEST_TARGET}
+- make -j ${NJOBS} SERAPI_COQ_HOME=${SERAPI_COQ_HOME} ${TEST_TARGET}
 - ls -l _build/sertop/
 - echo -en 'travis_fold:end:serapi.build\\r'
