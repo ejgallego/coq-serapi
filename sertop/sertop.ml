@@ -16,7 +16,7 @@
 
 open Cmdliner
 
-let sertop_version = "0.04dev"
+let sertop_version = Ser_version.ser_git_version
 let sertop printer print0 debug length prelude load_path rload_path implicit_prelude async async_full deep_edits  =
 
   (* Prepare load_paths by adding a boolean flag to mark -R or -Q *)

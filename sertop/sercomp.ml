@@ -228,7 +228,7 @@ let sercomp printer coq_path in_file =
   close_document ()
 
 (* Command line processing *)
-let sercomp_version = ".0002"
+let sercomp_version = Ser_version.ser_git_version
 
 open Cmdliner
 

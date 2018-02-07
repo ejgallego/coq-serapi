@@ -21,12 +21,15 @@ else
 CMAEXT=cma
 endif
 
+sertop/ser_version.ml: .git/HEAD .git/index
+	echo "let ser_git_version = \"$(shell git describe --tags)\";;" > $@
+
 serlib:
 	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
 	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) serlib/serlib.$(CMAEXT)
 
-sertop:
+sertop: sertop/ser_version.ml
 	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
 	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop.$(TARGET)
@@ -65,6 +68,7 @@ js-release:
 # Misc
 
 clean:
+	rm -f sertop/ser_version.ml
 	$(OCB) $(OCB_OPT) -clean
 
 # Not yet ready ocamlbuild support
