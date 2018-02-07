@@ -12,6 +12,7 @@ addons:
     packages:
     - opam
     - aspcud
+    - gcc-multilib
 env:
   global:
   - NJOBS=2
