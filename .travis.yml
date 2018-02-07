@@ -19,12 +19,14 @@ env:
   - COQ_REPOS=https://github.com/coq/coq.git
   - COQ_VERSION="v8.7"
   - COQ_BRANCH="v8.7"
+  - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.06.0"
   - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib"
   # Main test suites
   matrix:
-  - TEST_TARGET="all"
-  - TEST_TARGET="sertop_js.js" COMPILER="4.06.0+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-let ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"
+  - TEST_TARGET="all" EXTRA_OPAM="coq"
+  - TEST_TARGET="all" SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
+  - TEST_TARGET="sertop_js.js" COMPILER="4.06.0+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-let ppx_deriving_yojson" COQ_EXTRA_MAKE="byte" SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
   # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
   # - TEST_TARGET="test2"
 
@@ -35,17 +37,17 @@ install:
 - opam update
 - opam install -j ${NJOBS} -y ${BASE_OPAM} ${EXTRA_OPAM} # yojson ppx_deriving_yojson
 - opam list
-- git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_VERSION}
-- pushd ${HOME}/coq-${COQ_VERSION}
-- ./configure -local -native-compiler no -coqide no ${COQ_EXTRA_CONF}
-- make -j ${NJOBS}
-- make -j ${NJOBS} ${COQ_EXTRA_MAKE}
-- popd
+- >
+  if [ -z ${SERAPI_COQ_HOME} ]; then
+    git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_VERSION} &&
+    pushd ${HOME}/coq-${COQ_VERSION}   &&
+    ./configure ${COQ_CONF} ${COQ_EXTRA_CONF} &&
+    make -j ${NJOBS}                   &&
+    make -j ${NJOBS} ${COQ_EXTRA_MAKE} &&
+    popd; fi
 
 script:
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-# - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" serlib
-# - ls -l _build/serlib/serlib.cmxa
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" TEST_TARGET
+- make -j ${NJOBS} ${TEST_TARGET}
 - ls -l _build/sertop/
 - echo -en 'travis_fold:end:serapi.build\\r'
