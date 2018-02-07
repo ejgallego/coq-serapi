@@ -15,16 +15,16 @@ addons:
 env:
   global:
   - NJOBS=2
-  - COQ_VERSION="v8.7"
   - COQ_REPOS=https://github.com/coq/coq.git
-  # - COQ_REPOS="git://scm.gforge.inria.fr/coq/coq.git"
+  - COQ_VERSION="v8.7"
   - COQ_BRANCH="v8.7"
-  # system is == 4.02.3
   - COMPILER="4.06.0"
-  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson"
+  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib"
   # Main test suites
-  # matrix:
-  # - TEST_TARGET="test1"
+  matrix:
+  - TEST_TARGET="all"
+  - TEST_TARGET="sertop_js.js" COMPILER="4.06.0+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-let ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"
+  # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
   # - TEST_TARGET="test2"
 
 install:
@@ -36,18 +36,15 @@ install:
 - opam list
 - git clone --depth=3 -b ${COQ_BRANCH} ${COQ_REPOS} ${HOME}/coq-${COQ_VERSION}
 - pushd ${HOME}/coq-${COQ_VERSION}
-- ./configure -local -native-compiler no -coqide no
+- ./configure -local -native-compiler no -coqide no ${COQ_EXTRA_CONF}
 - make -j ${NJOBS}
-- make -j ${NJBOS} byte
+- make -j ${NJOBS} ${COQ_EXTRA_MAKE}
 - popd
 
 script:
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" serlib
-- ls -l _build/serlib/serlib.cmxa
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
-- ls -l _build/sertop/sertop.native _build/sertop/sercomp.native
-# XXX Move to a matrix build specific for js
-- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" sertop_js.byte
-- ls -l _build/sertop/sertop_js.byte
+# - make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" serlib
+# - ls -l _build/serlib/serlib.cmxa
+- make -j ${NJOBS} SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/" TEST_TARGET
+- ls -l _build/sertop/
 - echo -en 'travis_fold:end:serapi.build\\r'
