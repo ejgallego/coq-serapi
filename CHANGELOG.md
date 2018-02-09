@@ -1,7 +1,8 @@
 _Version 0.5_:
 
- * support Coq 8.8 , make use of improved upstream API,
  * `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`
+ * support Coq 8.8 , make use of improved document API,
+ * basic support for ssreflect serialization
 
 _Version 0.4_:
 

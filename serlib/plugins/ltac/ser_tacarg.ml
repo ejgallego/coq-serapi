@@ -29,17 +29,14 @@ let ser_wit_destruction_arg = Ser_genarg.{
     top_des = Ser_tacexpr.(destruction_arg_of_sexp _delayed_open_constr_with_bindings_of_sexp);
   }
 
-let _sexp_of_tactic_val_t _ = Sexplib.Sexp.Atom "[XXX TACTIC_VAL_T]"
-let _tactic_val_t_of_sexp = Sexplib.Conv_error.no_matching_variant_found "tactic_val_t"
-
 let ser_wit_tactic = Ser_genarg.{
     raw_ser = Ser_tacexpr.sexp_of_raw_tactic_expr;
     glb_ser = Ser_tacexpr.sexp_of_glob_tactic_expr;
-    top_ser = _sexp_of_tactic_val_t;
+    top_ser = Ser_geninterp.Val.sexp_of_t;
 
     raw_des = Ser_tacexpr.raw_tactic_expr_of_sexp;
     glb_des = Ser_tacexpr.glob_tactic_expr_of_sexp;
-    top_des = _tactic_val_t_of_sexp;
+    top_des = Ser_geninterp.Val.t_of_sexp;
   }
 
 let ser_wit_ltac = Ser_genarg.{

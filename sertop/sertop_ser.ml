@@ -241,4 +241,5 @@ type tagged_cmd =
 let _ =
   Ser_stdarg.register ();
   Ser_tacarg.register ();
+  Ser_ssrparser.register ();
   ()

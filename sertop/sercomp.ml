@@ -186,7 +186,7 @@ let parse_document pp ~doc sid in_pa =
     | Stm.End_of_input -> ()
     | any          ->
       let (e, info) = CErrors.push any in
-      Format.eprintf "%a@\n%!" Pp.pp_with (CErrors.iprint (e, info))
+      Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info))
 
  (* Format.eprintf "Error in parsing@\n%!" (\* XXX: add loc *\) *)
 
@@ -252,7 +252,7 @@ let main () =
     | _        -> exit 0
   with any ->
     let (e, info) = CErrors.push any in
-    Format.eprintf "%a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
+    Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
     exit 1
 
 let _ = main ()

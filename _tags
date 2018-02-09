@@ -18,6 +18,12 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ltac)
 <serlib/plugins/ltac/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
+<serlib/plugins/ssrmatching/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ssrmatching)
+<serlib/plugins/ssrmatching/*.{ml}>: package(ppx_import,ppx_sexp_conv)
+
+<serlib/plugins/ssr/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ssreflect)
+<serlib/plugins/ssr/*.{ml}>: package(ppx_import,ppx_sexp_conv)
+
 # Sertex building options
 <sertex/*.{ml,mli}>: package(sexplib)
 
@@ -31,6 +37,8 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <serlib>: include
 <serlib/ide>: include
 <serlib/plugins/ltac>: include
+<serlib/plugins/ssrmatching>: include
+<serlib/plugins/ssr>: include
 
 <sertex>: include
 <serapi>: include
@@ -42,10 +50,10 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/*>: package(coq.intf,coq.stm,sexplib), debug
 
 # Note that some plugins need num.
-<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.plugins.ltac)
+<sertop/sertop.{byte,native}>: linkall, package(cmdliner,num,coq.intf,coq.plugins.ssreflect)
 
 <sertop/sercomp.ml>: package(cmdliner)
-<sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.plugins.ltac)
+<sertop/sercomp.{byte,native}>: linkall, package(cmdliner,num,coq.intf,coq.plugins.ssreflect)
 
 # JsCoq helpers
 <jscoq/coq-js>: include

@@ -6,8 +6,8 @@ B _build/
 S serlib
 B _build/serlib
 
-S serlib/plugins/ltac/
-B _build/serlib/plugins/ltac/
+S serlib/plugins/**
+B _build/serlib/plugins/**
 
 S sertex
 B _build/sertex
@@ -24,4 +24,4 @@ B _build/sertop
 S coq-js
 B _build/jscoq/coq-js
 
-PKG threads threads.posix coq.intf coq.ltac cmdliner ppx_import sexplib ppx_sexp_conv js_of_ocaml.ppx yojson lwt
+PKG threads threads.posix coq.intf coq.plugins.ltac coq.plugins.ssmatching coq.plugins.ssreflect cmdliner ppx_import sexplib ppx_sexp_conv js_of_ocaml.ppx yojson lwt
