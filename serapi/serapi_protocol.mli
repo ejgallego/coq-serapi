@@ -30,6 +30,7 @@ type coq_object =
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
+  | CoqTok       of Tok.t list
   | CoqAst       of Vernacexpr.vernac_expr Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
@@ -167,7 +168,8 @@ type cmd =
   (*******************************************************************)
   (* Non-supported command, only for convenience. *)
   | ReadFile   of string
-  (*  *)
+  | Tokenize   of string
+  (* Administrativia *)
   | Noop
   | Help
   | Quit

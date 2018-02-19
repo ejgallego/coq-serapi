@@ -64,6 +64,13 @@ module Extra = struct
   (* End of Core_kernel code, (c) Jane Street *)
   (******************************************************************************)
 
+  let rec stream_tok acc str =
+    let e = Stream.next str in
+    if Tok.(equal e EOI) then
+      List.rev (e::acc)
+    else
+      stream_tok (e::acc) str
+
 end
 
 (******************************************************************************)
@@ -101,6 +108,7 @@ type coq_object =
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
+  | CoqTok       of Tok.t list
   | CoqAst       of Vernacexpr.vernac_expr Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
@@ -177,6 +185,7 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqPp      s    -> s
   (* | CoqRichpp  s    -> Pp.str (pp_richpp s) *)
   | CoqLoc    _loc  -> Pp.mt ()
+  | CoqTok    tok   -> Pp.pr_sequence (fun tok -> Pp.str (Tok.(to_string tok))) tok
   | CoqAst (_l, v)  -> Ppvernac.pr_vernac v
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body (Global.env ()) m mind
   | CoqOption (n,s) -> pp_opt n s
@@ -319,6 +328,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqString  s    -> Extra.is_prefix s ~prefix
   | CoqSList   _    -> true     (* XXX *)
   | CoqLoc     _    -> true
+  | CoqTok     _    -> true
   | CoqPp      _    -> true
   (* | CoqRichpp  _    -> true *)
   | CoqAst     _    -> true
@@ -702,10 +712,11 @@ type cmd =
   (*******************************************************************)
   (* Non-supported command, only for convenience. *)
   | ReadFile   of string
+  | Tokenize   of string
+  (* Administrativia *)
   | Noop
   | Help
   | Quit
-
 
 let exec_cmd (cmd : cmd) =
   coq_protect @@ fun () -> match cmd with
@@ -738,6 +749,18 @@ let exec_cmd (cmd : cmd) =
         ControlUtil.add_sentences faddopts fcontent
       with _ -> close_in inc; []
     )
+  | Tokenize input ->
+    let st = CLexer.release_lexer_state () in
+    begin try
+        let istr = Stream.of_string input in
+        let lex = CLexer.lexer.Plexing.tok_func istr in
+        CLexer.set_lexer_state st;
+        let objs = Extra.stream_tok [] (fst lex) in
+        [ObjList [CoqTok objs]]
+      with exn ->
+        CLexer.set_lexer_state st;
+        raise exn
+    end
   | Help           -> serproto_help (); []
   | Noop           -> []
   | Quit           -> []
