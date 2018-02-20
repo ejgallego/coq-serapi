@@ -21,8 +21,9 @@ else
 CMAEXT=cma
 endif
 
-sertop/ser_version.ml: .git/HEAD .git/index
-	echo "let ser_git_version = \"$(shell git describe --tags)\";;" > $@
+GITDEPS=$(ls .git/HEAD .git/index)
+sertop/ser_version.ml: $(GITDEPS)
+	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
 serlib:
 	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
