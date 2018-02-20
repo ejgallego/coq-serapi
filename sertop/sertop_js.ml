@@ -110,10 +110,11 @@ let _ =
 
       Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
-      let bundle_proc = List.map pkg_to_bb all_pkgs                      in
+      let iload_path  = List.map pkg_to_bb all_pkgs                      in
       (* Wait for the 8.8 setup method to load prelude properly *)
-      let libs_init   = []                                               in
-      ignore (sertop_init post_message bundle_proc libs_init);
+      let require_libs= []                                               in
+      let debug       = false                                            in
+      ignore (sertop_init ~fb_out:post_message ~iload_path ~require_libs ~debug);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit

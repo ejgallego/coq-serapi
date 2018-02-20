@@ -18,9 +18,10 @@ open Sexplib
 (** [sertop fb_handler] Initialize Coq and send serialized feedback to
     [fb_handler] *)
 val sertop_init :
-  (Sexp.t -> unit) ->
-  Sertop_init.load_path_spec list ->
-  (Names.DirPath.t * string * bool option) list ->
+  fb_out:(Sexp.t -> unit) ->
+  iload_path:Sertop_init.load_path_spec list ->
+  require_libs:(Names.DirPath.t * string * bool option) list ->
+  debug:bool ->
   Stateid.t
 
 (** [sertop_callback out input] Execute command [input] and send

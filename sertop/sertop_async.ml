@@ -33,8 +33,8 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
       `Error (Conv.sexp_of_exn exn)
 
 (* Initialize Coq. *)
-let sertop_init (fb_out : Sexp.t -> unit) paths libs =
-  let open Sertop_init in
+let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug =
+  let open! Sertop_init in
   let fb_handler fb = ST_Sexp.sexp_of_answer (Feedback fb) |> fb_out in
   let no_asyncf     = {
     enable_async = None;
@@ -42,13 +42,13 @@ let sertop_init (fb_out : Sexp.t -> unit) paths libs =
     deep_edits   = false;
   }                                                 in
   let coq_opts = {
-    fb_handler   = fb_handler;
-    iload_path   = paths;
+    fb_handler;
+    iload_path;
+    require_libs;
     aopts        = no_asyncf;
-    require_libs = libs;
     top_name     = "SerTopJS";
     ml_load      = None;
-    debug        = false;
+    debug;
   } in
   Sertop_init.coq_init coq_opts
 
