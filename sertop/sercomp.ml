@@ -197,7 +197,7 @@ let close_document () =
   let open Format in
   printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
-let sercomp printer coq_path in_file =
+let sercomp debug printer async coq_path lp1 lp2 in_file =
   let open Sertop_init in
   let pp_sexp = match printer with
     | Sertop_sexp.SP_Sertop -> Sertop_util.pp_sertop
@@ -208,19 +208,21 @@ let sercomp printer coq_path in_file =
   let in_strm = Stream.of_channel in_chan  in
   let in_pa   = Pcoq.Gram.parsable ~file:in_file in_strm in
 
-  let sload_path = coq_loadpath_default ~implicit:true ~coq_path in
+  (* Prepare load_paths by adding a boolean flag to mark -R or -Q *)
+  let iload_path = coq_loadpath_default ~implicit:true ~coq_path @ lp1 @ lp2 in
 
   let _ = coq_init {
     fb_handler   = (fun _ -> ());
-    aopts        = { enable_async = None;
+
+    aopts        = { enable_async = async;
                      async_full   = false;
                      deep_edits   = false;
                    };
-    iload_path   = sload_path;
+    iload_path;
     require_libs = [coq_prelude_mod ~coq_path];
     top_name     = "SerComp";
     ml_load      = None;
-    debug        = false;
+    debug;
   } in
 
   parse_document pp_sexp in_pa;
@@ -244,7 +246,7 @@ let sertop_cmd =
   ]
   in
   let open Sercmdopt in
-  Term.(const sercomp $ printer $ prelude $ input_file),
+  Term.(const sercomp $ debug $ printer $ async $ prelude $ load_path $ rload_path $ input_file),
   Term.info "sercomp" ~version:sercomp_version ~doc ~man
 
 let main () =

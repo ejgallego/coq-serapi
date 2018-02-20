@@ -71,9 +71,9 @@ type ser_opts = {
   lheader  : bool;              (* Print lenght header (deprecated)                     *)
 
   (* Coq options *)
-  coqlib   : string;            (* Coq standard library location *)
+  coq_path : string;            (* Coq standard library location *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
-  loadpath : (string * string * bool) list; (* -R and -Q options *)
+  loadpath : Sertop_init.load_path_spec list; (* -R and -Q options *)
   async    : Sertop_init.async_flags;
 }
 

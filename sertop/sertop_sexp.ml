@@ -244,9 +244,9 @@ type ser_opts = {
   lheader  : bool;              (* Print lenght header (deprecated)                     *)
 
   (* Coq options *)
-  coqlib   : string;            (* Coq standard library location *)
+  coq_path : string;            (* Coq standard library location *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
-  loadpath : (string * string * bool) list; (* -R and -Q options *)
+  loadpath : Sertop_init.load_path_spec list; (* -R and -Q options *)
   async    : Sertop_init.async_flags;
 }
 
@@ -324,18 +324,8 @@ let ser_loop ser_opts =
   let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
   let pp_feed fb   = pp_answer (SP.Feedback fb)                        in
 
-  let sload_path =
-    List.map (fun (dir,lp,implicit) ->
-        Sertop_init.{
-          coq_path  = Libnames.dirpath_of_string lp;
-          unix_path = dir;
-          has_ml    = true;
-          recursive = true;
-          implicit;
-        }) ser_opts.loadpath in
-
-  let coq_path = ser_opts.coqlib in
-  let sload_path = Sertop_init.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ sload_path in
+  let coq_path = ser_opts.coq_path in
+  let sload_path = Sertop_init.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ ser_opts.loadpath in
 
   (* Init Coq *)
   let _ = Sertop_init.coq_init {

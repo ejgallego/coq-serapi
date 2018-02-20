@@ -46,14 +46,6 @@ let print_args_doc = Arg.doc_alts
    "mach, sexplib's machine-format printer"
   ]
 
-let rload_path : (string * string) list Term.t =
-  let doc = "Bind a logical loadpath LP to a directory DIR and implicitly open its namespace." in
-  Arg.(value & opt_all (pair dir string) [] & info ["R"; "rec-load-path"] ~docv:"DIR,LP"~doc)
-
-let load_path : (string * string) list Term.t =
-  let doc = "Bind a logical loadpath LP to a directory DIR" in
-  Arg.(value & opt_all (pair dir string) [] & info ["Q"; "load-path"] ~docv:"DIR,LP" ~doc)
-
 let printer =
   let open Sertop_sexp in
   (* XXX Must improve argument information *)
@@ -71,3 +63,25 @@ let print0 =
 let length =
   let doc = "Emit a byte-length header before output. (deprecated)." in
   Arg.(value & flag & info ["length"] ~doc)
+
+(* We handle the conversion here *)
+open Sertop_init
+
+let coq_lp_conv ~implicit (dir,lp) = {
+  coq_path  = Libnames.dirpath_of_string lp;
+  unix_path = dir;
+  has_ml    = true;
+  recursive = true;
+  implicit;
+}
+
+let rload_path : load_path_spec list Term.t =
+  let doc = "Bind a logical loadpath LP to a directory DIR and implicitly open its namespace." in
+  Term.(const List.(map (coq_lp_conv ~implicit:true)) $
+        Arg.(value & opt_all (pair dir string) [] & info ["R"; "rec-load-path"] ~docv:"DIR,LP"~doc))
+
+let load_path : load_path_spec list Term.t =
+  let doc = "Bind a logical loadpath LP to a directory DIR" in
+  Term.(const List.(map (coq_lp_conv ~implicit:false)) $
+        Arg.(value & opt_all (pair dir string) [] & info ["Q"; "load-path"] ~docv:"DIR,LP" ~doc))
+

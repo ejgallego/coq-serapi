@@ -21,9 +21,10 @@ val async           : string option Term.t
 val async_full      : bool Term.t
 val deep_edits      : bool Term.t
 val implicit_stdlib : bool Term.t
-val rload_path      : (string * string) list Term.t
-val load_path       : (string * string) list Term.t
 val printer         : Sertop_sexp.ser_printer Term.t
 val debug           : bool Term.t
 val print0          : bool Term.t
 val length          : bool Term.t
+val rload_path      : Sertop_init.load_path_spec list Term.t
+val load_path       : Sertop_init.load_path_spec list Term.t
+

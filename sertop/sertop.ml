@@ -17,14 +17,13 @@
 open Cmdliner
 
 let sertop_version = Ser_version.ser_git_version
-let sertop printer print0 debug length prelude load_path rload_path implicit_prelude async async_full deep_edits  =
-
-  (* Prepare load_paths by adding a boolean flag to mark -R or -Q *)
-  let elp f = List.map (fun (l,d) -> l,d,f) in
-  let loadpath = elp false load_path @ elp true rload_path in
+let sertop printer print0 debug lheader coq_path lp1 lp2 std_impl async async_full deep_edits  =
 
   let open  Sertop_init         in
   let open! Sertop_sexp         in
+
+  let loadpath = lp1 @ lp2 in
+
   ser_loop
     {  in_chan  = stdin;
        out_chan = stdout;
@@ -32,11 +31,12 @@ let sertop printer print0 debug length prelude load_path rload_path implicit_pre
        debug;
        printer;
        print0;
-       lheader  = length;
+       lheader;
 
-       coqlib   = prelude;
+       coq_path;
        loadpath;
-       std_impl = implicit_prelude;
+       std_impl;
+
        async = {
          enable_async = async;
          async_full = async_full;
