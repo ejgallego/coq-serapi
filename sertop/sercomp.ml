@@ -245,7 +245,7 @@ let sertop_cmd =
     `P "Experimental Coq Compiler with serialization support. Currently it just prints some stats on the file."
   ]
   in
-  let open Sercmdopt in
+  let open Sertop_arg in
   Term.(const sercomp $ debug $ printer $ async $ prelude $ load_path $ rload_path $ input_file),
   Term.info "sercomp" ~version:sercomp_version ~doc ~man
 

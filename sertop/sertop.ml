@@ -45,7 +45,7 @@ let sertop printer print0 debug lheader coq_path lp1 lp2 std_impl async async_fu
     }
 
 let sertop_cmd =
-  let open Sercmdopt in
+  let open Sertop_arg in
   let doc = "SerAPI Coq Toplevel" in
   let man = [
     `S "DESCRIPTION";

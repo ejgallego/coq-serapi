@@ -37,7 +37,7 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Specifip to toplevel
 <sertop/sertop_ser.ml>: package(ppx_import,ppx_sexp_conv)
-<sertop/sercmdopt.ml{i,}>: package(cmdliner)
+<sertop/sertop_arg.ml{i,}>: package(cmdliner)
 <sertop/sertop.ml>: package(cmdliner)
 <sertop/*>: package(coq.intf,coq.stm,coq.ltac,sexplib), debug
 
