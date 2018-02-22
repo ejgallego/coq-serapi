@@ -24,6 +24,9 @@ type t = Loc.t
 val t_of_sexp : Sexp.t -> Loc.t
 val sexp_of_t : Loc.t -> Sexp.t
 
+(* Don't print locations. Global-flag Hack. *)
+val omit_loc : bool ref
+
 type 'a located = 'a Loc.located
 val located_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Loc.located
 val sexp_of_located : ('a -> Sexp.t) -> 'a Loc.located -> Sexp.t

@@ -28,3 +28,6 @@ val length          : bool Term.t
 val rload_path      : Sertop_init.load_path_spec list Term.t
 val load_path       : Sertop_init.load_path_spec list Term.t
 
+(* debug options *)
+val omit_loc : bool Term.t
+val omit_att : bool Term.t

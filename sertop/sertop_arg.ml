@@ -85,3 +85,12 @@ let load_path : load_path_spec list Term.t =
   Term.(const List.(map (coq_lp_conv ~implicit:false)) $
         Arg.(value & opt_all (pair dir string) [] & info ["Q"; "load-path"] ~docv:"DIR,LP" ~doc))
 
+
+(* Low-level serialization options for display *)
+let omit_loc : bool Term.t =
+  let doc = "[debug option] shorten location printing" in
+  Arg.(value & flag & info ["omit_loc"] ~doc)
+
+let omit_att : bool Term.t =
+  let doc = "[debug option] omit attribute nodes" in
+  Arg.(value & flag & info ["omit_att"] ~doc)

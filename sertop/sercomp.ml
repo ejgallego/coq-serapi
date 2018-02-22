@@ -197,8 +197,12 @@ let close_document () =
   let open Format in
   printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
-let sercomp debug printer async coq_path lp1 lp2 in_file =
+let sercomp debug printer async coq_path lp1 lp2 in_file omit_loc omit_att =
+  (* serlib initialization *)
+  Serlib_init.init ~omit_loc ~omit_att;
+
   let open Sertop_init in
+  (* Move to Sertop_print *)
   let pp_sexp = match printer with
     | Sertop_sexp.SP_Sertop -> Sertop_util.pp_sertop
     | Sertop_sexp.SP_Mach   -> Sexp.pp
@@ -246,7 +250,7 @@ let sertop_cmd =
   ]
   in
   let open Sertop_arg in
-  Term.(const sercomp $ debug $ printer $ async $ prelude $ load_path $ rload_path $ input_file),
+  Term.(const sercomp $ debug $ printer $ async $ prelude $ load_path $ rload_path $ input_file $ omit_loc $ omit_att),
   Term.info "sercomp" ~version:sercomp_version ~doc ~man
 
 let main () =

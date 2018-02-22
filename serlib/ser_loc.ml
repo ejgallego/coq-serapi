@@ -23,6 +23,10 @@ type t =
   [%import: Loc.t]
   [@@deriving sexp]
 
+let omit_loc = ref false
+let sexp_of_t x =
+  if !omit_loc then Sexplib.Sexp.Atom "[LOC]" else sexp_of_t x
+
 (* located: public *)
 type 'a located =
   [%import: 'a Loc.located]

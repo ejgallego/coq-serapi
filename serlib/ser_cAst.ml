@@ -26,3 +26,8 @@ type 'a t = 'a CAst.t
 
 let t_of_sexp f s = let { v ; loc } = _t_of_sexp f s in CAst.make ?loc v
 let sexp_of_t f { CAst.v ; loc} = sexp_of__t f { v ; loc}
+
+let omit_att = ref false
+
+let sexp_of_t f x =
+  if !omit_att then f x.CAst.v else sexp_of_t f x

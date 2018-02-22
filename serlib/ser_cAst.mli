@@ -19,3 +19,5 @@ type 'a t = 'a CAst.t
 
 val t_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a t
 val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t
+
+val omit_att : bool ref
