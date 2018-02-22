@@ -66,13 +66,11 @@ val register_genser :
   unit
 
 (* Registering de-serializing functions *)
-type ('raw, 'glb, 'top) des_output =
-  | DS_Raw of 'raw
-  | DS_Glb of 'glb
-  | DS_Top of 'top
-  | DS_Fail of Sexplib.Sexp.t
-
-type ('raw, 'glb, 'top) gen_des = Sexp.t -> ('raw, 'glb, 'top) des_output
+type ('raw, 'glb, 'top) gen_des =
+  { raw_des : Sexp.t -> 'raw;
+    glb_des : Sexp.t -> 'glb;
+    top_des : Sexp.t -> 'top;
+  }
 
 val register_gendes :
   ('raw, 'glb, 'top) Genarg.genarg_type ->
