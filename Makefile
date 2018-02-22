@@ -79,3 +79,6 @@ all-sub:
 clean-sub:
 	make -C serlib clean
 
+demo-sync:
+	rsync -avzp --delete js/ /home/egallego/x80/rhino-hawk/
+	cp /home/egallego/x80/rhino-hawk/term.html /home/egallego/x80/rhino-hawk/index.html
