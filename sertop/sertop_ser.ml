@@ -16,6 +16,16 @@
 open Sexplib
 open Sexplib.Conv
 
+type ser_printer =
+  | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)
+  | SP_Mach                     (* sexplib mach  printer *)
+  | SP_Human                    (* sexplib human printer *)
+
+let select_printer pr = match pr with
+  | SP_Sertop -> Sertop_util.pp_sertop
+  | SP_Mach   -> Sexp.pp
+  | SP_Human  -> Sexp.pp_hum
+
 (* Optimize Pp.t inside feedback *)
 let opt_answer ans =
   let open! Serapi_protocol in

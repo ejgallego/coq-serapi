@@ -13,8 +13,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 open Ser_vernacexpr
 
 type stats = {
@@ -198,19 +196,16 @@ let close_document () =
   printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
 let sercomp debug printer async coq_path lp1 lp2 in_file omit_loc omit_att =
+
   (* serlib initialization *)
   Serlib_init.init ~omit_loc ~omit_att;
 
   let open Sertop_init in
-  (* Move to Sertop_print *)
-  let pp_sexp = match printer with
-    | Sertop_sexp.SP_Sertop -> Sertop_util.pp_sertop
-    | Sertop_sexp.SP_Mach   -> Sexp.pp
-    | Sertop_sexp.SP_Human  -> Sexp.pp_hum
-  in
-  let in_chan = open_in in_file            in
-  let in_strm = Stream.of_channel in_chan  in
+
+  let in_chan = open_in in_file                          in
+  let in_strm = Stream.of_channel in_chan                in
   let in_pa   = Pcoq.Gram.parsable ~file:in_file in_strm in
+  let pp_sexp = Sertop_ser.select_printer printer        in
 
   (* Prepare load_paths by adding a boolean flag to mark -R or -Q *)
   let iload_path = coq_loadpath_default ~implicit:true ~coq_path @ lp1 @ lp2 in

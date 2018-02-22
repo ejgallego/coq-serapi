@@ -22,25 +22,22 @@ module SP = Serapi_protocol
 (* Global Protocol Options                                                    *)
 (******************************************************************************)
 
-type ser_printer =
-  | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)
-  | SP_Mach                     (* sexplib mach  printer *)
-  | SP_Human                    (* sexplib human printer *)
-
 type ser_opts = {
   (* Input output Options *)
-  in_chan  : in_channel;        (* Input/Output channels                                *)
+  in_chan  : in_channel;        (* Input/Output channels                      *)
   out_chan : out_channel;
-  printer  : ser_printer;       (* Printers                                             *)
+                                (* Printers                                   *)
+  printer  : Sertop_ser.ser_printer;
 
   debug    : bool;
   print0   : bool;
-  lheader  : bool;              (* Print lenght header (deprecated)                     *)
+  lheader  : bool;              (* Print lenght header (deprecated)           *)
 
   (* Coq options *)
   coq_path : string;            (* Coq standard library location *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
-  loadpath : Sertop_init.load_path_spec list; (* -R and -Q options *)
+                                (* -R and -Q options                          *)
+  loadpath : Sertop_init.load_path_spec list;
   async    : Sertop_init.async_flags;
 }
 
@@ -80,11 +77,8 @@ let read_cmd cmd_id in_channel pp_error =
 
 let out_sexp opts =
   let open Format                                                               in
-  let pp_sexp = match opts.printer with
-    | SP_Sertop -> Sertop_util.pp_sertop
-    | SP_Mach   -> Sexp.pp
-    | SP_Human  -> Sexp.pp_hum
-  in
+
+  let pp_sexp = Sertop_ser.select_printer opts.printer in
 
   let pp_term = if opts.print0 then fun fmt () -> fprintf fmt "%c" (Char.chr 0)
                                else fun fmt () -> fprintf fmt "@\n"             in

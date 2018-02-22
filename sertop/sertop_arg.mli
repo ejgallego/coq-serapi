@@ -21,7 +21,7 @@ val async           : string option Term.t
 val async_full      : bool Term.t
 val deep_edits      : bool Term.t
 val implicit_stdlib : bool Term.t
-val printer         : Sertop_sexp.ser_printer Term.t
+val printer         : Sertop_ser.ser_printer Term.t
 val debug           : bool Term.t
 val print0          : bool Term.t
 val length          : bool Term.t

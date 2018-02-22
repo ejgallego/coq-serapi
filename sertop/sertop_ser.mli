@@ -4,6 +4,13 @@ open Sexplib
 (* Think about making this a functor? *)
 (* module ST_Sexp : sig *)
 
+type ser_printer =
+  | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)
+  | SP_Mach                     (* sexplib mach  printer *)
+  | SP_Human                    (* sexplib human printer *)
+
+val select_printer : ser_printer -> Format.formatter -> Sexp.t -> unit
+
 open Serapi_protocol
 
 val coq_object_of_sexp : Sexp.t -> coq_object

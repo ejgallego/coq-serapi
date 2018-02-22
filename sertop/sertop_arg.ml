@@ -37,7 +37,7 @@ let implicit_stdlib =
   let doc = "Allow loading unqualified stdlib libraries (deprecated)." in
   Arg.(value & flag & info ["implicit"] ~doc)
 
-let print_args = let open Sertop_sexp in
+let print_args = let open Sertop_ser in
   Arg.(enum ["sertop", SP_Sertop; "human", SP_Human; "mach", SP_Mach])
 
 let print_args_doc = Arg.doc_alts
@@ -47,7 +47,7 @@ let print_args_doc = Arg.doc_alts
   ]
 
 let printer =
-  let open Sertop_sexp in
+  let open Sertop_ser in
   (* XXX Must improve argument information *)
   (* let doc = "Select S-expression printer." in *)
   Arg.(value & opt print_args SP_Sertop & info ["printer"] ~doc:print_args_doc)
