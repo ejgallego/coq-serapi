@@ -115,6 +115,8 @@ type coq_object =
   | CoqExpr      of Constrexpr.constr_expr
   | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
   | CoqTactic    of Names.KerName.t * Tacenv.ltac_entry
+  | CoqLtac      of Tacexpr.raw_tactic_expr
+  | CoqGenArg    of Genarg.raw_generic_argument
   | CoqQualId    of Libnames.qualid
   | CoqGlobRef   of Globnames.global_reference
   | CoqImplicit  of Impargs.implicits_list
@@ -192,6 +194,9 @@ let gen_pp_obj (obj : coq_object) : Pp.std_ppcmds =
   | CoqConstr  c    -> Printer.pr_lconstr c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
   | CoqTactic(kn,_) -> Names.KerName.print kn
+  | CoqLtac t       -> Pptactic.pr_raw_tactic t
+  | CoqGenArg ga    -> Genprint.generic_raw_print ga
+
   (* Fixme *)
   | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.pr_lconstr)       g.Proof.fg_goals
   | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.pr_lconstr_expr) g.Proof.fg_goals
@@ -337,6 +342,8 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqExpr _       -> true
   | CoqMInd _       -> true
   | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
+  | CoqLtac _       -> true
+  | CoqGenArg _     -> true
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
   | CoqGlobRef _    -> true

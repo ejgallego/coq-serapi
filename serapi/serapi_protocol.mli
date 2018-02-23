@@ -37,6 +37,8 @@ type coq_object =
   | CoqExpr      of Constrexpr.constr_expr
   | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
   | CoqTactic    of Names.KerName.t * Tacenv.ltac_entry
+  | CoqLtac      of Tacexpr.raw_tactic_expr
+  | CoqGenArg    of Genarg.raw_generic_argument
   | CoqQualId    of Libnames.qualid
   | CoqGlobRef   of Globnames.global_reference
   | CoqImplicit  of Impargs.implicits_list

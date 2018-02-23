@@ -112,6 +112,7 @@ module Globnames  = Ser_globnames
 module Proof      = Ser_proof
 module Goal       = Ser_goal
 module Tok        = Ser_tok
+module Genarg     = Ser_genarg
 
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)
@@ -120,7 +121,10 @@ module Ser_stm    = Ser_stm
 module Ltac_plugin = struct
   module Tacenv       = Ser_tacenv
   module Profile_ltac = Ser_profile_ltac
+  module Tacexpr      = Ser_tacexpr
 end
+
+open Ltac_plugin
 
 module Notation   = Ser_notation
 module Xml_datatype = Ser_xml_datatype
