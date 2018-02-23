@@ -55,24 +55,19 @@ val sexp_of_typed_generic_argument : Genarg.typed_generic_argument -> Sexp.t
 
 (* Registering serializing functions *)
 type ('raw, 'glb, 'top) gen_ser =
-  { raw_ser : 'raw -> Sexplib.Sexp.t;
-    glb_ser : 'glb -> Sexplib.Sexp.t;
-    top_ser : 'top -> Sexplib.Sexp.t;
+  { raw_ser : 'raw -> Sexp.t;
+    raw_des : Sexp.t -> 'raw;
+
+    glb_ser : 'glb -> Sexp.t;
+    glb_des : Sexp.t -> 'glb;
+
+    top_ser : 'top -> Sexp.t;
+    top_des : Sexp.t -> 'top;
   }
 
 val register_genser :
   ('raw, 'glb, 'top) Genarg.genarg_type ->
-  ('raw, 'glb, 'top) gen_ser ->
-  unit
+  ('raw, 'glb, 'top) gen_ser -> unit
 
-(* Registering de-serializing functions *)
-type ('raw, 'glb, 'top) gen_des =
-  { raw_des : Sexp.t -> 'raw;
-    glb_des : Sexp.t -> 'glb;
-    top_des : Sexp.t -> 'top;
-  }
+val mk_uniform : ('t -> Sexp.t) -> (Sexp.t -> 't) -> ('t,'t,'t) gen_ser
 
-val register_gendes :
-  ('raw, 'glb, 'top) Genarg.genarg_type ->
-  ('raw, 'glb, 'top) gen_des ->
-  unit

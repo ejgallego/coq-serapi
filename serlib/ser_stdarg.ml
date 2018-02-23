@@ -13,27 +13,31 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let mk_unif p = Ser_genarg.{
-    raw_ser = p;
-    glb_ser = p;
-    top_ser = p;
-  }
+open Sexplib.Conv
 
-let ser_wit_int    = mk_unif Sexplib.Conv.sexp_of_int
-let ser_wit_bool   = mk_unif Sexplib.Conv.sexp_of_bool
-let ser_wit_string = mk_unif Sexplib.Conv.sexp_of_string
-let ser_wit_ident  = mk_unif Ser_names.Id.sexp_of_t
+let ser_wit_int    = Ser_genarg.mk_uniform sexp_of_int int_of_sexp
+let ser_wit_bool   = Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
+let ser_wit_string = Ser_genarg.mk_uniform sexp_of_string string_of_sexp
+let ser_wit_ident  = Ser_genarg.mk_uniform Ser_names.Id.sexp_of_t Ser_names.Id.t_of_sexp
 
 let ser_wit_constr = Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_glob_constr_and_expr;
     top_ser = Ser_eConstr.sexp_of_t;
+
+    raw_des = Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_tactypes.glob_constr_and_expr_of_sexp;
+    top_des = Ser_eConstr.t_of_sexp;
   }
 
 let ser_wit_uconstr = Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_glob_constr_and_expr;
     top_ser = Ser_glob_term.sexp_of_closed_glob_constr;
+
+    raw_des = Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_tactypes.glob_constr_and_expr_of_sexp;
+    top_des = Ser_glob_term.closed_glob_constr_of_sexp;
   }
 
 let register () =
