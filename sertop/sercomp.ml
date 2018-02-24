@@ -35,7 +35,7 @@ let do_stats =
   let incS ?loc f =
     Option.cata (fun loc ->
         let n_lines = Loc.(loc.line_nb_last - loc.line_nb + 1) in
-        Format.eprintf "Adding %d lines @\n%!" n_lines;
+        Format.eprintf "@[Adding %d lines@]@\n%!" n_lines;
         f + n_lines) f loc
   in
   match vrn with
@@ -171,7 +171,7 @@ let process_vernac pp st (loc, vrn) =
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   do_stats ?loc vrn;
-  printf "@[%a@] @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt Topfmt.pr_loc loc)
+  printf "@[%a@]@\n @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt Topfmt.pr_loc loc)
                               pp (sexp_of_vernac_expr vrn);
   n_st
 
