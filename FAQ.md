@@ -44,3 +44,43 @@ developed for jsCoq.
 However, limited `_CoqProject` support is planned in order to
 configure load paths.
 
+## What does SerAPI expose?
+
+SerAPI exposes the core Coq datatypes. Tactics, AST, kernel terms and
+types are all serialized. We also provide an API to manipulate and
+query "Coq documents".
+
+## How many ASTs does Coq have?
+
+That's a very interesting question! The right answer is: _countably many_!
+
+Logician jokes aside, the truth is that Coq features an extensible
+AST. While this gives great power to plugins, it means that consumers
+of the AST need to design their tools to support an _open_ AST.
+
+Coq's basic parsing AST is called `vernac_expr`, which contain Coq
+commands. Extensions happen under the `VernacExtend` constructor,
+which contains a list of "generic arguments".
+
+### Interpretation and Terms
+
+Coq terms undergo 2 elaboration phases before reaching "kernel"
+form. The top-level parsing type is named `constr_expr`, which will
+then be _internalized_ to a `glob_constr`.
+
+Type inference (called pretyping in Coq, as typing is usually reserved
+for kernel-level type checking) will turn a `glob_constr` into a
+full-typed `Constr.t` value, which is the core term type manipulated
+by Coq's kernel and tactics.
+
+When a _generic argument_ is added to Coq's AST, we must also provide
+the corresponding interpretation and pretyping functions. To that
+purpose, generic arguments have associated 3-levels, `raw`, `glb`, and
+`top` which correspond to parsing-level, internalized-level, and
+kernel-level.
+
+Thus, a generic argument of type `foo`, may carry 3 different OCaml
+types depending on the level the type is. This is used for example to
+define the AST of _LTAC_ tactics, where the expression `pose s := foo`
+with `foo` initially a `constr_expr` will undergo interpretation and
+inference up to a term with a fully elaborated `foo` term.
