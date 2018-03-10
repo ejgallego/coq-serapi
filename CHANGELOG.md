@@ -1,16 +1,23 @@
+_Version 0.6_:
+
+ * [general] support Coq 8.9
+
 _Version 0.5_:
 
- * `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`
- * support Coq 8.8 , make use of improved document API,
- * basic support for ssreflect serialization
+ * [general] support Coq 8.8, use improved document API,
+ * [sertop] By default `sertop` will create a new document with `doc_id` 0,
+ * [serlib] (basic) support for serialization of the ssreflect grammar,
+ * [serapi] `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`,
+ * [serapi] remove broken deprecated `SetOpt` and `LibAdd` commands,
+ * [sertop] new debug options, see `sertop --help`.
 
 _Version 0.4_:
 
- * support `-R` and `-Q` options, note the slightly different syntax
-   wrt Coq upstream: `-R dir,path` in place of `-R dir path`
- * support Coq 8.7 , make use of improved upstream API,
- * support serialization of generic arguments [#41],
- * full file support hack
+ * [general] support Coq 8.7 , make use of improved upstream API,
+ * [sertop] support `-R` and `-Q` options, note the slightly different
+   syntax wrt Coq upstream: `-R dir,path` in place of `-R dir path`,
+ * [serlib] support serialization of generic arguments [#41],
+ * [serapi] `(ReadFile file)`: hack to load a completed file.
 
 _Version 0.2_:
 

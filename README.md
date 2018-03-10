@@ -32,10 +32,11 @@ tracker](https://github.com/ejgallego/coq-serapi/issues). See also the
 
 ### Roadmap
 
-SerAPI 0.1 targets Coq 8.8. Current work is focused to improve Coq's
-upstream API, in particular, the handling of proof documents. Once we
-are happy with the document building and interaction API, work will
-continue towards providing a rich, extensible query language.
+SerAPI 0.5.x builds on top of Coq 8.8. Current work is focused to
+improve Coq's upstream API, in particular, the handling of proof
+documents. Once we are happy with the document building and
+interaction API, work will continue towards providing a rich,
+extensible query language.
 
 ### Quick Overview and Documentation
 

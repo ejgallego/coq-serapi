@@ -574,14 +574,6 @@ type add_opts = {
   verb   : bool      [@default false];
 }
 
-let exec_setopt ?locality n (v : Goptions.option_value) =
-  let open Goptions in
-  match v with
-  | BoolValue b      -> set_bool_option_value_gen ?locality n b
-  | IntValue  i      -> set_int_option_value_gen  ?locality n i
-  | StringValue s    -> set_string_option_value_gen ?locality n s
-  | StringOptValue s -> set_string_option_value_gen ?locality n (Option.default "" s)
-
 module ControlUtil = struct
 
   type doc    = Stateid.t list
@@ -698,12 +690,6 @@ type cmd =
   | Join
   | Finish
   (*******************************************************************)
-  (* XXX: We want to have query / update and fuse these two under it *)
-  (* Both commands deprecated, don't work well with state handling.  *)
-  (*              coq_path      unix_path   has_ml                   *)
-  | LibAdd     of string list * string    * bool
-  | SetOpt     of Goptions.option_locality option * Goptions.option_name * Goptions.option_value
-  (*******************************************************************)
   (* Non-supported commands, only for convenience.                   *)
   | ReadFile   of string
   | Tokenize   of string
@@ -724,18 +710,7 @@ let exec_cmd (cmd : cmd) =
   | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
   | Join              -> ignore(Stm.join ~doc); []
   | Finish            -> ignore(Stm.finish ~doc); []
-
-  (*******************************************************************)
-  (* Deprecated, not working well with state handling.               *)
-  | LibAdd(_lib, _lib_path, _has_ml) -> []
-    (* let open Names in
-     * let coq_path = DirPath.make @@ List.rev @@ List.map Names.Id.of_string lib in
-     * (\* XXX [upstream]: Unify ML and .vo library paths.  *\)
-     * Loadpath.add_load_path lib_path coq_path ~implicit:false;
-     * if has_ml then Mltop.add_ml_dir lib_path; *)
-
-  | SetOpt(locality, n, v) -> exec_setopt ?locality n v; []
-  (*******************************************************************)
+  (*  *)
   | ReadFile f ->
     (
       let inc = open_in f in

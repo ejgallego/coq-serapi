@@ -164,12 +164,6 @@ type cmd =
   | Join
   | Finish
   (*******************************************************************)
-  (* XXX: We want to have query / update and fuse these two under it *)
-  (* Both commands deprecated, don't work well with state handling.  *)
-  (*              coq_path      unix_path   has_ml                   *)
-  | LibAdd     of string list * string    * bool
-  | SetOpt     of Goptions.option_locality option * Goptions.option_name * Goptions.option_value
-  (*******************************************************************)
   (* Non-supported commands, only for convenience.                   *)
   | ReadFile   of string
   | Tokenize   of string
