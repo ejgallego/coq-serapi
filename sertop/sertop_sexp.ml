@@ -110,7 +110,8 @@ let ser_loop ser_opts =
   let pp_answer    = ser_lock (out_answer ser_opts out_fmt)            in
   let pp_err       = ser_lock (out_sexp ser_opts out_fmt)              in
   let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
-  let pp_feed fb   = pp_answer (SP.Feedback fb)                        in
+  let pp_opt  fb   = Sertop_util.feedback_opt_filter fb                in
+  let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback fb)) (pp_opt fb) in
 
   let coq_path = ser_opts.coq_path in
   let sload_path = Sertop_init.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ ser_opts.loadpath in

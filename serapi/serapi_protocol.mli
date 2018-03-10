@@ -203,6 +203,3 @@ type answer =
 (*   async    : Sertop_init.async_flags; *)
 (* } *)
 
-(* Temp *)
-val pp_opt_flag : bool
-val coq_pp_opt : Pp.t -> Pp.t

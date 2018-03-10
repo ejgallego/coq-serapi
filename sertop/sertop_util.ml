@@ -126,6 +126,25 @@ and pp_sertop_rest may_need_space ppf = function
 
 let pp_sertop ppf sexp = ignore (pp_sertop_internal false ppf sexp)
 
+(* XXX: This is terrible and doesn't work yet *)
+let rec coq_pp_opt (d : Pp.t) = let open Pp in
+  let rec flatten_glue l = match l with
+    | []  -> []
+    | (Ppcmd_glue g :: l) -> flatten_glue (List.map repr g @ flatten_glue l)
+    | (Ppcmd_string s1 :: Ppcmd_string s2 :: l) -> flatten_glue (Ppcmd_string (s1 ^ s2) :: flatten_glue l)
+    | (x :: l) -> x :: flatten_glue l
+  in
+  (* let rec flatten_glue l = match l with *)
+  (*   | (Ppcmd_string s1 :: Ppcmd_string s2 :: l) -> Ppcmd_string (s1 ^ s2) :: flatten_glue l *)
+  unrepr (match repr d with
+      | Ppcmd_glue []   -> Ppcmd_empty
+      | Ppcmd_glue [x]  -> repr (coq_pp_opt x)
+      | Ppcmd_glue l    -> Ppcmd_glue List.(map coq_pp_opt (map unrepr (flatten_glue (map repr l))))
+      | Ppcmd_box(bt,d) -> Ppcmd_box(bt, coq_pp_opt d)
+      | Ppcmd_tag(t, d) -> Ppcmd_tag(t,  coq_pp_opt d)
+      | d -> d
+    )
+
 (* Adjust positions from byte to UTF-8 chars *)
 (* XXX: Move to serapi/ *)
 (* We only do adjustement for messages for now. *)
@@ -139,3 +158,21 @@ let feedback_content_pos_filter txt (fbc : F.feedback_content) : F.feedback_cont
 
 let feedback_pos_filter text (fb : F.feedback) : F.feedback =
   { fb with F.contents = feedback_content_pos_filter text fb.F.contents; }
+
+
+(* Optimizes and filters feedback *)
+type fb_filter_opts = {
+  pp_opt : bool;
+}
+
+let default_fb_filter_opts = {
+  pp_opt = true;
+}
+
+let feedback_opt_filter ?(opts=default_fb_filter_opts) = let open Feedback in function
+    | { F.contents = Message (lvl, loc, msg); _ } as fb ->
+      Some (if opts.pp_opt
+            then { fb with contents = Message(lvl, loc, coq_pp_opt msg) }
+            else fb)
+    | { F.contents = FileDependency _ ; _ } -> None
+    | fb -> Some fb

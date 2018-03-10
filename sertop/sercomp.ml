@@ -208,7 +208,11 @@ let sercomp debug printer async coq_path lp1 lp2 in_file omit_loc omit_att =
 
   let iload_path = coq_loadpath_default ~implicit:true ~coq_path @ lp1 @ lp2 in
 
+  (* let pp_opt  fb   = Sertop_util.feedback_opt_filter fb                in
+   * let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback fb)) (pp_opt fb) in *)
+
   let doc,sid = coq_init {
+    (* XXXX *)
     fb_handler   = (fun _ -> ());
 
     aopts        = { enable_async = async;
