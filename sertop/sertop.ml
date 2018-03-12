@@ -53,7 +53,16 @@ let sertop_cmd =
   let doc = "SerAPI Coq Toplevel" in
   let man = [
     `S "DESCRIPTION";
-    `P "Experimental Coq Toplevel with serialization support"
+    `P "Experimental Coq Toplevel with serialization support";
+    `S "USAGE";
+    `P "To build an initial document, use the `Add` command:";
+    `Pre "(Add () \"Lemma addn0 n : n + 0. Proof. now induction n. Qed.\")";
+    `P "Then, you can ask Coq for checking the proof with `Exec`:";
+    `Pre "(Exec 5)";
+    `P "Queries over the just-built documment are possible. Some examples:";
+    `Pre "(Query ((sid 4)) Ast)";
+    `Pre "(Query ((sid 3)) Goals)";
+    `P "See the documentation on the project's webpage for more information"
   ]
   in
   Term.(const sertop
