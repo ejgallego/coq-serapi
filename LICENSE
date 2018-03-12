@@ -17,5 +17,6 @@ Comment: the intent is to be compatible with Coq, however we favor
 GPL-3.
 
 We currently have very little direct derivative from Coq, however
-using LGPL 2.1, seems the safest for now, but we may move to GPL-3 at
-some point.
+using LGPL 2.1 seems the safest for now, but we may move to GPL-3 at
+some point, and definitively we double license everything under the
+GPL3 or at your option, any later version.
