@@ -7,7 +7,7 @@ OCB_OPT=-use-ocamlfind -j 4 #-classic-display
 OPAMPATH=$(shell opam config var lib)
 
 # Leave empty to use OPAM-installed Coq
-SERAPI_COQ_HOME=
+SERAPI_COQ_HOME ?=
 # SERAPI_COQ_HOME=/home/egallego/external/coq-v8.8/
 # SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.7+32bit/
 
@@ -27,12 +27,12 @@ sertop/ser_version.ml: $(GITDEPS)
 
 serlib:
 	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	OCAMLPATH=$(SERAPI_COQ_HOME):$(OCAMLPATH)                 \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) serlib/serlib.$(CMAEXT)
 
 sertop: sertop/ser_version.ml
 	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	OCAMLPATH=$(SERAPI_COQ_HOME):$(OCAMLPATH)                 \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop.$(TARGET)
 
 sercomp: sertop
