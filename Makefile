@@ -50,14 +50,23 @@ sertop_js.byte: force
 	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop_js.byte
 
+#####################################################
+# JS
+
 JSDIR=jscoq/coq-libjs
 JSFILES=$(addprefix $(JSDIR)/,mutex.js unix.js str.js coq_vm.js)
+
+JSCOQ_DEBUG=no
+JSOO_OPTS=
+ifeq "${JSCOQ_DEBUG}" "yes"
+JSOO_OPTS+= --pretty --noinline --disable shortvar --debug-info
+endif
 
 js:
 	mkdir -p js
 
 js/sertop_js.js: js sertop_js.byte
-	js_of_ocaml --dynlink +nat.js +weak.js +dynlink.js +toplevel.js $(JSFILES) sertop_js.byte -o js/sertop_js.js
+	js_of_ocaml --dynlink +nat.js +dynlink.js +toplevel.js $(JSOO_OPTS) $(JSFILES) sertop_js.byte -o js/sertop_js.js
 
 js-dist:
 	rsync -avp --exclude=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs

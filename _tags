@@ -59,7 +59,7 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <jscoq/coq-js>: include
 <jscoq/coq-js/*.{ml,mli}>: package(yojson)
 <jscoq/coq-js/jslibmng.mli>: package(lwt)
-<jscoq/coq-js/jslibmng.ml>: package(js_of_ocaml-lwt,yojson,ppx_deriving_yojson,coq.stm)
+<jscoq/coq-js/jslibmng.ml>: package(js_of_ocaml-lwt,yojson,ppx_deriving_yojson)
 
 # Js Toplevel
 <sertop/sertop_js.ml>: package(js_of_ocaml-lwt,ppx_import,ppx_sexp_conv)

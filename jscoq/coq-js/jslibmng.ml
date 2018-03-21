@@ -70,20 +70,13 @@ let preload_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t 
            md5          = Digest.string "";
          } in
          if verb then Format.eprintf "cache_add_entry: %s\n%!" full_url;
-         Hashtbl.add file_cache full_url cache_entry
+         Hashtbl.add file_cache full_url cache_entry;
+         (* Warm the file cache to workaround a deficient jsoo is_directory implementation *)
+         ignore(Sys.file_exists full_url)
       );
   Lwt.return_unit
   end
   else Lwt.return_unit
-
-(* XXX: Hack *)
-let jslib_add_load_path pkg pkg_path has_ml =
-  let open Names                                                       in
-  let coq_path = DirPath.make @@ List.rev @@ List.map Id.of_string pkg in
-  (* let implicit = try String.equal (List.hd pkg) "Coq" with _ -> false  in *)
-  (* Format.eprintf "setting implicit to %b for pkg: %s\n%!" implicit (DirPath.to_string coq_path); *)
-  Loadpath.add_load_path ("./" ^ pkg_path) coq_path ~implicit:false;
-  if has_ml then Mltop.(add_coq_path { recursive = false; path_spec = MlPath pkg_path })
 
 let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   let pkg_dir = to_dir pkg                                           in
@@ -101,8 +94,7 @@ let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   in
   Lwt_list.iteri_s (preload_and_log 0   ) pkg.cma_files >>= fun () ->
   Lwt_list.iteri_s (preload_and_log ncma) pkg.vo_files  >>= fun () ->
-  jslib_add_load_path pkg.pkg_id pkg_dir (ncma > 0);
-  (* We dont emit a package loaded event *)
+  (* We don't emit a package loaded event for now *)
   (* out_fn (LibLoadedPkg bundle pkg); *)
   Lwt.return_unit
 
@@ -162,8 +154,8 @@ let coq_vo_req url =
     *)
     (* Format.eprintf "check path %s\n%!" url; *)
     if Filename.(check_suffix url "cma" || check_suffix url "cmo") then
-      let js_file = (url ^ ".js")    in
-      (* Format.eprintf "trying %s\n%!" js_file; *)
+      let js_file = Hashtbl.find cma_cache url ^ "/" ^ url ^ ".js" in
+      if verb then Format.eprintf "trying js %s\n%!" js_file;
       try let c_entry = Hashtbl.find file_cache js_file in
         Some c_entry.file_content
       with Not_found -> None
@@ -182,7 +174,7 @@ let coq_cma_link cma =
       (* When eval'ed, the js_code will return a closure waiting for the
          jsoo global object to link the plugin.
       *)
-      Js.Unsafe.((eval_string js_code : < .. > Js.t -> unit) global)
+      Js.Unsafe.((eval_string ("(" ^ js_code ^ ")") : < .. > Js.t -> unit) global)
     with
     | Not_found ->
       eprintf "cache inconsistecy for %s !! \n%!" cma;
