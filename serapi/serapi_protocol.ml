@@ -670,10 +670,12 @@ end
 let serproto_help () =
   let open Format in
   eprintf "%s%!"
-    ("Coq SerAPI -- Protocol documentation is still incomplete, main commands are: \n\n" ^
-     "  (Control control_cmd) \n"      ^
-     "  (Query query_opt query_cmd) \n"^
-     "  (Print print_opt coq_object) \n"         ^
+    ("Coq SerAPI -- Protocol documentation is still incomplete, the main commands are: \n\n" ^
+     "  (Add add_opt \"gallina code\") -- Add new sentences to the current document \n"      ^
+     "  (Cancel sid_list)            -- Cancel sentences in the current document \n"         ^
+     "  (Exec sid)                   -- Check sentence `sid` \n"                             ^
+     "  (Query query_opt query_cmd)  -- Query information about a sentence / global data \n" ^
+     "  (Print print_opt coq_object) -- Print object with options \n"                        ^
      "\nSee sertop_protocol.mli for more details.\n\n")
 
 (******************************************************************************)
