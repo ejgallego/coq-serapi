@@ -92,8 +92,8 @@ let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
     out_fn (LibProgress { bundle; pkg = pkg_dir; loaded = i+nc+1; total = nfiles });
     Lwt.return_unit
   in
-  Lwt_list.iteri_s (preload_and_log 0   ) pkg.cma_files >>= fun () ->
-  Lwt_list.iteri_s (preload_and_log ncma) pkg.vo_files  >>= fun () ->
+  Lwt_list.iteri_p (preload_and_log 0   ) pkg.cma_files <&>
+  Lwt_list.iteri_p (preload_and_log ncma) pkg.vo_files  >>= fun () ->
   (* We don't emit a package loaded event for now *)
   (* out_fn (LibLoadedPkg bundle pkg); *)
   Lwt.return_unit
