@@ -42,10 +42,10 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/*>: package(coq.intf,coq.stm,coq.ltac,sexplib), debug
 
 # Some plugins need num.
-<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,coq.intf,coq.ltac)
+<sertop/sertop.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,ppx_sexp_conv.runtime-lib)
 
 <sertop/sercomp.ml>: package(cmdliner)
-<sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner)
+<sertop/sercomp.{byte,native}>: linkall, package(dynlink,camlp5.gramlib,cmdliner,num,ppx_sexp_conv.runtime-lib)
 
 # JsCoq helpers
 <jscoq/coq-js>: include
