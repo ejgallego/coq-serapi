@@ -36,9 +36,9 @@ tracker](https://github.com/ejgallego/coq-serapi/issues), or our
 ### Roadmap:
 
 SerAPI 0.5.x is based on Coq 8.8. These days, most work related to
-SerAPI is directly happenin point to g over Coq's upstream itself, trying to
-improve the proof-document model. Once the main objectives there are
-met, we will continue towards building a rich query language.
+SerAPI is directly happening over Coq's upstream itself. The main
+objective is to improve the proof-document model; building a rich
+query language will be next.
 
 ### Quick Overview and Documentation:
 
