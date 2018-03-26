@@ -50,10 +50,10 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/*>: package(coq.intf,coq.stm,sexplib), debug
 
 # Note that some plugins need num.
-<sertop/sertop.{byte,native}>: linkall, package(cmdliner,num,coq.intf,coq.plugins.ssreflect)
+<sertop/sertop.{byte,native}>: linkall, package(cmdliner,num,ppx_sexp_conv.runtime-lib,coq.plugins.ssreflect)
 
 <sertop/sercomp.ml>: package(cmdliner)
-<sertop/sercomp.{byte,native}>: linkall, package(cmdliner,num,coq.intf,coq.plugins.ssreflect)
+<sertop/sercomp.{byte,native}>: linkall, package(cmdliner,num,ppx_sexp_conv.runtime-lib,coq.plugins.ssreflect)
 
 # JsCoq helpers
 <jscoq/coq-js>: include
@@ -63,7 +63,7 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Js Toplevel
 <sertop/sertop_js.ml>: package(js_of_ocaml-lwt,ppx_import,ppx_sexp_conv)
-<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,coq.plugins.ssreflect,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
+<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,ppx_sexp_conv.runtime-lib,coq.plugins.ssreflect,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
 
 # Don't mess with this.
 <js>: -traverse
