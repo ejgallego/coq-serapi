@@ -99,6 +99,8 @@ type answer_kind =
   | ObjList   of coq_object list
   | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
 
+val pp_answer  : Format.formatter -> answer_kind -> unit
+
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
 (******************************************************************************)
