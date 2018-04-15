@@ -20,8 +20,11 @@
 (* Public API for Ocaml clients                                         *)
 (************************************************************************)
 
-open Ltac_plugin
-open Sexplib.Conv
+(* open Ltac_plugin
+open Sexplib.Conv *)
+
+type 'a sexp_list = 'a list
+type 'a sexp_option = 'a option
 
 (******************************************************************************)
 (* Basic Protocol Objects                                                     *)

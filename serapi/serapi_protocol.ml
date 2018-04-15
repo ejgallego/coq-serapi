@@ -27,8 +27,11 @@
  * embed a few utility functions in the `Extra` module below.
  *)
 
-open Ltac_plugin
-open! Sexplib.Conv
+(* open Ltac_plugin
+open! Sexplib.Conv *)
+
+type 'a sexp_list = 'a list
+type 'a sexp_option = 'a option
 
 module Extra = struct
 
@@ -197,7 +200,7 @@ let gen_pp_obj (obj : coq_object) : Pp.t =
   | CoqConstr  c    -> Printer.pr_lconstr_env env sigma c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
   | CoqTactic(kn,_) -> Names.KerName.print kn
-  | CoqLtac t       -> Pptactic.pr_raw_tactic t
+  | CoqLtac _       -> Pp.str "no support for Ltac" (* Pptactic.pr_raw_tactic t *)
   | CoqGenArg ga    ->
     let open Genprint in
     begin match generic_raw_print ga with
@@ -240,7 +243,8 @@ type print_opt = {
   pp_margin : int           [@default 72];
 }
 
-let pp_tex (obj : coq_object) =
+let pp_tex (_obj : coq_object) = "(pp_tex)"
+(*
   let tex_sexp c = let open Format in
     pp_set_margin     str_formatter 300;
     pp_set_max_indent str_formatter 300;
@@ -261,6 +265,7 @@ let pp_tex (obj : coq_object) =
                      sexp_of_constr_expr cst |> tex_sexp
   | CoqAst(_,ast) -> sexp_of_vernac_control ast |> tex_sexp
   | _             -> "not supported"
+  *)
 
 let obj_print pr_opt obj =
   let open Format in
@@ -506,7 +511,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
-  | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
+  | ProfileData    -> [CoqString "ProfileData not implemented"] (* [CoqProfData (Profile_ltac.get_local_profiling_results ())] *)
   | Proof          -> begin
                         try
                           let (a,b,c,d,_) = Proof.proof (Proof_global.give_me_the_proof ()) in
