@@ -1,18 +1,20 @@
-_Version 0.6_:
+_Version 0.6.0_:
 
  * [general] support Coq 8.9
 
 _Version 0.5.1_:
 
+ * [serlib] (basic) support for serialization of the ssreflect grammar,
+ * [serapi] `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`,
+ * [serapi] remove broken deprecated `SetOpt` and `LibAdd` commands,
+ * [doc] Improved man page.
+ * [js] Miscellaneous improvements on the js build.
+
 _Version 0.5.0_:
 
  * [general] support Coq 8.8, use improved document API,
  * [sertop] By default `sertop` will create a new document with `doc_id` 0,
- * [serlib] (basic) support for serialization of the ssreflect grammar,
- * [serapi] `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`,
- * [serapi] remove broken deprecated `SetOpt` and `LibAdd` commands,
  * [sertop] new debug options, see `sertop --help`.
- * [doc] Improved man page.
 
 _Version 0.4_:
 
