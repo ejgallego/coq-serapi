@@ -2,6 +2,8 @@ _Version 0.6.0_:
 
  * [general] support Coq 8.9
 
+_Version 0.5.2_:
+
 _Version 0.5.1_:
 
  * [serlib] (basic) support for serialization of the ssreflect grammar,
