@@ -284,6 +284,7 @@ let obj_print pr_opt obj =
 
     fprintf str_formatter "@[%a@]" str_pp_obj obj;
     let str_obj = CoqString (flush_str_formatter ())    in
+    let () = Js.log str_obj in
 
     pp_set_max_boxes     str_formatter mb;
     pp_set_ellipsis_text str_formatter et;
@@ -303,28 +304,24 @@ type answer_kind =
   | ObjList   of coq_object list
   | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
 
+let pp_coq_obj fmt (obj : coq_object) =
+  let open Format in
+  let open Serapi_pp in
+  match obj with
+    | CoqString str -> fprintf fmt "CoqString %s" str
+    | CoqMInd (names, decls) -> fprintf fmt "CoqMInd"
+
 (* Answer *)
 let pp_answer fmt (ans : answer_kind) =
   let open Format in
+  let open Serapi_pp in
   match ans with
   | Ack                 -> fprintf fmt "Ack@?"
   | Completed           -> fprintf fmt "Completed@?"
-  | Added (_, _, _)     -> fprintf fmt "Added@?"
+  | Added (id, _, _)    -> fprintf fmt "Added %a@?" Serapi_pp.pp_stateid id
   | Canceled _          -> fprintf fmt "Canceled@?"
-  | ObjList _           -> fprintf fmt "ObjList@?"
-  | CoqExn (loc, stateIds, bt, exn) ->
-      fprintf fmt "CoqExn:@?";
-      (match loc with
-        | None -> ()
-        | Some loc -> fprintf fmt "loc");
-      (match stateIds with
-        | None -> ()
-        | Some (id1, id2) ->
-            fprintf fmt "%a" Serapi_pp.pp_stateid id1;
-            fprintf fmt "%a" Serapi_pp.pp_stateid id2);
-      (* fprintf fmt "%s@?" (Printexc.raw_backtrace_to_string bt); *)
-      fprintf fmt "%s@?" (Printexc.to_string exn);
-      fprintf fmt "/CoqExn@?";
+  | ObjList ls          -> fprintf fmt "ObjList @[%a@]@?" (pp_list ~sep:" " pp_coq_obj) ls
+  | CoqExn (loc, stateIds, bt, exn) -> Pp.pp_with fmt (CErrors.print exn)
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -575,7 +572,9 @@ let exec_query opt cmd =
   let res = obj_query opt cmd        in
   (* XXX: Filter should move to query once we have GADT *)
   let res = obj_filter opt.preds res in
+  let () = Js.log2 "res (post limit)" (List.length res) in
   let res = obj_limit  opt.limit res in
+  let () = Js.log2 "res (post filter)" (List.length res) in
   List.map (obj_print opt.pp) res
 
 (******************************************************************************)
@@ -605,7 +604,7 @@ type add_opts = {
 module ControlUtil = struct
 
   type doc    = Stateid.t list
-  let cur_doc : doc ref = Js.log2 "stateid init" [Stateid.of_int 1]; ref [Stateid.of_int 1]
+  let cur_doc : doc ref = ref [Stateid.of_int 1]
 
   let pp_doc fmt l =
     let open Serapi_pp in
@@ -615,43 +614,29 @@ module ControlUtil = struct
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
   let add_sentences ~doc opts sent =
-    Js.log "adding sentences";
-    Js.log2 "doc" doc;
-    Js.log2 "cur_doc" !cur_doc;
-    Js.log2 "(Stm.get_current_state ~doc)" (Stm.get_current_state ~doc);
-    Js.log2 "opts.ontop" opts.ontop;
     let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
     let i   = ref 1                    in
     let acc = ref []                   in
     let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ~doc)) in
     let doc = ref doc                  in
     let check_lim i = Extra.value_map opts.lim ~default:true ~f:(fun lim -> i <= lim) in
-    Js.log "here 1";
     try
       while check_lim !i do
         (* XXX: We check that the ontop state is actually in the
          * document to avoid an Anomaly exception.
          *)
         if not (List.mem !stt !cur_doc) then
-          let () = Js.log "about to throw; dumping doc." in
-          let () = Js.log2 "cur_doc" !cur_doc in
-          let () = Js.log2 "stt" !stt in
           raise (NoSuchState !stt);
-        Js.log "here 2";
         let east      = Stm.parse_sentence ~doc:!doc !stt pa in
-        Js.log2 "east" east;
         (* XXX: Must like refine the API *)
         let eloc      = Option.get (east.CAst.loc) in
-        Js.log2 "eloc" eloc;
         let n_doc, n_st, foc = Stm.add ~doc:!doc ?newtip:opts.newtip ~ontop:!stt opts.verb east in
-        Js.log2 "n_doc" n_doc;
         doc := n_doc;
         cur_doc := n_st :: !cur_doc;
         acc := (Added (n_st, eloc, foc)) :: !acc;
         stt := n_st;
         incr i
       done;
-      Js.log "here 3";
       !doc, List.rev !acc
     with
     | Stm.End_of_input -> !doc, List.rev !acc
@@ -745,7 +730,6 @@ type cmd =
   (*******************************************************************)
 
 let exec_cmd (cmd : cmd) =
-  Js.log2 "doc_id" doc_id;
   let doc = Stm.get_doc !doc_id in
   coq_protect @@ fun () -> match cmd with
   | Add (opt, s) -> snd @@ ControlUtil.add_sentences ~doc opt s
