@@ -37,6 +37,7 @@ type ser_opts = {
   lheader  : bool;              (* Print lenght header (deprecated)           *)
 
   (* Coq options *)
+  no_init  : bool;              (* Whether to create the initial document     *)
   coq_path : string;            (* Coq standard library location *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
                                 (* -R and -Q options                          *)
@@ -117,15 +118,10 @@ let ser_loop ser_opts =
   let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback fb)) (pp_opt fb) in
 
   let coq_path = ser_opts.coq_path in
-  let sload_path = Sertop_init.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ ser_opts.loadpath in
 
   (* Init Coq *)
   let _ = Sertop_init.coq_init {
     Sertop_init.fb_handler   = pp_feed;
-    Sertop_init.aopts        = ser_opts.async;
-    Sertop_init.iload_path   = sload_path;
-    Sertop_init.require_libs = ["Coq.Init.Prelude", None, Some true];
-    Sertop_init.top_name     = "SerTop";
     Sertop_init.ml_load      = None;
     Sertop_init.debug        = ser_opts.debug;
   } in
@@ -135,6 +131,18 @@ let ser_loop ser_opts =
    * trust the IDEs to send the signal on coherent IO state.
    *)
   Sys.catch_break true;
+
+  let sload_path = Serapi_paths.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ ser_opts.loadpath in
+  if not ser_opts.no_init then begin
+    let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
+    let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp;
+                 require_libs = ["Coq.Init.Prelude", None, Some true];
+                 iload_path   = sload_path;
+                 stm_options  = Sertop_init.process_stm_flags ser_opts.async;
+               } in
+    let _ = Stm.new_doc ndoc in
+    ()
+  end;
 
   (* Main loop *)
   let rec loop cmd_id =

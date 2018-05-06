@@ -34,22 +34,29 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
 (* Initialize Coq. *)
 let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug =
   let open! Sertop_init in
+
   let fb_handler fb = Sertop_ser.sexp_of_answer (Feedback fb) |> fb_out in
-  let no_asyncf     = {
-    enable_async = None;
-    async_full   = false;
-    deep_edits   = false;
-  }                                                 in
-  let coq_opts = {
+
+  coq_init {
     fb_handler;
-    iload_path;
-    require_libs;
-    aopts        = no_asyncf;
-    top_name     = "SerTopJS";
-    ml_load      = None;
+    ml_load = None;
     debug;
-  } in
-  Sertop_init.coq_init coq_opts
+  };
+
+  let stm_options = process_stm_flags
+    { enable_async = None;
+      async_full   = false;
+      deep_edits   = false;
+    } in
+
+  let open Stm in
+  let doc_type = Interactive Names.(DirPath.make [Id.of_string "SerTopJS"]) in
+  let ndoc = { doc_type;
+               require_libs;
+               iload_path;
+               stm_options;
+               } in
+  new_doc ndoc
 
 let async_mut = Mutex.create ()
 

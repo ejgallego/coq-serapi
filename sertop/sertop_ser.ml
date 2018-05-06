@@ -100,6 +100,7 @@ module Tok        = Ser_tok
 module Ppextend   = Ser_ppextend
 module Notation_gram = Ser_notation_gram
 module Genarg     = Ser_genarg
+module Mltop      = Ser_mltop
 
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)
@@ -210,6 +211,14 @@ type answer =
 type add_opts =
   [%import: Serapi_protocol.add_opts
   [@with
+     Sexplib.Conv.sexp_option := sexp_option;
+  ]]
+  [@@deriving sexp]
+
+type newdoc_opts =
+  [%import: Serapi_protocol.newdoc_opts
+  [@with
+     Sexplib.Conv.sexp_list   := sexp_list;
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
