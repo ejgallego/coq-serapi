@@ -29,6 +29,7 @@ val print0          : bool Term.t
 val length          : bool Term.t
 val rload_path      : Mltop.coq_path list Term.t
 val load_path       : Mltop.coq_path list Term.t
+val ml_include_path : Mltop.coq_path list Term.t
 
 (* debug options *)
 val omit_loc : bool Term.t

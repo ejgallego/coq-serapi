@@ -1,3 +1,7 @@
+_Version 0.5.3_:
+
+ * [sertop] Support for `-I` option (`--ml-include-path`).
+
 _Version 0.5.2_:
 
  * [serlib] Compatibility with OCaml 4.07.0 [problems with `Stdlib` packing]
