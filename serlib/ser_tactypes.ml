@@ -8,16 +8,37 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+open Sexplib.Conv
 
-module Constrexpr = Ser_constrexpr
-module Glob_term   = Ser_glob_term
+module CAst        = Ser_cAst
+module Names       = Ser_names
+module Namegen     = Ser_namegen
 
-type glob_constr_and_expr =
-  [%import: Tactypes.glob_constr_and_expr]
+type 'a intro_pattern_action_expr =
+  [%import: 'a Tactypes.intro_pattern_action_expr]
+and 'a intro_pattern_expr =
+  [%import: 'a Tactypes.intro_pattern_expr]
+and 'a or_and_intro_pattern_expr =
+  [%import: 'a Tactypes.or_and_intro_pattern_expr]
+  [@@deriving sexp]
+
+type quantified_hypothesis =
+  [%import: Tactypes.quantified_hypothesis]
+  [@@deriving sexp]
+
+type 'a explicit_bindings =
+  [%import: 'a Tactypes.explicit_bindings]
+  [@@deriving sexp]
+
+type 'a bindings =
+  [%import: 'a Tactypes.bindings]
+  [@@deriving sexp]
+
+type 'a with_bindings =
+  [%import: 'a Tactypes.with_bindings]
   [@@deriving sexp]

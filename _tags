@@ -9,29 +9,29 @@ true: rectypes, thread, safe_string
 true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Serlib building options
-<serlib/*.{ml,mli}>: package(sexplib,coq.intf,coq.stm)
+<serlib/*.{ml,mli}>: package(sexplib,coq.stm)
 <serlib/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/ide/*.{ml,mli}>: package(sexplib,coq.intf,coq.ide)
+<serlib/ide/*.{ml,mli}>: package(sexplib,coq.ide)
 <serlib/ide/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ltac)
+<serlib/plugins/ltac/*.{ml,mli}>: package(sexplib,coq.plugins.ltac)
 <serlib/plugins/ltac/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/firstorder/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ground)
+<serlib/plugins/firstorder/*.{ml,mli}>: package(sexplib,coq.plugins.ground)
 <serlib/plugins/firstorder/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/ssrmatching/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ssrmatching)
+<serlib/plugins/ssrmatching/*.{ml,mli}>: package(sexplib,coq.plugins.ssrmatching)
 <serlib/plugins/ssrmatching/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
-<serlib/plugins/ssr/*.{ml,mli}>: package(sexplib,coq.intf,coq.plugins.ssreflect)
+<serlib/plugins/ssr/*.{ml,mli}>: package(sexplib,coq.plugins.ssreflect)
 <serlib/plugins/ssr/*.{ml}>: package(ppx_import,ppx_sexp_conv)
 
 # Sertex building options
 <sertex/*.{ml,mli}>: package(sexplib)
 
 # Serapi building options
-<serapi/*>: package(coq.intf,coq.plugins.ltac)
+<serapi/*>: package(coq.plugins.ltac)
 
 # For sexp_option, etc...
 <serapi/serapi_protocol.{ml,mli}>: package(sexplib)
@@ -51,7 +51,7 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 <sertop/sertop_ser.ml>: package(ppx_import,ppx_sexp_conv)
 <sertop/sertop_arg.ml{i,}>: package(cmdliner)
 <sertop/sertop.ml>: package(cmdliner)
-<sertop/*>: package(coq.intf,coq.stm,sexplib), debug
+<sertop/*>: package(coq.stm,sexplib), debug
 
 # Note that some plugins need num.
 <sertop/sertop.{byte,native}>: linkall, package(cmdliner,num,ppx_sexp_conv.runtime-lib,coq.plugins.ground,coq.plugins.ssreflect)

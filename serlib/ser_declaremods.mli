@@ -15,13 +15,15 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(**********************************************************************)
-(* Globnames.mli                                                      *)
-(**********************************************************************)
+open Sexplib
 
-module Names = Ser_names
+type 'a module_signature = 'a Declaremods.module_signature
 
-type global_reference = Names.global_reference
-let global_reference_of_sexp = Names.global_reference_of_sexp
-let sexp_of_global_reference = Names.sexp_of_global_reference
+val module_signature_of_sexp :
+  (Sexp.t -> 'a) -> Sexp.t -> 'a module_signature
+val sexp_of_module_signature :
+  ('a -> Sexp.t) -> 'a module_signature -> Sexp.t
 
+type inline = Declaremods.inline
+val inline_of_sexp : Sexp.t -> inline
+val sexp_of_inline : inline -> Sexp.t

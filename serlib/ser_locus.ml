@@ -16,7 +16,10 @@
 open Sexplib.Std
 
 module Names     = Ser_names
-module Misctypes = Ser_misctypes
+
+type 'a or_var =
+  [%import: 'a Locus.or_var]
+  [@@deriving sexp]
 
 type 'a occurrences_gen =
   [%import: 'a Locus.occurrences_gen]

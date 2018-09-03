@@ -19,7 +19,7 @@ open Sexplib.Std
 
 module Loc        = Ser_loc
 module Names      = Ser_names
-module Misctypes  = Ser_misctypes
+module Locus      = Ser_locus
 module Constrexpr = Ser_constrexpr
 module Genintern  = Ser_genintern
 module Geninterp  = Ser_geninterp

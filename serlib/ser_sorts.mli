@@ -15,11 +15,6 @@
 
 open Sexplib
 
-type contents = Sorts.contents
-
-val contents_of_sexp : Sexp.t -> contents
-val sexp_of_contents : contents -> Sexp.t
-
 type family = Sorts.family
 val family_of_sexp : Sexp.t -> family
 val sexp_of_family : family -> Sexp.t

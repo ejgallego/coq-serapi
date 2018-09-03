@@ -15,7 +15,11 @@
 
 open Sexplib.Conv
 
-module Globnames = Ser_globnames
+module Names       = Ser_names
+module Libnames    = Ser_libnames
+module Constrexpr  = Ser_constrexpr
+module Typeclasses = Ser_typeclasses
+module Genarg      = Ser_genarg
 
 type hint_db_name =
   [%import: Hints.hint_db_name]
@@ -31,4 +35,24 @@ type 'a hints_path_gen =
 
 type hints_path =
   [%import: Hints.hints_path]
+  [@@deriving sexp]
+
+type reference_or_constr =
+  [%import: Hints.reference_or_constr]
+  [@@deriving sexp]
+
+type hint_mode =
+  [%import: Hints.hint_mode]
+  [@@deriving sexp]
+
+type hint_info_expr =
+  [%import: Hints.hint_info_expr]
+  [@@deriving sexp]
+
+type 'a hints_transparency_target =
+  [%import: 'a Hints.hints_transparency_target]
+  [@@deriving sexp]
+
+type hints_expr =
+  [%import: Hints.hints_expr]
   [@@deriving sexp]

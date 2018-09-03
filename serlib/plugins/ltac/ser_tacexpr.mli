@@ -56,27 +56,6 @@ val sexp_of_clear_flag : clear_flag -> Sexp.t
 (* val goal_selector_of_sexp : Sexp.t -> goal_selector *)
 (* val sexp_of_goal_selector : goal_selector -> Sexp.t *)
 
-type 'a core_destruction_arg = 'a Tacexpr.core_destruction_arg
-
-val core_destruction_arg_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a core_destruction_arg
-val sexp_of_core_destruction_arg :
-  ('a -> Sexp.t) -> 'a core_destruction_arg -> Sexp.t
-
-type 'a destruction_arg = clear_flag * 'a core_destruction_arg
-
-val destruction_arg_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a destruction_arg
-
-val sexp_of_destruction_arg :
-  ('a -> Sexp.t) -> 'a destruction_arg -> Sexp.t
-
-type inversion_kind =
-  Tacexpr.inversion_kind
-
-val inversion_kind_of_sexp : Sexp.t -> inversion_kind
-val sexp_of_inversion_kind : inversion_kind -> Sexp.t
-
 type ('c, 'd, 'id) inversion_strength = ('c, 'd, 'id) Tacexpr.inversion_strength
 
 val inversion_strength_of_sexp :

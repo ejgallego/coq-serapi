@@ -16,15 +16,15 @@ env:
   - OPAMYES="true"
   - NJOBS="2"
   - COQ_REPOS="https://github.com/coq/coq.git"
-  - COQ_VERSION="v8.8"
-  - COQ_BRANCH="v8.8"
+  - COQ_VERSION="v8.9"
+  - COQ_BRANCH="v8.9"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.06.1"
   - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib"
   # Main test suites
   matrix:
-  # Don't test opam in 8.8 yet.
-  - TEST_TARGET="all"                                                                               EXTRA_OPAM="coq"
+  # Don't test opam in 8.9 yet.
+  # - TEST_TARGET="all"                                                                               EXTRA_OPAM="coq"
   - TEST_TARGET="all"             COMPILER="4.06.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   - TEST_TARGET="all"             COMPILER="4.07.0"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   - TEST_TARGET="js/sertop_js.js" COMPILER="4.06.1+32bit" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"

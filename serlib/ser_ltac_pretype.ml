@@ -16,8 +16,6 @@
 open Sexplib.Conv
 module Names     = Ser_names
 module Constr    = Ser_constr
-module Misctypes = Ser_misctypes
-module Globnames = Ser_globnames
 module Glob_term = Ser_glob_term
 module EConstr   = Ser_eConstr
 

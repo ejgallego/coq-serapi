@@ -15,6 +15,22 @@
 
 open Sexplib
 
+type glob_level = Glob_term.glob_level
+val glob_level_of_sexp : Sexp.t -> Glob_term.glob_level
+val sexp_of_glob_level : Glob_term.glob_level -> Sexp.t
+
+type glob_sort = Glob_term.glob_sort
+val glob_sort_of_sexp : Sexp.t -> Glob_term.glob_sort
+val sexp_of_glob_sort : Glob_term.glob_sort -> Sexp.t
+
+type 'a cast_type = 'a Glob_term.cast_type
+val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Glob_term.cast_type
+val sexp_of_cast_type : ('a -> Sexp.t) -> 'a Glob_term.cast_type -> Sexp.t
+
+type glob_constraint = Glob_term.glob_constraint
+val glob_constraint_of_sexp : Sexp.t -> Glob_term.glob_constraint
+val sexp_of_glob_constraint : Glob_term.glob_constraint -> Sexp.t
+
 type existential_name = Glob_term.existential_name
 
 type cases_pattern    = Glob_term.cases_pattern

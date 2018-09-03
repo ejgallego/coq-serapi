@@ -15,8 +15,9 @@
 
 open Sexplib.Std
 
-module Loc = Ser_loc
+module Loc           = Ser_loc
 module Notation_term = Ser_notation_term
+module Notation_gram = Ser_notation_gram
 
 type ppbox =
   [%import: Ppextend.ppbox]
@@ -28,4 +29,12 @@ type ppcut =
 
 type unparsing =
   [%import: Ppextend.unparsing]
+  [@@deriving sexp]
+
+type unparsing_rule =
+  [%import: Ppextend.unparsing_rule]
+  [@@deriving sexp]
+
+type extra_unparsing_rules =
+  [%import: Ppextend.extra_unparsing_rules]
   [@@deriving sexp]

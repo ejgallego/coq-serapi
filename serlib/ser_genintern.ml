@@ -15,8 +15,12 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Conv
+
 module Names      = Ser_names
 module Environ    = Ser_environ
+module Glob_term  = Ser_glob_term
+module Constrexpr = Ser_constrexpr
 
 module Store = struct
   type t = Genintern.Store.t
@@ -28,4 +32,8 @@ end
 
 type glob_sign =
   [%import: Genintern.glob_sign]
+  [@@deriving sexp]
+
+type glob_constr_and_expr =
+  [%import: Genintern.glob_constr_and_expr]
   [@@deriving sexp]

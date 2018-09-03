@@ -15,6 +15,11 @@
 
 open Sexplib
 
+type patvar = Pattern.patvar
+
+val patvar_of_sexp : Sexp.t -> patvar
+val sexp_of_patvar : patvar -> Sexp.t
+
 type case_info_pattern = Pattern.case_info_pattern
 
 val case_info_pattern_of_sexp : Sexp.t -> case_info_pattern

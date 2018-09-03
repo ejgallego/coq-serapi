@@ -8,18 +8,42 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2017 MINES ParisTech                                  *)
-(* Written by: Emilio J. Gallego Arias                                  *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
-(* Status: Very Experimental                                            *)
+(* Status: Experimental                                                 *)
 (************************************************************************)
 
 open Sexplib.Conv
 
-type tag =
-  [%import: Cbytecodes.tag]
+module Names         = Ser_names
+module Constrexpr    = Ser_constrexpr
+module Tok           = Ser_tok
+module Extend        = Ser_extend
+
+type precedence =
+  [%import: Notation_gram.precedence]
   [@@deriving sexp]
 
-type reloc_table =
-  [%import: Cbytecodes.reloc_table]
+type parenRelation =
+  [%import: Notation_gram.parenRelation]
+  [@@deriving sexp]
+
+type tolerability =
+  [%import: Notation_gram.tolerability]
+  [@@deriving sexp]
+
+type grammar_constr_prod_item =
+  [%import: Notation_gram.grammar_constr_prod_item]
+  [@@deriving sexp]
+
+type level =
+  [%import: Notation_gram.level]
+  [@@deriving sexp]
+
+type one_notation_grammar =
+  [%import: Notation_gram.one_notation_grammar]
+  [@@deriving sexp]
+
+type notation_grammar =
+  [%import: Notation_gram.notation_grammar]
   [@@deriving sexp]

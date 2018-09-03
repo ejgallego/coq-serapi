@@ -20,12 +20,23 @@ module Loc        = Ser_loc
 module CAst       = Ser_cAst
 module Names      = Ser_names
 module Constr     = Ser_constr
-module Misctypes  = Ser_misctypes
+module UState     = Ser_uState
+module Namegen    = Ser_namegen
+module Pattern    = Ser_pattern
 module Decl_kinds = Ser_decl_kinds
 module Evar_kinds = Ser_evar_kinds
 module Genarg     = Ser_genarg
 module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
+module Notation   = Ser_notation
+
+type 'a or_by_notation_r =
+  [%import: 'a Constrexpr.or_by_notation_r]
+  [@@deriving sexp]
+
+type 'a or_by_notation =
+  [%import: 'a Constrexpr.or_by_notation]
+  [@@deriving sexp]
 
 type universe_decl_expr =
   [%import: Constrexpr.universe_decl_expr]
@@ -37,6 +48,18 @@ type ident_decl =
 
 type name_decl =
   [%import: Constrexpr.name_decl]
+  [@@deriving sexp]
+
+type notation_entry_level =
+  [%import: Constrexpr.notation_entry_level]
+  [@@deriving sexp]
+
+type notation_entry =
+  [%import: Constrexpr.notation_entry]
+  [@@deriving sexp]
+
+type notation_key =
+  [%import: Constrexpr.notation_key]
   [@@deriving sexp]
 
 type notation =  [%import: Constrexpr.notation]

@@ -23,7 +23,7 @@ module Constr  = Ser_constr
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
 module Decl_kinds = Ser_decl_kinds
-module Cbytecodes = Ser_cbytecodes
+module Vmvalues = Ser_vmvalues
 module Conv_oracle = Ser_conv_oracle
 
 type template_arity =
@@ -68,19 +68,22 @@ type one_inductive_body =
   [%import: Declarations.one_inductive_body]
   [@@deriving sexp]
 
-type projection_body =
-  [%import: Declarations.projection_body
-  [@with Names.mutual_inductive := Names.MutInd.t]]
+type set_predicativity =
+  [%import: Declarations.set_predicativity]
+  [@@deriving sexp]
+
+type engagement =
+  [%import: Declarations.engagement]
   [@@deriving sexp]
 
 type typing_flags =
   [%import: Declarations.typing_flags]
   [@@deriving sexp]
 
-type record_body =
-  [%import: Declarations.record_body
-  [@with Context.section_context := Context.Named.t;]]
-  [@@deriving sexp]
+(* type record_body =
+ *   [%import: Declarations.record_body
+ *   [@with Context.section_context := Context.Named.t;]]
+ *   [@@deriving sexp] *)
 
 type abstract_inductive_universes =
   [%import: Declarations.abstract_inductive_universes]
@@ -88,6 +91,10 @@ type abstract_inductive_universes =
 
 type recursivity_kind =
   [%import: Declarations.recursivity_kind]
+  [@@deriving sexp]
+
+type record_info =
+  [%import: Declarations.record_info]
   [@@deriving sexp]
 
 type mutual_inductive_body =

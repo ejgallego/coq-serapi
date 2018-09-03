@@ -22,8 +22,9 @@ type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
 (** XXX: Do we need to perform evar normalization? *)
 
 module CDC = Context.Compacted.Declaration
+type cdcl = Constr.compacted_declaration
 
-let to_tuple ppx : CDC.t -> (Names.Id.t list * 'pc option * 'pc) =
+let to_tuple ppx : cdcl -> (Names.Id.t list * 'pc option * 'pc) =
   let open CDC in function
     | LocalAssum(idl, tm)   -> (idl, None, ppx tm)
     | LocalDef(idl,tdef,tm) -> (idl, Some (ppx tdef), ppx tm)
@@ -31,7 +32,7 @@ let to_tuple ppx : CDC.t -> (Names.Id.t list * 'pc option * 'pc) =
 (** gets a hypothesis *)
 let get_hyp (ppx : Constr.t -> 'pc)
     (_sigma : Evd.evar_map)
-    (hdecl : CDC.t) : (Names.Id.t list * 'pc option * 'pc) =
+    (hdecl : cdcl) : (Names.Id.t list * 'pc option * 'pc) =
   to_tuple ppx hdecl
 
 (** gets the constr associated to the type of the current goal *)

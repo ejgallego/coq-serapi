@@ -18,14 +18,17 @@ open Sexplib.Std
 module Loc        = Ser_loc
 
 type 'a _t = {
-  v   : 'a;
-  loc : Loc.t option;
+  _v   : 'a;
+  _loc : Loc.t option;
 } [@@deriving sexp]
 
-type 'a t = 'a CAst.t
+type 'a t = 'a CAst.t = private {
+  v   : 'a;
+  loc : Loc.t option;
+}
 
-let t_of_sexp f s = let { v ; loc } = _t_of_sexp f s in CAst.make ?loc v
-let sexp_of_t f { CAst.v ; loc } = sexp_of__t f { v ; loc}
+let t_of_sexp f s = let { _v ; _loc } = _t_of_sexp f s in CAst.make ?loc:_loc _v
+let sexp_of_t f { CAst.v ; loc } = sexp_of__t f { _v=v ; _loc=loc }
 
 let omit_att = ref false
 

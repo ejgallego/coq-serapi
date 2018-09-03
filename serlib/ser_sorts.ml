@@ -15,10 +15,6 @@
 
 module Univ = Ser_univ
 
-type contents =
-  [%import: Sorts.contents]
-  [@@deriving sexp]
-
 type family =
   [%import: Sorts.family]
   [@@deriving sexp]

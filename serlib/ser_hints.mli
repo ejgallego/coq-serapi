@@ -34,3 +34,19 @@ type hints_path = Hints.hints_path
 
 val sexp_of_hints_path : hints_path -> Sexp.t
 val hints_path_of_sexp : Sexp.t -> hints_path
+
+type reference_or_constr = Hints.reference_or_constr
+val reference_or_constr_of_sexp : Sexp.t -> reference_or_constr
+val sexp_of_reference_or_constr : reference_or_constr -> Sexp.t
+
+type hint_info_expr = Hints.hint_info_expr
+val hint_info_expr_of_sexp : Sexp.t -> hint_info_expr
+val sexp_of_hint_info_expr : hint_info_expr -> Sexp.t
+
+type hint_mode = Hints.hint_mode
+val hint_mode_of_sexp : Sexp.t -> hint_mode
+val sexp_of_hint_mode : hint_mode -> Sexp.t
+
+type hints_expr = Hints.hints_expr
+val hints_expr_of_sexp : Sexp.t -> hints_expr
+val sexp_of_hints_expr : hints_expr -> Sexp.t

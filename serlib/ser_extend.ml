@@ -15,7 +15,9 @@
 
 open Sexplib.Std
 
-module Tok = Ser_tok
+module Tok           = Ser_tok
+module Notation_term = Ser_notation_term
+module Constrexpr    = Ser_constrexpr
 
 type side =
   [%import: Extend.side]
@@ -35,10 +37,6 @@ type production_position =
 
 type production_level =
   [%import: Extend.production_level]
-  [@@deriving sexp]
-
-type constr_as_binder_kind =
-  [%import: Extend.constr_as_binder_kind]
   [@@deriving sexp]
 
 type binder_entry_kind =

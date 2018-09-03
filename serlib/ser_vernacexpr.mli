@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -28,10 +28,6 @@ val sexp_of_goal_identifier : goal_identifier -> Sexp.t
 type scope_name = Vernacexpr.scope_name
 val scope_name_of_sexp : Sexp.t -> scope_name
 val sexp_of_scope_name : scope_name -> Sexp.t
-
-type goal_selector = Vernacexpr.goal_selector
-val goal_selector_of_sexp : Sexp.t -> goal_selector
-val sexp_of_goal_selector : goal_selector -> Sexp.t
 
 type goal_reference = Vernacexpr.goal_reference
 val goal_reference_of_sexp : Sexp.t -> goal_reference
@@ -61,18 +57,6 @@ type comment = Vernacexpr.comment
 val comment_of_sexp : Sexp.t -> comment
 val sexp_of_comment : comment -> Sexp.t
 
-type reference_or_constr = Vernacexpr.reference_or_constr
-val reference_or_constr_of_sexp : Sexp.t -> reference_or_constr
-val sexp_of_reference_or_constr : reference_or_constr -> Sexp.t
-
-type hint_mode = Vernacexpr.hint_mode
-val hint_mode_of_sexp : Sexp.t -> hint_mode
-val sexp_of_hint_mode : hint_mode -> Sexp.t
-
-type hints_expr = Vernacexpr.hints_expr
-val hints_expr_of_sexp : Sexp.t -> hints_expr
-val sexp_of_hints_expr : hints_expr -> Sexp.t
-
 type search_restriction = Vernacexpr.search_restriction
 val search_restriction_of_sexp : Sexp.t -> search_restriction
 val sexp_of_search_restriction : search_restriction -> Sexp.t
@@ -84,10 +68,6 @@ val sexp_of_rec_flag : rec_flag -> Sexp.t
 type verbose_flag = Vernacexpr.verbose_flag
 val verbose_flag_of_sexp : Sexp.t -> verbose_flag
 val sexp_of_verbose_flag : verbose_flag -> Sexp.t
-
-type opacity_flag = Vernacexpr.opacity_flag
-val opacity_flag_of_sexp : Sexp.t -> opacity_flag
-val sexp_of_opacity_flag : opacity_flag -> Sexp.t
 
 type coercion_flag = Vernacexpr.coercion_flag
 val coercion_flag_of_sexp : Sexp.t -> coercion_flag
@@ -237,25 +217,6 @@ val sexp_of_extend_name : extend_name -> Sexp.t
 type register_kind = Vernacexpr.register_kind
 val register_kind_of_sexp : Sexp.t -> register_kind
 val sexp_of_register_kind : register_kind -> Sexp.t
-
-type bullet = Vernacexpr.bullet
-val bullet_of_sexp : Sexp.t -> bullet
-val sexp_of_bullet : bullet -> Sexp.t
-
-(* type stm_vernac = Vernacexpr.stm_vernac
- * val stm_vernac_of_sexp : Sexp.t -> stm_vernac
- * val sexp_of_stm_vernac : stm_vernac -> Sexp.t *)
-
-type 'a module_signature = 'a Vernacexpr.module_signature
-
-val module_signature_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a module_signature
-val sexp_of_module_signature :
-  ('a -> Sexp.t) -> 'a module_signature -> Sexp.t
-
-type inline = Vernacexpr.inline
-val inline_of_sexp : Sexp.t -> inline
-val sexp_of_inline : inline -> Sexp.t
 
 type module_ast_inl = Vernacexpr.module_ast_inl
 

@@ -19,7 +19,6 @@ module Loc   = Ser_loc
 module Names = Ser_names
 module Util  = Ser_util
 module Locus = Ser_locus
-module Misctypes = Ser_misctypes
 module Libnames = Ser_libnames
 module Constrexpr = Ser_constrexpr
 

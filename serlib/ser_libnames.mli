@@ -19,8 +19,3 @@ type qualid = Libnames.qualid
 
 val qualid_of_sexp : Sexp.t -> Libnames.qualid
 val sexp_of_qualid : Libnames.qualid -> Sexp.t
-
-type reference = Libnames.reference
-
-val reference_of_sexp : Sexp.t -> Libnames.reference
-val sexp_of_reference : Libnames.reference -> Sexp.t

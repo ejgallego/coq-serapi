@@ -14,7 +14,7 @@
 (************************************************************************)
 
 open Sexplib
-open Sexplib.Std
+open Sexplib.Conv
 
 module Level = struct
   type t = [%import: Univ.Level.t]
@@ -167,6 +167,20 @@ type 'a puniverses =
 type explanation =
   [%import: Univ.explanation]
   [@@deriving sexp]
+
+(* This problem seems due to packing in OCaml 4.07.0 *)
+module Stdlib = struct
+module Lazy = struct
+
+  type 'a t = 'a Lazy.t
+  let t_of_sexp = lazy_t_of_sexp
+  let sexp_of_t = sexp_of_lazy_t
+
+end
+end
+
+(* For 4.06.0 *)
+module Lazy = Stdlib.Lazy
 
 type univ_inconsistency =
   [%import: Univ.univ_inconsistency]

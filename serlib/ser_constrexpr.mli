@@ -15,6 +15,14 @@
 
 open Sexplib
 
+type 'a or_by_notation = 'a Constrexpr.or_by_notation
+val or_by_notation_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a or_by_notation
+val sexp_of_or_by_notation : ('a -> Sexp.t) -> 'a or_by_notation -> Sexp.t
+
+type notation_entry = Constrexpr.notation_entry
+val notation_entry_of_sexp : Sexp.t -> notation_entry
+val sexp_of_notation_entry : notation_entry -> Sexp.t
+
 type universe_decl_expr = Constrexpr.universe_decl_expr
 val universe_decl_expr_of_sexp : Sexp.t -> universe_decl_expr
 val sexp_of_universe_decl_expr : universe_decl_expr -> Sexp.t

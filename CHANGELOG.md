@@ -1,3 +1,9 @@
+_Version 0.6.0_:
+
+ * [general] support Coq 8.9,
+ * [serlib] support to serialize kernel environments,
+ * [serapi] new query `Env` that tries to print the current kernel environment,
+
 _Version 0.5.7_:
 
  * [serlib] Fixed serializers for more tactics data, add support for

@@ -19,15 +19,15 @@ open Sexplib
 module Rel : sig
   module Declaration : sig
 
-    type t = Context.Rel.Declaration.t
-    val t_of_sexp : Sexp.t -> t
-    val sexp_of_t : t -> Sexp.t
+    type ('c,'t) pt = ('c,'t) Context.Rel.Declaration.pt
+    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
+    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
 
   end
 
-  type t = Context.Rel.t
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
+  type ('c, 't) pt = ('c,'t) Context.Rel.pt
+  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
+  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
 
 end
 
@@ -35,15 +35,15 @@ module Named : sig
 
   module Declaration : sig
 
-    type t = Context.Named.Declaration.t
-    val t_of_sexp : Sexp.t -> t
-    val sexp_of_t : t -> Sexp.t
+    type ('c, 't) pt = ('c, 't) Context.Named.Declaration.pt
+    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
+    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
 
   end
 
-  type t = Context.Named.t
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
+  type ('c, 't) pt = ('c, 't) Context.Named.pt
+  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
+  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
 
 end
 
@@ -51,14 +51,14 @@ module Compacted : sig
 
   module Declaration : sig
 
-    type t = Context.Compacted.Declaration.t
-    val t_of_sexp : Sexp.t -> t
-    val sexp_of_t : t -> Sexp.t
+    type ('c, 't) pt = ('c, 't) Context.Compacted.Declaration.pt
+    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
+    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
 
   end
 
-  type t = Context.Compacted.t
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
+  type ('c, 't) pt = ('c, 't) Context.Compacted.pt
+  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
+  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
 
 end

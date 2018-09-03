@@ -15,31 +15,10 @@
 
 open Sexplib
 
-type precedence = Notation_term.precedence
-
-val precedence_of_sexp : Sexp.t -> precedence
-val sexp_of_precedence : precedence -> Sexp.t
-
-type parenRelation = Notation_term.parenRelation
-
-val parenRelation_of_sexp : Sexp.t -> parenRelation
-val sexp_of_parenRelation : parenRelation -> Sexp.t
-
-type tolerability = Notation_term.tolerability
-
-val tolerability_of_sexp : Sexp.t -> tolerability
-val sexp_of_tolerability : tolerability -> Sexp.t
-
-type grammar_constr_prod_item = Notation_term.grammar_constr_prod_item
-val grammar_constr_prod_item_of_sexp : Sexp.t -> grammar_constr_prod_item
-val sexp_of_grammar_constr_prod_item : grammar_constr_prod_item -> Sexp.t
+type constr_as_binder_kind = Notation_term.constr_as_binder_kind
+val constr_as_binder_kind_of_sexp : Sexp.t -> constr_as_binder_kind
+val sexp_of_constr_as_binder_kind : constr_as_binder_kind -> Sexp.t
 
 type notation_var_internalization_type = Notation_term.notation_var_internalization_type
 val notation_var_internalization_type_of_sexp : Sexp.t -> notation_var_internalization_type
 val sexp_of_notation_var_internalization_type : notation_var_internalization_type -> Sexp.t
-
-type notation_grammar = Notation_term.notation_grammar
-val notation_grammar_of_sexp : Sexp.t -> notation_grammar
-val sexp_of_notation_grammar : notation_grammar -> Sexp.t
-
-

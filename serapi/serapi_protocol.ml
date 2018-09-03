@@ -116,15 +116,16 @@ type coq_object =
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr
   | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
+  | CoqEnv       of Environ.env
   | CoqTactic    of Names.KerName.t * Tacenv.ltac_entry
   | CoqLtac      of Tacexpr.raw_tactic_expr
   | CoqGenArg    of Genarg.raw_generic_argument
   | CoqQualId    of Libnames.qualid
-  | CoqGlobRef   of Globnames.global_reference
+  | CoqGlobRef   of Names.GlobRef.t
   | CoqImplicit  of Impargs.implicits_list
   | CoqProfData  of Profile_ltac.treenode
   | CoqNotation  of Constrexpr.notation
-  | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
+  | CoqUnparsing of Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
   | CoqProof     of Goal.goal list
@@ -196,6 +197,7 @@ let gen_pp_obj (obj : coq_object) : Pp.t =
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr_env env sigma c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr e
+  | CoqEnv _env     -> Pp.str "Cannot pretty print environments"
   | CoqTactic(kn,_) -> Names.KerName.print kn
   | CoqLtac t       -> Pptactic.pr_raw_tactic t
   | CoqGenArg ga    ->
@@ -203,7 +205,7 @@ let gen_pp_obj (obj : coq_object) : Pp.t =
     begin match generic_raw_print ga with
       | PrinterBasic pp -> pp ()
       (* XXX: Fixme, the level here is random *)
-      | PrinterNeedsLevel pp -> pp.printer (99,Notation_term.Any)
+      | PrinterNeedsLevel pp -> pp.printer (99,Notation_gram.Any)
     end
 
   (* Fixme *)
@@ -214,7 +216,7 @@ let gen_pp_obj (obj : coq_object) : Pp.t =
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
   | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
   | CoqImplicit(_,l)-> Pp.pr_sequence pp_implicit l
-  | CoqNotation ntn -> Pp.str ntn
+  | CoqNotation ntn -> Pp.str (snd ntn)
   | CoqUnparsing _  -> Pp.str "FIXME Unparsing"
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
@@ -324,6 +326,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqConstr _     -> true
   | CoqExpr _       -> true
   | CoqMInd _       -> true
+  | CoqEnv _        -> true
   | CoqTactic(kn,_) -> Extra.is_prefix (Names.KerName.to_string kn) ~prefix
   | CoqLtac _       -> true
   | CoqGenArg _     -> true
@@ -368,6 +371,7 @@ type query_cmd =
   | ProfileData
   | Proof                          (* Return the proof object *)
   | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
+  | Env                            (* Return the current global enviroment *)
 
 module QueryUtil = struct
 
@@ -420,13 +424,13 @@ module QueryUtil = struct
     (* List.map  map entries [] *)
 
   let query_unparsing (nt : Constrexpr.notation) :
-    Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar =
-    Notation.(find_notation_printing_rule nt,
+    Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar =
+    Ppextend.(find_notation_printing_rule nt,
               find_notation_extra_printing_rules nt,
               find_notation_parsing_rules nt)
 
   let query_pnotations () =
-    Notation.get_defined_notations ()
+    Ppextend.get_defined_notations ()
 
   let locate id =
     let open Names     in
@@ -516,7 +520,7 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.
                        *)
-                      begin try let up, upe, gr = QueryUtil.query_unparsing ntn in
+                      begin try let up, upe, gr = QueryUtil.query_unparsing (Constrexpr.InConstrEntrySomeLevel,ntn) in
                                 [CoqUnparsing(up,upe,gr)]
                       with _exn -> []
                       end
@@ -525,8 +529,10 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | TypeOf id      -> snd (QueryUtil.info_of_id id)
   | Search         -> [CoqString "Not Implemented"]
   (* XXX: should set printing options in all queries *)
-  | Vernac q       -> let pa = Pcoq.Gram.parsable (Stream.of_string q) in
+  | Vernac q       -> let pa = Pcoq.Parsable.make (Stream.of_string q) in
                       Stm.query ~doc ~at:opt.sid ~route:opt.route pa; []
+  (* XXX: Should set the proper sid state *)
+  | Env            -> [CoqEnv Global.(env ())]
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
@@ -587,7 +593,7 @@ module ControlUtil = struct
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
   let add_sentences ~doc opts sent =
-    let pa = Pcoq.Gram.parsable (Stream.of_string sent) in
+    let pa = Pcoq.Parsable.make (Stream.of_string sent) in
     let i   = ref 1                    in
     let acc = ref []                   in
     let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ~doc)) in

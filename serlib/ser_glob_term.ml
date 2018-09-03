@@ -19,17 +19,49 @@ module Loc        = Ser_loc
 module CAst       = Ser_cAst
 module DAst       = Ser_dAst
 module Names      = Ser_names
+module Univ       = Ser_univ
 module Constr     = Ser_constr
-module Globnames  = Ser_globnames
-module Misctypes  = Ser_misctypes
 module Decl_kinds = Ser_decl_kinds
+module Libnames   = Ser_libnames
 module Genarg     = Ser_genarg
 module Evar_kinds = Ser_evar_kinds
-module Pattern    = Ser_pattern
+module Namegen    = Ser_namegen
 
 (**********************************************************************)
 (* Glob_term                                                          *)
 (**********************************************************************)
+
+type 'a glob_sort_gen =
+  [%import: 'a Glob_term.glob_sort_gen]
+  [@@deriving sexp]
+
+type 'a universe_kind =
+  [%import: 'a Glob_term.universe_kind]
+  [@@deriving sexp]
+
+type level_info =
+  [%import: Glob_term.level_info]
+  [@@deriving sexp]
+
+type glob_level =
+  [%import: Glob_term.glob_level]
+  [@@deriving sexp]
+
+type glob_constraint =
+  [%import: Glob_term.glob_constraint]
+  [@@deriving sexp]
+
+type sort_info =
+  [%import: Glob_term.sort_info]
+  [@@deriving sexp]
+
+type glob_sort =
+  [%import: Glob_term.glob_sort]
+  [@@deriving sexp]
+
+type 'a cast_type =
+  [%import: 'a Glob_term.cast_type]
+  [@@deriving sexp]
 
 type existential_name = Glob_term.existential_name
 let existential_name_of_sexp = Names.Id.t_of_sexp

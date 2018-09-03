@@ -15,7 +15,10 @@
 
 open Sexplib
 
-type 'a t = 'a CAst.t
+type 'a t = 'a CAst.t = private {
+  v   : 'a;
+  loc : Loc.t option;
+}
 
 val t_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a t
 val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t

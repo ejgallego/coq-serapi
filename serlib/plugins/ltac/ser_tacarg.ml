@@ -20,13 +20,13 @@ let _sexp_of_delayed_open_constr_with_bindings _ = Sexplib.Sexp.Atom "[XXX FUNCT
 let _delayed_open_constr_with_bindings_of_sexp = Sexplib.Conv_error.no_matching_variant_found "delayed_open_constr_with_bindings"
 
 let ser_wit_destruction_arg = Ser_genarg.{
-    raw_ser = Ser_tacexpr.sexp_of_destruction_arg (Ser_misctypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr);
-    glb_ser = Ser_tacexpr.sexp_of_destruction_arg (Ser_misctypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
-    top_ser = Ser_tacexpr.(sexp_of_destruction_arg _sexp_of_delayed_open_constr_with_bindings);
+    raw_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr);
+    glb_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
+    top_ser = Ser_tactics.(sexp_of_destruction_arg _sexp_of_delayed_open_constr_with_bindings);
 
-    raw_des = Ser_tacexpr.destruction_arg_of_sexp (Ser_misctypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp);
-    glb_des = Ser_tacexpr.destruction_arg_of_sexp (Ser_misctypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp);
-    top_des = Ser_tacexpr.(destruction_arg_of_sexp _delayed_open_constr_with_bindings_of_sexp);
+    raw_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp);
+    glb_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp);
+    top_des = Ser_tactics.(destruction_arg_of_sexp _delayed_open_constr_with_bindings_of_sexp);
   }
 
 let ser_wit_tactic = Ser_genarg.{
@@ -51,8 +51,41 @@ let ser_wit_ltac = Ser_genarg.{
 
 let ser_wit_quant_hyp =
   Ser_genarg.mk_uniform
-    Ser_misctypes.sexp_of_quantified_hypothesis
-    Ser_misctypes.quantified_hypothesis_of_sexp
+    Ser_tactypes.sexp_of_quantified_hypothesis
+    Ser_tactypes.quantified_hypothesis_of_sexp
+
+(* XXX Obj.magic grep *)
+let fail msg = fun _ -> raise (Invalid_argument msg)
+
+let ser_wit_bindings :
+         (Constrexpr.constr_expr Tactypes.bindings,
+          Genintern.glob_constr_and_expr Tactypes.bindings,
+          EConstr.constr Tactypes.bindings Tactypes.delayed_open)
+         Ser_genarg.gen_ser
+ = Ser_genarg.{
+    raw_ser = Ser_tactypes.sexp_of_bindings Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Ser_tactypes.sexp_of_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
+    top_ser = fail "[typed constr_with_bindings cannot be serialized";
+
+    raw_des = Ser_tactypes.bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_tactypes.bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
+    top_des = fail "[typed constr_with_bindings cannot be serialized";
+  }
+
+let ser_wit_constr_with_bindings :
+         (Constrexpr.constr_expr Tactypes.with_bindings,
+          Genintern.glob_constr_and_expr Tactypes.with_bindings,
+          EConstr.constr Tactypes.with_bindings Tactypes.delayed_open)
+         Ser_genarg.gen_ser
+ = Ser_genarg.{
+    raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
+    top_ser = fail "[typed constr_with_bindings cannot be serialized";
+
+    raw_des = Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
+    top_des = fail "[typed constr_with_bindings cannot be serialized";
+  }
 
 (* G_ltac *)
 (* Defined in g_ltac but serialized here *)
@@ -94,11 +127,11 @@ let ser_wit_ltac_production_sep =
   }
 
 let ser_wit_ltac_selector = Ser_genarg.{
-    raw_ser = Ser_vernacexpr.sexp_of_goal_selector;
+    raw_ser = Ser_goal_select.sexp_of_t;
     glb_ser = Sexplib.Conv.sexp_of_unit;
     top_ser = Sexplib.Conv.sexp_of_unit;
 
-    raw_des = Ser_vernacexpr.goal_selector_of_sexp;
+    raw_des = Ser_goal_select.t_of_sexp;
     glb_des = Sexplib.Conv.unit_of_sexp;
     top_des = Sexplib.Conv.unit_of_sexp;
   }
@@ -136,11 +169,11 @@ let ser_wit_ltac_use_default = Ser_genarg.{
 (* From G_auto *)
 let ser_wit_auto_using = Ser_genarg.{
     raw_ser = Sexplib.Conv.sexp_of_list Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Sexplib.Conv.sexp_of_list Ser_tactypes.sexp_of_glob_constr_and_expr;
+    glb_ser = Sexplib.Conv.sexp_of_list Ser_genintern.sexp_of_glob_constr_and_expr;
     top_ser = Sexplib.Conv.sexp_of_list Ser_ltac_pretype.sexp_of_closed_glob_constr;
 
     raw_des = Sexplib.Conv.list_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Sexplib.Conv.list_of_sexp Ser_tactypes.glob_constr_and_expr_of_sexp;
+    glb_des = Sexplib.Conv.list_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
     top_des = Sexplib.Conv.list_of_sexp Ser_ltac_pretype.closed_glob_constr_of_sexp;
   }
 
@@ -158,24 +191,24 @@ let ser_wit_hintbases =
 
 let ser_wit_hintbases_path =
   Ser_genarg.{
-    raw_ser = Ser_hints.(sexp_of_hints_path_gen Ser_libnames.sexp_of_reference);
+    raw_ser = Ser_hints.(sexp_of_hints_path_gen Ser_libnames.sexp_of_qualid);
     glb_ser = Ser_hints.sexp_of_hints_path;
     top_ser = Ser_hints.sexp_of_hints_path;
 
-    raw_des = Ser_hints.(hints_path_gen_of_sexp Ser_libnames.reference_of_sexp);
+    raw_des = Ser_hints.(hints_path_gen_of_sexp Ser_libnames.qualid_of_sexp);
     glb_des = Ser_hints.hints_path_of_sexp;
     top_des = Ser_hints.hints_path_of_sexp;
   }
 
 let ser_wit_hintbases_path_atom =
   Ser_genarg.{
-    raw_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_libnames.sexp_of_reference);
-    glb_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_globnames.sexp_of_global_reference);
-    top_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_globnames.sexp_of_global_reference);
+    raw_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_libnames.sexp_of_qualid);
+    glb_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_names.GlobRef.sexp_of_t);
+    top_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_names.GlobRef.sexp_of_t);
 
-    raw_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_libnames.reference_of_sexp);
-    glb_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_globnames.global_reference_of_sexp);
-    top_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_globnames.global_reference_of_sexp);
+    raw_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_libnames.qualid_of_sexp);
+    glb_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_names.GlobRef.t_of_sexp);
+    top_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_names.GlobRef.t_of_sexp);
   }
 
 let ser_wit_opthints =
@@ -203,13 +236,13 @@ let ser_wit_glob_constr_with_bindings =
   let _sexp_of_interp_sign _ = Sexplib.Sexp.Atom "[XXX FUNCTIONAL VALUE INTERP SIGN]" in
   let _interp_sign_of_sexp = Sexplib.Conv_error.no_matching_variant_found "interp" in
   Ser_genarg.{
-    raw_ser = Ser_misctypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_misctypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr;
-    top_ser = sexp_of_pair _sexp_of_interp_sign Ser_misctypes.(sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
+    raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr;
+    top_ser = sexp_of_pair _sexp_of_interp_sign Ser_tactypes.(sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
 
-    raw_des = Ser_misctypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_misctypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp;
-    top_des = pair_of_sexp _interp_sign_of_sexp Ser_misctypes.(with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp)
+    raw_des = Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_tactypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp;
+    top_des = pair_of_sexp _interp_sign_of_sexp Ser_tactypes.(with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp)
   }
 
 let ser_wit_rewstrategy =
@@ -232,7 +265,6 @@ let ser_wit_rewstrategy =
 let ser_wit_debug =
   let open Sexplib.Conv in
   Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
-
 
 let ser_wit_eauto_search_strategy =
   let open Sexplib.Conv in
@@ -260,14 +292,14 @@ let ser_wit_casted_constr :
   }
 
 let ser_wit_in_clause :
-  (Misctypes.lident Locus.clause_expr, Misctypes.lident Locus.clause_expr, Names.Id.t Locus.clause_expr) Ser_genarg.gen_ser =
+  (Names.lident Locus.clause_expr, Names.lident Locus.clause_expr, Names.Id.t Locus.clause_expr) Ser_genarg.gen_ser =
   Ser_genarg.{
-    raw_ser = Ser_locus.sexp_of_clause_expr Ser_misctypes.sexp_of_lident;
-    glb_ser = Ser_locus.sexp_of_clause_expr Ser_misctypes.sexp_of_lident;
+    raw_ser = Ser_locus.sexp_of_clause_expr Ser_names.sexp_of_lident;
+    glb_ser = Ser_locus.sexp_of_clause_expr Ser_names.sexp_of_lident;
     top_ser = Ser_locus.sexp_of_clause_expr Ser_names.Id.sexp_of_t;
 
-    raw_des = Ser_locus.clause_expr_of_sexp Ser_misctypes.lident_of_sexp;
-    glb_des = Ser_locus.clause_expr_of_sexp Ser_misctypes.lident_of_sexp;
+    raw_des = Ser_locus.clause_expr_of_sexp Ser_names.lident_of_sexp;
+    glb_des = Ser_locus.clause_expr_of_sexp Ser_names.lident_of_sexp;
     top_des = Ser_locus.clause_expr_of_sexp Ser_names.Id.t_of_sexp;
   }
 
@@ -278,7 +310,10 @@ let register () =
 
   Ser_genarg.register_genser Tacarg.wit_ltac   ser_wit_ltac;
 
-  Ser_genarg.register_genser Stdarg.wit_quant_hyp ser_wit_quant_hyp;
+  Ser_genarg.register_genser Tacarg.wit_quant_hyp ser_wit_quant_hyp;
+
+  Ser_genarg.register_genser Tacarg.wit_bindings ser_wit_bindings;
+  Ser_genarg.register_genser Tacarg.wit_constr_with_bindings ser_wit_constr_with_bindings;
 
   Ser_genarg.register_genser G_ltac.wit_ltac_info ser_wit_ltac_info;
 

@@ -15,6 +15,12 @@
 
 open Sexplib.Conv
 
+module Names      = Ser_names
+
+type 'a and_short_name =
+  [%import: 'a Stdarg.and_short_name]
+  [@@deriving sexp]
+
 let ser_wit_unit   = Ser_genarg.mk_uniform sexp_of_unit unit_of_sexp
 let ser_wit_bool   = Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
 let ser_wit_int    = Ser_genarg.mk_uniform sexp_of_int int_of_sexp
@@ -22,35 +28,35 @@ let ser_wit_string = Ser_genarg.mk_uniform sexp_of_string string_of_sexp
 let ser_wit_pre_ident = Ser_genarg.mk_uniform sexp_of_string string_of_sexp
 
 let ser_wit_int_or_var = Ser_genarg.{
-    raw_ser = Ser_misctypes.sexp_of_or_var sexp_of_int;
-    glb_ser = Ser_misctypes.sexp_of_or_var sexp_of_int;
+    raw_ser = Ser_locus.sexp_of_or_var sexp_of_int;
+    glb_ser = Ser_locus.sexp_of_or_var sexp_of_int;
     top_ser = sexp_of_int;
 
-    raw_des = Ser_misctypes.or_var_of_sexp int_of_sexp;
-    glb_des = Ser_misctypes.or_var_of_sexp int_of_sexp;
+    raw_des = Ser_locus.or_var_of_sexp int_of_sexp;
+    glb_des = Ser_locus.or_var_of_sexp int_of_sexp;
     top_des = int_of_sexp;
   }
 
 let ser_wit_ident  = Ser_genarg.mk_uniform Ser_names.Id.sexp_of_t Ser_names.Id.t_of_sexp
 
 let ser_wit_var = Ser_genarg.{
-    raw_ser = Ser_misctypes.sexp_of_lident;
-    glb_ser = Ser_misctypes.sexp_of_lident;
+    raw_ser = Ser_names.sexp_of_lident;
+    glb_ser = Ser_names.sexp_of_lident;
     top_ser = Ser_names.Id.sexp_of_t;
 
-    raw_des = Ser_misctypes.lident_of_sexp;
-    glb_des = Ser_misctypes.lident_of_sexp;
+    raw_des = Ser_names.lident_of_sexp;
+    glb_des = Ser_names.lident_of_sexp;
     top_des = Ser_names.Id.t_of_sexp;
   }
 
 let ser_wit_ref = Ser_genarg.{
-    raw_ser = Ser_libnames.sexp_of_reference;
-    glb_ser = Ser_misctypes.sexp_of_or_var Ser_loc.(sexp_of_located Ser_globnames.sexp_of_global_reference);
-    top_ser = Ser_globnames.sexp_of_global_reference;
+    raw_ser = Ser_libnames.sexp_of_qualid;
+    glb_ser = Ser_locus.sexp_of_or_var Ser_loc.(sexp_of_located Ser_names.GlobRef.sexp_of_t);
+    top_ser = Ser_names.GlobRef.sexp_of_t;
 
-    raw_des = Ser_libnames.reference_of_sexp;
-    glb_des = Ser_misctypes.or_var_of_sexp Ser_loc.(located_of_sexp Ser_globnames.global_reference_of_sexp);
-    top_des = Ser_globnames.global_reference_of_sexp;
+    raw_des = Ser_libnames.qualid_of_sexp;
+    glb_des = Ser_locus.or_var_of_sexp Ser_loc.(located_of_sexp Ser_names.GlobRef.t_of_sexp);
+    top_des = Ser_names.GlobRef.t_of_sexp;
   }
 
 let ser_wit_sort_family = Ser_genarg.{
@@ -67,55 +73,22 @@ let ser_wit_sort_family = Ser_genarg.{
 
 let ser_wit_constr = Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tactypes.sexp_of_glob_constr_and_expr;
+    glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
     top_ser = Ser_eConstr.sexp_of_t;
 
     raw_des = Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tactypes.glob_constr_and_expr_of_sexp;
+    glb_des = Ser_genintern.glob_constr_and_expr_of_sexp;
     top_des = Ser_eConstr.t_of_sexp;
   }
 
 let ser_wit_uconstr = Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tactypes.sexp_of_glob_constr_and_expr;
+    glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
     top_ser = Ser_ltac_pretype.sexp_of_closed_glob_constr;
 
     raw_des = Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tactypes.glob_constr_and_expr_of_sexp;
+    glb_des = Ser_genintern.glob_constr_and_expr_of_sexp;
     top_des = Ser_ltac_pretype.closed_glob_constr_of_sexp;
-  }
-
-(* XXX Obj.magic grep *)
-let fail msg = fun _ -> raise (Invalid_argument msg)
-
-let ser_wit_bindings :
-         (Constrexpr.constr_expr Misctypes.bindings,
-          Tactypes.glob_constr_and_expr Misctypes.bindings,
-          EConstr.constr Misctypes.bindings Tactypes.delayed_open)
-         Ser_genarg.gen_ser
- = Ser_genarg.{
-    raw_ser = Ser_misctypes.sexp_of_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_misctypes.sexp_of_bindings Ser_tactypes.sexp_of_glob_constr_and_expr;
-    top_ser = fail "[typed constr_with_bindings cannot be serialized";
-
-    raw_des = Ser_misctypes.bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_misctypes.bindings_of_sexp Ser_tactypes.glob_constr_and_expr_of_sexp;
-    top_des = fail "[typed constr_with_bindings cannot be serialized";
-  }
-
-let ser_wit_constr_with_bindings :
-         (Constrexpr.constr_expr Misctypes.with_bindings,
-          Tactypes.glob_constr_and_expr Misctypes.with_bindings,
-          EConstr.constr Misctypes.with_bindings Tactypes.delayed_open)
-         Ser_genarg.gen_ser
- = Ser_genarg.{
-    raw_ser = Ser_misctypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_misctypes.sexp_of_with_bindings Ser_tactypes.sexp_of_glob_constr_and_expr;
-    top_ser = fail "[typed constr_with_bindings cannot be serialized";
-
-    raw_des = Ser_misctypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_misctypes.with_bindings_of_sexp Ser_tactypes.glob_constr_and_expr_of_sexp;
-    top_des = fail "[typed constr_with_bindings cannot be serialized";
   }
 
 let register () =
@@ -133,6 +106,4 @@ let register () =
   Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
   Ser_genarg.register_genser Stdarg.wit_uconstr ser_wit_uconstr;
 
-  Ser_genarg.register_genser Stdarg.wit_bindings ser_wit_bindings;
-  Ser_genarg.register_genser Stdarg.wit_constr_with_bindings ser_wit_constr_with_bindings
-
+  ()

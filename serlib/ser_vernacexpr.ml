@@ -21,20 +21,27 @@ module Loc         = Ser_loc
 module CAst        = Ser_cAst
 module Names       = Ser_names
 module Flags       = Ser_flags
-module Misctypes   = Ser_misctypes
 module Sorts       = Ser_sorts
 module Univ        = Ser_univ
+module UnivNames   = Ser_univNames
 module Conv_oracle = Ser_conv_oracle
 module Declarations= Ser_declarations
 module Decl_kinds  = Ser_decl_kinds
 module Genarg      = Ser_genarg
+module Declaremods = Ser_declaremods
 module Libnames    = Ser_libnames
 module Extend      = Ser_extend
 module Stateid     = Ser_stateid
-module Constrexpr  = Ser_constrexpr
-module Goptions    = Ser_goptions
-module Genredexpr  = Ser_genredexpr
-module Universes   = Ser_universes
+module Glob_term     = Ser_glob_term
+module Goal_select   = Ser_goal_select
+module Proof_global  = Ser_proof_global
+module Proof_bullet  = Ser_proof_bullet
+module Constrexpr    = Ser_constrexpr
+module Notation_term = Ser_notation_term
+module Hints         = Ser_hints
+module Goptions      = Ser_goptions
+module Genredexpr    = Ser_genredexpr
+module Universes     = Ser_universes
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
   [@@deriving sexp]
@@ -45,18 +52,14 @@ type goal_identifier = [%import: Vernacexpr.goal_identifier]
 type scope_name      = [%import: Vernacexpr.scope_name]
   [@@deriving sexp]
 
-type goal_selector   =
-  [%import: Vernacexpr.goal_selector]
-  [@@deriving sexp]
-
 type goal_reference = [%import: Vernacexpr.goal_reference]
   [@@deriving sexp]
 
-type vernac_flag =
-  [%import: Vernacexpr.vernac_flag]
+type printable = [%import: Vernacexpr.printable]
   [@@deriving sexp]
 
-type printable = [%import: Vernacexpr.printable]
+type vernac_cumulative =
+  [%import: Vernacexpr.vernac_cumulative]
   [@@deriving sexp]
 
 type search_about_item =
@@ -77,33 +80,11 @@ type comment =
   [%import: Vernacexpr.comment]
   [@@deriving sexp]
 
-type reference_or_constr =
-  [%import: Vernacexpr.reference_or_constr]
-  [@@deriving sexp]
-
-type hint_mode =
-  [%import: Vernacexpr.hint_mode]
-  [@@deriving sexp]
-
-type 'a hint_info_gen =
-  [%import: 'a Vernacexpr.hint_info_gen]
-  [@@deriving sexp]
-
-type hint_info_expr =
-  [%import: Vernacexpr.hint_info_expr]
-  [@@deriving sexp]
-
-type hints_expr =
-  [%import: Vernacexpr.hints_expr]
-  [@@deriving sexp]
-
 type search_restriction =  [%import: Vernacexpr.search_restriction]
   [@@deriving sexp]
 
-
 type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving sexp]
 type verbose_flag      = [%import: Vernacexpr.verbose_flag      ] [@@deriving sexp]
-type opacity_flag      = [%import: Vernacexpr.opacity_flag      ] [@@deriving sexp]
 type coercion_flag     = [%import: Vernacexpr.coercion_flag     ] [@@deriving sexp]
 type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp]
 type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving sexp]
@@ -126,14 +107,6 @@ type option_ref_value =
 
 type sort_expr =
   [%import: Vernacexpr.sort_expr]
-  [@@deriving sexp]
-
-type ident_decl =
-  [%import: Vernacexpr.ident_decl]
-  [@@deriving sexp]
-
-type name_decl =
-  [%import: Vernacexpr.name_decl]
   [@@deriving sexp]
 
 type definition_expr =
@@ -228,22 +201,6 @@ type register_kind =
   [%import: Vernacexpr.register_kind]
   [@@deriving sexp]
 
-type bullet =
-  [%import: Vernacexpr.bullet]
-  [@@deriving sexp]
-
-(* type stm_vernac =
- *   [%import: Vernacexpr.stm_vernac]
- *   [@@deriving sexp] *)
-
-type 'a module_signature =
-  [%import: 'a Vernacexpr.module_signature]
-  [@@deriving sexp]
-
-type inline =
-  [%import: Vernacexpr.inline]
-  [@@deriving sexp]
-
 type module_ast_inl =
   [%import: Vernacexpr.module_ast_inl]
   [@@deriving sexp]
@@ -252,12 +209,14 @@ type module_binder =
   [%import: Vernacexpr.module_binder]
   [@@deriving sexp]
 
-type cumulative_inductive_parsing_flag =
-  [%import: Vernacexpr.cumulative_inductive_parsing_flag]
-  [@@deriving sexp]
-
 type typeclass_constraint =
   [%import: Vernacexpr.typeclass_constraint]
+  [@@deriving sexp]
+
+type vernac_flag_value =
+  [%import: Vernacexpr.vernac_flag_value]
+and vernac_flags =
+  [%import: Vernacexpr.vernac_flags]
   [@@deriving sexp]
 
 type vernac_expr           = [%import: Vernacexpr.vernac_expr]

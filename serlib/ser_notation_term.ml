@@ -13,13 +13,11 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
+(* open Sexplib.Std *)
 
 module Loc        = Ser_loc
 module Names      = Ser_names
-module Constrexpr = Ser_constrexpr
 module Tok        = Ser_tok
-module Extend     = Ser_extend
 
 (* type notation_spec = *)
 (*   [%import: Notation_term.notation_spec] *)
@@ -29,35 +27,11 @@ module Extend     = Ser_extend
 (*   [%import: Notation_term.syntax_modifier] *)
 (*   [@@deriving sexp] *)
 
-type precedence =
-  [%import: Notation_term.precedence]
-  [@@deriving sexp]
-
-type parenRelation =
-  [%import: Notation_term.parenRelation]
-  [@@deriving sexp]
-
-type tolerability =
-  [%import: Notation_term.tolerability]
-  [@@deriving sexp]
-
-type grammar_constr_prod_item =
-  [%import: Notation_term.grammar_constr_prod_item]
+type constr_as_binder_kind =
+  [%import: Notation_term.constr_as_binder_kind]
   [@@deriving sexp]
 
 type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]
-  [@@deriving sexp]
-
-type level =
-  [%import: Notation_term.level]
-  [@@deriving sexp]
-
-type one_notation_grammar =
-  [%import: Notation_term.one_notation_grammar]
-  [@@deriving sexp]
-
-type notation_grammar =
-  [%import: Notation_term.notation_grammar]
   [@@deriving sexp]
 

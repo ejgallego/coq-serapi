@@ -17,7 +17,9 @@
 
 open Sexplib.Std
 
-module Names   = Ser_names
+module Names        = Ser_names
+module Vernacinterp = Ser_vernacinterp
+
 open Ltac_plugin
 module Tacexpr = Ser_tacexpr
 

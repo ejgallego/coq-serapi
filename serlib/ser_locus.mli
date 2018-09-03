@@ -15,6 +15,10 @@
 
 open Sexplib
 
+type 'a or_var = 'a Locus.or_var
+val or_var_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a or_var
+val sexp_of_or_var : ('a -> Sexp.t) -> 'a or_var -> Sexp.t
+
 type 'a occurrences_gen = 'a Locus.occurrences_gen
 val occurrences_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a occurrences_gen
 val sexp_of_occurrences_gen : ('a -> Sexp.t) -> 'a occurrences_gen -> Sexp.t

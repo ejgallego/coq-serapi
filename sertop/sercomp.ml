@@ -206,7 +206,7 @@ let sercomp debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_a
 
   let in_chan = open_in in_file                          in
   let in_strm = Stream.of_channel in_chan                in
-  let in_pa   = Pcoq.Gram.parsable ~file:(Loc.InFile in_file) in_strm in
+  let in_pa   = Pcoq.Parsable.make ~file:(Loc.InFile in_file) in_strm in
   let pp_sexp = Sertop_ser.select_printer printer        in
 
   let iload_path = coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ lp1 @ lp2 in

@@ -35,10 +35,6 @@ type production_level = Extend.production_level
 val production_level_of_sexp : Sexp.t -> production_level
 val sexp_of_production_level : production_level -> Sexp.t
 
-type constr_as_binder_kind = Extend.constr_as_binder_kind
-val constr_as_binder_kind_of_sexp : Sexp.t -> constr_as_binder_kind
-val sexp_of_constr_as_binder_kind : constr_as_binder_kind -> Sexp.t
-
 type binder_entry_kind = Extend.binder_entry_kind
 val binder_entry_kind_of_sexp : Sexp.t -> binder_entry_kind
 val sexp_of_binder_entry_kind : binder_entry_kind -> Sexp.t

@@ -15,29 +15,30 @@
 
 (* open Sexplib.Std *)
 
+let cmake = CAst.make
+
 module Loc   = Ser_loc
 module CAst  = Ser_cAst
 module Names = Ser_names
-
-(* qualid: private *)
-type qualid = [%import: Libnames.qualid]
 
 type _qualid =
     Ser_Qualid of Names.DirPath.t * Names.Id.t
   [@@deriving sexp]
 
-let _qualid_put qid                   =
-  let dp, id = Libnames.repr_qualid qid in Ser_Qualid (dp, id)
+let _qualid_put qid =
+  let (dp, id) = Libnames.repr_qualid (cmake qid) in
+  Ser_Qualid (dp, id)
 
-let _qualid_get (Ser_Qualid (dp, id)) = Libnames.make_qualid dp id
+let _qualid_get (Ser_Qualid (dp, id)) = Libnames.(make_qualid dp id).CAst.v
 
-let qualid_of_sexp sexp = _qualid_get (_qualid_of_sexp sexp)
-let sexp_of_qualid qid  = sexp_of__qualid (_qualid_put qid)
+type qualid_r =
+  [%import: Libnames.qualid_r]
 
-(* reference: public *)
-type reference_r = [%import: Libnames.reference_r]
-  [@@deriving sexp]
+let qualid_r_of_sexp sexp = _qualid_get (_qualid_of_sexp sexp)
+let sexp_of_qualid_r qid  = sexp_of__qualid (_qualid_put qid)
 
-type reference = [%import: Libnames.reference]
+(* qualid: private *)
+type qualid =
+  [%import: Libnames.qualid]
   [@@deriving sexp]
 

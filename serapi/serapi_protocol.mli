@@ -38,15 +38,16 @@ type coq_object =
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr
   | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
+  | CoqEnv       of Environ.env
   | CoqTactic    of Names.KerName.t * Tacenv.ltac_entry
   | CoqLtac      of Tacexpr.raw_tactic_expr
   | CoqGenArg    of Genarg.raw_generic_argument
   | CoqQualId    of Libnames.qualid
-  | CoqGlobRef   of Globnames.global_reference
+  | CoqGlobRef   of Names.GlobRef.t
   | CoqImplicit  of Impargs.implicits_list
   | CoqProfData  of Profile_ltac.treenode
   | CoqNotation  of Constrexpr.notation
-  | CoqUnparsing of Notation.unparsing_rule * Notation.extra_unparsing_rules * Notation_term.notation_grammar
+  | CoqUnparsing of Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
@@ -132,6 +133,7 @@ type query_cmd =
   | ProfileData
   | Proof                          (* Return the proof object *)
   | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
+  | Env                            (* Return the current global enviroment *)
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)

@@ -15,10 +15,3 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
-
-module Misctypes   = Ser_misctypes
-
-type univ_name_list =
-  [%import: Universes.univ_name_list]
-  [@@deriving sexp]

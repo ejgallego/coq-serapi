@@ -11,18 +11,16 @@
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
 (* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
-(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(************************************************************************)
-(* Globnames.mli                                                        *)
-(************************************************************************)
+open Sexplib.Conv
 
-open Sexplib
+type 'a module_signature =
+  [%import: 'a Declaremods.module_signature]
+  [@@deriving sexp]
 
-type global_reference = Names.global_reference
-
-val global_reference_of_sexp : Sexp.t -> Names.global_reference
-val sexp_of_global_reference : Names.global_reference -> Sexp.t
+type inline =
+  [%import: Declaremods.inline]
+  [@@deriving sexp]

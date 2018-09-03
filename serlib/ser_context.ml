@@ -17,7 +17,6 @@
 open Sexplib.Conv
 
 module Names   = Ser_names
-module Constr  = Ser_constr
 
 module Rel = struct
 
@@ -27,14 +26,10 @@ module Rel = struct
     [%import: ('constr, 'types) Context.Rel.Declaration.pt]
     [@@deriving sexp]
 
-  type t =
-    [%import: Context.Rel.Declaration.t]
-    [@@deriving sexp]
-
   end
 
-  type t =
-    [%import: Context.Rel.t]
+  type ('constr, 'types) pt =
+    [%import: ('constr, 'types) Context.Rel.pt]
     [@@deriving sexp]
 
 end
@@ -47,14 +42,10 @@ module Named = struct
     [%import: ('constr, 'types) Context.Named.Declaration.pt]
     [@@deriving sexp]
 
-  type t =
-    [%import: Context.Named.Declaration.t]
-    [@@deriving sexp]
-
   end
 
-  type t =
-    [%import: Context.Named.t]
+  type ('constr, 'types) pt =
+    [%import: ('constr, 'types) Context.Named.pt]
     [@@deriving sexp]
 
 end
@@ -67,14 +58,10 @@ module Compacted = struct
     [%import: ('constr, 'types) Context.Compacted.Declaration.pt]
     [@@deriving sexp]
 
-  type t =
-    [%import: Context.Compacted.Declaration.t]
-    [@@deriving sexp]
-
   end
 
-  type t =
-    [%import: Context.Compacted.t]
+  type ('constr, 'types) pt =
+    [%import: ('constr, 'types) Context.Compacted.pt]
     [@@deriving sexp]
 
 end

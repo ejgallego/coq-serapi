@@ -2,24 +2,24 @@ open Ground_plugin
 open Sexplib.Conv
 
 module Loc = Ser_loc
+module Names = Ser_names
 module Libnames = Ser_libnames
-module Misctypes = Ser_misctypes
-module Globnames = Ser_globnames
+module Locus = Ser_locus
+(* module Globnames = Ser_globnames *)
 
-
-type h1 = Libnames.reference list
+type h1 = Libnames.qualid list
 [@@deriving sexp]
 
-type h2 = Globnames.global_reference Loc.located Misctypes.or_var list
+type h2 = Names.GlobRef.t Loc.located Locus.or_var list
 [@@deriving sexp]
 
-type h3 = Globnames.global_reference list
+type h3 = Names.GlobRef.t list
 [@@deriving sexp]
 
 let ser_wit_firstorder_using :
-  (Libnames.reference list,
-   Globnames.global_reference Loc.located Misctypes.or_var list,
-   Globnames.global_reference list) Ser_genarg.gen_ser =
+  (Libnames.qualid list,
+   Names.GlobRef.t Loc.located Locus.or_var list,
+   Names.GlobRef.t list) Ser_genarg.gen_ser =
   Ser_genarg.{
     raw_ser = sexp_of_h1;
     raw_des = h1_of_sexp;

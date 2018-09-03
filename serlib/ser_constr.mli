@@ -120,3 +120,19 @@ val sexp_of_existential : existential -> Sexp.t
 type sorts_family = Sorts.family
 val sorts_family_of_sexp : Sexp.t -> sorts_family
 val sexp_of_sorts_family : sorts_family -> Sexp.t
+
+type named_declaration = Constr.named_declaration
+val named_declaration_of_sexp : Sexp.t -> named_declaration
+val sexp_of_named_declaration : named_declaration -> Sexp.t
+
+type named_context = Constr.named_context
+val named_context_of_sexp : Sexp.t -> named_context
+val sexp_of_named_context : named_context -> Sexp.t
+
+type rel_declaration = Constr.rel_declaration
+val rel_declaration_of_sexp : Sexp.t -> rel_declaration
+val sexp_of_rel_declaration : rel_declaration -> Sexp.t
+
+type rel_context = Constr.rel_context
+val rel_context_of_sexp : Sexp.t -> rel_context
+val sexp_of_rel_context : rel_context -> Sexp.t

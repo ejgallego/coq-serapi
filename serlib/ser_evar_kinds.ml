@@ -17,9 +17,7 @@ open Sexplib.Std
 
 module Names     = Ser_names
 module Evar      = Ser_evar
-module Globnames = Ser_globnames
 module Constr    = Ser_constr
-module Misctypes = Ser_misctypes
 
 (**********************************************************************)
 (* Evar_kinds                                                         *)
@@ -31,6 +29,18 @@ type matching_var_kind =
 
 type obligation_definition_status =
   [%import: Evar_kinds.obligation_definition_status]
+  [@@deriving sexp]
+
+type record_field =
+  [%import: Evar_kinds.record_field]
+  [@@deriving sexp]
+
+type question_mark =
+  [%import: Evar_kinds.question_mark]
+  [@@deriving sexp]
+
+type subevar_kind =
+  [%import: Evar_kinds.subevar_kind]
   [@@deriving sexp]
 
 type t =

@@ -85,6 +85,7 @@ let _ =
 module Loc      = Ser_loc
 module Pp       = Ser_pp
 module Names    = Ser_names
+module Environ  = Ser_environ
 module Goptions = Ser_goptions
 module Stateid  = Ser_stateid
 module Context  = Ser_context
@@ -93,10 +94,11 @@ module Libnames = Ser_libnames
 module Impargs  = Ser_impargs
 module Constr     = Ser_constr
 module Constrexpr = Ser_constrexpr
-module Globnames  = Ser_globnames
 module Proof      = Ser_proof
 module Goal       = Ser_goal
 module Tok        = Ser_tok
+module Ppextend   = Ser_ppextend
+module Notation_gram = Ser_notation_gram
 module Genarg     = Ser_genarg
 
 (* Alias fails due to the [@@default in protocol] *)

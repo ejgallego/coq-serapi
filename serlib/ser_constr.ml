@@ -24,10 +24,11 @@
 open Sexplib
 open Sexplib.Std
 
-module Names = Ser_names
-module Sorts = Ser_sorts
-module Evar  = Ser_evar
-module Univ  = Ser_univ
+module Names   = Ser_names
+module Sorts   = Ser_sorts
+module Evar    = Ser_evar
+module Univ    = Ser_univ
+module Context = Ser_context
 
 type pconstant =
   [%import: Constr.pconstant]
@@ -177,3 +178,19 @@ type existential =
 type sorts_family = Sorts.family
 let sorts_family_of_sexp = Sorts.family_of_sexp
 let sexp_of_sorts_family = Sorts.sexp_of_family
+
+type named_declaration =
+  [%import: Constr.named_declaration]
+  [@@deriving sexp]
+
+type named_context =
+  [%import: Constr.named_context]
+  [@@deriving sexp]
+
+type rel_declaration =
+  [%import: Constr.rel_declaration]
+  [@@deriving sexp]
+
+type rel_context =
+  [%import: Constr.rel_context]
+  [@@deriving sexp]

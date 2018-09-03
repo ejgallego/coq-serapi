@@ -21,6 +21,7 @@ val env_of_sexp : Sexp.t -> env
 val sexp_of_env : env -> Sexp.t
 
 type ('constr, 'types) punsafe_judgment = ('constr, 'types) Environ.punsafe_judgment
+
 val punsafe_judgment_of_sexp :
   (Sexp.t -> 'constr) ->
   (Sexp.t -> 'types) -> Sexp.t ->
@@ -33,6 +34,3 @@ val sexp_of_punsafe_judgment :
 type unsafe_judgment = Environ.unsafe_judgment
 val unsafe_judgment_of_sexp : Sexp.t -> unsafe_judgment
 val sexp_of_unsafe_judgment : unsafe_judgment -> Sexp.t
-
-
-

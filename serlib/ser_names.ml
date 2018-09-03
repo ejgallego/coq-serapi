@@ -20,7 +20,8 @@ open Sexplib.Std
 
 open Names
 
-module Int = Ser_int
+module Int  = Ser_int
+module CAst = Ser_cAst
 
 (************************************************************************)
 (* Serialization of Names.mli                                           *)
@@ -184,16 +185,7 @@ type 'a tableKey =
   [%import: 'a Names.tableKey]
   [@@deriving sexp]
 
-type kernel_name = [%import: Names.kernel_name]
-                   [@@deriving sexp]
-
-type identifier  = [%import: Names.identifier]
-                   [@@deriving sexp]
-
 type variable   = [%import: Names.variable]
-                  [@@deriving sexp]
-
-type constant   = [%import: Names.constant]
                   [@@deriving sexp]
 
 (* Inductive and constructor = public *)
@@ -213,7 +205,9 @@ module Projection = struct
   let _projection_put prj              =
     let cs, uf = Projection.constant prj, Projection.unfolded prj in
     Projection (cs, uf)
-  let _projection_get (Projection (cs,uf)) = Projection.make cs uf
+
+  (* let _projection_get (Projection (cs,uf)) = Projection.make cs uf *)
+  let _projection_get _ = Obj.magic 0
 
   let t_of_sexp sexp = _projection_get (_projection_of_sexp sexp)
   let sexp_of_t dp   = sexp_of__projection (_projection_put dp)
@@ -223,11 +217,26 @@ end
 type projection = Projection.t
   [@@deriving sexp]
 
-type global_reference =
-  [%import: Names.global_reference]
+module GlobRef = struct
+
+type t = [%import: Names.GlobRef.t]
   [@@deriving sexp]
+
+end
 
 (* Evaluable global reference: public *)
 type evaluable_global_reference =
   [%import: Names.evaluable_global_reference]
+  [@@deriving sexp]
+
+type lident =
+  [%import: Names.lident]
+  [@@deriving sexp]
+
+type lname =
+  [%import: Names.lname]
+  [@@deriving sexp]
+
+type lstring =
+  [%import: Names.lstring]
   [@@deriving sexp]

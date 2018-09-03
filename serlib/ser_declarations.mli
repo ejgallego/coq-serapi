@@ -52,17 +52,21 @@ type one_inductive_body = Declarations.one_inductive_body
 val one_inductive_body_of_sexp : Sexp.t -> one_inductive_body
 val sexp_of_one_inductive_body : one_inductive_body -> Sexp.t
 
-type projection_body = Declarations.projection_body
-val projection_body_of_sexp : Sexp.t -> projection_body
-val sexp_of_projection_body : projection_body -> Sexp.t
+type set_predicativity = Declarations.set_predicativity
+val set_predicativity_of_sexp : Sexp.t -> set_predicativity
+val sexp_of_set_predicativity : set_predicativity -> Sexp.t
+
+type engagement = Declarations.engagement
+val engagement_of_sexp : Sexp.t -> engagement
+val sexp_of_engagement : engagement -> Sexp.t
 
 type typing_flags = Declarations.typing_flags
 val typing_flags_of_sexp : Sexp.t -> typing_flags
 val sexp_of_typing_flags : typing_flags -> Sexp.t
 
-type record_body = Declarations.record_body
-val record_body_of_sexp : Sexp.t -> record_body
-val sexp_of_record_body : record_body -> Sexp.t
+(* type record_body = Declarations.record_body
+ * val record_body_of_sexp : Sexp.t -> record_body
+ * val sexp_of_record_body : record_body -> Sexp.t *)
 
 type recursivity_kind = Declarations.recursivity_kind
 val recursivity_kind_of_sexp : Sexp.t -> recursivity_kind

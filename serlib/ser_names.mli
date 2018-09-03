@@ -131,6 +131,15 @@ end
 
 type projection  = Names.Projection.t
 
+module GlobRef : sig
+
+  type t = Names.GlobRef.t
+
+  val t_of_sexp : Sexp.t -> t
+  val sexp_of_t : t -> Sexp.t
+
+end
+
 val variable_of_sexp : Sexp.t -> variable
 val sexp_of_variable : variable -> Sexp.t
 
@@ -143,12 +152,18 @@ val sexp_of_constructor : constructor -> Sexp.t
 val projection_of_sexp : Sexp.t -> projection
 val sexp_of_projection : projection -> Sexp.t
 
-type global_reference = Names.global_reference
-val global_reference_of_sexp : Sexp.t -> global_reference
-val sexp_of_global_reference : global_reference -> Sexp.t
-
 type evaluable_global_reference = Names.evaluable_global_reference
 val evaluable_global_reference_of_sexp : Sexp.t -> evaluable_global_reference
 val sexp_of_evaluable_global_reference : evaluable_global_reference -> Sexp.t
 
+type lident = Names.lident
+val lident_of_sexp : Sexp.t -> lident
+val sexp_of_lident : lident -> Sexp.t
 
+type lname = Names.lname
+val lname_of_sexp : Sexp.t -> lname
+val sexp_of_lname : lname -> Sexp.t
+
+type lstring = Names.lstring
+val lstring_of_sexp : Sexp.t -> lstring
+val sexp_of_lstring : lstring -> Sexp.t
