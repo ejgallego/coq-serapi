@@ -1,6 +1,7 @@
 _Version 0.6.0_:
 
  * [general] support Coq 8.9,
+ * [general] SerAPI now uses Dune as a build system,
  * [serlib] support to serialize kernel environments,
  * [serapi] new query `Env` that tries to print the current kernel environment,
  * [serlib] correct field names for `CAst`,
