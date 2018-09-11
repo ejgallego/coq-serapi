@@ -197,6 +197,7 @@ type answer_kind =
   [@with
      Stm.focus := Ser_stm.focus;
      Printexc.raw_backtrace := raw_backtrace;
+     Stdlib.Printexc.raw_backtrace := raw_backtrace;
   ]]
   [@@deriving sexp]
 

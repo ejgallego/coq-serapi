@@ -27,7 +27,8 @@ env:
   # Don't test opam in 8.8 yet.
   # - TEST_TARGET="all" EXTRA_OPAM="coq"
   - TEST_TARGET="all" SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
-  - TEST_TARGET="js/sertop_js.js" COMPILER="4.06.0+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte" SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
+  - TEST_TARGET="all" COMPILER="4.07.0" SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
+  - TEST_TARGET="js/sertop_js.js" COMPILER="4.06.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte" SERAPI_COQ_HOME="${HOME}/coq-${COQ_VERSION}/"
   # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
   # - TEST_TARGET="test2"
 

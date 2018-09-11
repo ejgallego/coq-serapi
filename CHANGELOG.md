@@ -1,8 +1,6 @@
-_Version 0.6.0_:
-
- * [general] support Coq 8.9
-
 _Version 0.5.2_:
+
+ * [serlib] Compatibility with OCaml 4.07.0 [problems with `Stdlib` packing]
 
 _Version 0.5.1_:
 
