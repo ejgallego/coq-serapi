@@ -61,6 +61,7 @@ type coq_pkg =
   [%import: Jslib.coq_pkg
   [@with
      Digest.t := digest;
+     Stdlib.Digest.t := digest;
   ]]
   [@@deriving sexp]
 
