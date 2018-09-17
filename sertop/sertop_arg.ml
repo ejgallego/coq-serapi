@@ -88,6 +88,15 @@ let load_path : Mltop.coq_path list Term.t =
   Term.(const List.(map (coq_lp_conv ~implicit:false)) $
         Arg.(value & opt_all (pair dir string) [] & info ["Q"; "load-path"] ~docv:"DIR,LP" ~doc))
 
+let coq_include_conv unix_path = Mltop.{
+    path_spec = MlPath unix_path;
+    recursive = false;
+  }
+
+let ml_include_path : Mltop.coq_path list Term.t =
+  let doc = "Include DIR in default loadpath, for locating ML files" in
+  Term.(const List.(map coq_include_conv) $
+        Arg.(value & opt_all dir [] & info ["I"; "ml-include-path"] ~docv:"DIR" ~doc))
 
 (* Low-level serialization options for display *)
 let omit_loc : bool Term.t =
