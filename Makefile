@@ -37,7 +37,7 @@ sertop: sertop/ser_version.ml
 
 sercomp: sertop
 	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	OCAMLPATH=$(SERAPI_COQ_HOME):$(OCAMLPATH)                 \
 	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sercomp.$(TARGET)
 
 
