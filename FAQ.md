@@ -87,13 +87,13 @@ process will perform:
 
 - Name resolution. Example `λ x : nat. x` is resolved to `λ (x: Init.nat), Var 1`
   [using debruijn for bound variables].
-- Notation interpretation. For example, `a + b  is desugared to `Nat.add a b`.
+- Notation interpretation. For example, `a + b` is desugared to `Nat.add a b`.
 - Implicit argument resolution. For example `fst a` is desugared to
   `@fst _ _ a` [note the holes].
 - Some desugaring of pattern-matching problems also takes place.
 
 The next step is type inference (called pretyping in Coq, as "typing"
-is used for the kernel-levelf type checking), which will turn a term
+is used for the kernel-level type checking), which will turn a term
 in `glob_constr` form into a full-typed `Constr.t` value. `Constr.t`
 are the core terms manipulated by Coq's kernel and tactics.
 
