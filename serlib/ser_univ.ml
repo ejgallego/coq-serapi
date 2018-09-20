@@ -149,7 +149,7 @@ module ContextSet = struct
   type t = Univ.ContextSet.t
 
   let t_of_sexp _sexp = Obj.magic 0
-  let sexp_of_t _cst = Obj.magic 0
+  let sexp_of_t _cst = Sexp.Atom "[ContextSet: Abstract]"
 
 end
 
