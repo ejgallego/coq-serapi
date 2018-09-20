@@ -1,3 +1,7 @@
+_Version 0.5.4_:
+
+ * [serlib] Fix critical bug in handling of abstract type (#60)
+
 _Version 0.5.3_:
 
  * [sertop] Support for `-I` option (`--ml-include-path`).
