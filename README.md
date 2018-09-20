@@ -216,7 +216,7 @@ With a bit more development effort, you can also:
   [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
   provide an example REPL at: https://x80.org/rhino-hawk
 
-- we would also like to provide a [Jupyter/IPython kernel](issues/17).
+- we would also like to provide a [Jupyter/IPython kernel](https://github.com/ejgallego/coq-serapi/issues/17).
 
 ### Developer/Users Mailing List ###
 
