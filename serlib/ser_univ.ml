@@ -114,7 +114,7 @@ module AUContext = struct
   type t = Univ.AUContext.t
 
   let t_of_sexp _s = Obj.magic 0
-  let sexp_of_t _t = Sexp.Atom "[AUContext: Abstract]"
+  let sexp_of_t _t = Sexp.Atom "[Univ.AUContext.t: Abstract]"
 
 end
 
@@ -140,7 +140,7 @@ module ACumulativityInfo = struct
   type t = Univ.ACumulativityInfo.t
 
   let t_of_sexp _s = Obj.magic 0
-  let sexp_of_t _t = Sexp.Atom "[ACumulativityInfo: Abstract]"
+  let sexp_of_t _t = Sexp.Atom "[Univ.ACumulativityInfo.t: Abstract]"
 
 end
 
@@ -149,7 +149,7 @@ module ContextSet = struct
   type t = Univ.ContextSet.t
 
   let t_of_sexp _sexp = Obj.magic 0
-  let sexp_of_t _cst = Sexp.Atom "[ContextSet: Abstract]"
+  let sexp_of_t _cst = Sexp.Atom "[Univ.ContextSet.t: Abstract]"
 
 end
 
