@@ -1,3 +1,8 @@
+_Version 0.5.5_:
+
+ * [serlib] Be more lenient when parsing back `Id.t` as to accommodate
+   hacks in the Coq AST (#64) Thanks to @palmskog for the report.
+
 _Version 0.5.4_:
 
  * [serlib] Fix critical bug in handling of abstract type (#60)

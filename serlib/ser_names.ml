@@ -33,7 +33,7 @@ type t   = [%import: Names.Id.t]
 
 type _t            = Id of string [@@deriving sexp]
 let _t_put  id     = Id (Id.to_string id)
-let _t_get (Id id) = Id.of_string id
+let _t_get (Id id) = Id.of_string_soft id
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t id   = sexp_of__t (_t_put id)
