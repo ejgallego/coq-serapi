@@ -13,7 +13,6 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
 open Sexplib.Std
 
 module Range  = Ser_range
@@ -25,8 +24,7 @@ module UGraph         = Ser_uGraph
 module Declarations   = Ser_declarations
 
 type lazy_val = [%import: Environ.lazy_val]
-(* let lazy_val_of_sexp _env  = Obj.magic 0 *)
-let sexp_of_lazy_val _sexp = Sexp.Atom "Lazy Val"
+let sexp_of_lazy_val = Serlib_base.sexp_of_opaque ~typ:"Environ.lazy_val"
 
 type stratification =
   [%import: Environ.stratification]
@@ -43,13 +41,13 @@ type named_context_val =
 type globals =
   [%import: Environ.globals]
 
-let sexp_of_globals _sexp = Sexp.Atom "Globals"
+let sexp_of_globals = Serlib_base.sexp_of_opaque ~typ:"Environ.globals"
 
 type env =
   [%import: Environ.env]
   [@@deriving sexp_of]
 
-let env_of_sexp _sexp = Obj.magic 0
+let env_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Environ.env"
 
 type ('constr, 'term) punsafe_judgment =
   [%import: ('constr, 'term) Environ.punsafe_judgment]
@@ -58,4 +56,3 @@ type ('constr, 'term) punsafe_judgment =
 type unsafe_judgment =
   [%import: Environ.unsafe_judgment]
   [@@deriving sexp]
-

@@ -13,20 +13,19 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
 open Ssrmatching_plugin
 
 type cpattern =
   [%import: Ssrmatching.cpattern]
 
-let cpattern_of_sexp x = Obj.magic x
-let sexp_of_cpattern _x = Sexp.Atom "XXX cpattern"
+let cpattern_of_sexp o = Serlib_base.opaque_of_sexp ~typ:"Ssrmatching.cpattern" o
+let sexp_of_cpattern o = Serlib_base.sexp_of_opaque ~typ:"Ssrmatching.cpattern" o
 
 type rpattern =
   [%import: Ssrmatching.rpattern]
 
-let rpattern_of_sexp x = Obj.magic x
-let sexp_of_rpattern _x = Sexp.Atom "XXX cpattern"
+let rpattern_of_sexp o = Serlib_base.opaque_of_sexp ~typ:"Ssrmatching.rpattern" o
+let sexp_of_rpattern o = Serlib_base.sexp_of_opaque ~typ:"Ssrmatching.rpattern" o
 
 type ssrdir =
   [%import: Ssrmatching.ssrdir]

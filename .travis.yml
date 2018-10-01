@@ -27,6 +27,7 @@ env:
   # - TEST_TARGET="all"                                                                               EXTRA_OPAM="coq"
   - TEST_TARGET="build"   COMPILER="4.06.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   - TEST_TARGET="build"   COMPILER="4.07.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
+  - TEST_TARGET="test"    COMPILER="4.07.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   - TEST_TARGET="js-dune" COMPILER="4.06.1+32bit" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"
   # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
   # - TEST_TARGET="test2"

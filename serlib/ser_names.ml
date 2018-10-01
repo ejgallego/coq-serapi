@@ -207,10 +207,11 @@ module Projection = struct
     Projection (cs, uf)
 
   (* let _projection_get (Projection (cs,uf)) = Projection.make cs uf *)
-  let _projection_get _ = Obj.magic 0
+  (* let _projection_get _ = Obj.magic 0 *)
 
-  let t_of_sexp sexp = _projection_get (_projection_of_sexp sexp)
-  let sexp_of_t dp   = sexp_of__projection (_projection_put dp)
+  (* let t_of_sexp sexp = _projection_get (_projection_of_sexp sexp) *)
+  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Projection.t"
+  let sexp_of_t dp = sexp_of__projection (_projection_put dp)
 
 end
 

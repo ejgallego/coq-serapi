@@ -35,8 +35,8 @@ end
 (* What a hack is ssreflect using... *)
 module Proofview = struct
   type 'a tactic = 'a Proofview.tactic
-  let tactic_of_sexp _ _ = Obj.magic 0
-  let sexp_of_tactic _ _ = Sexplib.Sexp.Atom "[SSRHACK IPatTAC]"
+  let tactic_of_sexp _ = Serlib_base.opaque_of_sexp ~typ:"Ssrast.tactic"
+  let sexp_of_tactic _ = Serlib_base.sexp_of_opaque ~typ:"Ssrast.tactic"
 end
 
 type ssrhyp =

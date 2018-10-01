@@ -1,0 +1,65 @@
+(alias
+ (name runtest)
+ (deps (:input auto.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input clear.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input eauto.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+; Broken
+; (alias
+;  (name runtest)
+;  (deps (:input elim.v))
+;  (action (ignore-stdout (run sercomp --exn_on_opaque --debug %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input exact.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input exists.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input firstorder.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input intros.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input replace.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input revert.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input specialize.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input subst.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input symmetry.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))

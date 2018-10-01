@@ -13,7 +13,9 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-type retroknowledge = [%import: Retroknowledge.retroknowledge]
+open Sexplib
 
-let sexp_of_retroknowledge = Serlib_base.sexp_of_opaque ~typ:"Retroknowledge.retroknowledge"
-let retroknowledge_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Retroknowledge.retroknowledge"
+type t = UGraph.t
+
+val sexp_of_t : t -> Sexp.t
+val t_of_sexp : Sexp.t -> t

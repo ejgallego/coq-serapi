@@ -13,9 +13,7 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
-
 type t = [%import: UGraph.t]
 
-let sexp_of_t _ = Sexp.Atom "UGraph"
-let t_of_sexp _ = Obj.magic 0
+let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"UGraph.t"
+let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"UGraph.t"

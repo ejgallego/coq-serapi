@@ -13,8 +13,6 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
-
 type 'a t = 'a Range.t
-let sexp_of_t _ _ = Sexp.Atom "Range"
-let t_of_sexp _ _ = Obj.magic 0
+let sexp_of_t _ = Serlib_base.sexp_of_opaque ~typ:"Range.t"
+let t_of_sexp _ = Serlib_base.opaque_of_sexp ~typ:"Range.t"

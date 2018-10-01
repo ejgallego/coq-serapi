@@ -42,6 +42,7 @@ type implicit_side_condition = Impargs.implicit_side_condition
 
 let implicit_side_condition_of_sexp (sexp : Sexp.t) : implicit_side_condition =
   Obj.magic (_implicit_side_condition_of_sexp sexp)
+
 let sexp_of_implicit_side_condition (isc : implicit_side_condition) : Sexp.t =
   sexp_of__implicit_side_condition Obj.(magic isc)
 
