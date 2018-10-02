@@ -36,7 +36,9 @@
                            (bound-and-true-p byte-compile-current-file)
                            (buffer-file-name))))
 
-(defvar sertop-executable-path (expand-file-name "sertop.native" sertop--root)
+(defvar sertop-executable-path
+  (or (expand-file-name "sertop.native" sertop--root)
+      (executable-find "sertop"))
   "Path to sertop.")
 
 (defvar sertop-coq-directory nil

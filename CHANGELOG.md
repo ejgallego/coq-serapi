@@ -4,6 +4,7 @@ _Version 0.6.0_:
  * [serlib] support to serialize kernel environments,
  * [serapi] new query `Env` that tries to print the current kernel environment,
  * [serlib] correct field names for `CAst`,
+ * [opam] Install `sertop.el`,
 
 _Version 0.5.7_:
 

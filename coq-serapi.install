@@ -2,3 +2,7 @@ bin: [
   "_build/sertop/sertop.native"  { "sertop"  }
   "_build/sertop/sercomp.native" { "sercomp" }
 ]
+
+share_root: [
+  "sertop.el"                    { "emacs/site-lisp/sertop.el" }
+]
