@@ -1,3 +1,8 @@
+_Version 0.5.6_:
+
+ * [serlib] Fixed serializers for some tactics data (#66) Thanks to
+   @palmskog for the report.
+
 _Version 0.5.5_:
 
  * [serlib] Be more lenient when parsing back `Id.t` as to accommodate
