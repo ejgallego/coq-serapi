@@ -21,6 +21,16 @@ let ser_wit_int    = Ser_genarg.mk_uniform sexp_of_int int_of_sexp
 let ser_wit_string = Ser_genarg.mk_uniform sexp_of_string string_of_sexp
 let ser_wit_ident  = Ser_genarg.mk_uniform Ser_names.Id.sexp_of_t Ser_names.Id.t_of_sexp
 
+let ser_wit_var = Ser_genarg.{
+    raw_ser = Ser_misctypes.sexp_of_lident;
+    glb_ser = Ser_misctypes.sexp_of_lident;
+    top_ser = Ser_names.Id.sexp_of_t;
+
+    raw_des = Ser_misctypes.lident_of_sexp;
+    glb_des = Ser_misctypes.lident_of_sexp;
+    top_des = Ser_names.Id.t_of_sexp;
+  }
+
 let ser_wit_constr = Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_glob_constr_and_expr;
@@ -44,6 +54,21 @@ let ser_wit_uconstr = Ser_genarg.{
 (* XXX Obj.magic grep *)
 let fail msg = fun _ -> raise (Invalid_argument msg)
 
+let ser_wit_bindings :
+         (Constrexpr.constr_expr Misctypes.bindings,
+          Tactypes.glob_constr_and_expr Misctypes.bindings,
+          EConstr.constr Misctypes.bindings Tactypes.delayed_open)
+         Ser_genarg.gen_ser
+ = Ser_genarg.{
+    raw_ser = Ser_misctypes.sexp_of_bindings Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Ser_misctypes.sexp_of_bindings Ser_tactypes.sexp_of_glob_constr_and_expr;
+    top_ser = fail "[typed constr_with_bindings cannot be serialized";
+
+    raw_des = Ser_misctypes.bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_misctypes.bindings_of_sexp Ser_tactypes.glob_constr_and_expr_of_sexp;
+    top_des = fail "[typed constr_with_bindings cannot be serialized";
+  }
+
 let ser_wit_constr_with_bindings :
          (Constrexpr.constr_expr Misctypes.with_bindings,
           Tactypes.glob_constr_and_expr Misctypes.with_bindings,
@@ -65,9 +90,11 @@ let register () =
   Ser_genarg.register_genser Stdarg.wit_int ser_wit_int;
   Ser_genarg.register_genser Stdarg.wit_bool ser_wit_bool;
   Ser_genarg.register_genser Stdarg.wit_ident ser_wit_ident;
+  Ser_genarg.register_genser Stdarg.wit_var ser_wit_var;
 
   Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
   Ser_genarg.register_genser Stdarg.wit_uconstr ser_wit_uconstr;
 
+  Ser_genarg.register_genser Stdarg.wit_bindings ser_wit_bindings;
   Ser_genarg.register_genser Stdarg.wit_constr_with_bindings ser_wit_constr_with_bindings
 
