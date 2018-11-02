@@ -49,6 +49,11 @@ let ser_wit_ltac = Ser_genarg.{
     top_des = Sexplib.Conv.unit_of_sexp;
   }
 
+let ser_wit_quant_hyp =
+  Ser_genarg.mk_uniform
+    Ser_misctypes.sexp_of_quantified_hypothesis
+    Ser_misctypes.quantified_hypothesis_of_sexp
+
 (* G_ltac *)
 (* Defined in g_ltac but serialized here *)
 
@@ -241,12 +246,39 @@ let ser_wit_withtac =
     (sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr)
     (option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp)
 
+(* extraargs *)
+let ser_wit_casted_constr :
+  (Constrexpr.constr_expr, Ltac_plugin.Tacexpr.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
+  Ser_genarg.{
+    raw_ser = Ser_constrexpr.sexp_of_constr_expr;
+    glb_ser = Ser_tacexpr.sexp_of_glob_constr_and_expr;
+    top_ser = Ser_eConstr.sexp_of_t;
+
+    raw_des = Ser_constrexpr.constr_expr_of_sexp;
+    glb_des = Ser_tacexpr.glob_constr_and_expr_of_sexp;
+    top_des = Ser_eConstr.t_of_sexp;
+  }
+
+let ser_wit_in_clause :
+  (Misctypes.lident Locus.clause_expr, Misctypes.lident Locus.clause_expr, Names.Id.t Locus.clause_expr) Ser_genarg.gen_ser =
+  Ser_genarg.{
+    raw_ser = Ser_locus.sexp_of_clause_expr Ser_misctypes.sexp_of_lident;
+    glb_ser = Ser_locus.sexp_of_clause_expr Ser_misctypes.sexp_of_lident;
+    top_ser = Ser_locus.sexp_of_clause_expr Ser_names.Id.sexp_of_t;
+
+    raw_des = Ser_locus.clause_expr_of_sexp Ser_misctypes.lident_of_sexp;
+    glb_des = Ser_locus.clause_expr_of_sexp Ser_misctypes.lident_of_sexp;
+    top_des = Ser_locus.clause_expr_of_sexp Ser_names.Id.t_of_sexp;
+  }
+
 let register () =
   Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
 
   Ser_genarg.register_genser Tacarg.wit_tactic ser_wit_tactic;
 
   Ser_genarg.register_genser Tacarg.wit_ltac   ser_wit_ltac;
+
+  Ser_genarg.register_genser Stdarg.wit_quant_hyp ser_wit_quant_hyp;
 
   Ser_genarg.register_genser G_ltac.wit_ltac_info ser_wit_ltac_info;
 
@@ -275,5 +307,6 @@ let register () =
 
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
+  Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr;
+  Ser_genarg.register_genser Extraargs.wit_in_clause ser_wit_in_clause;
   ()
-
