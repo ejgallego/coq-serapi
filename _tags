@@ -67,7 +67,7 @@ true: warn(+1..49-4-44-45), warn_error(+1..49-42), bin_annot, annot, debug
 
 # Js Toplevel
 <sertop/sertop_js.ml>: package(js_of_ocaml-lwt,ppx_import,ppx_sexp_conv)
-<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,ppx_sexp_conv.runtime-lib,coq.plugins.ssreflect,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
+<sertop/sertop_js.byte>: linkall, package(dynlink,camlp5.gramlib,ppx_sexp_conv.runtime-lib,coq.plugins.ground,coq.plugins.ssreflect,yojson,ppx_deriving_yojson,js_of_ocaml-lwt)
 
 # Don't mess with this.
 <js>: -traverse
