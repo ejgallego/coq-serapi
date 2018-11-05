@@ -41,7 +41,6 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let stm_options = process_stm_flags
       { enable_async  = async
-      ; async_full    = false
       ; deep_edits    = false
       ; async_workers = async_workers
       } in
@@ -61,10 +60,14 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let require_libs = ["Coq.Init.Prelude", None, Some false] in
 
+  (* -boot option *)
+  let allow_coq_overwrite = false in
+
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; require_libs
              ; iload_path
              ; stm_options
+             ; allow_coq_overwrite
              } in
 
   (* Workaround, see
@@ -118,7 +121,7 @@ let close_document ~mode ~doc ~in_file =
     check_pending_proofs ();
     let ldir = Stm.get_ldir ~doc in
     let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
-    Library.save_library_to ldir out_vo (Global.opaque_tables ())
+    Library.save_library_to ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
 
 (* Command line processing *)
 let comp_version = Ser_version.ser_git_version

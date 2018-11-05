@@ -8,16 +8,15 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* open Sexplib.Conv *)
+open Sexplib
 
-(* module Evd = Ser_evd *)
+type t = Uint63.t
 
-(* type data =
- *   [%import: Proof.data]
- *   [@@deriving sexp] *)
-
+let t_of_sexp (x : Sexp.t) : Uint63.t = Uint63.of_string (Conv.string_of_sexp x)
+let sexp_of_t (x : Uint63.t) : Sexp.t = Conv.sexp_of_string (Uint63.to_string x)

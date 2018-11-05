@@ -40,159 +40,159 @@ module Proofview = struct
 end
 
 type ssrhyp =
-  [%import: Ssrast.ssrhyp]
+  [%import: Ssreflect_plugin.Ssrast.ssrhyp]
   [@@deriving sexp]
 
 type ssrhyp_or_id =
-  [%import: Ssrast.ssrhyp_or_id]
+  [%import: Ssreflect_plugin.Ssrast.ssrhyp_or_id]
   [@@deriving sexp]
 
 type ssrhyps =
-  [%import: Ssrast.ssrhyps]
+  [%import: Ssreflect_plugin.Ssrast.ssrhyps]
   [@@deriving sexp]
 
 type ssrdir =
-  [%import: Ssrast.ssrdir]
+  [%import: Ssreflect_plugin.Ssrast.ssrdir]
   [@@deriving sexp]
 
 type ssrsimpl =
-  [%import: Ssrast.ssrsimpl]
+  [%import: Ssreflect_plugin.Ssrast.ssrsimpl]
   [@@deriving sexp]
 
 type ssrmmod =
-  [%import: Ssrast.ssrmmod]
+  [%import: Ssreflect_plugin.Ssrast.ssrmmod]
   [@@deriving sexp]
 
 type ssrmult =
-  [%import: Ssrast.ssrmult]
+  [%import: Ssreflect_plugin.Ssrast.ssrmult]
   [@@deriving sexp]
 
 type ssrocc =
-  [%import: Ssrast.ssrocc]
+  [%import: Ssreflect_plugin.Ssrast.ssrocc]
   [@@deriving sexp]
 
 type ssrindex =
-  [%import: Ssrast.ssrindex]
+  [%import: Ssreflect_plugin.Ssrast.ssrindex]
   [@@deriving sexp]
 
 type ssrclear =
-  [%import: Ssrast.ssrclear]
+  [%import: Ssreflect_plugin.Ssrast.ssrclear]
   [@@deriving sexp]
 
 type ssrdocc =
-  [%import: Ssrast.ssrdocc]
+  [%import: Ssreflect_plugin.Ssrast.ssrdocc]
   [@@deriving sexp]
 
 type ssrtermkind =
-  [%import: Ssrast.ssrtermkind]
+  [%import: Ssreflect_plugin.Ssrast.ssrtermkind]
   [@@deriving sexp]
 
 type ssrterm =
-  [%import: Ssrast.ssrterm]
+  [%import: Ssreflect_plugin.Ssrast.ssrterm]
   [@@deriving sexp]
 
 type ast_closure_term =
-  [%import: Ssrast.ast_closure_term]
+  [%import: Ssreflect_plugin.Ssrast.ast_closure_term]
   [@@deriving sexp]
 
 type ssrview =
-  [%import: Ssrast.ssrview]
+  [%import: Ssreflect_plugin.Ssrast.ssrview]
   [@@deriving sexp]
 
 type anon_iter =
-  [%import: Ssrast.anon_iter]
+  [%import: Ssreflect_plugin.Ssrast.anon_iter]
   [@@deriving sexp]
 
 type ssripat =
-  [%import: Ssrast.ssripat]
+  [%import: Ssreflect_plugin.Ssrast.ssripat]
   [@@deriving sexp]
 and ssripats =
-  [%import: Ssrast.ssripats]
+  [%import: Ssreflect_plugin.Ssrast.ssripats]
   [@@deriving sexp]
 and ssripatss =
-  [%import: Ssrast.ssripatss]
+  [%import: Ssreflect_plugin.Ssrast.ssripatss]
   [@@deriving sexp]
 
 type ssrhpats =
-  [%import: Ssrast.ssrhpats]
+  [%import: Ssreflect_plugin.Ssrast.ssrhpats]
   [@@deriving sexp]
 
 type ssrhpats_wtransp =
-  [%import: Ssrast.ssrhpats_wtransp]
+  [%import: Ssreflect_plugin.Ssrast.ssrhpats_wtransp]
   [@@deriving sexp]
 
 type ssrintrosarg =
-  [%import: Ssrast.ssrintrosarg]
+  [%import: Ssreflect_plugin.Ssrast.ssrintrosarg]
   [@@deriving sexp]
 
 type ssrfwdid =
-  [%import: Ssrast.ssrfwdid]
+  [%import: Ssreflect_plugin.Ssrast.ssrfwdid]
   [@@deriving sexp]
 
 type 'term ssrbind =
-  [%import: 'term Ssrast.ssrbind]
+  [%import: 'term Ssreflect_plugin.Ssrast.ssrbind]
   [@@deriving sexp]
 
 type ssrbindfmt =
-  [%import: Ssrast.ssrbindfmt]
+  [%import: Ssreflect_plugin.Ssrast.ssrbindfmt]
   [@@deriving sexp]
 
 type 'term ssrbindval =
-  [%import: 'term Ssrast.ssrbindval]
+  [%import: 'term Ssreflect_plugin.Ssrast.ssrbindval]
   [@@deriving sexp]
 
 type ssrfwdkind =
-  [%import: Ssrast.ssrfwdkind]
+  [%import: Ssreflect_plugin.Ssrast.ssrfwdkind]
   [@@deriving sexp]
 
 type ssrfwdfmt =
-  [%import: Ssrast.ssrfwdfmt]
+  [%import: Ssreflect_plugin.Ssrast.ssrfwdfmt]
   [@@deriving sexp]
 
 type ssrclseq =
-  [%import: Ssrast.ssrclseq]
+  [%import: Ssreflect_plugin.Ssrast.ssrclseq]
   [@@deriving sexp]
 
 type 'tac ssrhint =
-  [%import: 'tac Ssrast.ssrhint]
+  [%import: 'tac Ssreflect_plugin.Ssrast.ssrhint]
   [@@deriving sexp]
 
 type 'tac fwdbinders =
-  [%import: 'tac Ssrast.fwdbinders]
+  [%import: 'tac Ssreflect_plugin.Ssrast.fwdbinders]
   [@@deriving sexp]
 
 type clause =
-  [%import: Ssrast.clause]
+  [%import: Ssreflect_plugin.Ssrast.clause]
   [@@deriving sexp]
 
 type clauses =
-  [%import: Ssrast.clauses]
+  [%import: Ssreflect_plugin.Ssrast.clauses]
   [@@deriving sexp]
 
 type wgen =
-  [%import: Ssrast.wgen]
+  [%import: Ssreflect_plugin.Ssrast.wgen]
   [@@deriving sexp]
 
 type 'a ssrdoarg =
-  [%import: 'a Ssrast.ssrdoarg]
+  [%import: 'a Ssreflect_plugin.Ssrast.ssrdoarg]
   [@@deriving sexp]
 
 type 'a ssrseqarg =
-  [%import: 'a Ssrast.ssrseqarg]
+  [%import: 'a Ssreflect_plugin.Ssrast.ssrseqarg]
   [@@deriving sexp]
 
 type 'a ssragens =
-  [%import: 'a Ssrast.ssragens]
+  [%import: 'a Ssreflect_plugin.Ssrast.ssragens]
   [@@deriving sexp]
 
 type ssrapplyarg =
-  [%import: Ssrast.ssrapplyarg]
+  [%import: Ssreflect_plugin.Ssrast.ssrapplyarg]
   [@@deriving sexp]
 
 type 'a ssrcasearg =
-  [%import: 'a Ssrast.ssrcasearg]
+  [%import: 'a Ssreflect_plugin.Ssrast.ssrcasearg]
   [@@deriving sexp]
 
 type 'a ssrmovearg =
-  [%import: 'a Ssrast.ssrmovearg]
+  [%import: 'a Ssreflect_plugin.Ssrast.ssrmovearg]
   [@@deriving sexp]

@@ -16,6 +16,8 @@
 open Sexplib
 open Sertop_async
 
+open Js_of_ocaml
+
 (* Send answer to the main thread *)
 let post_message (msg : Sexp.t) : unit =
   let msg_str = Js.string (Sexp.to_string msg) in

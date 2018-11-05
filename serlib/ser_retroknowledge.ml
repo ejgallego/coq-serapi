@@ -13,16 +13,6 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib.Conv
-
-type int31_field =
-  [%import: Retroknowledge.int31_field]
-  [@@deriving sexp]
-
-type field =
-  [%import: Retroknowledge.field]
-  [@@deriving sexp]
-
 type retroknowledge =
   [%import: Retroknowledge.retroknowledge]
 

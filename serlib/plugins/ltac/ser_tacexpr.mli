@@ -279,29 +279,9 @@ type atomic_tactic_expr = Tacexpr.atomic_tactic_expr
 val atomic_tactic_expr_of_sexp : Sexp.t -> atomic_tactic_expr
 val sexp_of_atomic_tactic_expr : atomic_tactic_expr -> Sexp.t
 
-type raw_red_expr = Tacexpr.raw_red_expr
-val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
-val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
-
 type tacdef_body = Tacexpr.tacdef_body
 val tacdef_body_of_sexp : Sexp.t -> tacdef_body
 val sexp_of_tacdef_body : tacdef_body -> Sexp.t
-
-type glob_constr_and_expr = Tacexpr.glob_constr_and_expr
-val glob_constr_and_expr_of_sexp : Sexp.t -> glob_constr_and_expr
-val sexp_of_glob_constr_and_expr : glob_constr_and_expr -> Sexp.t
-
-type 'a delayed_open = 'a Tacexpr.delayed_open
-val delayed_open_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a delayed_open
-val sexp_of_delayed_open : ('a -> Sexp.t) -> 'a delayed_open -> Sexp.t
-
-type delayed_open_constr_with_bindings = Tacexpr.delayed_open_constr_with_bindings
-val delayed_open_constr_with_bindings_of_sexp : Sexp.t -> delayed_open_constr_with_bindings
-val sexp_of_delayed_open_constr_with_bindings : delayed_open_constr_with_bindings -> Sexp.t
-
-type delayed_open_constr = Tacexpr.delayed_open_constr
-val delayed_open_constr_of_sexp : Sexp.t -> delayed_open_constr
-val sexp_of_delayed_open_constr : delayed_open_constr -> Sexp.t
 
 type intro_pattern = Tacexpr.intro_pattern
 val intro_pattern_of_sexp : Sexp.t -> intro_pattern

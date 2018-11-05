@@ -15,8 +15,6 @@
 
 open Sexplib.Std
 
-open Ltac_plugin
-
 (* XXX: Move to ser_cmap *)
 type 'a cstring_map = 'a CString.Map.t
 
@@ -35,7 +33,7 @@ let sexp_of_cstring_map f m =
   sexp_of_list s_f l
 
 type treenode =
-  [%import: Profile_ltac.treenode
+  [%import: Ltac_plugin.Profile_ltac.treenode
   [@with CString.Map.t   := cstring_map;
          CString.Map.key := string
   ]]

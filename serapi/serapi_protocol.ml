@@ -126,8 +126,8 @@ type coq_object =
   | CoqProfData  of Profile_ltac.treenode
   | CoqNotation  of Constrexpr.notation
   | CoqUnparsing of Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
-  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
-  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
+  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqProof     of Goal.goal list
                     * (Goal.goal list * Goal.goal list) list
                     * Goal.goal list
@@ -209,8 +209,8 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
     end
 
   (* Fixme *)
-  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.(pr_lconstr_env env sigma)) g.Proof.fg_goals
-  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.(pr_lconstr_expr))         g.Proof.fg_goals
+  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.(pr_lconstr_env env sigma)) g.Serapi_goals.goals
+  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.(pr_lconstr_expr))         g.Serapi_goals.goals
   | CoqProof  _     -> Pp.str "FIXME UPSTREAM, provide pr_proof"
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
@@ -256,16 +256,15 @@ let pp_tex (_obj : coq_object) = ""
     flush_str_formatter ()
   in
   let open List           in
-  let open Proof          in
   let open Ser_constr     in
   let open Ser_constrexpr in
   let open Ser_vernacexpr in
   let open Serapi_goals   in
   match obj with
   | CoqConstr cst -> sexp_of_constr      cst |> tex_sexp
-  | CoqGoal    gl -> let cst = (hd gl.fg_goals).ty in
+  | CoqGoal    gl -> let cst = (hd gl.goals).ty in
                      sexp_of_constr      cst |> tex_sexp
-  | CoqExtGoal gl -> let cst = (hd gl.fg_goals).ty in
+  | CoqExtGoal gl -> let cst = (hd gl.goals).ty in
                      sexp_of_constr_expr cst |> tex_sexp
   | CoqAst(_,ast) -> sexp_of_vernac_control ast |> tex_sexp
   | _             -> "not supported"
@@ -483,7 +482,7 @@ module QueryUtil = struct
   (* XXX: Some work to do wrt Global.type_of_global_unsafe  *)
   let info_of_constructor env cr =
     (* let cdef = Global.lookup_pinductive (cn, cu) in *)
-    let (ctype, _uctx) = Global.type_of_global_in_context env (Globnames.ConstructRef cr) in
+    let (ctype, _uctx) = Typeops.type_of_global_in_context env (Globnames.ConstructRef cr) in
     [],[CoqConstr ctype]
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
@@ -536,8 +535,8 @@ let obj_query ~doc env (opt : query_opt) (cmd : query_cmd) : coq_object list =
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
   | Proof          -> begin
                         try
-                          let (a,b,c,d,_) = Proof.proof (Proof_global.give_me_the_proof ()) in
-                          [CoqProof (a,b,c,d)]
+                          let Proof.{goals; stack; shelf; given_up; _} = Proof.data (Proof_global.give_me_the_proof ()) in
+                          [CoqProof (goals,stack,shelf,given_up)]
                         with Proof_global.NoCurrentProof -> []
                       end
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
@@ -637,6 +636,8 @@ module ControlUtil = struct
   let _dump_doc () =
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
+  exception End_of_input
+
   let add_sentences ~doc opts sent =
     let pa = Pcoq.Parsable.make (Stream.of_string sent) in
     let i   = ref 1                    in
@@ -651,7 +652,11 @@ module ControlUtil = struct
          *)
         if not (List.mem !stt !cur_doc) then
           raise (NoSuchState !stt);
-        let east      = Stm.parse_sentence ~doc:!doc !stt pa in
+        let east      =
+          match Stm.parse_sentence ~doc:!doc !stt ~entry:Pvernac.main_entry pa with
+          | Some ast -> ast
+          | None -> raise End_of_input
+        in
         (* XXX: Must like refine the API *)
         let eloc      = Option.get (east.CAst.loc) in
         let n_doc, n_st, foc = Stm.add ~doc:!doc ?newtip:opts.newtip ~ontop:!stt opts.verb east in
@@ -663,7 +668,7 @@ module ControlUtil = struct
       done;
       !doc, List.rev !acc
     with
-    | Stm.End_of_input -> !doc, List.rev !acc
+    | End_of_input -> !doc, List.rev !acc
     | exn              -> !doc, List.rev (coq_exn_info exn :: !acc)
 
   (* We follow a suggestion by Clément to report sentence invalidation
@@ -715,11 +720,10 @@ end
 (******************************************************************************)
 (* Init / new document                                                        *)
 (******************************************************************************)
-type top_kind = TopLogical of Names.DirPath.t | TopPhysical of string
 type newdoc_opts = {
 
   (* name of the top-level module *)
-  top_name     : top_kind;
+  top_name     : Stm.interactive_top;
 
   (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
   iload_path   : Mltop.coq_path list sexp_option;
@@ -775,19 +779,18 @@ let exec_cmd (cmd : cmd) =
   let doc = Stm.get_doc !doc_id in
   coq_protect @@ fun () -> match cmd with
   | NewDoc opts   ->
-    let sertop_dp = match opts.top_name with
-      | TopLogical dp -> dp
-      | TopPhysical file -> Serapi_paths.dirpath_of_file file
-    in
     let stm_options = Stm.AsyncOpts.default_opts in
     let require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
     let iload_path = Option.default
         Serapi_paths.(coq_loadpath_default ~implicit:true ~coq_path:Coq_config.coqlib)
         opts.iload_path in
-    let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp
+    (* -boot option *)
+    let allow_coq_overwrite = false in
+    let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
                ; require_libs
                ; iload_path
                ; stm_options
+               ; allow_coq_overwrite
                } in
     (* doc_id := fst Stm.(get_doc @@ new_doc ndoc); [] *)
     let _ = Stm.new_doc ndoc in
@@ -817,7 +820,7 @@ let exec_cmd (cmd : cmd) =
     let st = CLexer.get_lexer_state () in
     begin try
         let istr = Stream.of_string input in
-        let lex = CLexer.lexer.Plexing.tok_func istr in
+        let lex = CLexer.lexer.Gramlib.Plexing.tok_func istr in
         CLexer.set_lexer_state st;
         let objs = Extra.stream_tok [] (fst lex) in
         [ObjList [CoqTok objs]]

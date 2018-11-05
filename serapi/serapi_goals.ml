@@ -19,6 +19,13 @@
 type 'a hyp = (Names.Id.t list * 'a option * 'a)
 type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
 
+type 'a ser_goals =
+  { goals : 'a list
+  ; stack : ('a list * 'a list) list
+  ; shelf : 'a list
+  ; given_up : 'a list
+  }
+
 (** XXX: Do we need to perform evar normalization? *)
 
 module CDC = Context.Compacted.Declaration
@@ -51,14 +58,20 @@ let process_goal_gen ppx sigma g : 'a reified_goal =
   { name = Goal.uid g; ty = get_goal_type ppx sigma g; hyp = hyps }
 
 let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) ~doc sid
-  : 'a reified_goal Proof.pre_goals option =
+  : 'a reified_goal ser_goals option =
   try begin
     match Stm.state_of_id ~doc sid with
     | `Expired | `Error _ -> None
     | `Valid ost ->
       Option.map (fun stm_st ->
-          Proof.map_structured_proof
-            (Proof_global.proof_of_state stm_st.Vernacstate.proof) (process_goal_gen ppx)
+          let proof = Proof_global.proof_of_state stm_st.Vernacstate.proof in
+          let Proof.{ goals; stack; shelf; given_up; sigma; _ } = Proof.data proof in
+          let ppx = List.map (process_goal_gen ppx sigma) in
+          { goals = ppx goals
+          ; stack = List.map (fun (g1,g2) -> ppx g1, ppx g2) stack
+          ; shelf = ppx shelf
+          ; given_up = ppx given_up
+          }
         ) ost
   end
   with Proof_global.NoCurrentProof -> None

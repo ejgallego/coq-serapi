@@ -132,13 +132,16 @@ let ser_loop ser_opts =
   let require_libs = ["Coq.Init.Prelude", None, Some false] in
   let iload_path = ser_opts.loadpath in
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
+  (* -boot option *)
+  let allow_coq_overwrite = false in
 
   if not ser_opts.no_init then begin
     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
-    let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp
+    let ndoc = { Stm.doc_type = Stm.Interactive (TopLogical sertop_dp)
                ; require_libs
                ; iload_path
                ; stm_options
+               ; allow_coq_overwrite
                } in
     let _ = Stm.new_doc ndoc in
     ()

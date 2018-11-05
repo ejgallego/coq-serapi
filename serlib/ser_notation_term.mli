@@ -15,6 +15,10 @@
 
 open Sexplib
 
+type subscopes = Notation_term.subscopes
+val subscopes_of_sexp : Sexp.t -> subscopes
+val sexp_of_subscopes : subscopes -> Sexp.t
+
 type constr_as_binder_kind = Notation_term.constr_as_binder_kind
 val constr_as_binder_kind_of_sexp : Sexp.t -> constr_as_binder_kind
 val sexp_of_constr_as_binder_kind : constr_as_binder_kind -> Sexp.t

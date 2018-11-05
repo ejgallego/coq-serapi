@@ -19,14 +19,6 @@ type side = Extend.side
 val side_of_sexp : Sexp.t -> side
 val sexp_of_side : side -> Sexp.t
 
-type gram_assoc = Extend.gram_assoc
-val gram_assoc_of_sexp : Sexp.t -> gram_assoc
-val sexp_of_gram_assoc : gram_assoc -> Sexp.t
-
-type gram_position = Extend.gram_position
-val gram_position_of_sexp : Sexp.t -> gram_position
-val sexp_of_gram_position : gram_position -> Sexp.t
-
 type production_position = Extend.production_position
 val production_position_of_sexp : Sexp.t -> production_position
 val sexp_of_production_position : production_position -> Sexp.t

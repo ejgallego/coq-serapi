@@ -45,18 +45,21 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug =
 
   let stm_options = process_stm_flags
     { enable_async  = None;
-      async_full    = false;
       deep_edits    = false;
       async_workers = 0;
     } in
 
+  (* -boot option *)
+  let allow_coq_overwrite = false in
+
   let open Stm in
-  let doc_type = Interactive Names.(DirPath.make [Id.of_string "SerTopJS"]) in
-  let ndoc = { doc_type;
-               require_libs;
-               iload_path;
-               stm_options;
-               } in
+  let doc_type = Interactive (TopLogical Names.(DirPath.make [Id.of_string "SerTopJS"])) in
+  let ndoc = { doc_type
+             ; require_libs
+             ; iload_path
+             ; stm_options
+             ; allow_coq_overwrite
+             } in
   new_doc ndoc
 
 let async_mut = Mutex.create ()

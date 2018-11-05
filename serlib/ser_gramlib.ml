@@ -8,16 +8,13 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* open Sexplib.Conv *)
-
-(* module Evd = Ser_evd *)
-
-(* type data =
- *   [%import: Proof.data]
- *   [@@deriving sexp] *)
-
+module Gramext = struct
+  type g_assoc =
+    [%import: Gramlib.Gramext.g_assoc]
+    [@@deriving sexp]
+end

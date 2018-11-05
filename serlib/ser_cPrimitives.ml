@@ -8,16 +8,19 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* open Sexplib.Conv *)
+type t =
+  [%import: CPrimitives.t]
+  [@@deriving sexp]
 
-(* module Evd = Ser_evd *)
+type prim_type =
+  [%import: CPrimitives.prim_type]
+  [@@deriving sexp]
 
-(* type data =
- *   [%import: Proof.data]
- *   [@@deriving sexp] *)
-
+type op_or_type =
+  [%import: CPrimitives.op_or_type]
+  [@@deriving sexp]

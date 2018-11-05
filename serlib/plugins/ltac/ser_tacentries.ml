@@ -18,12 +18,10 @@ open Sexplib.Conv
 module Loc   = Ser_loc
 module Names = Ser_names
 
-open Ltac_plugin
-
 type 'a grammar_tactic_prod_item_expr =
-  [%import: 'a Tacentries.grammar_tactic_prod_item_expr]
+  [%import: 'a Ltac_plugin.Tacentries.grammar_tactic_prod_item_expr]
   [@@deriving sexp]
 
 type raw_argument =
-  [%import: Tacentries.raw_argument]
+  [%import: Ltac_plugin.Tacentries.raw_argument]
   [@@deriving sexp]

@@ -156,10 +156,6 @@ end
 type abstract_cumulativity_info = ACumulativityInfo.t
   [@@deriving sexp]
 
-type universe_instance =
-  [%import: Univ.universe_instance]
-  [@@deriving sexp]
-
 type 'a puniverses =
   [%import: 'a Univ.puniverses]
   [@@deriving sexp]

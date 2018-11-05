@@ -15,7 +15,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let debug = false
+let debug = true
 let ml_path = ref []
 
 let add_ml_path path =
@@ -31,7 +31,7 @@ let map_serlib ml_mod =
     (* Supported *)
     | "ground_plugin"
     | "recdef_plugin"
-    | "newring_plugin" -> true
+    | "setoid_ring_plugin" -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
       false

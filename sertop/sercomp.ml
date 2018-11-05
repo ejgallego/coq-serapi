@@ -16,6 +16,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+exception End_of_input
+
 let compfun ~in_file ~in_chan ~process ~doc ~sid =
 
   let in_strm = Stream.of_channel in_chan in
@@ -24,11 +26,15 @@ let compfun ~in_file ~in_chan ~process ~doc ~sid =
   let stt = ref (doc, sid) in
   try while true do
       let doc, sid = !stt in
-      let east = Stm.parse_sentence ~doc sid in_pa in
+      let east =
+        match Stm.parse_sentence ~doc sid ~entry:Pvernac.main_entry in_pa with
+        | Some ast -> ast
+        | None -> raise End_of_input
+      in
       stt := process ~doc ~sid east
     done;
     fst !stt
-  with Stm.End_of_input -> fst !stt
+  with End_of_input -> fst !stt
 
 let _ =
   let man = [

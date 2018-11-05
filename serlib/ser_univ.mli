@@ -59,11 +59,6 @@ type univ_constraint = Univ.univ_constraint
 val univ_constraint_of_sexp : Sexp.t -> univ_constraint
 val sexp_of_univ_constraint : univ_constraint -> Sexp.t
 
-type universe_instance = Instance.t
-
-val universe_instance_of_sexp : Sexp.t -> universe_instance
-val sexp_of_universe_instance : universe_instance -> Sexp.t
-
 module Constraint : sig
   type t = Univ.Constraint.t
 
@@ -133,7 +128,7 @@ sig
   val sexp_of_t : t -> Sexp.t
 end
 
-type 'a puniverses = 'a * universe_instance
+type 'a puniverses = 'a * Instance.t
 
 val puniverses_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a puniverses
 val sexp_of_puniverses : ('a -> Sexp.t) -> 'a puniverses -> Sexp.t

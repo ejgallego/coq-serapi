@@ -73,8 +73,8 @@ type coq_object =
   | CoqNotation  of Constrexpr.notation
   | CoqUnparsing of Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
-  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
-  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
+  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqProof     of Goal.goal list
                     * (Goal.goal list * Goal.goal list) list
                     * Goal.goal list
@@ -183,11 +183,10 @@ type add_opts = {
 (******************************************************************************)
 (* Init / new document                                                        *)
 (******************************************************************************)
-type top_kind = TopLogical of Names.DirPath.t | TopPhysical of string
 type newdoc_opts = {
 
   (* name of the top-level module *)
-  top_name     : top_kind;
+  top_name     : Stm.interactive_top;
 
   (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
   iload_path   : Mltop.coq_path list sexp_option;

@@ -13,7 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Conv
+
 module Stateid = Ser_stateid
+module Names   = Ser_names
+
+type interactive_top =
+ [%import: Stm.interactive_top]
+ [@@deriving sexp]
 
 type focus =
  [%import: Stm.focus]

@@ -135,12 +135,12 @@ module KerName = struct
 
 type t = [%import: Names.KerName.t]
 
-type _kername = Kername of ModPath.t * DirPath.t * Label.t
+type _kername = Kername of ModPath.t * Label.t
       [@@deriving sexp]
 
 let _kername_put kn              =
-  let mp, dp, l = KerName.repr kn in Kername (mp,dp,l)
-let _kername_get (Kername (mp,dp,l)) = KerName.make mp dp l
+  let mp, l = KerName.repr kn in Kername (mp,l)
+let _kername_get (Kername (mp,l)) = KerName.make mp l
 
 let t_of_sexp sexp = _kername_get (_kername_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__kername (_kername_put dp)
@@ -152,12 +152,12 @@ module Constant = struct
 (* Constant.t: private *)
 type t = [%import: Names.Constant.t]
 
-type _constant = Constant of ModPath.t * DirPath.t * Label.t
+type _constant = Constant of ModPath.t * Label.t
       [@@deriving sexp]
 
 let _constant_put cs              =
-  let mp, dp, l = Constant.repr3 cs in Constant (mp,dp,l)
-let _constant_get (Constant (mp,dp,l)) = Constant.make3 mp dp l
+  let mp, l = Constant.repr2 cs in Constant (mp,l)
+let _constant_get (Constant (mp,l)) = Constant.make2 mp l
 
 let t_of_sexp sexp = _constant_get (_constant_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__constant (_constant_put dp)
@@ -169,12 +169,12 @@ module MutInd = struct
 (* MutInd.t: private *)
 type t = [%import: Names.MutInd.t]
 
-type _mutind = Mutind of ModPath.t * DirPath.t * Label.t
+type _mutind = Mutind of ModPath.t * Label.t
       [@@deriving sexp]
 
 let _mutind_put cs              =
-  let mp, dp, l = MutInd.repr3 cs in Mutind (mp,dp,l)
-let _mutind_get (Mutind (mp,dp,l)) = MutInd.make3 mp dp l
+  let mp, l = MutInd.repr2 cs in Mutind (mp,l)
+let _mutind_get (Mutind (mp,l)) = MutInd.make2 mp l
 
 let t_of_sexp sexp = _mutind_get (_mutind_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__mutind (_mutind_put dp)

@@ -36,14 +36,14 @@ type h1 = Constrexpr.constr_expr Tactypes.with_bindings option
 [@@deriving sexp]
 type h2 = Genintern.glob_constr_and_expr Tactypes.with_bindings option
 [@@deriving sexp]
-type h3 = EConstr.t Tactypes.with_bindings Ser_tacexpr.delayed_open option
+type h3 = EConstr.t Tactypes.with_bindings Ser_tactypes.delayed_open option
 [@@deriving sexp]
 end
 
 let ser_wit_fun_ind_using :
   (Constrexpr.constr_expr Tactypes.with_bindings option,
    Genintern.glob_constr_and_expr Tactypes.with_bindings option,
-   EConstr.t Tactypes.with_bindings Ltac_plugin.Tacexpr.delayed_open option)
+   EConstr.t Tactypes.with_bindings Tactypes.delayed_open option)
     Ser_genarg.gen_ser =
   let open A2 in
   Ser_genarg.{

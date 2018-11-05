@@ -18,7 +18,6 @@
 
 type async_flags =
   { enable_async  : string option
-  ; async_full    : bool
   ; deep_edits    : bool
   ; async_workers : int
   }

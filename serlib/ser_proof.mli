@@ -13,9 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+(* open Sexplib *)
 
-type 'a pre_goals = 'a Proof.pre_goals
-
-val pre_goals_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a pre_goals
-val sexp_of_pre_goals : ('a -> Sexp.t) -> 'a pre_goals -> Sexp.t
+(* type 'a data = 'a Proof.data
+ * 
+ * val data_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a data
+ * val sexp_of_data : ('a -> Sexp.t) -> 'a data -> Sexp.t *)
