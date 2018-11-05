@@ -8,30 +8,19 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Univ = Ser_univ
-
-type family =
-  [%import: Sorts.family]
+type t =
+  [%import: CPrimitives.t]
   [@@deriving sexp]
 
-type _t =
-  | SProp
-  | Prop
-  | Set
-  | Type of Univ.Universe.t
-  [@@deriving of_sexp]
+type prim_type =
+  [%import: CPrimitives.prim_type]
+  [@@deriving sexp]
 
-type t =
-  [%import: Sorts.t]
-  [@@deriving sexp_of]
-
-let t_of_sexp x = Obj.magic (_t_of_sexp x)
-
-type relevance =
-  [%import: Sorts.relevance]
+type op_or_type =
+  [%import: CPrimitives.op_or_type]
   [@@deriving sexp]

@@ -95,9 +95,9 @@ val sexp_of_locality_flag : locality_flag -> Sexp.t
  * val obsolete_locality_of_sexp : Sexp.t -> obsolete_locality
  * val sexp_of_obsolete_locality : obsolete_locality -> Sexp.t *)
 
-type option_value = Vernacexpr.option_value
-val option_value_of_sexp : Sexp.t -> option_value
-val sexp_of_option_value : option_value -> Sexp.t
+(* type option_value = Vernacexpr.option_value
+ * val option_value_of_sexp : Sexp.t -> option_value
+ * val sexp_of_option_value : option_value -> Sexp.t *)
 
 type option_ref_value = Vernacexpr.option_ref_value
 val option_ref_value_of_sexp : Sexp.t -> option_ref_value

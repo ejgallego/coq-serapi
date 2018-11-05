@@ -9,7 +9,7 @@
  (public_names sertop sercomp)
  (modules sertop sercomp)
  (link_flags -linkall)
- (libraries sertoplib))
+ (libraries sertoplib num))
 
 (executable
  (name sertop_js)
@@ -24,7 +24,7 @@
     ../jscoq/coq-libjs/coq_vm.js)
   (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js))
 ; (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js --pretty --noinline --disable shortvar --debug-info)
- (link_flags -linkall)
+ (link_flags -linkall -noautolink -no-check-prims)
  (libraries sertoplib js_of_ocaml ppx_deriving_yojson.runtime jscoq_lib))
 
 (rule

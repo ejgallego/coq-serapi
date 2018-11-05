@@ -206,9 +206,9 @@ type coq_object =
   | CoqUnparsing of Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   (** Rules for notation printing and some internals  *)
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
-  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Proof.pre_goals
+  | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
   (** Goals, with types and terms in Kernel-level representation *)
-  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Proof.pre_goals
+  | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   (** Goals, with types and terms in user-level, AST representation *)
   | CoqProof     of Goal.goal list
                     * (Goal.goal list * Goal.goal list) list
@@ -362,14 +362,8 @@ type add_opts = {
 (** {4 Creating a new document }
     {b experimental} *)
 
-type top_kind =
-  | TopLogical of Names.DirPath.t
-  (** The document is interactive and does not have a backing .v file *)
-  | TopPhysical of string
-  (** The document is backed on disk by the given file *)
-
 type newdoc_opts =
-  { top_name     : top_kind
+  { top_name     : Stm.interactive_top
   (** name of the top-level module of the new document *)
   ; iload_path   : Mltop.coq_path list sexp_option
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)

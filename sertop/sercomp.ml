@@ -38,7 +38,6 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let stm_options = process_stm_flags
       { enable_async  = async
-      ; async_full    = false
       ; deep_edits    = false
       ; async_workers = async_workers
       } in
@@ -71,6 +70,9 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   Stm.new_doc ndoc
 
+(* exception End_of_input *)
+
+exception End_of_input
 let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   let stt = ref (doc, sid) in
   let open Sertop_arg in
@@ -78,14 +80,17 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   | I_vernac ->
      begin
        let in_strm = Stream.of_channel in_chan in
-       let in_pa   = Pcoq.Parsable.make ~file:(Loc.InFile in_file) in_strm in
+       let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
        try while true do
            let doc, sid = !stt in
-           let east = Stm.parse_sentence ~doc sid in_pa in
+           let east =
+             match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
+             | Some east -> east
+             | None -> raise End_of_input in
            stt := process ~doc ~sid east
          done;
-           fst !stt
-       with Stm.End_of_input -> fst !stt
+         !stt
+       with End_of_input -> !stt
      end
   | I_sexp ->
      begin
@@ -97,8 +102,8 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
              let ast = Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp in
              stt := process ~doc ~sid ast
          done;
-           fst !stt
-       with End_of_file -> fst !stt
+         !stt
+       with End_of_file -> !stt
      end
 
 let process_vernac ~mode ~pp ~doc ~sid ast =
@@ -122,15 +127,17 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
   in
   doc, n_st
 
-let check_pending_proofs () =
-  let pfs = Proof_global.get_all_proof_names () in
+let check_pending_proofs ~pstate =
+  Option.iter (fun pstate ->
+  let pfs = Proof_global.get_all_proof_names pstate in
   if not CList.(is_empty pfs) then
     let msg = let open Pp in
       seq [ str "There are pending proofs: "
           ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print; str "."] in
     CErrors.user_err msg
+    ) pstate
 
-let close_document ~pp ~mode ~doc ~in_file =
+let close_document ~pp ~mode ~doc ~in_file ~pstate =
   let open Sertop_arg in
   match mode with
   | C_parse -> ()
@@ -140,17 +147,17 @@ let close_document ~pp ~mode ~doc ~in_file =
     Sercomp_stats.print_stats ()
   | C_check ->
     let _doc = Stm.join ~doc in
-    check_pending_proofs ()
+    check_pending_proofs ~pstate
   | C_env ->
     let _doc = Stm.join ~doc in
-    check_pending_proofs ();
+    check_pending_proofs ~pstate;
     Format.printf "@[%a@]@\n%!" pp Ser_environ.(sexp_of_env Global.(env ()))
   | C_vo ->
     let _doc = Stm.join ~doc in
-    check_pending_proofs ();
+    check_pending_proofs ~pstate;
     let ldir = Stm.get_ldir ~doc in
     let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
-    Library.save_library_to ldir out_vo (Global.opaque_tables ())
+    Library.save_library_to ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
 
 (* Command line processing *)
 let sercomp_version = Ser_version.ser_git_version
@@ -188,8 +195,12 @@ let driver input mode debug printer async async_workers quick coq_path ml_path l
 
   (* main loop *)
   let in_chan = open_in in_file in
-  let doc = input_doc ~input ~in_file ~in_chan ~process ~doc ~sid in
-  let () = close_document ~pp ~mode ~doc ~in_file in
+  let doc, _sid = input_doc ~input ~in_file ~in_chan ~process ~doc ~sid in
+  let pstate = match Stm.state_of_id ~doc sid with
+    | `Valid (Some { Vernacstate.proof; _ }) -> proof
+    | _ -> None
+  in
+  let () = close_document ~pp ~mode ~doc ~in_file ~pstate in
   ()
 
 let main () =

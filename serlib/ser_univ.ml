@@ -18,29 +18,35 @@ open Sexplib.Conv
 
 module Names = Ser_names
 
-module Level_ = struct
+module RawLevel = struct
 
-  type raw_level =
+  module UGlobal = struct
+    type t = Names.DirPath.t * int
+    [@@deriving sexp]
+  end
+
+  type t =
+  | SProp
   | Prop
   | Set
-  | Level of int * Names.DirPath.t
+  | Level of UGlobal.t
   | Var of int
   [@@deriving sexp]
 
-  (* XXX: Should we refresh the hash value here? *)
-  type t =
-    { hash : int
-    ; data : raw_level
-    }
-  [@@deriving sexp]
 end
 
 module Level = struct
 
+  type _t =
+    { hash : int
+    ; data : RawLevel.t
+    }
+  [@@deriving sexp]
+
   type t = Univ.Level.t
 
-  let t_of_sexp sexp  = Obj.magic (Level_.t_of_sexp sexp)
-  let sexp_of_t level = Level_.sexp_of_t (Obj.magic level)
+  let t_of_sexp sexp  = Obj.magic (_t_of_sexp sexp)
+  let sexp_of_t level = sexp_of__t (Obj.magic level)
 
 end
 
@@ -65,6 +71,14 @@ type universe = Universe.t
   [@@deriving sexp]
 
 (*************************************************************************)
+
+module Variance = struct
+
+  type t =
+    [%import: Univ.Variance.t]
+  [@@deriving sexp]
+
+end
 
 module Instance = struct
 
@@ -99,14 +113,6 @@ type 'a constrained =
   [%import: 'a Univ.constrained]
   [@@deriving sexp]
 
-module Variance = struct
-
-  type t =
-    [%import: Univ.Variance.t]
-    [@@deriving sexp]
-
-end
-
 module UContext = struct
 
   type t = Univ.UContext.t
@@ -132,6 +138,7 @@ end
 type abstract_universe_context = AUContext.t
   [@@deriving sexp]
 
+(*
 module CumulativityInfo = struct
 
   type t = Univ.CumulativityInfo.t
@@ -142,10 +149,12 @@ module CumulativityInfo = struct
       (sexp_of_array Variance.sexp_of_t) Univ.CumulativityInfo.(univ_context t, variance t)
 
 end
+*)
 
-type cumulativity_info = CumulativityInfo.t
-  [@@deriving sexp]
+(* type cumulativity_info = CumulativityInfo.t
+ *   [@@deriving sexp] *)
 
+(*
 module ACumulativityInfo = struct
 
   type t = Univ.ACumulativityInfo.t
@@ -155,15 +164,17 @@ module ACumulativityInfo = struct
 
 end
 
+*)
+
 module ContextSet = struct
   type t =
     [%import: Univ.ContextSet.t]
     [@@deriving sexp]
 end
 
-type universe_context_set =
-  [%import: Univ.universe_context_set] [@warning "-3"]
-  [@@deriving sexp]
+(* type universe_context_set =
+ *   [%import: Univ.universe_context_set] [@warning "-3"]
+ *   [@@deriving sexp] *)
 
 type 'a in_universe_context =
   [%import: 'a Univ.in_universe_context]
@@ -173,12 +184,8 @@ type 'a in_universe_context_set =
   [%import: 'a Univ.in_universe_context_set]
   [@@deriving sexp]
 
-type abstract_cumulativity_info = ACumulativityInfo.t
-  [@@deriving sexp]
-
-type universe_instance =
-  [%import: Univ.universe_instance]
-  [@@deriving sexp]
+(* type abstract_cumulativity_info = ACumulativityInfo.t
+ *   [@@deriving sexp] *)
 
 type 'a puniverses =
   [%import: 'a Univ.puniverses]

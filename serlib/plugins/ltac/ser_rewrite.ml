@@ -13,17 +13,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ltac_plugin
 open Sexplib.Conv
 
 type unary_strategy =
-  [%import: Rewrite.unary_strategy]
+  [%import: Ltac_plugin.Rewrite.unary_strategy]
   [@@deriving sexp]
 
 type binary_strategy =
-  [%import: Rewrite.binary_strategy]
+  [%import: Ltac_plugin.Rewrite.binary_strategy]
   [@@deriving sexp]
 
 type ('a,'b) strategy_ast =
-  [%import: ('a,'b) Rewrite.strategy_ast]
+  [%import: ('a,'b) Ltac_plugin.Rewrite.strategy_ast]
   [@@deriving sexp]

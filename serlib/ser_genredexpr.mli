@@ -49,3 +49,15 @@ val sexp_of_may_eval :
 type raw_red_expr = Genredexpr.raw_red_expr
 val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
 val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
+
+type r_cst = Genredexpr.r_cst
+val r_cst_of_sexp : Sexp.t -> r_cst
+val sexp_of_r_cst : r_cst -> Sexp.t
+
+type r_trm = Genredexpr.r_trm
+val r_trm_of_sexp : Sexp.t -> r_trm
+val sexp_of_r_trm : r_trm -> Sexp.t
+
+type 'a and_short_name = 'a Genredexpr.and_short_name
+val and_short_name_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a and_short_name
+val sexp_of_and_short_name : ('a -> Sexp.t) -> 'a and_short_name -> Sexp.t

@@ -19,6 +19,20 @@ module Loc        = Ser_loc
 module Names      = Ser_names
 module Tok        = Ser_tok
 
+open Sexplib.Conv
+
+type scope_name =
+  [%import: Notation_term.scope_name]
+  [@@deriving sexp]
+
+type tmp_scope_name =
+  [%import: Notation_term.tmp_scope_name]
+  [@@deriving sexp]
+
+type subscopes =
+  [%import: Notation_term.subscopes]
+  [@@deriving sexp]
+
 (* type notation_spec = *)
 (*   [%import: Notation_term.notation_spec] *)
 (*   [@@deriving sexp] *)

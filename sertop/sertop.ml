@@ -19,7 +19,7 @@
 open Cmdliner
 
 let sertop_version = Ser_version.ser_git_version
-let sertop printer print0 debug lheader coq_path ml_path no_init lp1 lp2 std_impl async async_full deep_edits async_workers omit_loc omit_att exn_on_opaque =
+let sertop printer print0 debug lheader coq_path ml_path no_init lp1 lp2 std_impl async deep_edits async_workers omit_loc omit_att exn_on_opaque =
 
   let open  Sertop_init         in
   let open! Sertop_sexp         in
@@ -44,7 +44,6 @@ let sertop printer print0 debug lheader coq_path ml_path no_init lp1 lp2 std_imp
 
        async = {
          enable_async = async;
-         async_full = async_full;
          deep_edits = deep_edits;
          async_workers = async_workers;
        }
@@ -72,7 +71,7 @@ let sertop_cmd =
   in
   Term.(const sertop
         $ printer $ print0 $ debug $ length $ prelude $ ml_include_path $ no_init $ load_path $ rload_path $ implicit_stdlib
-        $ async $ async_full $ deep_edits $ async_workers $ omit_loc $ omit_att $ exn_on_opaque ),
+        $ async $ deep_edits $ async_workers $ omit_loc $ omit_att $ exn_on_opaque ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 
 let main () =

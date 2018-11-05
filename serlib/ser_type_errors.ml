@@ -21,6 +21,8 @@ module Constr  = Ser_constr
 module Environ = Ser_environ
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
+module Context = Ser_context
+module CPrimitives = Ser_cPrimitives
 
 type arity_error =
   [%import: Type_errors.arity_error]

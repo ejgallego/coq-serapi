@@ -8,30 +8,13 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Univ = Ser_univ
-
-type family =
-  [%import: Sorts.family]
-  [@@deriving sexp]
-
-type _t =
-  | SProp
-  | Prop
-  | Set
-  | Type of Univ.Universe.t
-  [@@deriving of_sexp]
-
-type t =
-  [%import: Sorts.t]
-  [@@deriving sexp_of]
-
-let t_of_sexp x = Obj.magic (_t_of_sexp x)
-
-type relevance =
-  [%import: Sorts.relevance]
-  [@@deriving sexp]
+module Gramext = struct
+  type g_assoc =
+    [%import: Gramlib.Gramext.g_assoc]
+    [@@deriving sexp]
+end

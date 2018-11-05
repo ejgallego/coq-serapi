@@ -13,9 +13,11 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+(* open Sexplib.Conv *)
 
-type 'a pre_goals =
-  [%import: 'a Proof.pre_goals]
-  [@@deriving sexp]
+(* module Evd = Ser_evd *)
+
+(* type data =
+ *   [%import: Proof.data]
+ *   [@@deriving sexp] *)
 

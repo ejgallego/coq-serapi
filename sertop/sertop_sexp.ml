@@ -135,7 +135,7 @@ let ser_loop ser_opts =
 
   if not ser_opts.no_init then begin
     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
-    let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp
+    let ndoc = { Stm.doc_type = Stm.Interactive (TopLogical sertop_dp)
                ; require_libs
                ; iload_path
                ; stm_options

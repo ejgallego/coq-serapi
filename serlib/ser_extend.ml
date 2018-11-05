@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -18,17 +18,10 @@ open Sexplib.Std
 module Tok           = Ser_tok
 module Notation_term = Ser_notation_term
 module Constrexpr    = Ser_constrexpr
+module Gramlib       = Ser_gramlib
 
 type side =
   [%import: Extend.side]
-  [@@deriving sexp]
-
-type gram_assoc =
-  [%import: Extend.gram_assoc]
-  [@@deriving sexp]
-
-type gram_position =
-  [%import: Extend.gram_position]
   [@@deriving sexp]
 
 type production_position =

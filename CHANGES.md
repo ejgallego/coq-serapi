@@ -1,3 +1,9 @@
+## Version 0.7.0:
+
+ * [general] support Coq 8.10,
+ * [serapi] `Goals` query return type has been modified due to
+             upstream changes. (@ejgallego)
+
 ## Version 0.6.1:
 
  * [serapi ] Add `Parse` command to parse a sentence; c.f.

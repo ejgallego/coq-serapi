@@ -14,11 +14,6 @@
 (************************************************************************)
 open Sexplib
 
-type field = Retroknowledge.field
-
-val sexp_of_field : field -> Sexp.t
-val field_of_sexp : Sexp.t -> field
-
 type retroknowledge = Retroknowledge.retroknowledge
 
 val sexp_of_retroknowledge : retroknowledge -> Sexp.t

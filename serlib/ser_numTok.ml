@@ -1,6 +1,6 @@
 (************************************************************************)
 (*  v      *   The Coq Proof Assistant  /  The Coq Development Team     *)
-(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2016     *)
+(* <O___,, *   INRIA - CNRS - LIX - LRI - PPS - Copyright 1999-2017     *)
 (*   \VV/  **************************************************************)
 (*    //   *      This file is distributed under the terms of the       *)
 (*         *       GNU Lesser General Public License Version 2.1        *)
@@ -8,30 +8,12 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2017 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Univ = Ser_univ
+open Sexplib.Std
 
-type family =
-  [%import: Sorts.family]
-  [@@deriving sexp]
-
-type _t =
-  | SProp
-  | Prop
-  | Set
-  | Type of Univ.Universe.t
-  [@@deriving of_sexp]
-
-type t =
-  [%import: Sorts.t]
-  [@@deriving sexp_of]
-
-let t_of_sexp x = Obj.magic (_t_of_sexp x)
-
-type relevance =
-  [%import: Sorts.relevance]
+type t =  [%import: NumTok.t]
   [@@deriving sexp]

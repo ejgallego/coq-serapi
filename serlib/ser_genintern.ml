@@ -22,6 +22,7 @@ module Environ    = Ser_environ
 module Glob_term  = Ser_glob_term
 module Constrexpr = Ser_constrexpr
 module Pattern    = Ser_pattern
+module Notation_term = Ser_notation_term
 
 module Store = struct
   type t = Genintern.Store.t
@@ -30,6 +31,15 @@ module Store = struct
   let sexp_of_t _ = Sexplib.Sexp.Atom "[GENINTERN STORE]"
 
 end
+
+module Stdlib = struct
+  type nonrec 'a ref = 'a ref
+  [@@deriving sexp]
+end
+
+type intern_variable_status =
+  [%import: Genintern.intern_variable_status]
+  [@@deriving sexp]
 
 type glob_sign =
   [%import: Genintern.glob_sign]

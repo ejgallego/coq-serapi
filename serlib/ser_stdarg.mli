@@ -13,8 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+(* open Sexplib *)
 
-type 'a and_short_name = 'a Stdarg.and_short_name
-val and_short_name_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a and_short_name
-val sexp_of_and_short_name : ('a -> Sexp.t) -> 'a and_short_name -> Sexp.t

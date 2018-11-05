@@ -23,3 +23,7 @@ type t = Sorts.t
 
 val t_of_sexp : Sexp.t -> t
 val sexp_of_t : t -> Sexp.t
+
+type relevance = Sorts.relevance
+val relevance_of_sexp : Sexp.t -> relevance
+val sexp_of_relevance : relevance -> Sexp.t

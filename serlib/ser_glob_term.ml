@@ -20,6 +20,7 @@ module CAst       = Ser_cAst
 module DAst       = Ser_dAst
 module Names      = Ser_names
 module Univ       = Ser_univ
+module Uint63     = Ser_uint63
 module Constr     = Ser_constr
 module Decl_kinds = Ser_decl_kinds
 module Libnames   = Ser_libnames

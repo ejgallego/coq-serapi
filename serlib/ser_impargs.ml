@@ -22,6 +22,10 @@ type argument_position =
   [%import: Impargs.argument_position]
   [@@deriving sexp]
 
+type implicit_kind =
+  [%import: Impargs.implicit_kind]
+  [@@deriving sexp]
+
 type implicit_explanation =
   [%import: Impargs.implicit_explanation]
   [@@deriving sexp]

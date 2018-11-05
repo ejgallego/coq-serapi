@@ -13,6 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Conv
+
 module Names      = Ser_names
 
 module Val = struct

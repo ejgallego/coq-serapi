@@ -44,12 +44,12 @@ let ser_wit_intropattern = let open A1 in Ser_genarg.
 
 let ser_wit_destruction_arg = Ser_genarg.{
     raw_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr);
-    glb_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
-    top_ser = Ser_tactics.(sexp_of_destruction_arg Ser_tacexpr.sexp_of_delayed_open_constr_with_bindings);
+    glb_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr);
+    top_ser = Ser_tactics.(sexp_of_destruction_arg Ser_tactypes.sexp_of_delayed_open_constr_with_bindings);
 
     raw_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp);
-    glb_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp);
-    top_des = Ser_tactics.(destruction_arg_of_sexp Ser_tacexpr.delayed_open_constr_with_bindings_of_sexp);
+    glb_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp);
+    top_des = Ser_tactics.(destruction_arg_of_sexp Ser_tactypes.delayed_open_constr_with_bindings_of_sexp);
   }
 
 let ser_wit_tactic = Ser_genarg.{
@@ -259,23 +259,23 @@ let ser_wit_glob_constr_with_bindings =
 
   Ser_genarg.{
     raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr;
-    top_ser = sexp_of_pair _sexp_of_interp_sign Ser_tactypes.(sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
+    glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
+    top_ser = sexp_of_pair _sexp_of_interp_sign Ser_tactypes.(sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr);
 
     raw_des = Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tactypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp;
-    top_des = pair_of_sexp _interp_sign_of_sexp Ser_tactypes.(with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp)
+    glb_des = Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
+    top_des = pair_of_sexp _interp_sign_of_sexp Ser_tactypes.(with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp)
   }
 
 let ser_wit_rewstrategy =
 
   Ser_genarg.{
-    raw_ser = Ser_rewrite.sexp_of_strategy_ast Ser_constrexpr.sexp_of_constr_expr Ser_tacexpr.sexp_of_raw_red_expr;
-    glb_ser = Ser_rewrite.sexp_of_strategy_ast Ser_tacexpr.sexp_of_glob_constr_and_expr Ser_tacexpr.sexp_of_raw_red_expr;
+    raw_ser = Ser_rewrite.sexp_of_strategy_ast Ser_constrexpr.sexp_of_constr_expr Ser_genredexpr.sexp_of_raw_red_expr;
+    glb_ser = Ser_rewrite.sexp_of_strategy_ast Ser_genintern.sexp_of_glob_constr_and_expr Ser_genredexpr.sexp_of_raw_red_expr;
     top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_rewstrategy/top";
 
-    raw_des = Ser_rewrite.strategy_ast_of_sexp Ser_constrexpr.constr_expr_of_sexp Ser_tacexpr.raw_red_expr_of_sexp;
-    glb_des = Ser_rewrite.strategy_ast_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp Ser_tacexpr.raw_red_expr_of_sexp;
+    raw_des = Ser_rewrite.strategy_ast_of_sexp Ser_constrexpr.constr_expr_of_sexp Ser_genredexpr.raw_red_expr_of_sexp;
+    glb_des = Ser_rewrite.strategy_ast_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp Ser_genredexpr.raw_red_expr_of_sexp;
     top_des = Serlib_base.opaque_of_sexp ~typ:"wit_rewstrategy/top";
 
   }
@@ -302,17 +302,20 @@ open Sexplib.Conv
 
 module Names = Ser_names
 module Locus = Ser_locus
+module Ltac_plugin = struct
+  module Tacexpr = Ser_tacexpr
+end
 
 type 'a gen_place =
-  [%import: 'a Extraargs.gen_place]
+  [%import: 'a Ltac_plugin.Extraargs.gen_place]
   [@@deriving sexp]
 
 type loc_place =
-  [%import: Extraargs.loc_place]
+  [%import: Ltac_plugin.Extraargs.loc_place]
   [@@deriving sexp]
 
 type place =
-  [%import: Extraargs.place]
+  [%import: Ltac_plugin.Extraargs.place]
   [@@deriving sexp]
 
 let ser_wit_hloc =
@@ -351,26 +354,25 @@ let ser_wit_natural =
   let open Sexplib.Conv in
   Ser_genarg.mk_uniform sexp_of_int int_of_sexp
 
-let ser_wit_lconstr : (Constrexpr.constr_expr, Ltac_plugin.Tacexpr.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
+let ser_wit_lconstr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
   Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tacexpr.sexp_of_glob_constr_and_expr;
+    glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
     top_ser = Ser_eConstr.sexp_of_t;
 
     raw_des = Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tacexpr.glob_constr_and_expr_of_sexp;
+    glb_des = Ser_genintern.glob_constr_and_expr_of_sexp;
     top_des = Ser_eConstr.t_of_sexp;
   }
 
-let ser_wit_casted_constr :
-  (Constrexpr.constr_expr, Ltac_plugin.Tacexpr.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
+let ser_wit_casted_constr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
   Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tacexpr.sexp_of_glob_constr_and_expr;
+    glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
     top_ser = Ser_eConstr.sexp_of_t;
 
     raw_des = Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tacexpr.glob_constr_and_expr_of_sexp;
+    glb_des = Ser_genintern.glob_constr_and_expr_of_sexp;
     top_des = Ser_eConstr.t_of_sexp;
   }
 
@@ -398,17 +400,9 @@ let ser_wit_by_arg_tac :
     top_des = Sexplib.Conv.option_of_sexp Ser_geninterp.Val.t_of_sexp;
   }
 
-let ser_wit_retroknowledge_field =
+let ser_wit_lpar_id_colon =
   let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = Ser_retroknowledge.sexp_of_field;
-    glb_ser = sexp_of_unit;
-    top_ser = sexp_of_unit;
-
-    raw_des = Ser_retroknowledge.field_of_sexp;
-    glb_des = unit_of_sexp;
-    top_des = unit_of_sexp;
-  }
+  Ser_genarg.mk_uniform sexp_of_unit unit_of_sexp
 
 let ser_wit_occurences =
   let open Sexplib.Conv in
@@ -469,9 +463,7 @@ let register () =
   Ser_genarg.register_genser Extraargs.wit_orient ser_wit_orient;
   Ser_genarg.register_genser Extraargs.wit_occurrences ser_wit_occurences;
   Ser_genarg.register_genser Extraargs.wit_rename ser_wit_rename;
-  Ser_genarg.register_genser Extraargs.wit_retroknowledge_field ser_wit_retroknowledge_field;
-  Ser_genarg.register_genser Extraargs.wit_test_lpar_id_colon Ser_genarg.(mk_uniform sexp_of_unit unit_of_sexp);
-
+  Ser_genarg.register_genser Extraargs.wit_test_lpar_id_colon ser_wit_lpar_id_colon;
   ()
 
 let _ = register ()

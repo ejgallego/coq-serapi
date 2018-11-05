@@ -18,12 +18,14 @@
 open Sexplib.Std
 
 module Names        = Ser_names
-module Vernacinterp = Ser_vernacinterp
+module Attributes   = Ser_attributes
 
-open Ltac_plugin
-module Tacexpr = Ser_tacexpr
+module Ltac_plugin = struct
+  module Tacexpr = Ser_tacexpr
+  module Tacenv  = Ltac_plugin.Tacenv
+end
 
 type ltac_entry =
-  [%import: Tacenv.ltac_entry]
+  [%import: Ltac_plugin.Tacenv.ltac_entry]
   [@@deriving sexp]
 

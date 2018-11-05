@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
@@ -29,6 +29,7 @@ module Sorts   = Ser_sorts
 module Evar    = Ser_evar
 module Univ    = Ser_univ
 module Context = Ser_context
+module Uint63  = Ser_uint63
 
 type pconstant =
   [%import: Constr.pconstant]
@@ -84,9 +85,9 @@ type _constr =
   | Evar      of _constr pexistential
   | Sort      of Sorts.t
   | Cast      of _constr * cast_kind * _types
-  | Prod      of Names.Name.t * _types * _types
-  | Lambda    of Names.Name.t * _types * _constr
-  | LetIn     of Names.Name.t * _constr * _types * _constr
+  | Prod      of Names.Name.t Context.binder_annot * _types * _types
+  | Lambda    of Names.Name.t Context.binder_annot * _types * _constr
+  | LetIn     of Names.Name.t Context.binder_annot * _constr * _types * _constr
   | App       of _constr * _constr array
   | Const     of pconstant
   | Ind       of pinductive
@@ -95,6 +96,7 @@ type _constr =
   | Fix       of (_constr, _types) pfixpoint
   | CoFix     of (_constr, _types) pcofixpoint
   | Proj      of Names.projection * _constr
+  | Int       of Uint63.t
 and _types = _constr
 [@@deriving sexp]
 
@@ -121,6 +123,7 @@ let rec _constr_put (c : constr) : _constr =
   | C.Fix(p,(na,u1,u2))   -> Fix(p, (na, cra u1, cra u2))
   | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
   | C.Proj(p,c)           -> Proj(p, cr c)
+  | C.Int i               -> Int i
 
 let rec _constr_get (c : _constr) : constr =
   let cr  = _constr_get           in
@@ -144,6 +147,7 @@ let rec _constr_get (c : _constr) : constr =
   | Fix (p,(na,u1,u2))  -> C.mkFix(p, (na, cra u1, cra u2))
   | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
   | Proj(p,c)           -> C.mkProj(p, cr c)
+  | Int i               -> C.mkInt i
 
 let constr_of_sexp (c : Sexp.t) : constr =
   _constr_get (_constr_of_sexp c)

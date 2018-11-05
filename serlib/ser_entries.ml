@@ -18,19 +18,28 @@
 
 open Sexplib.Conv
 
-module Stateid = Ser_stateid
-module Future = Ser_future
-module Names = Ser_names
-module Univ = Ser_univ
-module Constr = Ser_constr
+module Stateid      = Ser_stateid
+module Future       = Ser_future
+module Names        = Ser_names
+module Univ         = Ser_univ
+module Constr       = Ser_constr
 module Declarations = Ser_declarations
+module CPrimitives  = Ser_cPrimitives
 
-type local_entry =
-  [%import: Entries.local_entry]
+(* type local_entry =
+ *   [%import: Entries.local_entry]
+ *   [@@deriving sexp] *)
+
+(* type inductive_universes =
+ *   [%import: Entries.inductive_universes]
+ *   [@@deriving sexp] *)
+
+type universes_entry =
+  [%import: Entries.universes_entry]
   [@@deriving sexp]
 
-type inductive_universes =
-  [%import: Entries.inductive_universes]
+type 'a in_universes_entry =
+  [%import: 'a Entries.in_universes_entry]
   [@@deriving sexp]
 
 type one_inductive_entry =
@@ -49,13 +58,13 @@ type 'a const_entry_body =
   [%import: 'a Entries.const_entry_body]
   [@@deriving sexp]
 
-type constant_universes_entry =
-  [%import: Entries.constant_universes_entry]
-  [@@deriving sexp]
+(* type constant_universes_entry =
+ *   [%import: Entries.constant_universes_entry]
+ *   [@@deriving sexp] *)
 
-type 'a in_constant_universes_entry =
-  [%import: 'a Entries.in_constant_universes_entry]
-  [@@deriving sexp]
+(* type 'a in_constant_universes_entry =
+ *   [%import: 'a Entries.in_constant_universes_entry]
+ *   [@@deriving sexp] *)
 
 type 'a definition_entry =
   [%import: 'a Entries.definition_entry]
@@ -71,6 +80,10 @@ type inline =
 
 type parameter_entry =
   [%import: Entries.parameter_entry]
+  [@@deriving sexp]
+
+type primitive_entry =
+  [%import: Entries.primitive_entry]
   [@@deriving sexp]
 
 type 'a constant_entry =

@@ -26,12 +26,16 @@ let map_serlib ml_mod =
   let plugin_name = Filename.(remove_extension (basename ml_mod)) in
   let supported = match plugin_name with
     (* Linked-in statically *)
-    | "ltac_plugin"
-    | "tauto_plugin" -> false
+    | "ltac_plugin" -> false
+    (* | "tauto_plugin" -> false *)
     (* Supported *)
-    | "ground_plugin"
-    | "recdef_plugin"
-    | "newring_plugin" -> true
+    | "ground_plugin"           (* firstorder *)
+    | "recdef_plugin"           (* funind *)
+    | "newring_plugin"          (* setoid_ring *)
+    | "extraction_plugin"       (* setoid_ring *)
+    | "ssrmatching_plugin"      (* ssrmatching *)
+    | "ssreflect_plugin"        (* ssr *)
+      -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
       false
@@ -44,9 +48,18 @@ let plugin_handler user_handler =
   let loader = Option.default Dynlink.loadfile user_handler in
   fun ml_mod ->
     try
-      let _, ml_file = System.find_file_in_path ~warn:true !ml_path ml_mod in
-      let () = loader ml_file in
-      Option.iter (fun pkg -> Fl_dynload.load_packages [pkg]) (map_serlib ml_mod)
+      (* In 8.10 with a Dune-built Coq Fl_dynload will track the dependencies *)
+      match map_serlib ml_mod with
+      | Some serlib_pkg ->
+        if debug then
+          Format.eprintf "[plugin loader]: module %s requested via findlib@\n%!" ml_mod;
+        Fl_dynload.load_packages [serlib_pkg]
+      | None ->
+        if debug then
+          Format.eprintf "[plugin loader]: module %s requested via mltop@\n%!" ml_mod;
+        let _, ml_file = System.find_file_in_path ~warn:true !ml_path ml_mod in
+        let () = loader ml_file in
+        ()
     with
       Dynlink.Error err ->
       let msg = Dynlink.error_message err in

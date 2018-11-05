@@ -19,8 +19,6 @@ module Ssrmatching_plugin = struct
   module Ssrmatching = Ser_ssrmatching
 end
 
-module Ssrast = Ser_ssrast
-
 module Ssreflect_plugin = struct
   module Ssrast = Ser_ssrast
   module Ssrequality = Ssreflect_plugin.Ssrequality

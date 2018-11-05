@@ -69,10 +69,10 @@ let _ =
           | None     -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg]
         end
       | _ -> assert false);
-  Conv.Exn_converter.add [%extension_constructor Proof_global.NoCurrentProof] (function
-      | Proof_global.NoCurrentProof ->
-        Atom "NoCurrentProof"
-      | _ -> assert false)
+  (* Conv.Exn_converter.add [%extension_constructor Proof_global.NoCurrentProof] (function
+   *     | Proof_global.NoCurrentProof ->
+   *       Atom "NoCurrentProof"
+   *     | _ -> assert false) *)
 (* Private... request Coq devs to make them public?
       | Errors.Anomaly(msgo, pp) ->
         Some (List [Atom "Anomaly"; sexp_of_option sexp_of_string msgo; sexp_of_std_ppcmds pp])
@@ -129,6 +129,10 @@ module Serapi_goals = struct
 
   type 'a reified_goal =
     [%import: 'a Serapi_goals.reified_goal]
+    [@@deriving sexp]
+
+  type 'a ser_goals =
+    [%import: 'a Serapi_goals.ser_goals]
     [@@deriving sexp]
 
 end
@@ -227,13 +231,10 @@ type add_opts =
   ]]
   [@@deriving sexp]
 
-type top_kind =
-  [%import: Serapi_protocol.top_kind]
-  [@@deriving sexp]
-
 type newdoc_opts =
   [%import: Serapi_protocol.newdoc_opts
   [@with
+     Stm.interactive_top      := Ser_stm.interactive_top;
      Sexplib.Conv.sexp_list   := sexp_list;
      Sexplib.Conv.sexp_option := sexp_option;
   ]]

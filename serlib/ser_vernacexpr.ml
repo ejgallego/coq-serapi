@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -20,6 +20,7 @@ module CAst        = Ser_cAst
 module Names       = Ser_names
 module Flags       = Ser_flags
 module Sorts       = Ser_sorts
+module CPrimitives = Ser_cPrimitives
 module Univ        = Ser_univ
 module UnivNames   = Ser_univNames
 module Conv_oracle = Ser_conv_oracle
@@ -40,6 +41,9 @@ module Hints         = Ser_hints
 module Goptions      = Ser_goptions
 module Genredexpr    = Ser_genredexpr
 module Universes     = Ser_universes
+module Attributes    = Ser_attributes
+module Gramlib       = Ser_gramlib
+module Impargs       = Ser_impargs
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
   [@@deriving sexp]
@@ -91,9 +95,9 @@ type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving se
 type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp]
 (* type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp] *)
 
-type option_value = Goptions.option_value
+type option_setting =
+  [%import: Vernacexpr.option_setting]
   [@@deriving sexp]
-  (* [%import: Vernacexpr.option_value] *)
 
 type option_ref_value =
   [%import: Vernacexpr.option_ref_value]
@@ -211,14 +215,7 @@ type typeclass_constraint =
   [%import: Vernacexpr.typeclass_constraint]
   [@@deriving sexp]
 
-type vernac_flag_value =
-  [%import: Vernacexpr.vernac_flag_value]
-and vernac_flags =
-  [%import: Vernacexpr.vernac_flags]
-  [@@deriving sexp]
-
 type vernac_expr           = [%import: Vernacexpr.vernac_expr]
-and vernac_implicit_status = [%import: Vernacexpr.vernac_implicit_status]
 and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
   [@@deriving sexp]
 

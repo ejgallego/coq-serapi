@@ -23,6 +23,7 @@ module Context = Ser_context
 module Constr  = Ser_constr
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
+module CPrimitives = Ser_cPrimitives
 module Decl_kinds  = Ser_decl_kinds
 module Vmvalues    = Ser_vmvalues
 module Conv_oracle = Ser_conv_oracle
@@ -72,12 +73,12 @@ type inline =
   [%import: Declarations.inline]
   [@@deriving sexp]
 
-type constant_universes =
-  [%import: Declarations.constant_universes]
+type universes =
+  [%import: Declarations.universes]
   [@@deriving sexp]
 
-type constant_def =
-  [%import: Declarations.constant_def]
+type 'a constant_def =
+  [%import: 'a Declarations.constant_def]
   [@@deriving sexp]
 
 type typing_flags =
@@ -99,9 +100,9 @@ let sexp_of_module_retroknowledge _ =
 let module_retroknowledge_of_sexp _ =
   Serlib_base.opaque_of_sexp ~typ:"Declarations.module_retroknowledge"
 
-type abstract_inductive_universes =
-  [%import: Declarations.abstract_inductive_universes]
-  [@@deriving sexp]
+(* type abstract_inductive_universes =
+ *   [%import: Declarations.abstract_inductive_universes]
+ *   [@@deriving sexp] *)
 
 type recursivity_kind =
   [%import: Declarations.recursivity_kind]

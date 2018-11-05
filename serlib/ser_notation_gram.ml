@@ -19,6 +19,7 @@ module Names         = Ser_names
 module Constrexpr    = Ser_constrexpr
 module Tok           = Ser_tok
 module Extend        = Ser_extend
+module Gramlib       = Ser_gramlib
 
 type precedence =
   [%import: Notation_gram.precedence]

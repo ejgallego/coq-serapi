@@ -19,3 +19,7 @@ type t = Tok.t
 
 val t_of_sexp : Sexp.t -> t
 val sexp_of_t : t -> Sexp.t
+
+type 'c p = 'c Tok.p
+val p_of_sexp : (Sexp.t -> 'c) -> Sexp.t -> 'c p
+val sexp_of_p : ('c -> Sexp.t) -> 'c p -> Sexp.t

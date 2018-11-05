@@ -15,6 +15,11 @@
 
 open Sexplib
 
+type interactive_top = Stm.interactive_top
+
+val sexp_of_interactive_top : Stm.interactive_top -> Sexp.t
+val interactive_top_of_sexp : Sexp.t -> Stm.interactive_top
+
 type focus = Stm.focus
 
 val sexp_of_focus : Stm.focus -> Sexp.t

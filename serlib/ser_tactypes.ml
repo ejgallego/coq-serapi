@@ -18,6 +18,7 @@ open Sexplib.Conv
 module CAst        = Ser_cAst
 module Names       = Ser_names
 module Namegen     = Ser_namegen
+module EConstr     = Ser_eConstr
 
 type 'a intro_pattern_action_expr =
   [%import: 'a Tactypes.intro_pattern_action_expr]
@@ -45,6 +46,16 @@ type 'a with_bindings =
 
 type 'a delayed_open =
   [%import: 'a Tactypes.delayed_open]
+  [@@deriving sexp]
 
 let sexp_of_delayed_open _ = Serlib_base.sexp_of_opaque ~typ:"wit_bindings/top"
 let delayed_open_of_sexp _ = Serlib_base.opaque_of_sexp ~typ:"wit_bindings/top";
+
+type delayed_open_constr =
+  [%import: Tactypes.delayed_open_constr]
+  [@@deriving sexp]
+
+type delayed_open_constr_with_bindings =
+  [%import: Tactypes.delayed_open_constr_with_bindings]
+  [@@deriving sexp]
+

@@ -29,6 +29,7 @@ module Genarg     = Ser_genarg
 module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
 module Notation   = Ser_notation
+module NumTok     = Ser_numTok
 
 type 'a or_by_notation_r =
   [%import: 'a Constrexpr.or_by_notation_r]
@@ -77,7 +78,7 @@ type abstraction_kind = [%import: Constrexpr.abstraction_kind]
 type proj_flag = [%import: Constrexpr.proj_flag]
   [@@deriving sexp]
 
-type raw_natural_number = [%import: Constrexpr.raw_natural_number]
+type raw_numeral = [%import: Constrexpr.raw_numeral]
   [@@deriving sexp]
 
 type sign = [%import: Constrexpr.sign]

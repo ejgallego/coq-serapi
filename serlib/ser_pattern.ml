@@ -16,6 +16,8 @@
 open Sexplib.Std
 
 module Names     = Ser_names
+module Uint63    = Ser_uint63
+module Sorts     = Ser_sorts
 module Constr    = Ser_constr
 module Evar      = Ser_evar
 module EConstr   = Ser_eConstr

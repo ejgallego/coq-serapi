@@ -25,19 +25,20 @@ env:
   - OPAMYES="true"
   - NJOBS="2"
   - COQ_REPOS="https://github.com/coq/coq.git"
-  - COQ_VERSION="v8.9"
-  - COQ_BRANCH="v8.9"
+  - COQ_VERSION="v8.10"
+  - COQ_BRANCH="v8.10"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.07.1"
-  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib dune"
+  - BASE_OPAM="cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib dune"
   # Main test suites
+  - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   matrix:
-  - TEST_TARGET="build"   COMPILER="4.06.1"       EXTRA_OPAM="coq"
-  - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
-  - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" 
-  # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
-  # - TEST_TARGET="test2"
+  - TEST_TARGET="build"   COMPILER="4.06.1"
+  - TEST_TARGET="build"   COMPILER="4.07.1"
+  - TEST_TARGET="test"    COMPILER="4.07.1"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson"
+  # Don't test opam in 8.10 [yet]
+  # - TEST_TARGET="test"                                                                               EXTRA_OPAM="coq"
 
 install:
 - sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.3/opam-2.0.3-x86_64-linux -o /usr/bin/opam
@@ -53,16 +54,14 @@ install:
   if [[ -v SERAPI_COQ_HOME ]]; then
     git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_VERSION" &&
     pushd "$HOME/coq-$COQ_VERSION"        &&
-    ./configure $COQ_CONF $COQ_EXTRA_CONF &&
-    make -j "$NJOBS"                      &&
-    make -j "$NJOBS" $COQ_EXTRA_MAKE      &&
+    make -f Makefile.dune coq             &&
     popd;
   fi
 
 script:
 - set -e
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "$TEST_TARGET"
+- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME/_build/install/default/lib/" "$TEST_TARGET"
 - ls -lR _build/install/default/ || true
 - ls -lR _build/default/sertop/*.js || true
 - echo -en 'travis_fold:end:serapi.build\\r'

@@ -16,6 +16,10 @@
 
 open Sexplib
 
+type 'a binder_annot = 'a Context.binder_annot
+val binder_annot_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a binder_annot
+val sexp_of_binder_annot : ('a -> Sexp.t) -> 'a binder_annot -> Sexp.t
+
 module Rel : sig
   module Declaration : sig
 

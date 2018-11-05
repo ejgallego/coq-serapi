@@ -4,4 +4,4 @@
  (wrapped false)
  (synopsis "Serialization Library for Coq Setoid Newring Plugin")
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
- (libraries coq.plugins.newring serlib serlib_ltac sexplib))
+ (libraries coq.plugins.setoid_ring serlib serlib_ltac sexplib))
