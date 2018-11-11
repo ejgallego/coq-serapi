@@ -1,1 +1,0 @@
-COQDIR=~/external/coq-git/

@@ -1,54 +1,22 @@
 .PHONY: clean all serlib sertop sercomp force js-dist js-release
 
-include config.mk
-
-OCB=ocamlbuild
-OCB_OPT=-use-ocamlfind -j 4 #-classic-display
-OPAMPATH=$(shell opam config var lib)
-
 # Leave empty to use OPAM-installed Coq
 SERAPI_COQ_HOME ?=
 # SERAPI_COQ_HOME=/home/egallego/external/coq-v8.9/
 # SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.9+32bit/
 
-all: sertop sercomp
-
-TARGET=native
-
-ifeq "${TARGET}" "native"
-CMAEXT=cmxa
-else
-CMAEXT=cma
-endif
+all: build
 
 GITDEPS=$(ls .git/HEAD .git/index)
 sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
-serlib:
-	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME):$(OCAMLPATH)                 \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) serlib/serlib.$(CMAEXT)
-
-sertop: sertop/ser_version.ml
-	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME):$(OCAMLPATH)                 \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop.$(TARGET)
-
-sercomp: sertop
-	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME):$(OCAMLPATH)                 \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sercomp.$(TARGET)
-
+build:
+	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	dune build
 
 #####################################################
 # Javascript support
-force:
-
-sertop_js.byte: force
-	OCAMLFIND_IGNORE_DUPS_IN=$(OPAMPATH)/ocaml/compiler-libs/ \
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
-	$(OCB) $(OCB_OPT) $(INCLUDETOP) sertop/sertop_js.byte
 
 #####################################################
 # JS
@@ -65,8 +33,19 @@ endif
 js:
 	mkdir -p js
 
-js/sertop_js.js: js sertop_js.byte
-	js_of_ocaml --dynlink +nat.js +dynlink.js +toplevel.js $(JSOO_OPTS) $(JSFILES) sertop_js.byte -o js/sertop_js.js
+force:
+
+_build/default/sertop/sertop_js.bc: force
+	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	dune build --profile=release sertop/sertop_js.bc
+
+js/sertop_js.js: js _build/default/sertop/sertop_js.bc
+	js_of_ocaml --dynlink +nat.js +dynlink.js +toplevel.js $(JSOO_OPTS) $(JSFILES) _build/default/sertop/sertop_js.bc -o js/sertop_js.js
+
+# We cannot use the separate compilation mode due to Coq's VM: libcoqrun.a
+js-dune:
+	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	dune build --profile=release sertop/sertop_js.bc.js
 
 js-dist:
 	rsync -avp --exclude=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs
@@ -79,14 +58,7 @@ js-release:
 
 clean:
 	rm -f sertop/ser_version.ml
-	$(OCB) $(OCB_OPT) -clean
-
-# Not yet ready ocamlbuild support
-all-sub:
-	make -C serlib
-
-clean-sub:
-	make -C serlib clean
+	dune clean
 
 demo-sync:
 	rsync -avzp --delete js/ /home/egallego/x80/rhino-hawk/

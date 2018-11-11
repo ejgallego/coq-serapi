@@ -20,14 +20,14 @@ env:
   - COQ_BRANCH="v8.9"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.06.1"
-  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib"
+  - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib dune"
   # Main test suites
   matrix:
   # Don't test opam in 8.9 yet.
   # - TEST_TARGET="all"                                                                               EXTRA_OPAM="coq"
-  - TEST_TARGET="all"             COMPILER="4.06.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
-  - TEST_TARGET="all"             COMPILER="4.07.0"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
-  - TEST_TARGET="js/sertop_js.js" COMPILER="4.06.1+32bit" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"
+  - TEST_TARGET="build"   COMPILER="4.06.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
+  - TEST_TARGET="build"   COMPILER="4.07.1"       SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
+  - TEST_TARGET="js-dune" COMPILER="4.06.1+32bit" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"
   # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
   # - TEST_TARGET="test2"
 
@@ -53,7 +53,9 @@ install:
   fi
 
 script:
+- set -e
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
 - make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "$TEST_TARGET"
-- ls -l _build/sertop/
+- ls -lR _build/install/default/ || true
+- ls -lR _build/default/sertop/*.js || true
 - echo -en 'travis_fold:end:serapi.build\\r'

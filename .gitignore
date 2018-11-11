@@ -1,11 +1,6 @@
 _build
-*.cmo
-*.cmi
-*.cmx
-*.cmt
-*.cmti
 *~
-*.byte
-*.native
 js/sertop_js.js
 sertop/ser_version.ml
+.merlin
+*.install
