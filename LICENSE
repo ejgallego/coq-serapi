@@ -13,6 +13,10 @@ License: GPL-3+ / CC-BY-SA 3.0 / LGPL-2.1+
 Files: sertop/*
 License: GPL-3+ / AGPL-3+
 
+Files: tests/genarg/*
+Authors: Karl Palmskog
+Licence: Derived from many projects as test cases, likely fall into fair-use
+
 Comment: the intent is to be compatible with Coq, however we favor
 GPL-3.
 
@@ -20,3 +24,4 @@ We currently have very little direct derivative from Coq, however
 using LGPL 2.1 seems the safest for now, but we may move to GPL-3 at
 some point, and definitively we double license everything under the
 GPL3 or at your option, any later version.
+
