@@ -21,6 +21,7 @@ module Names      = Ser_names
 module Environ    = Ser_environ
 module Glob_term  = Ser_glob_term
 module Constrexpr = Ser_constrexpr
+module Pattern    = Ser_pattern
 
 module Store = struct
   type t = Genintern.Store.t
@@ -36,4 +37,8 @@ type glob_sign =
 
 type glob_constr_and_expr =
   [%import: Genintern.glob_constr_and_expr]
+  [@@deriving sexp]
+
+type glob_constr_pattern_and_expr =
+  [%import: Genintern.glob_constr_pattern_and_expr]
   [@@deriving sexp]

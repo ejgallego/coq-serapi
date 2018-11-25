@@ -91,6 +91,34 @@ let ser_wit_uconstr = Ser_genarg.{
     top_des = Ser_ltac_pretype.closed_glob_constr_of_sexp;
   }
 
+type wrd_h1 = (Ser_constrexpr.constr_expr, Ser_libnames.qualid Ser_constrexpr.or_by_notation, Ser_constrexpr.constr_expr) Ser_genredexpr.red_expr_gen
+  [@@deriving sexp]
+
+type wrd_h2 = (Ser_genintern.glob_constr_and_expr,Ser_names.evaluable_global_reference and_short_name Ser_locus.or_var,Ser_genintern.glob_constr_pattern_and_expr) Ser_genredexpr.red_expr_gen
+  [@@deriving sexp]
+type wrd_h3 = (Ser_eConstr.constr,Ser_names.evaluable_global_reference,Ser_pattern.constr_pattern) Ser_genredexpr.red_expr_gen
+  [@@deriving sexp]
+
+let ser_wit_red_expr = Ser_genarg.{
+    raw_ser = sexp_of_wrd_h1;
+    glb_ser = sexp_of_wrd_h2;
+    top_ser = sexp_of_wrd_h3;
+
+    raw_des = wrd_h1_of_sexp;
+    glb_des = wrd_h2_of_sexp;
+    top_des = wrd_h3_of_sexp;
+  }
+
+let ser_wit_clause_dft_concl = Ser_genarg.{
+    raw_ser = Ser_locus.sexp_of_clause_expr Ser_names.sexp_of_lident;
+    glb_ser = Ser_locus.sexp_of_clause_expr Ser_names.sexp_of_lident;
+    top_ser = Ser_locus.sexp_of_clause_expr Ser_names.Id.sexp_of_t;
+
+    raw_des = Ser_locus.clause_expr_of_sexp Ser_names.lident_of_sexp;
+    glb_des = Ser_locus.clause_expr_of_sexp Ser_names.lident_of_sexp;
+    top_des = Ser_locus.clause_expr_of_sexp Ser_names.Id.t_of_sexp;
+  }
+
 let register () =
   Ser_genarg.register_genser Stdarg.wit_unit ser_wit_unit;
   Ser_genarg.register_genser Stdarg.wit_string ser_wit_string;
@@ -105,5 +133,8 @@ let register () =
 
   Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
   Ser_genarg.register_genser Stdarg.wit_uconstr ser_wit_uconstr;
+
+  Ser_genarg.register_genser Stdarg.wit_red_expr ser_wit_red_expr;
+  Ser_genarg.register_genser Stdarg.wit_clause_dft_concl ser_wit_clause_dft_concl;
 
   ()

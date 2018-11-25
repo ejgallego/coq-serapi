@@ -314,13 +314,24 @@ let ser_wit_in_clause :
     top_des = Ser_locus.clause_expr_of_sexp Ser_names.Id.t_of_sexp;
   }
 
-let register () =
-  Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
+let ser_wit_by_arg_tac :
+  (Tacexpr.raw_tactic_expr option, Tacexpr.glob_tactic_expr option, Tacinterp.value option) Ser_genarg.gen_ser =
+  Ser_genarg.{
+    raw_ser = Sexplib.Conv.sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr;
+    glb_ser = Sexplib.Conv.sexp_of_option Ser_tacexpr.sexp_of_glob_tactic_expr;
+    top_ser = Sexplib.Conv.sexp_of_option Ser_geninterp.Val.sexp_of_t;
 
+    raw_des = Sexplib.Conv.option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp;
+    glb_des = Sexplib.Conv.option_of_sexp Ser_tacexpr.glob_tactic_expr_of_sexp;
+    top_des = Sexplib.Conv.option_of_sexp Ser_geninterp.Val.t_of_sexp;
+  }
+
+let register () =
+
+  Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
   Ser_genarg.register_genser Tacarg.wit_tactic ser_wit_tactic;
 
   Ser_genarg.register_genser Tacarg.wit_ltac   ser_wit_ltac;
-
   Ser_genarg.register_genser Tacarg.wit_quant_hyp ser_wit_quant_hyp;
 
   Ser_genarg.register_genser Tacarg.wit_bindings ser_wit_bindings;
@@ -356,4 +367,6 @@ let register () =
   Ser_genarg.register_genser Extraargs.wit_lconstr ser_wit_lconstr;
   Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr;
   Ser_genarg.register_genser Extraargs.wit_in_clause ser_wit_in_clause;
+
+  Ser_genarg.register_genser Extraargs.wit_by_arg_tac ser_wit_by_arg_tac;
   ()

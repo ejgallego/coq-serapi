@@ -26,3 +26,8 @@ type glob_constr_and_expr = Genintern.glob_constr_and_expr
 
 val glob_constr_and_expr_of_sexp : Sexp.t -> glob_constr_and_expr
 val sexp_of_glob_constr_and_expr : glob_constr_and_expr -> Sexp.t
+
+type glob_constr_pattern_and_expr = Genintern.glob_constr_pattern_and_expr
+
+val glob_constr_pattern_and_expr_of_sexp : Sexp.t -> glob_constr_pattern_and_expr
+val sexp_of_glob_constr_pattern_and_expr : glob_constr_pattern_and_expr -> Sexp.t
