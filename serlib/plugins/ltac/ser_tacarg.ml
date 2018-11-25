@@ -54,9 +54,6 @@ let ser_wit_quant_hyp =
     Ser_tactypes.sexp_of_quantified_hypothesis
     Ser_tactypes.quantified_hypothesis_of_sexp
 
-(* XXX Obj.magic grep *)
-let fail msg = fun _ -> raise (Invalid_argument msg)
-
 let ser_wit_bindings :
          (Constrexpr.constr_expr Tactypes.bindings,
           Genintern.glob_constr_and_expr Tactypes.bindings,
@@ -65,11 +62,11 @@ let ser_wit_bindings :
  = Ser_genarg.{
     raw_ser = Ser_tactypes.sexp_of_bindings Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = fail "[typed constr_with_bindings cannot be serialized";
+    top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_bindings/top";
 
     raw_des = Ser_tactypes.bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
     glb_des = Ser_tactypes.bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = fail "[typed constr_with_bindings cannot be serialized";
+    top_des = Serlib_base.opaque_of_sexp ~typ:"wit_bindings/top";
   }
 
 let ser_wit_constr_with_bindings :
@@ -80,11 +77,11 @@ let ser_wit_constr_with_bindings :
  = Ser_genarg.{
     raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = fail "[typed constr_with_bindings cannot be serialized";
+    top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_constr_with_bindings/top";
 
     raw_des = Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
     glb_des = Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = fail "[typed constr_with_bindings cannot be serialized";
+    top_des = Serlib_base.opaque_of_sexp ~typ:"wit_constr_with_bindings/top";
   }
 
 (* G_ltac *)
@@ -233,8 +230,13 @@ let ser_wit_binders =
 
 let ser_wit_glob_constr_with_bindings =
   let open Sexplib.Conv in
-  let _sexp_of_interp_sign _ = Sexplib.Sexp.Atom "[XXX FUNCTIONAL VALUE INTERP SIGN]" in
-  let _interp_sign_of_sexp = Sexplib.Conv_error.no_matching_variant_found "interp" in
+
+  (* let _sexp_of_interp_sign _ = Sexplib.Sexp.Atom "[XXX FUNCTIONAL VALUE INTERP SIGN]" in
+   * let _interp_sign_of_sexp = Sexplib.Conv_error.no_matching_variant_found "interp" in *)
+
+  let _sexp_of_interp_sign = Serlib_base.sexp_of_opaque ~typ:"interp_sign" in
+  let _interp_sign_of_sexp = Serlib_base.opaque_of_sexp ~typ:"interp_sign" in
+
   Ser_genarg.{
     raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr;
@@ -246,16 +248,20 @@ let ser_wit_glob_constr_with_bindings =
   }
 
 let ser_wit_rewstrategy =
-  let _sexp_of_strategy _ = Sexplib.Sexp.Atom "[XXX OPAQUE STRATEGY]" in
-  let _strategy_of_sexp = Sexplib.Conv_error.no_matching_variant_found "strategy" in
+
+  (* let _sexp_of_strategy _ = Sexplib.Sexp.Atom "[XXX OPAQUE STRATEGY]" in
+   * let _strategy_of_sexp = Sexplib.Conv_error.no_matching_variant_found "strategy" in *)
+
   Ser_genarg.{
     raw_ser = Ser_rewrite.sexp_of_strategy_ast Ser_constrexpr.sexp_of_constr_expr Ser_tacexpr.sexp_of_raw_red_expr;
     glb_ser = Ser_rewrite.sexp_of_strategy_ast Ser_tacexpr.sexp_of_glob_constr_and_expr Ser_tacexpr.sexp_of_raw_red_expr;
-    top_ser = _sexp_of_strategy;
+    top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_rewstrategy/top";
+    (* top_ser = _sexp_of_strategy; *)
 
     raw_des = Ser_rewrite.strategy_ast_of_sexp Ser_constrexpr.constr_expr_of_sexp Ser_tacexpr.raw_red_expr_of_sexp;
     glb_des = Ser_rewrite.strategy_ast_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp Ser_tacexpr.raw_red_expr_of_sexp;
-    top_des = _strategy_of_sexp;
+    top_des = Serlib_base.opaque_of_sexp ~typ:"wit_rewstrategy/top";
+    (* top_des = _strategy_of_sexp; *)
   }
 
 (* G_rewrite.raw_strategy : (Constrexpr.constr_expr, Tacexpr.raw_red_expr) Rewrite.strategy_ast

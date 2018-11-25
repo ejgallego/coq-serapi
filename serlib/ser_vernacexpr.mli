@@ -15,8 +15,6 @@
 
 open Sexplib
 
-val exn_of_sexp : Sexp.t -> exn
-
 type class_rawexpr = Vernacexpr.class_rawexpr
 val class_rawexpr_of_sexp : Sexp.t -> class_rawexpr
 val sexp_of_class_rawexpr : class_rawexpr -> Sexp.t

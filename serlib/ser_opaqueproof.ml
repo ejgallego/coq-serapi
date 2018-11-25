@@ -13,9 +13,7 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
-
 type opaquetab = [%import: Opaqueproof.opaquetab]
 
-let sexp_of_opaquetab _ = Sexp.Atom "Opaquetab"
-let opaquetab_of_sexp _ = Obj.magic 0
+let sexp_of_opaquetab = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaquetab"
+let opaquetab_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaquetab"

@@ -34,3 +34,4 @@ val ml_include_path : Mltop.coq_path list Term.t
 (* debug options *)
 val omit_loc : bool Term.t
 val omit_att : bool Term.t
+val exn_on_opaque : bool Term.t

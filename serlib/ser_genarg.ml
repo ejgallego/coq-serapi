@@ -117,14 +117,23 @@ module SerObj = struct
 
   type ('raw, 'glb, 'top) obj = ('raw, 'glb, 'top) gen_ser
 
+  let sexp_of_gen typ ga =
+    let typ = typ ^ ": " ^ Sexp.to_string (sexp_of_genarg_type ga) in
+    Serlib_base.sexp_of_opaque ~typ
+
   let name = "ser_arg"
-  let default ga =
+  let default _ga =
     Some {
-      raw_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; Atom "raw"; sexp_of_genarg_type ga]));
+      (* raw_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; Atom "raw"; sexp_of_genarg_type ga])); *)
+      raw_ser = sexp_of_gen "raw" _ga;
       raw_des = (Sexplib.Conv_error.no_matching_variant_found "raw_arg");
-      glb_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; Atom "glb"; sexp_of_genarg_type ga]));
+
+      (* glb_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; Atom "glb"; sexp_of_genarg_type ga])); *)
+      glb_ser = sexp_of_gen "glb" _ga;
       glb_des = (Sexplib.Conv_error.no_matching_variant_found "glb_arg");
-      top_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; Atom "top"; sexp_of_genarg_type ga]));
+
+      (* top_ser = (fun _ -> Sexp.(List [Atom "[XXX ser_gen]"; Atom "top"; sexp_of_genarg_type ga])); *)
+      top_ser = sexp_of_gen "top" _ga;
       top_des = (Sexplib.Conv_error.no_matching_variant_found "top_arg")
     }
 end

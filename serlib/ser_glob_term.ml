@@ -91,8 +91,6 @@ type glob_constr =
   [%import: Glob_term.glob_constr]
   [@@deriving sexp]
 
-let glob_constr_of_sexp = Obj.magic 0
-
 type glob_decl =
   [%import: Glob_term.glob_decl]
   [@@deriving sexp]

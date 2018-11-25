@@ -2,10 +2,17 @@ _Version 0.6.0_:
 
  * [general] support Coq 8.9,
  * [general] SerAPI now uses Dune as a build system,
+ * [opam]   install `sertop.el`,
  * [serlib] support to serialize kernel environments,
  * [serapi] new query `Env` that tries to print the current kernel environment,
  * [serlib] correct field names for `CAst`,
- * [opam] Install `sertop.el`,
+ * [serlib] more robust support for opaque / non-serializable types (#61, #68).
+            Thanks to @palmskog,
+ * [serlib] new option `--exn_on_opaque` to raise an exception on
+            non-serializable types; closes #68, thanks to @palmskog,
+ * [serlib] serialization test-suite from
+            https://github.com/proofengineering/serapi-tests, thanks to
+            @palmskog,
 
 _Version 0.5.7_:
 

@@ -38,7 +38,7 @@ let do_stats =
   let incS ?loc f =
     Option.cata (fun loc ->
         let n_lines = Loc.(loc.line_nb_last - loc.line_nb + 1) in
-        Format.eprintf "@[Adding %d lines@]@\n%!" n_lines;
+        Format.printf "@[Adding %d lines@]@\n%!" n_lines;
         f + n_lines) f loc
   in
   match Vernacprop.under_control vrn with
@@ -189,7 +189,8 @@ let parse_document pp ~doc sid in_pa =
     | Stm.End_of_input -> ()
     | any          ->
       let (e, info) = CErrors.push any in
-      Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info))
+      Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
+      exit 1
 
  (* Format.eprintf "Error in parsing@\n%!" (\* XXX: add loc *\) *)
 
@@ -197,10 +198,10 @@ let close_document () =
   let open Format in
   printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
-let sercomp debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_att =
+let sercomp debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_att exn_on_opaque =
 
   (* serlib initialization *)
-  Serlib_init.init ~omit_loc ~omit_att;
+  Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
 
   let open Sertop_init in
 
@@ -250,7 +251,7 @@ let sertop_cmd =
   ]
   in
   let open Sertop_arg in
-  Term.(const sercomp $ debug $ printer $ async $ prelude $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att),
+  Term.(const sercomp $ debug $ printer $ async $ prelude $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque ),
   Term.info "sercomp" ~version:sercomp_version ~doc ~man
 
 let main () =

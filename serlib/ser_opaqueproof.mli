@@ -13,7 +13,9 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-type retroknowledge = [%import: Retroknowledge.retroknowledge]
+open Sexplib
 
-let sexp_of_retroknowledge = Serlib_base.sexp_of_opaque ~typ:"Retroknowledge.retroknowledge"
-let retroknowledge_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Retroknowledge.retroknowledge"
+type opaquetab = Opaqueproof.opaquetab
+
+val sexp_of_opaquetab : opaquetab -> Sexp.t
+val opaquetab_of_sexp : Sexp.t -> opaquetab

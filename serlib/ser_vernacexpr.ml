@@ -15,8 +15,6 @@
 
 open Sexplib.Conv
 
-let exn_of_sexp _ = Obj.magic 0
-
 module Loc         = Ser_loc
 module CAst        = Ser_cAst
 module Names       = Ser_names

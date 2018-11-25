@@ -10,10 +10,24 @@
 (* Coq serialization API/Plugin                                         *)
 (* Copyright 2016-2018 MINES ParisTech                                  *)
 (************************************************************************)
-(* Status: Experimental                                                 *)
+(* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type retroknowledge = [%import: Retroknowledge.retroknowledge]
+exception Ser_error of string
 
-let sexp_of_retroknowledge = Serlib_base.sexp_of_opaque ~typ:"Retroknowledge.retroknowledge"
-let retroknowledge_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Retroknowledge.retroknowledge"
+let _ = CErrors.register_handler (function
+    | Ser_error msg -> Pp.(seq [str "Serlib Error: "; str msg])
+    | _ ->
+      raise CErrors.Unhandled)
+
+let opaque_of_sexp ~typ _obj =
+  raise (Ser_error ("["^typ^": ABSTRACT / cannot deserialize]"))
+
+let exn_on_opaque = ref true
+
+let sexp_of_opaque ~typ _exp =
+  let msg = "["^typ^": ABSTRACT]" in
+  if !exn_on_opaque then
+    raise (Ser_error msg)
+  else
+    Sexplib.Sexp.Atom ("["^typ^": ABSTRACT]")

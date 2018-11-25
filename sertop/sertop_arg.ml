@@ -106,3 +106,7 @@ let omit_loc : bool Term.t =
 let omit_att : bool Term.t =
   let doc = "[debug option] omit attribute nodes" in
   Arg.(value & flag & info ["omit_att"] ~doc)
+
+let exn_on_opaque : bool Term.t =
+  let doc = "[debug option] raise an exception on non-serializeble terms" in
+  Arg.(value & flag & info ["exn_on_opaque"] ~doc)

@@ -113,8 +113,8 @@ module AUContext = struct
 
   type t = Univ.AUContext.t
 
-  let t_of_sexp _s = Obj.magic 0
-  let sexp_of_t _t = Sexp.Atom "[Univ.AUContext.t: Abstract]"
+  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Univ.AUContext.t"
+  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Univ.AUContext.t"
 
 end
 
@@ -139,8 +139,8 @@ module ACumulativityInfo = struct
 
   type t = Univ.ACumulativityInfo.t
 
-  let t_of_sexp _s = Obj.magic 0
-  let sexp_of_t _t = Sexp.Atom "[Univ.ACumulativityInfo.t: Abstract]"
+  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Univ.ACumulativityInfo.t"
+  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Univ.ACumulativityInfo.t"
 
 end
 
@@ -148,8 +148,8 @@ module ContextSet = struct
 
   type t = Univ.ContextSet.t
 
-  let t_of_sexp _sexp = Obj.magic 0
-  let sexp_of_t _cst = Sexp.Atom "[Univ.ContextSet.t: Abstract]"
+  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Univ.ContextSet.t"
+  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Univ.ContextSet.t"
 
 end
 
