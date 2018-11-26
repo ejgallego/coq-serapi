@@ -276,7 +276,11 @@ let ser_wit_withtac =
     (option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp)
 
 (* extraargs *)
-let ser_wit_lconstr :(Constrexpr.constr_expr, Ltac_plugin.Tacexpr.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
+let ser_wit_natural =
+  let open Sexplib.Conv in
+  Ser_genarg.mk_uniform sexp_of_int int_of_sexp
+
+let ser_wit_lconstr : (Constrexpr.constr_expr, Ltac_plugin.Tacexpr.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
   Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_tacexpr.sexp_of_glob_constr_and_expr;
@@ -361,6 +365,7 @@ let register () =
 
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
+  Ser_genarg.register_genser Extraargs.wit_natural ser_wit_natural;
   Ser_genarg.register_genser Extraargs.wit_lconstr ser_wit_lconstr;
   Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr;
   Ser_genarg.register_genser Extraargs.wit_in_clause ser_wit_in_clause;
