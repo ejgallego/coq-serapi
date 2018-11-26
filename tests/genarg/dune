@@ -36,6 +36,11 @@
 
 (alias
  (name runtest)
+ (deps (:input fix.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
  (deps (:input intros.v))
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
@@ -62,9 +67,4 @@
 (alias
  (name runtest)
  (deps (:input symmetry.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
- (name runtest)
- (deps (:input fix.v))
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
