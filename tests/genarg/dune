@@ -43,11 +43,10 @@
  (deps (:input eauto.v))
  (action (run ./test_roundtrip %{input})))
 
-; Broken
-; (alias
-;  (name runtest)
-;  (deps (:input elim.v))
-;  (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input elim.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
