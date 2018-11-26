@@ -16,7 +16,7 @@ depends: [
   "dune"          { build & >= "1.2.0" }
   "ppx_import"    { build & >= "1.5-3" }
   "ppx_deriving"  { build & >= "4.2.1"}
-  "ppx_sexp_conv" { >= "v0.11.0" }
+  "ppx_sexp_conv" { build & >= "v0.11.0" }
 ]
 
-build:    [ "dune" "build" "-p" "%package" ]
+build: [ "dune" "build" "-p" "%package" ]
