@@ -91,12 +91,25 @@ let ser_wit_uconstr = Ser_genarg.{
     top_des = Ser_ltac_pretype.closed_glob_constr_of_sexp;
   }
 
-type wrd_h1 = (Ser_constrexpr.constr_expr, Ser_libnames.qualid Ser_constrexpr.or_by_notation, Ser_constrexpr.constr_expr) Ser_genredexpr.red_expr_gen
+type wrd_h1 =
+  (Ser_constrexpr.constr_expr,
+   Ser_libnames.qualid Ser_constrexpr.or_by_notation,
+   Ser_constrexpr.constr_expr)
+    Ser_genredexpr.red_expr_gen
   [@@deriving sexp]
 
-type wrd_h2 = (Ser_genintern.glob_constr_and_expr,Ser_names.evaluable_global_reference and_short_name Ser_locus.or_var,Ser_genintern.glob_constr_pattern_and_expr) Ser_genredexpr.red_expr_gen
+type wrd_h2 =
+  (Ser_genintern.glob_constr_and_expr,
+   Ser_names.evaluable_global_reference and_short_name Ser_locus.or_var,
+   Ser_genintern.glob_constr_pattern_and_expr)
+    Ser_genredexpr.red_expr_gen
   [@@deriving sexp]
-type wrd_h3 = (Ser_eConstr.constr,Ser_names.evaluable_global_reference,Ser_pattern.constr_pattern) Ser_genredexpr.red_expr_gen
+
+type wrd_h3 =
+  (Ser_eConstr.constr,
+   Ser_names.evaluable_global_reference,
+   Ser_pattern.constr_pattern)
+    Ser_genredexpr.red_expr_gen
   [@@deriving sexp]
 
 let ser_wit_red_expr = Ser_genarg.{
