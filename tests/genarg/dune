@@ -39,11 +39,10 @@
  (deps (:input fix.v))
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
-; Broken
-; (alias
-; (name runtest)
-; (deps (:input functional_scheme.v))
-; (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+(alias
+(name runtest)
+(deps (:input functional_scheme.v))
+(action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
 (alias
  (name runtest)

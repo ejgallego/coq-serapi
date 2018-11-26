@@ -3,7 +3,7 @@
  (modules :standard \ sertop sercomp sertop_js sertop_async)
  (wrapped false)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
- (libraries cmdliner serapi serlib_ssr serlib_firstorder))
+ (libraries cmdliner serapi serlib_ssr serlib_firstorder serlib_funind))
 
 (executables
  (public_names sertop sercomp)
