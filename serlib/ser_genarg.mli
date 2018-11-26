@@ -69,5 +69,14 @@ val register_genser :
   ('raw, 'glb, 'top) Genarg.genarg_type ->
   ('raw, 'glb, 'top) gen_ser -> unit
 
+val gen_ser_pair :
+  ('raw1, 'glb1, 'top1) gen_ser ->
+  ('raw2, 'glb2, 'top2) gen_ser ->
+  (('raw1 * 'raw2), ('glb1 * 'glb2), ('top1 * 'top2)) gen_ser
+
+val gen_ser_list :
+  ('raw, 'glb, 'top) gen_ser ->
+  ('raw list, 'glb list, 'top list) gen_ser
+
 val mk_uniform : ('t -> Sexp.t) -> (Sexp.t -> 't) -> ('t,'t,'t) gen_ser
 

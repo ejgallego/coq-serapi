@@ -56,6 +56,11 @@ install:
     pushd "$HOME/coq-$COQ_VERSION"        &&
     make -f Makefile.dune coq             &&
     popd;
+    PATH="$HOME/coq-$COQ_VERSION/_build/install/default/bin":$PATH &&
+    git clone --depth=3 -b master https://github.com/math-comp/math-comp.git &&
+    pushd math-comp/mathcomp/ssreflect &&
+    make && make install &&
+    popd;
   fi
 
 script:

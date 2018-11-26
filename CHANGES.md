@@ -3,6 +3,8 @@
  * [general] support Coq 8.10,
  * [serapi] `Goals` query return type has been modified due to
              upstream changes. (@ejgallego)
+ * [serlib]  Complete (hopefully) serialization for ssreflect ASTs.
+             (#73 @ejgallego)
 
 ## Version 0.6.1:
 
@@ -41,7 +43,7 @@
  * [serlib] more robust support for opaque / non-serializable types (#61, #68).
             Thanks to @palmskog,
  * [serlib] new option `--exn_on_opaque` to raise an exception on
-            non-serializable types; closes #68, thanks to @palmskog,
+            non-serializable types; closes #61, thanks to @palmskog,
  * [serlib] serialization test-suite from
             https://github.com/proofengineering/serapi-tests, thanks to
             @palmskog,

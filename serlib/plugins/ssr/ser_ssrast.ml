@@ -99,8 +99,16 @@ type ssrview =
   [%import: Ssreflect_plugin.Ssrast.ssrview]
   [@@deriving sexp]
 
-type anon_iter =
-  [%import: Ssreflect_plugin.Ssrast.anon_iter]
+type anon_kind =
+  [%import: Ssreflect_plugin.Ssrast.anon_kind]
+  [@@deriving sexp]
+
+(* type anon_iter =
+ *   [%import: Ssreflect_plugin.Ssrast.anon_iter]
+ *   [@@deriving sexp] *)
+
+type id_block =
+  [%import: Ssreflect_plugin.Ssrast.id_block]
   [@@deriving sexp]
 
 type ssripat =
@@ -111,6 +119,9 @@ and ssripats =
   [@@deriving sexp]
 and ssripatss =
   [%import: Ssreflect_plugin.Ssrast.ssripatss]
+  [@@deriving sexp]
+and ssripatss_or_block =
+  [%import: Ssreflect_plugin.Ssrast.ssripatss_or_block]
   [@@deriving sexp]
 
 type ssrhpats =
@@ -159,6 +170,10 @@ type 'tac ssrhint =
 
 type 'tac fwdbinders =
   [%import: 'tac Ssreflect_plugin.Ssrast.fwdbinders]
+  [@@deriving sexp]
+
+type 'tac ffwbinders =
+  [%import: 'tac Ssreflect_plugin.Ssrast.ffwbinders]
   [@@deriving sexp]
 
 type clause =

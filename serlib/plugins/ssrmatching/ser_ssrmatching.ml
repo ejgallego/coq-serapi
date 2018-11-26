@@ -13,17 +13,30 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+
 type cpattern =
   [%import: Ssrmatching_plugin.Ssrmatching.cpattern]
 
-let cpattern_of_sexp o = Serlib_base.opaque_of_sexp ~typ:"Ssrmatching.cpattern" o
-let sexp_of_cpattern o = Serlib_base.sexp_of_opaque ~typ:"Ssrmatching.cpattern" o
+(* XXX *)
+type _cpattern = char * Ser_genintern.glob_constr_and_expr * Ser_geninterp.interp_sign option
+  [@@deriving sexp]
+
+let cpattern_of_sexp o = Obj.magic (_cpattern_of_sexp o)
+let sexp_of_cpattern o = sexp_of__cpattern Obj.(magic o)
+
+type ('a, 'b) ssrpattern =
+  [%import: ('a, 'b) Ssrmatching_plugin.Ssrmatching.ssrpattern]
+  [@@deriving sexp]
+
+type _rpattern = (cpattern, cpattern) ssrpattern
+  [@@deriving sexp]
 
 type rpattern =
   [%import: Ssrmatching_plugin.Ssrmatching.rpattern]
 
-let rpattern_of_sexp o = Serlib_base.opaque_of_sexp ~typ:"Ssrmatching.rpattern" o
-let sexp_of_rpattern o = Serlib_base.sexp_of_opaque ~typ:"Ssrmatching.rpattern" o
+let rpattern_of_sexp o = Obj.magic (_rpattern_of_sexp o)
+let sexp_of_rpattern o = sexp_of__rpattern Obj.(magic o)
 
 type ssrdir =
   [%import: Ssrmatching_plugin.Ssrmatching.ssrdir]
