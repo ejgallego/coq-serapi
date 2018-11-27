@@ -20,3 +20,9 @@ Fixpoint Qpositive_c (p q n : nat) {struct n} : Qpositive :=
   end.
 
 Functional Scheme Qpositive_c_ind := Induction for Qpositive_c Sort Prop.
+
+Lemma Qpositive_c_0 : forall p q n : nat, n = 0 -> Qpositive_c p q n = One.
+Proof.
+ intros p q n.
+ functional induction (Qpositive_c p q n); trivial || (intros; discriminate).
+Qed.
