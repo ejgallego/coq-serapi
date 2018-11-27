@@ -290,3 +290,19 @@ val sexp_of_tacdef_body : tacdef_body -> Sexp.t
 type glob_constr_and_expr = Tacexpr.glob_constr_and_expr
 val glob_constr_and_expr_of_sexp : Sexp.t -> glob_constr_and_expr
 val sexp_of_glob_constr_and_expr : glob_constr_and_expr -> Sexp.t
+
+type 'a delayed_open = 'a Tacexpr.delayed_open
+val delayed_open_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a delayed_open
+val sexp_of_delayed_open : ('a -> Sexp.t) -> 'a delayed_open -> Sexp.t
+
+type delayed_open_constr_with_bindings = Tacexpr.delayed_open_constr_with_bindings
+val delayed_open_constr_with_bindings_of_sexp : Sexp.t -> delayed_open_constr_with_bindings
+val sexp_of_delayed_open_constr_with_bindings : delayed_open_constr_with_bindings -> Sexp.t
+
+type delayed_open_constr = Tacexpr.delayed_open_constr
+val delayed_open_constr_of_sexp : Sexp.t -> delayed_open_constr
+val sexp_of_delayed_open_constr : delayed_open_constr -> Sexp.t
+
+type intro_pattern = Tacexpr.intro_pattern
+val intro_pattern_of_sexp : Sexp.t -> intro_pattern
+val sexp_of_intro_pattern : intro_pattern -> Sexp.t

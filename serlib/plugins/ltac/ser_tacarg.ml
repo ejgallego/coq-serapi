@@ -16,19 +16,14 @@
 open Ltac_plugin
 
 (* Tacarg *)
-let _sexp_of_delayed_open_constr_with_bindings =
-  Serlib_base.sexp_of_opaque ~typ:"delayed_open_constr_with_bindings"
-let _delayed_open_constr_with_bindings_of_sexp =
-  Serlib_base.opaque_of_sexp ~typ:"delayed_open_constr_with_bindings"
-
 let ser_wit_destruction_arg = Ser_genarg.{
     raw_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr);
     glb_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
-    top_ser = Ser_tactics.(sexp_of_destruction_arg _sexp_of_delayed_open_constr_with_bindings);
+    top_ser = Ser_tactics.(sexp_of_destruction_arg Ser_tacexpr.sexp_of_delayed_open_constr_with_bindings);
 
     raw_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp);
     glb_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_tacexpr.glob_constr_and_expr_of_sexp);
-    top_des = Ser_tactics.(destruction_arg_of_sexp _delayed_open_constr_with_bindings_of_sexp);
+    top_des = Ser_tactics.(destruction_arg_of_sexp Ser_tacexpr.delayed_open_constr_with_bindings_of_sexp);
   }
 
 let ser_wit_tactic = Ser_genarg.{

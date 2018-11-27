@@ -604,3 +604,25 @@ type raw_red_expr =
 type tacdef_body =
   [%import: Tacexpr.tacdef_body]
   [@@deriving sexp]
+
+(* Unsupported serializers *)
+type 'a delayed_open =
+  [%import: 'a Tacexpr.delayed_open]
+
+let sexp_of_delayed_open _ =
+  Serlib_base.sexp_of_opaque ~typ:"delayed_open"
+let delayed_open_of_sexp _ =
+  Serlib_base.opaque_of_sexp ~typ:"delayed_open"
+
+type delayed_open_constr_with_bindings =
+  [%import: Tacexpr.delayed_open_constr_with_bindings]
+  [@@deriving sexp]
+
+type delayed_open_constr =
+  [%import: Tacexpr.delayed_open_constr]
+  [@@deriving sexp]
+
+type intro_pattern =
+  [%import: Tacexpr.intro_pattern]
+  [@@deriving sexp]
+
