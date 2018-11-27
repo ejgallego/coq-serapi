@@ -271,6 +271,10 @@ let ser_wit_withtac =
     (option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp)
 
 (* extraargs *)
+let ser_wit_orient =
+  let open Sexplib.Conv in
+  Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
+
 let ser_wit_rename =
   let open Sexplib.Conv in
   Ser_genarg.mk_uniform
@@ -366,6 +370,7 @@ let register () =
 
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
+  Ser_genarg.register_genser Extraargs.wit_orient ser_wit_orient;
   Ser_genarg.register_genser Extraargs.wit_rename ser_wit_rename;
   Ser_genarg.register_genser Extraargs.wit_natural ser_wit_natural;
   Ser_genarg.register_genser Extraargs.wit_lconstr ser_wit_lconstr;
