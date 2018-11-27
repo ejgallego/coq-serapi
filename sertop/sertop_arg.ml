@@ -110,3 +110,18 @@ let omit_att : bool Term.t =
 let exn_on_opaque : bool Term.t =
   let doc = "[debug option] raise an exception on non-serializeble terms" in
   Arg.(value & flag & info ["exn_on_opaque"] ~doc)
+
+(* sertop options *)
+type comp_mode = | C_parse | C_stats | C_sexp
+
+let comp_mode_args = Arg.(enum ["parse", C_parse; "stats", C_stats; "sexp", C_sexp])
+
+let comp_mode_doc = Arg.doc_alts
+  [ "parse: parse the file and remain silent (except for Coq output)"
+  ; "stats: output stats on the input file"
+  ;  "sexp: output serialized version of the input file"
+  ]
+
+let comp_mode =
+  Arg.(value & opt comp_mode_args C_stats & info ["mode"] ~doc:comp_mode_doc)
+

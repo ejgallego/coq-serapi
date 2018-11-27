@@ -13,6 +13,7 @@ _Version 0.6.0_:
  * [serlib] serialization test-suite from
             https://github.com/proofengineering/serapi-tests, thanks to
             @palmskog,
+ * [sercomp] add `--mode` option to better control output,
 
 _Version 0.5.7_:
 

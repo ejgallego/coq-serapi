@@ -167,21 +167,28 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-let process_vernac pp ~doc st (CAst.{loc;v=vrn} as ast) =
+let process_vernac ~mode pp ~doc st (CAst.{loc;v=vrn} as ast) =
   let open Format in
   let doc, n_st, tip = Stm.add ~doc ~ontop:st false ast in
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
-  do_stats ?loc vrn;
-  printf "@[%a@]@\n @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt Topfmt.pr_loc loc)
-                                 pp (sexp_of_vernac_control vrn);
+  let open Sertop_arg in
+  let () = match mode with
+    | C_parse -> ()
+    | C_stats ->
+      do_stats ?loc vrn
+    | C_sexp ->
+      (* We don't print the file location for now *)
+      (* printf "@[%a@]@\n @[%a@]@\n%!" Pp.pp_with (Pp.pr_opt_no_spc Topfmt.pr_loc loc) *)
+      printf "@[%a@]@\n%!" pp (sexp_of_vernac_control vrn)
+  in
   doc, n_st
 
-let parse_document pp ~doc sid in_pa =
+let parse_document ~mode pp ~doc sid in_pa =
   let stt = ref (doc, sid) in
   try while true do
       let east = Stm.parse_sentence ~doc:(fst !stt) (snd !stt) in_pa in
-      stt := process_vernac pp ~doc:(fst !stt) (snd !stt) east
+      stt := process_vernac ~mode pp ~doc:(fst !stt) (snd !stt) east
     done
   with any ->
     let (e, _info) = CErrors.push any in
@@ -194,11 +201,12 @@ let parse_document pp ~doc sid in_pa =
 
  (* Format.eprintf "Error in parsing@\n%!" (\* XXX: add loc *\) *)
 
-let close_document () =
-  let open Format in
-  printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
+let close_document ~mode =
+  if mode = Sertop_arg.C_stats then
+    let open Format in
+    printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!" stats.specs stats.proofs stats.misc
 
-let sercomp debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_att exn_on_opaque =
+let sercomp mode debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_att exn_on_opaque =
 
   (* serlib initialization *)
   Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
@@ -230,9 +238,9 @@ let sercomp debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_a
     debug;
   } in
 
-  parse_document pp_sexp ~doc sid in_pa;
+  parse_document ~mode pp_sexp ~doc sid in_pa;
   close_in in_chan;
-  close_document ()
+  close_document ~mode
 
 (* Command line processing *)
 let sercomp_version = Ser_version.ser_git_version
@@ -251,7 +259,7 @@ let sertop_cmd =
   ]
   in
   let open Sertop_arg in
-  Term.(const sercomp $ debug $ printer $ async $ prelude $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque ),
+  Term.(const sercomp $ comp_mode $ debug $ printer $ async $ prelude $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque ),
   Term.info "sercomp" ~version:sercomp_version ~doc ~man
 
 let main () =
