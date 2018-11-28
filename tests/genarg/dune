@@ -98,3 +98,8 @@
  (name runtest)
  (deps (:input symmetry.v))
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input tactic_notation.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
