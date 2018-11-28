@@ -229,5 +229,6 @@ let _ =
   Ser_tacarg.register ();
   Ser_g_ground.register ();
   Ser_g_indfun.register ();
+  Ser_g_newring.register ();
   Ser_ssrparser.register ();
   ()
