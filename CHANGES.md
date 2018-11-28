@@ -14,6 +14,7 @@ _Version 0.6.0_:
             https://github.com/proofengineering/serapi-tests, thanks to
             @palmskog,
  * [sercomp] add `--mode` option to better control output,
+ * [sercomp] add `compser` for deserialization (inverse of `sercomp`)
 
 _Version 0.5.7_:
 
