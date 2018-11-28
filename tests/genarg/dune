@@ -40,9 +40,9 @@
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
 (alias
-(name runtest)
-(deps (:input functional_scheme.v))
-(action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (name runtest)
+ (deps (:input functional_scheme.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
 (alias
 (name runtest)
@@ -55,9 +55,14 @@
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
 (alias
-(name runtest)
-(deps (:input rename.v))
-(action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (name runtest)
+ (deps (:input libTactics.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
+(alias
+ (name runtest)
+ (deps (:input rename.v))
+ (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
 (alias
  (name runtest)

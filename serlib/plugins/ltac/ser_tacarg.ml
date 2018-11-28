@@ -15,7 +15,33 @@
 
 open Ltac_plugin
 
+module CAst         = Ser_cAst
+module Constrexpr   = Ser_constrexpr
+module Tactypes     = Ser_tactypes
+module Tacexpr      = Ser_tacexpr
+module Genintern    = Ser_genintern
+
 (* Tacarg *)
+module A1 = struct
+  type h1 = Constrexpr.constr_expr Tactypes.intro_pattern_expr CAst.t
+  [@@deriving sexp]
+  type h2 = Genintern.glob_constr_and_expr Tactypes.intro_pattern_expr CAst.t
+  [@@deriving sexp]
+  type h3 = Tacexpr.intro_pattern
+  [@@deriving sexp]
+end
+
+let ser_wit_intropattern = let open A1 in Ser_genarg.
+  { raw_ser = sexp_of_h1
+  ; raw_des = h1_of_sexp
+
+  ; glb_ser = sexp_of_h2
+  ; glb_des = h2_of_sexp
+
+  ; top_ser = sexp_of_h3
+  ; top_des = h3_of_sexp
+  }
+
 let ser_wit_destruction_arg = Ser_genarg.{
     raw_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr);
     glb_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_tacexpr.sexp_of_glob_constr_and_expr);
@@ -334,6 +360,7 @@ let ser_wit_by_arg_tac :
 
 let register () =
 
+  Ser_genarg.register_genser Tacarg.wit_intropattern ser_wit_intropattern;
   Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
   Ser_genarg.register_genser Tacarg.wit_tactic ser_wit_tactic;
 

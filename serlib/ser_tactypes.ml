@@ -42,3 +42,9 @@ type 'a bindings =
 type 'a with_bindings =
   [%import: 'a Tactypes.with_bindings]
   [@@deriving sexp]
+
+type 'a delayed_open =
+  [%import: 'a Tactypes.delayed_open]
+
+let sexp_of_delayed_open _ = Serlib_base.sexp_of_opaque ~typ:"wit_bindings/top"
+let delayed_open_of_sexp _ = Serlib_base.opaque_of_sexp ~typ:"wit_bindings/top";
