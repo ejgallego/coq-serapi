@@ -1,13 +1,13 @@
 (library
  (name sertoplib)
- (modules :standard \ sertop sercomp sertop_js sertop_async)
+ (modules :standard \ sertop sercomp compser sertop_js sertop_async)
  (wrapped false)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (libraries cmdliner serapi serlib_ssr serlib_firstorder serlib_funind serlib_setoid_ring))
 
 (executables
- (public_names sertop sercomp)
- (modules sertop sercomp)
+ (public_names sertop sercomp compser)
+ (modules sertop sercomp compser)
  (link_flags -linkall)
  (libraries sertoplib))
 
