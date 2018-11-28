@@ -1,3 +1,9 @@
+; Broken
+; (alias
+;  (name runtest)
+;  (deps (:input add_field.v))
+;  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+
 (alias
  (name runtest)
  (deps (:input auto.v))
