@@ -229,11 +229,12 @@ using nntp.
 
 ### Commit tag conventions [work in progress]:
 
-- [misc]    : Code refactoring, miscellanenous
 - [serlib]  : Serialization lib.
+- [test]    : Adding or modifying a test.
 - [sertop]  : Sexp Toplevel.
 - [doc]     : Documentation.
 - [build]   : Build system.
+- [misc]    : Code refactoring, miscellanenous
 - [proto]   : Core protocol.
 - [control] : STM protocol.
 - [query]   : Query protocol.
