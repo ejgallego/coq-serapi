@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 COMPSER=../../sertop/compser.exe
 SERCOMP=../../sertop/sercomp.exe
 FILE_IN="$1"
