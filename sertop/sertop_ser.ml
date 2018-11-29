@@ -215,6 +215,10 @@ type add_opts =
   ]]
   [@@deriving sexp]
 
+type top_kind =
+  [%import: Serapi_protocol.top_kind]
+  [@@deriving sexp]
+
 type newdoc_opts =
   [%import: Serapi_protocol.newdoc_opts
   [@with

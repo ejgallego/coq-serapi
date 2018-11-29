@@ -18,3 +18,6 @@
 
 (* Default load path for Coq's stdlib *)
 val coq_loadpath_default : implicit:bool -> coq_path:string -> Mltop.coq_path list
+
+(* Generate a module name given a file, to be removed in 8.10 *)
+val dirpath_of_file : string -> Names.DirPath.t

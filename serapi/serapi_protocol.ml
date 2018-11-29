@@ -670,10 +670,11 @@ end
 (******************************************************************************)
 (* Init / new document                                                        *)
 (******************************************************************************)
+type top_kind = TopLogical of Names.DirPath.t | TopPhysical of string
 type newdoc_opts = {
 
   (* name of the top-level module *)
-  top_name     : string;
+  top_name     : top_kind;
 
   (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
   iload_path   : Mltop.coq_path list sexp_option;
@@ -729,8 +730,10 @@ let exec_cmd (cmd : cmd) =
   let doc = Stm.get_doc !doc_id in
   coq_protect @@ fun () -> match cmd with
   | NewDoc opts   ->
-    let open Names in
-    let sertop_dp = DirPath.make [Id.of_string opts.top_name] in
+    let sertop_dp = match opts.top_name with
+      | TopLogical dp -> dp
+      | TopPhysical file -> Serapi_paths.dirpath_of_file file
+    in
     let stm_options = Stm.AsyncOpts.default_opts in
     let require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
     let iload_path = Option.default

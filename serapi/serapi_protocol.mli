@@ -149,10 +149,11 @@ type add_opts = {
 (******************************************************************************)
 (* Init / new document                                                        *)
 (******************************************************************************)
+type top_kind = TopLogical of Names.DirPath.t | TopPhysical of string
 type newdoc_opts = {
 
   (* name of the top-level module *)
-  top_name     : string;
+  top_name     : top_kind;
 
   (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
   iload_path   : Mltop.coq_path list sexp_option;

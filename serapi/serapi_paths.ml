@@ -39,3 +39,17 @@ let coq_loadpath_default ~implicit ~coq_path =
    mk_lp ~ml:AddNoML  ~root:coq_root     ~implicit       ~dir:"theories";
    mk_lp ~ml:AddRecML ~root:default_root ~implicit:false ~dir:"user-contrib";
   ]
+
+(******************************************************************************)
+(* Generate a module name given a file                                        *)
+(******************************************************************************)
+let dirpath_of_file f =
+  let ldir0 =
+    try
+      let lp = Loadpath.find_load_path (Filename.dirname f) in
+      Loadpath.logical lp
+    with Not_found -> Libnames.default_root_prefix
+  in
+  let file = Filename.chop_extension (Filename.basename f) in
+  let id = Names.Id.of_string file in
+  Libnames.add_dirpath_suffix ldir0 id
