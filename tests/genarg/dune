@@ -1,148 +1,113 @@
 ; Eventually we should use the "put binaries in scope feature of Dune"
-(alias
- (name runtest)
- (deps (:input add_field.v)
+(rule
+ (targets test_roundtrip)
+ (deps (:input test_roundtrip.in)
    ../../sertop/sercomp.exe
    ../../sertop/compser.exe)
+ (action (copy test_roundtrip.in test_roundtrip)))
+
+(alias
+ (name runtest)
+ (deps (:input add_field.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input auto.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input auto.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input clear.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input clear.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input eauto.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input eauto.v))
  (action (run ./test_roundtrip %{input})))
 
 ; Broken
 ; (alias
 ;  (name runtest)
-;  (deps (:input elim.v)
-;    ../../sertop/sercomp.exe
-;    ../../sertop/compser.exe)
+;  (deps (:input elim.v))
 ;  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input exact.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input exact.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input exists.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input exists.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input firstorder.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input firstorder.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input fix.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input fix.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input functional_scheme.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input functional_scheme.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input hint_rewrite.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
- (name runtest)
- (deps (:input intropattern.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input hint_rewrite.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input intros.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input intropattern.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input libTactics.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input intros.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input rename.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input libTactics.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input replace.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input rename.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input revert.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input replace.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input specialize.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input revert.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input subst.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input specialize.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input symmetry.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input subst.v))
  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input tactic_notation.v)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps (:input symmetry.v))
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input tactic_notation.v))
  (action (run ./test_roundtrip %{input})))
