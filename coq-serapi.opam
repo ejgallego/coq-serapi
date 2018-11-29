@@ -9,14 +9,14 @@ dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
 license:      "GPL 3"
 
 depends: [
-  "ocaml"         { >= "4.06.0" }
+  "ocaml"         { >= "4.06.0"           }
   "coq"           { >= "8.9.0" & < "8.10" }
-  "cmdliner"
-  "sexplib"
-  "dune"          { build & >= "1.2.0" }
-  "ppx_import"    { build & >= "1.5-3" }
-  "ppx_deriving"  { build & >= "4.2.1"}
-  "ppx_sexp_conv" { build & >= "v0.11.0" }
+  "cmdliner"      { >= "1.0.0"            }
+  "sexplib"       { >= "v0.11.0"          }
+  "dune"          { build & >= "1.2.0"    }
+  "ppx_import"    { build & >= "1.5-3"    }
+  "ppx_deriving"  { build & >= "4.2.1"    }
+  "ppx_sexp_conv" { build & >= "v0.11.0"  }
 ]
 
-build: [ "dune" "build" "-p" "%package" ]
+build: [ "dune" "build" "-p" name "-j" jobs ]
