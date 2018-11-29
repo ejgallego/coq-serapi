@@ -10,30 +10,32 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type async_flags = {
-  enable_async : string option;
-  async_full   : bool;
-  deep_edits   : bool;
-}
+(******************************************************************************)
+(* Coq Prelude Loading Defaults (to be improved)                              *)
+(******************************************************************************)
 
-val process_stm_flags : async_flags -> Stm.AsyncOpts.stm_opt
-
-type coq_opts = {
-
-  (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
-
-  (* callback to load cma/cmo files *)
-  ml_load      : (string -> unit) option;
-
-  (* Enable Coq Debug mode *)
-  debug        : bool;
-}
-
-val coq_init : coq_opts -> unit
+let coq_loadpath_default ~implicit ~coq_path =
+  let open Mltop in
+  let mk_path prefix = coq_path ^ "/" ^ prefix in
+  let mk_lp ~ml ~root ~dir ~implicit =
+    { recursive = true;
+      path_spec = VoPath {
+          unix_path = mk_path dir;
+          coq_path  = root;
+          has_ml    = ml;
+          implicit;
+        };
+    } in
+  (* in 8.8 we can use Libnames.default_* *)
+  let coq_root     = Names.DirPath.make [Libnames.coq_root] in
+  let default_root = Libnames.default_root_prefix in
+  [mk_lp ~ml:AddRecML ~root:coq_root     ~implicit       ~dir:"plugins";
+   mk_lp ~ml:AddNoML  ~root:coq_root     ~implicit       ~dir:"theories";
+   mk_lp ~ml:AddRecML ~root:default_root ~implicit:false ~dir:"user-contrib";
+  ]

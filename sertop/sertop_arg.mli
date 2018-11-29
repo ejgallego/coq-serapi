@@ -30,10 +30,11 @@ val length          : bool Term.t
 val rload_path      : Mltop.coq_path list Term.t
 val load_path       : Mltop.coq_path list Term.t
 val ml_include_path : Mltop.coq_path list Term.t
+val no_init         : bool Term.t
 
 (* sertop options *)
 type comp_mode = | C_parse | C_stats | C_sexp
-val  comp_mode : comp_mode Term.t
+val comp_mode : comp_mode Term.t
 
 (* debug options *)
 val omit_loc : bool Term.t

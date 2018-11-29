@@ -10,30 +10,45 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type async_flags = {
-  enable_async : string option;
-  async_full   : bool;
-  deep_edits   : bool;
-}
+open Sexplib
+open Sertop_arg
 
-val process_stm_flags : async_flags -> Stm.AsyncOpts.stm_opt
+val create_from_file
+  :  in_file:string
+  -> async:string option
+  -> iload_path:Mltop.coq_path list
+  -> Stm.doc * Stateid.t
 
-type coq_opts = {
+val process_vernac
+  :  mode:comp_mode
+  -> pp:(Format.formatter -> Sexp.t -> unit)
+  -> doc:Stm.doc
+  -> st:Stateid.t
+  -> Vernacexpr.vernac_control CAst.t
+  -> Stm.doc * Stateid.t
 
-  (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
+val close_document : mode:comp_mode -> unit
 
-  (* callback to load cma/cmo files *)
-  ml_load      : (string -> unit) option;
+type compfun
+  =  comp_mode
+  -> bool
+  -> Sertop_ser.ser_printer
+  -> string option
+  -> string
+  -> Mltop.coq_path list
+  -> Mltop.coq_path list
+  -> Mltop.coq_path list
+  -> string -> bool -> bool -> bool -> unit
 
-  (* Enable Coq Debug mode *)
-  debug        : bool;
-}
-
-val coq_init : coq_opts -> unit
+val maincomp
+  :  ext:string
+  -> name:string
+  -> desc:string
+  -> compfun:compfun
+  -> unit

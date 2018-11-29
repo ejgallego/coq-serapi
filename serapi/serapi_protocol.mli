@@ -27,7 +27,7 @@ open Sexplib.Conv
 (* Basic Protocol Objects                                                     *)
 (******************************************************************************)
 type coq_object =
-    CoqString    of string
+  | CoqString    of string
   | CoqSList     of string list
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
@@ -147,6 +147,22 @@ type add_opts = {
 }
 
 (******************************************************************************)
+(* Init / new document                                                        *)
+(******************************************************************************)
+type newdoc_opts = {
+
+  (* name of the top-level module *)
+  top_name     : string;
+
+  (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
+  iload_path   : Mltop.coq_path list sexp_option;
+
+  (* Libs to require in STM init *)
+  require_libs : (string * string option * bool option) list sexp_option;
+
+}
+
+(******************************************************************************)
 (* Help                                                                       *)
 (******************************************************************************)
 
@@ -157,6 +173,7 @@ type add_opts = {
 (******************************************************************************)
 
 type cmd =
+  | NewDoc     of newdoc_opts
   | Add        of add_opts  * string
   | Cancel     of Stateid.t list
   | Exec       of Stateid.t
@@ -200,4 +217,3 @@ type answer =
   (* implicit : bool; *)
 (*   async    : Sertop_init.async_flags; *)
 (* } *)
-

@@ -22,7 +22,7 @@
 
 type ser_opts = {
   (* Input output Options *)
-  in_chan  : in_channel;        (* Input/Output channels                                *)
+  in_chan  : in_channel;        (* Input/Output channels                      *)
   out_chan : out_channel;
                                 (* Printers                                   *)
   printer  : Sertop_ser.ser_printer;
@@ -32,7 +32,8 @@ type ser_opts = {
   lheader  : bool;              (* Print lenght header (deprecated)           *)
 
   (* Coq options *)
-  coq_path : string;            (* Coq standard library location *)
+  no_init  : bool;              (* Whether to create the initial document     *)
+  coq_path : string;            (* Coq standard library location              *)
   std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
                                 (* -R and -Q options                          *)
   loadpath : Mltop.coq_path list; (* From -R and -Q options usually *)

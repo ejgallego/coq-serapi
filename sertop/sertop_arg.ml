@@ -68,6 +68,12 @@ let length =
 
 (* We handle the conversion here *)
 
+let no_init =
+  let doc = "Omits the creation of a new document; this means the user \
+             will have to call `(NewDoc ...)` before Coq can be used \
+             and set there the proper loadpath, requires, ..." in
+  Arg.(value & flag & info ["no_init"] ~doc)
+
 let coq_lp_conv ~implicit (unix_path,lp) = Mltop.{
     path_spec = VoPath {
         coq_path  = Libnames.dirpath_of_string lp;
@@ -114,7 +120,11 @@ let exn_on_opaque : bool Term.t =
 (* sertop options *)
 type comp_mode = | C_parse | C_stats | C_sexp
 
-let comp_mode_args = Arg.(enum ["parse", C_parse; "stats", C_stats; "sexp", C_sexp])
+let comp_mode_args =
+  Arg.(enum
+         [ "parse", C_parse
+         ; "stats", C_stats
+         ; "sexp",  C_sexp])
 
 let comp_mode_doc = Arg.doc_alts
   [ "parse: parse the file and remain silent (except for Coq output)"
@@ -123,5 +133,5 @@ let comp_mode_doc = Arg.doc_alts
   ]
 
 let comp_mode =
-  Arg.(value & opt comp_mode_args C_stats & info ["mode"] ~doc:comp_mode_doc)
+  Arg.(value & opt comp_mode_args C_parse & info ["mode"] ~doc:comp_mode_doc)
 

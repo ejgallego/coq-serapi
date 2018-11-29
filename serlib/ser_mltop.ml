@@ -16,24 +16,22 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type async_flags = {
-  enable_async : string option;
-  async_full   : bool;
-  deep_edits   : bool;
-}
+open Sexplib.Conv
 
-val process_stm_flags : async_flags -> Stm.AsyncOpts.stm_opt
+module Names = Ser_names
 
-type coq_opts = {
+type add_ml =
+  [%import: Mltop.add_ml]
+  [@@deriving sexp]
 
-  (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
+type vo_path_spec =
+  [%import: Mltop.vo_path_spec]
+  [@@deriving sexp]
 
-  (* callback to load cma/cmo files *)
-  ml_load      : (string -> unit) option;
+type coq_path_spec =
+  [%import: Mltop.coq_path_spec]
+  [@@deriving sexp]
 
-  (* Enable Coq Debug mode *)
-  debug        : bool;
-}
-
-val coq_init : coq_opts -> unit
+type coq_path =
+  [%import: Mltop.coq_path]
+  [@@deriving sexp]
