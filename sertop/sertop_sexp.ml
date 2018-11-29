@@ -120,11 +120,13 @@ let ser_loop ser_opts =
   let coq_path = ser_opts.coq_path in
 
   (* Init Coq *)
-  let _ = Sertop_init.coq_init {
-    Sertop_init.fb_handler   = pp_feed;
-    Sertop_init.ml_load      = None;
-    Sertop_init.debug        = ser_opts.debug;
-  } in
+  let _ = Sertop_init.(
+      coq_init
+        { fb_handler   = pp_feed
+        ; ml_load      = None
+        ; debug        = ser_opts.debug
+        })
+  in
 
   (* Follow the same approach than coqtop for now: allow Coq to be
    * interrupted by Ctrl-C. Not entirely safe or race free... but we

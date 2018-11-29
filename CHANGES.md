@@ -15,6 +15,7 @@ _Version 0.6.0_:
             @palmskog,
  * [sercomp] add `--mode` option to better control output,
  * [sercomp] add `compser` for deserialization (inverse of `sercomp`)
+             (@palmskog),
  * [serapi]  Allow custom document creation using the `NewDoc` call.
              Use the `--no_init` option to avoid automatic creation
              on init. (@ejgallego)
