@@ -1,105 +1,148 @@
+; Eventually we should use the "put binaries in scope feature of Dune"
 (alias
  (name runtest)
- (deps (:input add_field.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input add_field.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input auto.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input auto.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input clear.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input clear.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input eauto.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input eauto.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 ; Broken
 ; (alias
 ;  (name runtest)
-;  (deps (:input elim.v))
-;  (action (ignore-stdout (run sercomp --exn_on_opaque --debug %{input}))))
+;  (deps (:input elim.v)
+;    ../../sertop/sercomp.exe
+;    ../../sertop/compser.exe)
+;  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input exact.v))
+ (deps (:input exact.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input exists.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input firstorder.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input fix.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input functional_scheme.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input hint_rewrite.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
  (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
 
 (alias
  (name runtest)
- (deps (:input exists.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input intropattern.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input firstorder.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input intros.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input fix.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input libTactics.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input functional_scheme.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
-(name runtest)
-(deps (:input hint_rewrite.v))
-(action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input rename.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input intropattern.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input replace.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input intros.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input revert.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input libTactics.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input specialize.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input rename.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input subst.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input replace.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input symmetry.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
- (deps (:input revert.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
- (name runtest)
- (deps (:input specialize.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
- (name runtest)
- (deps (:input subst.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
- (name runtest)
- (deps (:input symmetry.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
-
-(alias
- (name runtest)
- (deps (:input tactic_notation.v))
- (action (ignore-stdout (run sercomp --exn_on_opaque %{input}))))
+ (deps (:input tactic_notation.v)
+   ../../sertop/sercomp.exe
+   ../../sertop/compser.exe)
+ (action (run ./test_roundtrip %{input})))
