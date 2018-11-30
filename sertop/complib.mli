@@ -33,7 +33,11 @@ val process_vernac
   -> Vernacexpr.vernac_control CAst.t
   -> Stm.doc * Stateid.t
 
-val close_document : mode:comp_mode -> unit
+val close_document
+  :  mode:comp_mode
+  -> doc:Stm.doc
+  -> out_vo:string
+  -> unit
 
 type compfun
   =  comp_mode

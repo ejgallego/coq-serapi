@@ -19,6 +19,8 @@ _Version 0.6.0_:
  * [serapi]  Allow custom document creation using the `NewDoc` call.
              Use the `--no_init` option to avoid automatic creation
              on init. (@ejgallego)
+ * [sercomp] Allow compilers to output `.vo` (@ejgallego , suggested by
+             @palmskog)
 
 _Version 0.5.7_:
 
