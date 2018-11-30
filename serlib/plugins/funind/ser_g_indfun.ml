@@ -82,7 +82,21 @@ type function_rec_definition_loc_argtype =
 let ser_wit_function_rec_definition_loc =
   Ser_genarg.mk_uniform sexp_of_function_rec_definition_loc_argtype function_rec_definition_loc_argtype_of_sexp
 
+let ser_wit_auto_using' =
+  Ser_genarg.{
+    raw_ser = sexp_of_list Ser_constrexpr.sexp_of_constr_expr
+  ; raw_des = list_of_sexp Ser_constrexpr.constr_expr_of_sexp
+
+  ; glb_ser = sexp_of_list Ser_genintern.sexp_of_glob_constr_and_expr
+  ; glb_des = list_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp
+
+  ; top_ser = sexp_of_list Ser_eConstr.sexp_of_constr
+  ; top_des = list_of_sexp Ser_eConstr.constr_of_sexp
+  }
+
 let register () =
+  Ser_genarg.register_genser G_indfun.wit_auto_using' ser_wit_auto_using';
+  Ser_genarg.register_genser G_indfun.wit_constr_comma_sequence' ser_wit_auto_using';
   Ser_genarg.register_genser G_indfun.wit_with_names ser_wit_with_names;
   Ser_genarg.register_genser G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
   Ser_genarg.register_genser G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
