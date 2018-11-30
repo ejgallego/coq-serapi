@@ -23,9 +23,33 @@
 open Ltac_plugin
 open Sexplib.Conv
 
+(** The SerAPI Protocol *)
+
+(**
+SerAPI is
+
+{2 History:}
+
+{2 Basic Overview of the Protocol:}
+
+{2 Overview of the functionality: }
+
+{3 Document creation and checking: }
+
+{3 Querying documents: }
+
+{3 Advanced and experimental functionalities: }
+
+*)
+
+(** {2 Protocol Specification } *)
+
 (******************************************************************************)
 (* Basic Protocol Objects                                                     *)
 (******************************************************************************)
+
+(** {3 Basic Protocol Objects} *)
+
 type coq_object =
   | CoqString    of string
   | CoqSList     of string list
@@ -57,25 +81,37 @@ type coq_object =
                     * Goal.goal list
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
+  | CoqAssumptions of Serapi_assumptions.t
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
 (******************************************************************************)
 
+(** {3 Printing Options} *)
+
 (** Query output format  *)
 type print_format =
   | PpSer
+  (** Output in serialized format [usually sexp] *)
   | PpStr
+  (** Output a string with a human-friendly representation *)
   | PpTex
+  (** Output a TeX expression *)
   | PpCoq
+  (** Output a Coq [Pp.t], representation-indepedent document *)
   (* | PpRichpp *)
 
-type print_opt = {
-  pp_format : print_format  [@default PpStr];
-  pp_depth  : int           [@default 0];
-  pp_elide  : string        [@default "..."];
-  pp_margin : int           [@default 72];
-}
+(** Printing options, not all options are relevant for all printing backends *)
+type print_opt =
+  { pp_format : print_format  [@default PpSer]
+  (** Output format ({e default PpSer}) *)
+  ; pp_depth  : int           [@default 0]
+  (** Depth  ({e default 0}) *)
+  ; pp_elide  : string        [@default "..."]
+  (** Elipsis ({e default: "..."}) *)
+  ; pp_margin : int           [@default 72]
+  (** Marging ({e default: 72}) *)
+  }
 
 (******************************************************************************)
 (* Parsing Sub-Protocol                                                       *)
@@ -84,25 +120,15 @@ type print_opt = {
 (* no public interface *)
 
 (******************************************************************************)
-(* Answer Types                                                               *)
-(******************************************************************************)
-
-exception NoSuchState of Stateid.t
-
-type answer_kind =
-    Ack
-  | Completed
-  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
-  | Canceled  of Stateid.t list
-  | ObjList   of coq_object list
-  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
-
-(******************************************************************************)
 (* Query Sub-Protocol                                                         *)
 (******************************************************************************)
 
+(** {3 Query Sub-Protocol } *)
+
+(** Predicates on the queries. This is at the moment mostly a token functionality *)
 type query_pred =
   | Prefix of string
+  (** Filter named objects based on the given prefix *)
 
 type query_opt =
   { preds : query_pred sexp_list;
@@ -129,15 +155,23 @@ type query_cmd =
   | Implicits  of string           (* XXX Print LTAC signatures (with prefix) *)
   | Unparsing  of string           (* XXX  *)
   | Definition of string
+  (** Return the definition of the given global *)
   | PNotations                     (* XXX  *)
   | ProfileData
-  | Proof                          (* Return the proof object *)
-  | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
-  | Env                            (* Return the current global enviroment *)
+  | Proof
+  (** Return the proof object *)
+  | Vernac     of string
+  (** Execute an arbitrary Coq command in an isolated state. *)
+  | Env
+  (** Return the current enviroment *)
+  | Assumptions of string
+  (** Return the assumptions of given global *)
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
 (******************************************************************************)
+
+(** {3 Control Sub-Protocol } *)
 
 type add_opts = {
   lim    : int       sexp_option;
@@ -173,6 +207,8 @@ type newdoc_opts = {
 (* Top-Level Commands                                                         *)
 (******************************************************************************)
 
+(** {3 Top Level Protocol } *)
+
 type cmd =
   | NewDoc     of newdoc_opts
   | Add        of add_opts  * string
@@ -194,27 +230,43 @@ type cmd =
   | Quit
   (*******************************************************************)
 
+(******************************************************************************)
+(* Answer Types                                                               *)
+(******************************************************************************)
+
+exception NoSuchState of Stateid.t
+
+type answer_kind =
+    Ack
+  | Completed
+  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | Canceled  of Stateid.t list
+  | ObjList   of coq_object list
+  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
+
+(** {3 Entry points to the DSL evaluator} *)
+
 val exec_cmd : cmd -> answer_kind list
 
 type cmd_tag = string
 type tagged_cmd = cmd_tag * cmd
 
 (* XXX: Maybe 'a answer for a parametric serializer? *)
-type answer =
-  | Answer    of cmd_tag * answer_kind
-  | Feedback  of Feedback.feedback
+    type answer =
+    | Answer    of cmd_tag * answer_kind
+    | Feedback  of Feedback.feedback
 
-(******************************************************************************)
-(* Global Protocol Options                                                    *)
-(******************************************************************************)
+    (******************************************************************************)
+    (* Global Protocol Options                                                    *)
+    (******************************************************************************)
 
-(* type ser_opts = { *)
-  (* coqlib   : string option;       (\* Whether we should load the prelude, and its location *\) *)
-  (* in_chan  : in_channel;          (\* Input/Output channels                                *\) *)
-  (* out_chan : out_channel; *)
-  (* human    : bool; *)
-  (* print0   : bool; *)
-  (* lheader  : bool; *)
-  (* implicit : bool; *)
-(*   async    : Sertop_init.async_flags; *)
-(* } *)
+    (* type ser_opts = { *)
+    (* coqlib   : string option;       (\* Whether we should load the prelude, and its location *\) *)
+    (* in_chan  : in_channel;          (\* Input/Output channels                                *\) *)
+    (* out_chan : out_channel; *)
+    (* human    : bool; *)
+    (* print0   : bool; *)
+    (* lheader  : bool; *)
+    (* implicit : bool; *)
+    (*   async    : Sertop_init.async_flags; *)
+    (* } *)

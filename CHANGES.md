@@ -23,6 +23,8 @@ _Version 0.6.0_:
              @palmskog)
  * [sercomp] Serialize top-level vernaculars with their syntactic
              attributes (such as location) (@ejallego)
+ * [serapi]  Add `Assumptions` query, at the suggestion of @Armael
+             (@ejgallego)
 
 _Version 0.5.7_:
 

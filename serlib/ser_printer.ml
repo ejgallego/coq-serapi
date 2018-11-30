@@ -16,11 +16,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* We ship our own type due to Context lack of support for anything
-   other than Constr.t *)
-type 'a hyp = (Names.Id.t list * 'a option * 'a)
-type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
-
-(* Ready to make into a GADT *)
-val get_goals  : doc:Stm.doc -> Stateid.t -> Constr.t               reified_goal Proof.pre_goals option
-val get_egoals : doc:Stm.doc -> Stateid.t -> Constrexpr.constr_expr reified_goal Proof.pre_goals option
+module Names = Ser_names
+type axiom =
+  [%import: Printer.axiom]
+  [@@deriving sexp]
