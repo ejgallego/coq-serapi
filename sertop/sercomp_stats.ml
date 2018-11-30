@@ -16,17 +16,17 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type stats = {
-  mutable specs  : int;
-  mutable proofs : int;
-  mutable misc   : int;
-}
+type stats =
+  { mutable specs  : int
+  ; mutable proofs : int
+  ; mutable misc   : int
+  }
 
-let stats = {
-  specs  = 0;
-  proofs = 0;
-  misc   = 0;
-}
+let stats =
+  { specs  = 0
+  ; proofs = 0
+  ; misc   = 0
+  }
 
 (* XXX: Move to sertop_stats.ml *)
 let do_stats =
@@ -165,106 +165,6 @@ let do_stats =
   | VernacLocal (_,_) -> (??)
 *)
 
-let create_from_file ~in_file ~async ~iload_path =
-
-  let open Sertop_init in
-
-  let stm_options =
-    { enable_async = async;
-      async_full   = false;
-      deep_edits   = false;
-    } in
-
-  let ndoc = { Stm.doc_type = Stm.VoDoc in_file;
-               require_libs = ["Coq.Init.Prelude", None, Some true];
-               iload_path;
-               stm_options  = Sertop_init.process_stm_flags stm_options;
-               } in
-  Stm.new_doc ndoc
-
-let process_vernac ~mode ~pp ~doc ~st (CAst.{loc;v=vrn} as ast) =
-  let open Format in
-  let doc, n_st, tip = Stm.add ~doc ~ontop:st false ast in
-  if tip <> `NewTip then
-    (eprintf "Fatal Error, got no `NewTip`"; exit 1);
-  let open Sertop_arg in
-  let () = match mode with
-    | C_vo    -> ()
-    | C_parse -> ()
-    | C_stats ->
-      do_stats ?loc vrn
-    | C_sexp ->
-      printf "@[%a@]@\n%!" pp (Ser_vernacexpr.sexp_of_vernac_control vrn)
-  in
-  doc, n_st
-
-let fatal_error msg =
-  Topfmt.std_logger Feedback.Error msg;
-  flush_all ();
-  exit 1
-
-let check_pending_proofs () =
-  let pfs = Proof_global.get_all_proof_names () in
-  if not (CList.is_empty pfs) then
-    fatal_error Pp.(
-        seq
-          [ str "There are pending proofs: "
-          ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print
-          ; str "."] )
-
-let close_document ~mode ~doc ~out_vo =
-  let open Sertop_arg in
-  match mode with
-  | C_parse -> ()
-  | C_sexp  -> ()
-  | C_stats ->
-    Format.printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!"
-      stats.specs stats.proofs stats.misc
-  | C_vo ->
-    let _doc = Stm.join ~doc in
-    check_pending_proofs ();
-    let ldir = Stm.get_ldir ~doc in
-    Library.save_library_to ldir out_vo (Global.opaque_tables ())
-
-(* Command line processing *)
-let comp_version = Ser_version.ser_git_version
-
-type compfun
-  =  Sertop_arg.comp_mode
-  -> bool
-  -> Sertop_ser.ser_printer
-  -> string option
-  -> string
-  -> Mltop.coq_path list
-  -> Mltop.coq_path list
-  -> Mltop.coq_path list
-  -> string -> bool -> bool -> bool -> unit
-
-open Cmdliner
-
-let maincomp ~ext ~name ~desc ~(compfun:compfun) =
-  let input_file =
-    let doc = "Input " ^ ext ^ " file." in
-    Arg.(required & pos 0 (some string) None & info [] ~docv:("FILE"^ext) ~doc)
-  in
-
-  let comp_cmd =
-    let doc = name ^ " Coq Compiler" in
-    let man = [
-      `S "DESCRIPTION";
-      `P desc;
-    ]
-    in
-
-    let open Sertop_arg in
-    Term.(const compfun $ comp_mode $ debug $ printer $ async $ prelude $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque ),
-    Term.info name ~version:comp_version ~doc ~man
-  in
-
-  try match Term.eval comp_cmd with
-    | `Error _ -> exit 1
-    | _        -> exit 0
-  with any ->
-    let (e, info) = CErrors.push any in
-    Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
-    exit 1
+let print_stats () =
+  Format.printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!"
+    stats.specs stats.proofs stats.misc

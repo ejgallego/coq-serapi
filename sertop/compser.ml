@@ -8,50 +8,36 @@
 (*         *     (see LICENSE file for the text of the license)         *)
 (************************************************************************)
 
-open Ser_vernacexpr
-open Sexplib
+(************************************************************************)
+(* Coq serialization API/Plugin                                         *)
+(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Written by: Emilio J. Gallego Arias / Karl Palmskog                  *)
+(************************************************************************)
+(* Status: Very Experimental                                            *)
+(************************************************************************)
 
-let compser mode debug printer async coq_path ml_path lp1 lp2 in_file omit_loc omit_att exn_on_opaque =
-
-  (* serlib initialization *)
-  Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
-
-  let open Sertop_init in
-
-  (* coq initialization *)
-  coq_init {
-    fb_handler   = (fun _ -> ());  (* XXXX *)
-    ml_load      = None;
-    debug;
-  };
-
-  (* document initialization *)
-  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ lp1 @ lp2 in
-  let doc, sid = Complib.create_from_file ~in_file ~async ~iload_path in
-
-  (* main loop *)
-  let in_chan = open_in in_file                          in
-  let pp_sexp = Sertop_ser.select_printer printer        in
-
+let parse_sexp ~mode ~pp ~doc ~sid in_chan =
   let stt = ref (doc, sid) in
-  let () = try
-    while true; do
+  try while true; do
       let line = input_line in_chan in
-      if String.trim line <> "" then begin
-        let vs = Sexp.of_string line in
-        let vrn = vernac_control_of_sexp vs in
-        let ast = CAst.make vrn in
-        stt := Complib.process_vernac ~mode ~pp:pp_sexp ~doc:(fst !stt) ~st:(snd !stt) ast
-      end
-    done
-  with End_of_file -> ()
-  in
-  let doc = fst !stt in
-  let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
-  Complib.close_document ~doc ~mode ~out_vo
+      if String.trim line <> "" then
+        let vs = Sexplib.Sexp.of_string line in
+        let ast = CAst.make Ser_vernacexpr.(vernac_control_of_sexp vs) in
+        stt := Sercomp_lib.process_vernac ~mode ~pp ~doc:(fst !stt) ~st:(snd !stt) ast
+    done;
+    fst !stt
+  with End_of_file -> fst !stt
+
+let compser ~mode ~pp ~in_file ~doc ~sid =
+
+  let in_chan = open_in in_file in
+
+  let doc = Sercomp_lib.coq_err_handler (parse_sexp ~mode ~pp ~doc ~sid) in_chan in
+  close_in in_chan;
+  doc
 
 let _ =
-  Complib.maincomp ~ext:".sexp" ~name:"compser"
+  Sercomp_lib.maincomp ~ext:".sexp" ~name:"compser"
     ~desc:"Experimental Coq Compiler with deserialization support."
     ~compfun:compser
 

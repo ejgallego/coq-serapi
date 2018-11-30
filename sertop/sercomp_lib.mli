@@ -19,11 +19,7 @@
 open Sexplib
 open Sertop_arg
 
-val create_from_file
-  :  in_file:string
-  -> async:string option
-  -> iload_path:Mltop.coq_path list
-  -> Stm.doc * Stateid.t
+val coq_err_handler : ('a -> 'b) -> 'a -> 'b
 
 val process_vernac
   :  mode:comp_mode
@@ -36,19 +32,16 @@ val process_vernac
 val close_document
   :  mode:comp_mode
   -> doc:Stm.doc
-  -> out_vo:string
+  -> in_file:string
   -> unit
 
 type compfun
-  =  comp_mode
-  -> bool
-  -> Sertop_ser.ser_printer
-  -> string option
-  -> string
-  -> Mltop.coq_path list
-  -> Mltop.coq_path list
-  -> Mltop.coq_path list
-  -> string -> bool -> bool -> bool -> unit
+  =  mode:Sertop_arg.comp_mode
+  -> pp:(Format.formatter -> Sexplib.Sexp.t -> unit)
+  -> in_file:string
+  -> doc:Stm.doc
+  -> sid:Stateid.t
+  -> Stm.doc
 
 val maincomp
   :  ext:string
