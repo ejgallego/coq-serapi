@@ -52,6 +52,12 @@
  (deps (:input fix.v))
  (action (run ./test_roundtrip %{input})))
 
+; Broken
+; (alias
+;  (name runtest)
+;  (deps (:input functional_induction.v))
+;  (action (run ./test_roundtrip %{input})))
+
 (alias
  (name runtest)
  (deps (:input functional_scheme.v))
