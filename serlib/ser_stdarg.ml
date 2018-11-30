@@ -133,21 +133,26 @@ let ser_wit_clause_dft_concl = Ser_genarg.{
   }
 
 let register () =
-  Ser_genarg.register_genser Stdarg.wit_unit ser_wit_unit;
-  Ser_genarg.register_genser Stdarg.wit_string ser_wit_string;
-  Ser_genarg.register_genser Stdarg.wit_int ser_wit_int;
+
   Ser_genarg.register_genser Stdarg.wit_bool ser_wit_bool;
-  Ser_genarg.register_genser Stdarg.wit_pre_ident ser_wit_pre_ident;
-  Ser_genarg.register_genser Stdarg.wit_int_or_var ser_wit_int_or_var;
-  Ser_genarg.register_genser Stdarg.wit_ident ser_wit_ident;
-  Ser_genarg.register_genser Stdarg.wit_var ser_wit_var;
-  Ser_genarg.register_genser Stdarg.wit_ref ser_wit_ref;
-  Ser_genarg.register_genser Stdarg.wit_sort_family ser_wit_sort_family;
-
-  Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
-  Ser_genarg.register_genser Stdarg.wit_uconstr ser_wit_uconstr;
-
-  Ser_genarg.register_genser Stdarg.wit_red_expr ser_wit_red_expr;
   Ser_genarg.register_genser Stdarg.wit_clause_dft_concl ser_wit_clause_dft_concl;
+  Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
+  Ser_genarg.register_genser Stdarg.wit_global ser_wit_ref;
+  Ser_genarg.register_genser Stdarg.wit_ident ser_wit_ident;
+  Ser_genarg.register_genser Stdarg.wit_int ser_wit_int;
+  Ser_genarg.register_genser Stdarg.wit_int_or_var ser_wit_int_or_var;
+  Ser_genarg.register_genser Stdarg.wit_integer ser_wit_int;
+  Ser_genarg.register_genser Stdarg.wit_open_constr ser_wit_constr;
+  Ser_genarg.register_genser Stdarg.wit_pre_ident ser_wit_pre_ident;
+  Ser_genarg.register_genser Stdarg.wit_preident ser_wit_pre_ident;
+  Ser_genarg.register_genser Stdarg.wit_red_expr ser_wit_red_expr;
+  Ser_genarg.register_genser Stdarg.wit_redexpr ser_wit_red_expr;
+  Ser_genarg.register_genser Stdarg.wit_ref ser_wit_ref;
+  Ser_genarg.register_genser Stdarg.wit_reference ser_wit_ref;
+  Ser_genarg.register_genser Stdarg.wit_sort_family ser_wit_sort_family;
+  Ser_genarg.register_genser Stdarg.wit_string ser_wit_string;
+  Ser_genarg.register_genser Stdarg.wit_uconstr ser_wit_uconstr;
+  Ser_genarg.register_genser Stdarg.wit_unit ser_wit_unit;
+  Ser_genarg.register_genser Stdarg.wit_var ser_wit_var;
 
   ()

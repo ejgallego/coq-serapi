@@ -398,28 +398,37 @@ let ser_wit_by_arg_tac :
     top_des = Sexplib.Conv.option_of_sexp Ser_geninterp.Val.t_of_sexp;
   }
 
+let ser_wit_retroknowledge_field = 
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = Ser_retroknowledge.sexp_of_field;
+    glb_ser = sexp_of_unit;
+    top_ser = sexp_of_unit;
+
+    raw_des = Ser_retroknowledge.field_of_sexp;
+    glb_des = unit_of_sexp;
+    top_des = unit_of_sexp;
+  }
+
 let register () =
 
-  Ser_genarg.register_genser Tacarg.wit_intropattern ser_wit_intropattern;
+  Ser_genarg.register_genser Tacarg.wit_bindings ser_wit_bindings;
+  Ser_genarg.register_genser Tacarg.wit_constr_with_bindings      ser_wit_constr_with_bindings;
+  Ser_genarg.register_genser Tacarg.wit_open_constr_with_bindings ser_wit_constr_with_bindings;
   Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
+  Ser_genarg.register_genser Tacarg.wit_intropattern  ser_wit_intropattern;
+  Ser_genarg.register_genser Tacarg.wit_intro_pattern ser_wit_intropattern;
+  Ser_genarg.register_genser Tacarg.wit_ltac ser_wit_ltac;
+  Ser_genarg.register_genser Tacarg.wit_quant_hyp ser_wit_quant_hyp;
+  Ser_genarg.register_genser Tacarg.wit_quantified_hypothesis ser_wit_quant_hyp;
   Ser_genarg.register_genser Tacarg.wit_tactic ser_wit_tactic;
 
-  Ser_genarg.register_genser Tacarg.wit_ltac   ser_wit_ltac;
-  Ser_genarg.register_genser Tacarg.wit_quant_hyp ser_wit_quant_hyp;
-
-  Ser_genarg.register_genser Tacarg.wit_bindings ser_wit_bindings;
-  Ser_genarg.register_genser Tacarg.wit_constr_with_bindings ser_wit_constr_with_bindings;
-
   Ser_genarg.register_genser G_ltac.wit_ltac_info ser_wit_ltac_info;
-
   Ser_genarg.register_genser G_ltac.wit_ltac_production_item ser_wit_production_item;
   Ser_genarg.register_genser G_ltac.wit_ltac_production_sep ser_wit_ltac_production_sep;
-
   Ser_genarg.register_genser G_ltac.wit_ltac_selector ser_wit_ltac_selector;
-
   Ser_genarg.register_genser G_ltac.wit_ltac_tacdef_body ser_wit_ltac_tacdef_body;
   Ser_genarg.register_genser G_ltac.wit_ltac_tactic_level ser_wit_ltac_tactic_level;
-
   Ser_genarg.register_genser G_ltac.wit_ltac_use_default ser_wit_ltac_use_default;
 
   Ser_genarg.register_genser G_auto.wit_auto_using ser_wit_auto_using;
@@ -437,14 +446,17 @@ let register () =
 
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
+  Ser_genarg.register_genser Extraargs.wit_by_arg_tac ser_wit_by_arg_tac;
+  Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr;
+  Ser_genarg.register_genser Extraargs.wit_glob ser_wit_lglob;
   Ser_genarg.register_genser Extraargs.wit_hloc ser_wit_hloc;
+  Ser_genarg.register_genser Extraargs.wit_in_clause ser_wit_in_clause;
+  Ser_genarg.register_genser Extraargs.wit_lconstr ser_wit_lconstr;
   Ser_genarg.register_genser Extraargs.wit_lglob ser_wit_lglob;
+  Ser_genarg.register_genser Extraargs.wit_natural ser_wit_natural;
   Ser_genarg.register_genser Extraargs.wit_orient ser_wit_orient;
   Ser_genarg.register_genser Extraargs.wit_rename ser_wit_rename;
-  Ser_genarg.register_genser Extraargs.wit_natural ser_wit_natural;
-  Ser_genarg.register_genser Extraargs.wit_lconstr ser_wit_lconstr;
-  Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr;
-  Ser_genarg.register_genser Extraargs.wit_in_clause ser_wit_in_clause;
+  Ser_genarg.register_genser Extraargs.wit_retroknowledge_field ser_wit_retroknowledge_field;
+  Ser_genarg.register_genser Extraargs.wit_test_lpar_id_colon Ser_genarg.(mk_uniform sexp_of_unit unit_of_sexp);
 
-  Ser_genarg.register_genser Extraargs.wit_by_arg_tac ser_wit_by_arg_tac;
   ()
