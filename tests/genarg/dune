@@ -62,11 +62,10 @@
  (deps (:input hint_rewrite.v))
  (action (run ./test_roundtrip %{input})))
 
-; Broken
-; (alias
-;  (name runtest)
-;  (deps (:input instantiate.v))
-;  (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input instantiate.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)

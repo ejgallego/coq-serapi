@@ -297,6 +297,46 @@ let ser_wit_withtac =
     (option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp)
 
 (* extraargs *)
+
+open Sexplib.Conv
+
+module Names = Ser_names
+module Locus = Ser_locus
+
+type 'a gen_place =
+  [%import: 'a Extraargs.gen_place]
+  [@@deriving sexp]
+
+type loc_place =
+  [%import: Extraargs.loc_place]
+  [@@deriving sexp]
+
+type place =
+  [%import: Extraargs.place]
+  [@@deriving sexp]
+
+let ser_wit_hloc =
+  Ser_genarg.{
+    raw_ser = sexp_of_loc_place
+  ; glb_ser = sexp_of_loc_place
+  ; top_ser = sexp_of_place
+
+  ; raw_des = loc_place_of_sexp
+  ; glb_des = loc_place_of_sexp
+  ; top_des = place_of_sexp
+  }
+
+let ser_wit_lglob =
+  Ser_genarg.{
+    raw_ser = Ser_constrexpr.sexp_of_constr_expr
+  ; glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr
+  ; top_ser = sexp_of_pair Ser_geninterp.sexp_of_interp_sign Ser_glob_term.sexp_of_glob_constr
+
+  ; raw_des = Ser_constrexpr.constr_expr_of_sexp
+  ; glb_des = Ser_genintern.glob_constr_and_expr_of_sexp
+  ; top_des = pair_of_sexp Ser_geninterp.interp_sign_of_sexp Ser_glob_term.glob_constr_of_sexp
+  }
+
 let ser_wit_orient =
   let open Sexplib.Conv in
   Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
@@ -397,6 +437,8 @@ let register () =
 
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
+  Ser_genarg.register_genser Extraargs.wit_hloc ser_wit_hloc;
+  Ser_genarg.register_genser Extraargs.wit_lglob ser_wit_lglob;
   Ser_genarg.register_genser Extraargs.wit_orient ser_wit_orient;
   Ser_genarg.register_genser Extraargs.wit_rename ser_wit_rename;
   Ser_genarg.register_genser Extraargs.wit_natural ser_wit_natural;
