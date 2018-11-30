@@ -72,8 +72,19 @@ let ser_wit_fun_scheme_arg :
     top_des = unit_of_sexp;
   }
 
+module Loc = Ser_loc
+module Vernacexpr = Ser_vernacexpr
+
+type function_rec_definition_loc_argtype =
+  [%import: G_indfun.function_rec_definition_loc_argtype]
+  [@@deriving sexp]
+
+let ser_wit_function_rec_definition_loc =
+  Ser_genarg.mk_uniform sexp_of_function_rec_definition_loc_argtype function_rec_definition_loc_argtype_of_sexp
+
 let register () =
   Ser_genarg.register_genser G_indfun.wit_with_names ser_wit_with_names;
   Ser_genarg.register_genser G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
   Ser_genarg.register_genser G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
+  Ser_genarg.register_genser G_indfun.wit_function_rec_definition_loc ser_wit_function_rec_definition_loc;
   ()
