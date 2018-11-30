@@ -12,6 +12,12 @@
    (bash "echo \"# $(md5sum ../../sertop/compser.exe)\" >> test_roundtrip")
    (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
 
+; Broken
+; (alias
+;  (name runtest)
+;  (deps (:input abstract.v))
+;  (action (run ./test_roundtrip %{input})))
+
 (alias
  (name runtest)
  (deps (:input add_field.v))
