@@ -24,7 +24,7 @@ let compfun ~in_file:_ ~in_chan ~process ~doc ~sid =
       if String.trim line <> "" then
         let sxp = Sexplib.Sexp.of_string line in
         let ast = Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp in
-        stt := process ~doc:(fst !stt) ~st:(snd !stt) ast
+        stt := process ~doc:(fst !stt) ~sid:(snd !stt) ast
     done;
     fst !stt
   with End_of_file -> fst !stt

@@ -33,8 +33,6 @@ let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~o
   (* document initialization *)
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
 
-  let open Sertop_init in
-
   let stm_options =
     { enable_async = async;
       async_full   = false;
@@ -44,13 +42,13 @@ let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~o
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file;
                require_libs = ["Coq.Init.Prelude", None, Some true];
                iload_path;
-               stm_options  = Sertop_init.process_stm_flags stm_options;
+               stm_options  = process_stm_flags stm_options;
                } in
   Stm.new_doc ndoc
 
-let process_vernac ~mode ~pp ~doc ~st ast =
+let process_vernac ~mode ~pp ~doc ~sid ast =
   let open Format in
-  let doc, n_st, tip = Stm.add ~doc ~ontop:st false ast in
+  let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
   if tip <> `NewTip then
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   let open Sertop_arg in
@@ -66,13 +64,19 @@ let process_vernac ~mode ~pp ~doc ~st ast =
   doc, n_st
 
 let fatal_error msg =
-  Topfmt.std_logger Feedback.Error msg;
+  Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   flush_all ();
   exit 1
 
+let fatal_exn exn info =
+  let loc = Loc.get_loc info in
+  let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
+                ++ CErrors.iprint (exn, info)) in
+  fatal_error msg
+
 let check_pending_proofs () =
   let pfs = Proof_global.get_all_proof_names () in
-  if not (CList.is_empty pfs) then
+  if not CList.(is_empty pfs) then
     fatal_error Pp.(
         seq
           [ str "There are pending proofs: "
@@ -96,15 +100,9 @@ let close_document ~mode ~doc ~in_file =
 (* Command line processing *)
 let comp_version = Ser_version.ser_git_version
 
-let pr_error exn info =
-  let loc = Loc.get_loc info in
-  Format.eprintf "Error: @[%a@]@\n%!"
-    Pp.pp_with Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
-                   ++ CErrors.iprint (exn, info))
-
 type procfun
   =  doc:Stm.doc
-  -> st:Stateid.t
+  -> sid:Stateid.t
   -> Vernacexpr.vernac_control CAst.t
   -> Stm.doc * Stateid.t
 
@@ -157,5 +155,4 @@ let maincomp ~ext ~name ~desc ~(compfun:compfun) =
     | _        -> exit 0
   with exn ->
     let (e, info) = CErrors.push exn in
-    pr_error e info;
-    exit 1
+    fatal_exn e info

@@ -24,7 +24,7 @@ let compfun ~in_file ~in_chan ~process ~doc ~sid =
   let stt = ref (doc, sid) in
   try while true do
       let east = Stm.parse_sentence ~doc:(fst !stt) (snd !stt) in_pa in
-      stt := process ~doc:(fst !stt) ~st:(snd !stt) east
+      stt := process ~doc:(fst !stt) ~sid:(snd !stt) east
     done;
     fst !stt
   with Stm.End_of_input -> fst !stt

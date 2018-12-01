@@ -18,7 +18,7 @@
 
 type procfun
   =  doc:Stm.doc
-  -> st:Stateid.t
+  -> sid:Stateid.t
   -> Vernacexpr.vernac_control CAst.t
   -> Stm.doc * Stateid.t
 
