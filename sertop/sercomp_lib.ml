@@ -16,16 +16,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let coq_err_handler f x =
-  try f x
-  with exn ->
-    let (e, info) = CErrors.push exn in
-    let loc = Loc.get_loc info in
-    Format.eprintf "Error: @[%a@]@\n%!"
-      Pp.pp_with Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
-                     ++ CErrors.(iprint (e, info)));
-    exit 1
-
 let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~omit_loc ~omit_att ~exn_on_opaque ~debug =
 
   (* serlib initialization *)
@@ -34,11 +24,11 @@ let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~o
   let open Sertop_init in
 
   (* coq initialization *)
-  coq_init {
-    fb_handler   = (fun _ -> ());  (* XXXX *)
-    ml_load      = None;
-    debug;
-  };
+  coq_init
+    { fb_handler = (fun _ -> ())  (* XXXX *)
+    ; ml_load    = None
+    ; debug
+    };
 
   (* document initialization *)
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
@@ -106,6 +96,12 @@ let close_document ~mode ~doc ~in_file =
 (* Command line processing *)
 let comp_version = Ser_version.ser_git_version
 
+let pr_error exn info =
+  let loc = Loc.get_loc info in
+  Format.eprintf "Error: @[%a@]@\n%!"
+    Pp.pp_with Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
+                   ++ CErrors.iprint (exn, info))
+
 type compfun
   =  mode:Sertop_arg.comp_mode
   -> pp:(Format.formatter -> Sexplib.Sexp.t -> unit)
@@ -147,10 +143,10 @@ let maincomp ~ext ~name ~desc ~(compfun:compfun) =
     Term.info name ~version:comp_version ~doc ~man
   in
 
-  try match Term.eval comp_cmd with
+  try match Term.eval ~catch:false comp_cmd with
     | `Error _ -> exit 1
     | _        -> exit 0
-  with any ->
-    let (e, info) = CErrors.push any in
-    Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
+  with exn ->
+    let (e, info) = CErrors.push exn in
+    pr_error e info;
     exit 1

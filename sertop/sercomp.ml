@@ -28,11 +28,10 @@ let parse_document ~mode ~pp ~doc sid in_pa =
 
 let sercomp ~mode ~pp ~in_file ~doc ~sid =
 
-  let in_chan = open_in in_file                          in
-  let in_strm = Stream.of_channel in_chan                in
+  let in_chan = open_in in_file in
+  let in_strm = Stream.of_channel in_chan in
   let in_pa   = Pcoq.Parsable.make ~file:(Loc.InFile in_file) in_strm in
-
-  let doc = Sercomp_lib.coq_err_handler (parse_document ~mode ~pp ~doc sid) in_pa in
+  let doc     = parse_document ~mode ~pp ~doc sid in_pa in
   close_in in_chan;
   doc
 

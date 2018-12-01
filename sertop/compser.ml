@@ -17,6 +17,7 @@
 (************************************************************************)
 
 let parse_sexp ~mode ~pp ~doc ~sid in_chan =
+
   let stt = ref (doc, sid) in
   try while true; do
       let line = input_line in_chan in
@@ -31,8 +32,7 @@ let parse_sexp ~mode ~pp ~doc ~sid in_chan =
 let compser ~mode ~pp ~in_file ~doc ~sid =
 
   let in_chan = open_in in_file in
-
-  let doc = Sercomp_lib.coq_err_handler (parse_sexp ~mode ~pp ~doc ~sid) in_chan in
+  let doc = parse_sexp ~mode ~pp ~doc ~sid in_chan in
   close_in in_chan;
   doc
 

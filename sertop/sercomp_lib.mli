@@ -19,8 +19,6 @@
 open Sexplib
 open Sertop_arg
 
-val coq_err_handler : ('a -> 'b) -> 'a -> 'b
-
 val process_vernac
   :  mode:comp_mode
   -> pp:(Format.formatter -> Sexp.t -> unit)
