@@ -16,6 +16,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+let fatal_error msg =
+  Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
+  exit 1
+
+let fatal_exn exn info =
+  let loc = Loc.get_loc info in
+  let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
+                ++ CErrors.iprint (exn, info)) in
+  fatal_error msg
+
 let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~omit_loc ~omit_att ~exn_on_opaque ~debug =
 
   (* serlib initialization *)
@@ -50,7 +60,7 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
   let open Format in
   let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
   if tip <> `NewTip then
-    (eprintf "Fatal Error, got no `NewTip`"; exit 1);
+    fatal_error Pp.(str "fatal, got no `NewTip`");
   let open Sertop_arg in
   let () = match mode with
     | C_vo    -> ()
@@ -63,25 +73,13 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
   in
   doc, n_st
 
-let fatal_error msg =
-  Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
-  flush_all ();
-  exit 1
-
-let fatal_exn exn info =
-  let loc = Loc.get_loc info in
-  let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
-                ++ CErrors.iprint (exn, info)) in
-  fatal_error msg
-
 let check_pending_proofs () =
   let pfs = Proof_global.get_all_proof_names () in
   if not CList.(is_empty pfs) then
-    fatal_error Pp.(
-        seq
-          [ str "There are pending proofs: "
-          ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print
-          ; str "."] )
+    let msg = let open Pp in
+      seq [ str "There are pending proofs: "
+          ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print; str "."] in
+    fatal_error msg
 
 let close_document ~mode ~doc ~in_file =
   let open Sertop_arg in
