@@ -25,24 +25,21 @@ module SP = Serapi_protocol
 (* Global Protocol Options                                                    *)
 (******************************************************************************)
 
-type ser_opts = {
-  (* Input output Options *)
-  in_chan  : in_channel;        (* Input/Output channels                      *)
-  out_chan : out_channel;
-                                (* Printers                                   *)
-  printer  : Sertop_ser.ser_printer;
+type ser_opts =
+{ in_chan  : in_channel          (* Input/Output channels                      *)
+; out_chan : out_channel
+                                 (* Printers                                   *)
+; printer  : Sertop_ser.ser_printer
 
-  debug    : bool;
-  print0   : bool;
-  lheader  : bool;              (* Print lenght header (deprecated)           *)
+; debug    : bool
+; print0   : bool
+; lheader  : bool                (* Print lenght header (deprecated)           *)
 
   (* Coq options *)
-  no_init  : bool;              (* Whether to create the initial document     *)
-  coq_path : string;            (* Coq standard library location *)
-  std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
-                                (* -R and -Q options                          *)
-  loadpath : Mltop.coq_path list;
-  async    : Sertop_init.async_flags;
+; no_init  : bool                (* Whether to create the initial document     *)
+
+; loadpath : Mltop.coq_path list (* From -R and -Q options usually *)
+; async    : Sertop_init.async_flags
 }
 
 (******************************************************************************)
@@ -117,8 +114,6 @@ let ser_loop ser_opts =
   let pp_opt  fb   = Sertop_util.feedback_opt_filter fb                in
   let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback fb)) (pp_opt fb) in
 
-  let coq_path = ser_opts.coq_path in
-
   (* Init Coq *)
   let _ = Sertop_init.(
       coq_init
@@ -134,13 +129,16 @@ let ser_loop ser_opts =
    *)
   Sys.catch_break true;
 
-  let sload_path = Serapi_paths.coq_loadpath_default ~implicit:ser_opts.std_impl ~coq_path @ ser_opts.loadpath in
+  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+  let iload_path = ser_opts.loadpath in
+  let stm_options = Sertop_init.process_stm_flags ser_opts.async in
+
   if not ser_opts.no_init then begin
     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
-    let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp;
-                 require_libs = ["Coq.Init.Prelude", None, Some true];
-                 iload_path   = sload_path;
-                 stm_options  = Sertop_init.process_stm_flags ser_opts.async;
+    let ndoc = { Stm.doc_type = Stm.Interactive sertop_dp
+               ; require_libs
+               ; iload_path
+               ; stm_options
                } in
     let _ = Stm.new_doc ndoc in
     ()

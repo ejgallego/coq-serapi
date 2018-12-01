@@ -20,29 +20,29 @@
 (* Global Protocol Options                                              *)
 (************************************************************************)
 
-type ser_opts = {
-  (* Input output Options *)
-  in_chan  : in_channel;        (* Input/Output channels                      *)
-  out_chan : out_channel;
-                                (* Printers                                   *)
-  printer  : Sertop_ser.ser_printer;
+type ser_opts =
+{ in_chan  : in_channel
+; out_chan : out_channel         (** Input/Output channels                    *)
 
-  debug    : bool;
-  print0   : bool;
-  lheader  : bool;              (* Print lenght header (deprecated)           *)
+; printer  : Sertop_ser.ser_printer
+                                 (** Printer type                             *)
 
-  (* Coq options *)
-  no_init  : bool;              (* Whether to create the initial document     *)
-  coq_path : string;            (* Coq standard library location              *)
-  std_impl : bool;              (* Whether the standard library should be loaded with implicit paths *)
-                                (* -R and -Q options                          *)
-  loadpath : Mltop.coq_path list; (* From -R and -Q options usually *)
-  async    : Sertop_init.async_flags;
+; debug    : bool                (** Enable Coq debug mode                    *)
+; print0   : bool                (** End every answer with [\0]               *)
+; lheader  : bool                (** Print lenght header (deprecated)         *)
+
+; no_init  : bool                (** Whether to create the initial document   *)
+
+(* Coq options *)
+; loadpath : Mltop.coq_path list (** From -R and -Q options usually           *)
+; async    : Sertop_init.async_flags
+                                 (** Async flags                              *)
 }
+(** Options for the sertop interactive toplevel                               *)
 
 (******************************************************************************)
 (* Input/Output -- Main Loop                                                  *)
 (******************************************************************************)
 
-(** [ser_loop opts] main se(xp)r-protocol loop *)
 val ser_loop : ser_opts -> unit
+(** [ser_loop opts] main se(xp)r-protocol interactive loop *)

@@ -26,7 +26,8 @@ let sertop printer print0 debug lheader coq_path ml_path no_init lp1 lp2 std_imp
 
   Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
 
-  let loadpath = ml_path @ lp1 @ lp2 in
+  let loadpath = Serapi_paths.coq_loadpath_default ~implicit:std_impl ~coq_path @
+                 ml_path @ lp1 @ lp2 in
 
   ser_loop
     {  in_chan  = stdin;
@@ -37,11 +38,8 @@ let sertop printer print0 debug lheader coq_path ml_path no_init lp1 lp2 std_imp
        print0;
        lheader;
 
-       coq_path;
-
        no_init;
        loadpath;
-       std_impl;
 
        async = {
          enable_async = async;

@@ -26,10 +26,7 @@ let fatal_exn exn info =
                 ++ CErrors.iprint (exn, info)) in
   fatal_error msg
 
-let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~omit_loc ~omit_att ~exn_on_opaque ~debug =
-
-  (* serlib initialization *)
-  Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
+let create_document ~in_file ~async ~iload_path ~debug =
 
   let open Sertop_init in
 
@@ -41,19 +38,21 @@ let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~o
     };
 
   (* document initialization *)
-  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
 
-  let stm_options =
-    { enable_async = async;
-      async_full   = false;
-      deep_edits   = false;
-    } in
+  let stm_options = process_stm_flags
+      { enable_async = async
+      ; async_full   = false
+      ; deep_edits   = false
+      } in
 
-  let ndoc = { Stm.doc_type = Stm.VoDoc in_file;
-               require_libs = ["Coq.Init.Prelude", None, Some true];
-               iload_path;
-               stm_options  = process_stm_flags stm_options;
-               } in
+  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+
+  let ndoc = { Stm.doc_type = Stm.VoDoc in_file
+             ; require_libs
+             ; iload_path
+             ; stm_options
+             } in
+
   Stm.new_doc ndoc
 
 let process_vernac ~mode ~pp ~doc ~sid ast =
@@ -116,14 +115,17 @@ open Cmdliner
 
 let driver fn mode debug printer async coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
+  (* closures *)
   let pp = Sertop_ser.select_printer printer in
-
   let process = process_vernac ~mode ~pp in
-  let doc, sid = create_document ~in_file ~async ~coq_path ~ml_path
-      ~load_path ~rload_path ~omit_loc ~omit_att ~exn_on_opaque ~debug in
 
+  (* initialization *)
+  Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
+  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+  let doc, sid = create_document ~in_file ~async ~iload_path ~debug in
+
+  (* main loop *)
   let in_chan = open_in in_file in
-
   let doc = fn ~in_file ~in_chan ~process ~doc ~sid in
   close_document ~mode ~doc ~in_file
 

@@ -16,24 +16,26 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type async_flags = {
-  enable_async : string option;
-  async_full   : bool;
-  deep_edits   : bool;
-}
+type async_flags =
+  { enable_async : string option
+  ; async_full   : bool
+  ; deep_edits   : bool
+  }
+(** SerAPI flags for asynchronous processing *)
 
 val process_stm_flags : async_flags -> Stm.AsyncOpts.stm_opt
+(** [process_stm_flags flags] transforms SerAPI flags into Coq flags *)
 
-type coq_opts = {
+type coq_opts =
+  { fb_handler   : Feedback.feedback -> unit
+  (** callback to handle async feedback *)
 
-  (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
+  ; ml_load      : (string -> unit) option
+  (** callback to load cma/cmo files    *)
 
-  (* callback to load cma/cmo files *)
-  ml_load      : (string -> unit) option;
-
-  (* Enable Coq Debug mode *)
-  debug        : bool;
+  ; debug        : bool
+  (** Enable Coq Debug mode             *)
 }
 
 val coq_init : coq_opts -> unit
+(** [coq_init opts] Initialize Coq. This doesn't create a Proof Document. *)

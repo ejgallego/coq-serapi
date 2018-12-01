@@ -17,4 +17,7 @@
 (************************************************************************)
 
 val do_stats    : Vernacexpr.vernac_control CAst.t -> unit
+(** [do_stats ast] update stats over processed Asts *)
+
 val print_stats : unit -> unit
+(** [print_stats ()] print stats to stdout *)
