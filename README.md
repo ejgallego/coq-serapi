@@ -220,26 +220,10 @@ With a bit more development effort, you can also:
 
 ### Developer/Users Mailing List ###
 
-SerApi development is discussed in the jsCoq mailing list, you can
-subscribe at: https://x80.org/cgi-bin/mailman/listinfo/jscoq
+SerApi development is main discussed in GitHub and in the Gitter
+channel. You can lso use the jsCoq mailing list, subscribe at:
+https://x80.org/cgi-bin/mailman/listinfo/jscoq
 
 The list archives should be also available at the Gmane group:
 `gmane.science.mathematics.logic.coq.jscoq`. You can post to the list
 using nntp.
-
-### Commit tag conventions [work in progress]:
-
-- [serlib]  : Serialization lib.
-- [test]    : Adding or modifying a test.
-- [sertop]  : Sexp Toplevel.
-- [doc]     : Documentation.
-- [build]   : Build system.
-- [misc]    : Code refactoring, miscellanenous
-- [proto]   : Core protocol.
-- [control] : STM protocol.
-- [query]   : Query protocol.
-- [parse]   : Parsing protocol.
-- [print]   : Printing protocol.
-- [js]      : Javascript version.
-
-We prefer signed commits.
