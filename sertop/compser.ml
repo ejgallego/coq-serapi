@@ -21,8 +21,8 @@ let parse_sexp ~mode ~pp ~doc ~sid in_chan =
   try while true; do
       let line = input_line in_chan in
       if String.trim line <> "" then
-        let vs = Sexplib.Sexp.of_string line in
-        let ast = CAst.make Ser_vernacexpr.(vernac_control_of_sexp vs) in
+        let sxp = Sexplib.Sexp.of_string line in
+        let ast = Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp in
         stt := Sercomp_lib.process_vernac ~mode ~pp ~doc:(fst !stt) ~st:(snd !stt) ast
     done;
     fst !stt

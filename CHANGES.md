@@ -21,6 +21,8 @@ _Version 0.6.0_:
              on init. (@ejgallego)
  * [sercomp] Allow compilers to output `.vo` (@ejgallego , suggested by
              @palmskog)
+ * [sercomp] Serialize top-level vernaculars with their syntactic
+             attributes (such as location) (@ejallego)
 
 _Version 0.5.7_:
 

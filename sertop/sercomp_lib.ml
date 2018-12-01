@@ -70,7 +70,8 @@ let process_vernac ~mode ~pp ~doc ~st (CAst.{loc;v=vrn} as ast) =
     | C_stats ->
       Sercomp_stats.do_stats ?loc vrn
     | C_sexp ->
-      printf "@[%a@]@\n%!" pp (Ser_vernacexpr.sexp_of_vernac_control vrn)
+      printf "@[%a@]@\n%!" pp
+        (Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
   in
   doc, n_st
 
