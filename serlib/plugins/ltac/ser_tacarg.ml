@@ -417,10 +417,10 @@ let register () =
   Ser_genarg.register_genser Tacarg.wit_open_constr_with_bindings ser_wit_constr_with_bindings;
   Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
   Ser_genarg.register_genser Tacarg.wit_intropattern  ser_wit_intropattern;
-  Ser_genarg.register_genser Tacarg.wit_intro_pattern ser_wit_intropattern;
+  (* Ser_genarg.register_genser Tacarg.wit_intro_pattern ser_wit_intropattern; *)
   Ser_genarg.register_genser Tacarg.wit_ltac ser_wit_ltac;
   Ser_genarg.register_genser Tacarg.wit_quant_hyp ser_wit_quant_hyp;
-  Ser_genarg.register_genser Tacarg.wit_quantified_hypothesis ser_wit_quant_hyp;
+  (* Ser_genarg.register_genser Tacarg.wit_quantified_hypothesis ser_wit_quant_hyp; *)
   Ser_genarg.register_genser Tacarg.wit_tactic ser_wit_tactic;
 
   Ser_genarg.register_genser G_ltac.wit_ltac_info ser_wit_ltac_info;
