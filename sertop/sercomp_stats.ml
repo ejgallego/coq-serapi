@@ -31,7 +31,7 @@ let stats =
 (* XXX: Move to sertop_stats.ml *)
 let do_stats =
   let proof_loc = ref None in
-  fun ?loc (vrn : Vernacexpr.vernac_control) ->
+  fun CAst.{ loc ; v = vrn } ->
   let open Vernacexpr in
   let incS ?loc f =
     Option.cata (fun loc ->

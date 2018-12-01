@@ -48,7 +48,7 @@ let create_document ~in_file ~async ~coq_path ~ml_path ~load_path ~rload_path ~o
                } in
   Stm.new_doc ndoc
 
-let process_vernac ~mode ~pp ~doc ~st (CAst.{loc;v=vrn} as ast) =
+let process_vernac ~mode ~pp ~doc ~st ast =
   let open Format in
   let doc, n_st, tip = Stm.add ~doc ~ontop:st false ast in
   if tip <> `NewTip then
@@ -58,7 +58,7 @@ let process_vernac ~mode ~pp ~doc ~st (CAst.{loc;v=vrn} as ast) =
     | C_vo    -> ()
     | C_parse -> ()
     | C_stats ->
-      Sercomp_stats.do_stats ?loc vrn
+      Sercomp_stats.do_stats ast
     | C_sexp ->
       printf "@[%a@]@\n%!" pp
         (Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)

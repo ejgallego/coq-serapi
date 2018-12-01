@@ -16,9 +16,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-val do_stats
-  :  ?loc:Loc.t
-  -> Vernacexpr.vernac_control
-  -> unit
-
+val do_stats    : Vernacexpr.vernac_control CAst.t -> unit
 val print_stats : unit -> unit
