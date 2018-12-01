@@ -19,18 +19,21 @@ module Ssrmatching_plugin = struct
   module Ssrmatching = Ser_ssrmatching
 end
 
-open Ssreflect_plugin
-
 module Ssrast = Ser_ssrast
 
+module Ssreflect_plugin = struct
+  module Ssrast = Ser_ssrast
+  module Ssrequality = Ssreflect_plugin.Ssrequality
+end
+
 type ssrwkind =
-  [%import: Ssrequality.ssrwkind]
+  [%import: Ssreflect_plugin.Ssrequality.ssrwkind]
   [@@deriving sexp]
 
 type ssrrule =
-  [%import: Ssrequality.ssrrule]
+  [%import: Ssreflect_plugin.Ssrequality.ssrrule]
   [@@deriving sexp]
 
 type ssrrwarg =
-  [%import: Ssrequality.ssrrwarg]
+  [%import: Ssreflect_plugin.Ssrequality.ssrrwarg]
   [@@deriving sexp]

@@ -1,4 +1,3 @@
-open Newring_plugin
 open Sexplib.Conv
 
 module CAst       = Ser_cAst
@@ -14,19 +13,19 @@ module Ltac_plugin = struct
 end
 
 type 'constr coeff_spec =
-  [%import: 'constr Newring_ast.coeff_spec]
+  [%import: 'constr Newring_plugin.Newring_ast.coeff_spec]
   [@@deriving sexp]
 
 type cst_tac_spec =
-  [%import: Newring_ast.cst_tac_spec]
+  [%import: Newring_plugin.Newring_ast.cst_tac_spec]
   [@@deriving sexp]
 
 type 'constr ring_mod =
-  [%import: 'constr Newring_ast.ring_mod]
+  [%import: 'constr Newring_plugin.Newring_ast.ring_mod]
   [@@deriving sexp]
 
 type 'a field_mod =
-  [%import: 'a Newring_ast.field_mod]
+  [%import: 'a Newring_plugin.Newring_ast.field_mod]
   [@@deriving sexp]
 
 let ser_wit_field_mod =
@@ -78,8 +77,9 @@ let ser_wit_ring_mods =
   }
 
 let register () =
-  Ser_genarg.register_genser G_newring.wit_field_mod  ser_wit_field_mod;
-  Ser_genarg.register_genser G_newring.wit_field_mods ser_wit_field_mods;
-  Ser_genarg.register_genser G_newring.wit_ring_mod  ser_wit_ring_mod;
-  Ser_genarg.register_genser G_newring.wit_ring_mods ser_wit_ring_mods;
+  Ser_genarg.register_genser Newring_plugin.G_newring.wit_field_mod  ser_wit_field_mod;
+  Ser_genarg.register_genser Newring_plugin.G_newring.wit_field_mods ser_wit_field_mods;
+  Ser_genarg.register_genser Newring_plugin.G_newring.wit_ring_mod  ser_wit_ring_mod;
+  Ser_genarg.register_genser Newring_plugin.G_newring.wit_ring_mods ser_wit_ring_mods;
   ()
+

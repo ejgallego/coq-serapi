@@ -16,7 +16,6 @@
 (************************************************************************)
 
 open Sexplib.Conv
-open Ssreflect_plugin
 
 module Ssrmatching = Ser_ssrmatching
 open Ssrmatching
@@ -26,10 +25,14 @@ module Ltac_plugin = struct
 end
 
 module Ssrast = Ser_ssrast
-module Ssrequality = Ser_ssrequality
+
+module Ssreflect_plugin = struct
+  module Ssrast = Ser_ssrast
+  module Ssrequality = Ser_ssrequality
+  module Ssrparser = Ssreflect_plugin.Ssrparser
+end
 
 open! Ssrast
-open! Ssrequality
 
 type t_movearg = (cpattern ssragens) ssrmovearg
 [@@deriving sexp]
@@ -43,7 +46,7 @@ let ser_wit_ssrapplyarg =
 let ser_wit_clauses =
   Ser_genarg.mk_uniform sexp_of_clauses clauses_of_sexp
 
-type t_rwarg = ssrrwarg list [@@deriving sexp]
+type t_rwarg = Ssreflect_plugin.Ssrequality.ssrrwarg list [@@deriving sexp]
 
 let ser_wit_ssrrwargs =
   Ser_genarg.mk_uniform sexp_of_t_rwarg t_rwarg_of_sexp
@@ -78,10 +81,10 @@ let ser_wit_ssrhavefwdwbinders =
   }
 
 let register () =
-  Ser_genarg.register_genser Ssrparser.wit_ssrcasearg  ser_wit_ssrmovearg;
-  Ser_genarg.register_genser Ssrparser.wit_ssrapplyarg ser_wit_ssrapplyarg;
-  Ser_genarg.register_genser Ssrparser.wit_ssrmovearg  ser_wit_ssrmovearg;
-  Ser_genarg.register_genser Ssrparser.wit_ssrclauses  ser_wit_clauses;
-  Ser_genarg.register_genser Ssrparser.wit_ssrrwargs   ser_wit_ssrrwargs;
-  Ser_genarg.register_genser Ssrparser.wit_ssrhavefwdwbinders ser_wit_ssrhavefwdwbinders;
+  Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrcasearg  ser_wit_ssrmovearg;
+  Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrapplyarg ser_wit_ssrapplyarg;
+  Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrmovearg  ser_wit_ssrmovearg;
+  Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrclauses  ser_wit_clauses;
+  Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrrwargs   ser_wit_ssrrwargs;
+  Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrhavefwdwbinders ser_wit_ssrhavefwdwbinders;
   ()

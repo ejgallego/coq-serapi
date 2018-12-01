@@ -1,4 +1,3 @@
-open Recdef_plugin
 open Sexplib.Conv
 
 module CAst       = Ser_cAst
@@ -76,7 +75,7 @@ module Loc = Ser_loc
 module Vernacexpr = Ser_vernacexpr
 
 type function_rec_definition_loc_argtype =
-  [%import: G_indfun.function_rec_definition_loc_argtype]
+  [%import: Recdef_plugin.G_indfun.function_rec_definition_loc_argtype]
   [@@deriving sexp]
 
 let ser_wit_function_rec_definition_loc =
@@ -95,10 +94,10 @@ let ser_wit_auto_using' =
   }
 
 let register () =
-  Ser_genarg.register_genser G_indfun.wit_auto_using' ser_wit_auto_using';
-  Ser_genarg.register_genser G_indfun.wit_constr_comma_sequence' ser_wit_auto_using';
-  Ser_genarg.register_genser G_indfun.wit_with_names ser_wit_with_names;
-  Ser_genarg.register_genser G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
-  Ser_genarg.register_genser G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
-  Ser_genarg.register_genser G_indfun.wit_function_rec_definition_loc ser_wit_function_rec_definition_loc;
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_auto_using' ser_wit_auto_using';
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_constr_comma_sequence' ser_wit_auto_using';
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_with_names ser_wit_with_names;
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_function_rec_definition_loc ser_wit_function_rec_definition_loc;
   ()
