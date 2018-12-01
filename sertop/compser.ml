@@ -34,7 +34,7 @@ let compser mode debug printer async coq_path ml_path lp1 lp2 in_file omit_loc o
   let pp_sexp = Sertop_ser.select_printer printer        in
 
   let stt = ref (doc, sid) in
-  try
+  let () = try
     while true; do
       let line = input_line in_chan in
       if String.trim line <> "" then begin
@@ -44,9 +44,11 @@ let compser mode debug printer async coq_path ml_path lp1 lp2 in_file omit_loc o
         stt := Complib.process_vernac ~mode ~pp:pp_sexp ~doc:(fst !stt) ~st:(snd !stt) ast
       end
     done
-  with End_of_file ->
-    let _ = Stm.finish ~doc:(fst !stt) in
-    close_in in_chan
+  with End_of_file -> ()
+  in
+  let doc = fst !stt in
+  let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
+  Complib.close_document ~doc ~mode ~out_vo
 
 let _ =
   Complib.maincomp ~ext:".sexp" ~name:"compser"

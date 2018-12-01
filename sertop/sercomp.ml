@@ -21,13 +21,14 @@ let parse_document ~mode pp ~doc sid in_pa =
   try while true do
       let east = Stm.parse_sentence ~doc:(fst !stt) (snd !stt) in_pa in
       stt := Complib.process_vernac ~mode ~pp ~doc:(fst !stt) ~st:(snd !stt) east
-    done
+    done;
+    fst !stt
   with any ->
-    let (e, _info) = CErrors.push any in
+    let (e, info) = CErrors.push any in
     match e with
-    | Stm.End_of_input -> ()
-    | any          ->
-      let (e, info) = CErrors.push any in
+    | Stm.End_of_input ->
+      fst !stt
+    | _any             ->
       Format.eprintf "Error: %a@\n%!" Pp.pp_with (CErrors.iprint (e, info));
       exit 1
     (* Format.eprintf "Error in parsing@\n%!" (\* XXX: add loc *\) *)
@@ -61,9 +62,10 @@ let sercomp mode debug printer async coq_path ml_path lp1 lp2 in_file omit_loc o
   let in_pa   = Pcoq.Parsable.make ~file:(Loc.InFile in_file) in_strm in
   let pp_sexp = Sertop_ser.select_printer printer        in
 
-  parse_document ~mode pp_sexp ~doc sid in_pa;
+  let doc = parse_document ~mode pp_sexp ~doc sid in_pa in
   close_in in_chan;
-  Complib.close_document ~mode
+  let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
+  Complib.close_document ~doc ~mode ~out_vo
 
 let _ =
   Complib.maincomp ~ext:".v" ~name:"sercomp"

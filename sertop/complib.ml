@@ -189,6 +189,7 @@ let process_vernac ~mode ~pp ~doc ~st (CAst.{loc;v=vrn} as ast) =
     (eprintf "Fatal Error, got no `NewTip`"; exit 1);
   let open Sertop_arg in
   let () = match mode with
+    | C_vo    -> ()
     | C_parse -> ()
     | C_stats ->
       do_stats ?loc vrn
@@ -197,10 +198,33 @@ let process_vernac ~mode ~pp ~doc ~st (CAst.{loc;v=vrn} as ast) =
   in
   doc, n_st
 
-let close_document ~mode =
-  if mode = Sertop_arg.C_stats then
+let fatal_error msg =
+  Topfmt.std_logger Feedback.Error msg;
+  flush_all ();
+  exit 1
+
+let check_pending_proofs () =
+  let pfs = Proof_global.get_all_proof_names () in
+  if not (CList.is_empty pfs) then
+    fatal_error Pp.(
+        seq
+          [ str "There are pending proofs: "
+          ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print
+          ; str "."] )
+
+let close_document ~mode ~doc ~out_vo =
+  let open Sertop_arg in
+  match mode with
+  | C_parse -> ()
+  | C_sexp  -> ()
+  | C_stats ->
     Format.printf "Statistics:@\nSpecs:  %d@\nProofs: %d@\nMisc:   %d@\n%!"
       stats.specs stats.proofs stats.misc
+  | C_vo ->
+    let _doc = Stm.join ~doc in
+    check_pending_proofs ();
+    let ldir = Stm.get_ldir ~doc in
+    Library.save_library_to ldir out_vo (Global.opaque_tables ())
 
 (* Command line processing *)
 let comp_version = Ser_version.ser_git_version

@@ -4,7 +4,13 @@
  (deps (:input test_roundtrip.in)
    ../../sertop/sercomp.exe
    ../../sertop/compser.exe)
- (action (copy test_roundtrip.in test_roundtrip)))
+ (action
+  (progn
+   (copy test_roundtrip.in test_roundtrip)
+   ; We insert the digest of the binaries to force a rebuild of the
+   ; test cases if the binaries have been modified.
+   (bash "echo \"# $(md5sum ../../sertop/compser.exe)\" >> test_roundtrip")
+   (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
 
 (alias
  (name runtest)
