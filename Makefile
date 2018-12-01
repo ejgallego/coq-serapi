@@ -19,6 +19,10 @@ test:
 	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	dune runtest
 
+doc:
+	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
+	dune build @doc-private
+
 #####################################################
 # Javascript support
 
