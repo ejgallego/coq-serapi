@@ -102,10 +102,16 @@ let pr_error exn info =
     Pp.pp_with Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
                    ++ CErrors.iprint (exn, info))
 
+type procfun
+  =  doc:Stm.doc
+  -> st:Stateid.t
+  -> Vernacexpr.vernac_control CAst.t
+  -> Stm.doc * Stateid.t
+
 type compfun
-  =  mode:Sertop_arg.comp_mode
-  -> pp:(Format.formatter -> Sexplib.Sexp.t -> unit)
-  -> in_file:string
+  =  in_file:string
+  -> in_chan:in_channel
+  -> process:procfun
   -> doc:Stm.doc
   -> sid:Stateid.t
   -> Stm.doc
@@ -116,10 +122,13 @@ let driver fn mode debug printer async coq_path ml_path load_path rload_path in_
 
   let pp = Sertop_ser.select_printer printer in
 
+  let process = process_vernac ~mode ~pp in
   let doc, sid = create_document ~in_file ~async ~coq_path ~ml_path
       ~load_path ~rload_path ~omit_loc ~omit_att ~exn_on_opaque ~debug in
 
-  let doc = fn ~mode ~pp ~in_file ~doc ~sid in
+  let in_chan = open_in in_file in
+
+  let doc = fn ~in_file ~in_chan ~process ~doc ~sid in
   close_document ~mode ~doc ~in_file
 
 let maincomp ~ext ~name ~desc ~(compfun:compfun) =

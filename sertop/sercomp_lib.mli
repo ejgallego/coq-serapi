@@ -16,27 +16,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-open Sertop_arg
-
-val process_vernac
-  :  mode:comp_mode
-  -> pp:(Format.formatter -> Sexp.t -> unit)
-  -> doc:Stm.doc
+type procfun
+  =  doc:Stm.doc
   -> st:Stateid.t
   -> Vernacexpr.vernac_control CAst.t
   -> Stm.doc * Stateid.t
 
-val close_document
-  :  mode:comp_mode
-  -> doc:Stm.doc
-  -> in_file:string
-  -> unit
-
 type compfun
-  =  mode:Sertop_arg.comp_mode
-  -> pp:(Format.formatter -> Sexplib.Sexp.t -> unit)
-  -> in_file:string
+  =  in_file:string
+  -> in_chan:in_channel
+  -> process:procfun
   -> doc:Stm.doc
   -> sid:Stateid.t
   -> Stm.doc

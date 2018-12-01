@@ -16,7 +16,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let parse_sexp ~mode ~pp ~doc ~sid in_chan =
+let compfun ~in_file:_ ~in_chan ~process ~doc ~sid =
 
   let stt = ref (doc, sid) in
   try while true; do
@@ -24,20 +24,12 @@ let parse_sexp ~mode ~pp ~doc ~sid in_chan =
       if String.trim line <> "" then
         let sxp = Sexplib.Sexp.of_string line in
         let ast = Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp in
-        stt := Sercomp_lib.process_vernac ~mode ~pp ~doc:(fst !stt) ~st:(snd !stt) ast
+        stt := process ~doc:(fst !stt) ~st:(snd !stt) ast
     done;
     fst !stt
   with End_of_file -> fst !stt
 
-let compser ~mode ~pp ~in_file ~doc ~sid =
-
-  let in_chan = open_in in_file in
-  let doc = parse_sexp ~mode ~pp ~doc ~sid in_chan in
-  close_in in_chan;
-  doc
-
 let _ =
   Sercomp_lib.maincomp ~ext:".sexp" ~name:"compser"
     ~desc:"Experimental Coq Compiler with deserialization support."
-    ~compfun:compser
-
+    ~compfun
