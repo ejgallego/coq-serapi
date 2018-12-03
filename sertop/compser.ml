@@ -21,10 +21,11 @@ let compfun ~in_file:_ ~in_chan ~process ~doc ~sid =
   let stt = ref (doc, sid) in
   try while true; do
       let line = input_line in_chan in
+      let doc, sid = !stt in
       if String.trim line <> "" then
         let sxp = Sexplib.Sexp.of_string line in
         let ast = Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp in
-        stt := process ~doc:(fst !stt) ~sid:(snd !stt) ast
+        stt := process ~doc ~sid ast
     done;
     fst !stt
   with End_of_file -> fst !stt

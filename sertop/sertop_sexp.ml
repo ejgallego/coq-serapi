@@ -115,7 +115,7 @@ let ser_loop ser_opts =
   let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback fb)) (pp_opt fb) in
 
   (* Init Coq *)
-  let _ = Sertop_init.(
+  let () = Sertop_init.(
       coq_init
         { fb_handler   = pp_feed
         ; ml_load      = None
