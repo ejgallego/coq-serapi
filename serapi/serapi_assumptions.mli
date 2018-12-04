@@ -10,17 +10,22 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* We ship our own type due to Context lack of support for anything
-   other than Constr.t *)
-type 'a hyp = (Names.Id.t list * 'a option * 'a)
-type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
+type ax_ctx = (Names.Label.t * Constr.rel_context * Constr.t) list
 
-(* Ready to make into a GADT *)
-val get_goals  : doc:Stm.doc -> Stateid.t -> Constr.t               reified_goal Proof.pre_goals option
-val get_egoals : doc:Stm.doc -> Stateid.t -> Constrexpr.constr_expr reified_goal Proof.pre_goals option
+type t =
+  { predicative : Declarations.set_predicativity
+  ; type_in_type : bool
+  ; vars   : (Names.Id.t * Constr.t) list
+  ; axioms : (Printer.axiom * Constr.t * ax_ctx) list
+  ; opaque : (Names.Constant.t * Constr.t) list
+  ; trans  : (Names.Constant.t * Constr.t) list
+  }
+
+val build : Environ.env -> Constr.t Printer.ContextObjectMap.t -> t
+val print : Environ.env -> Evd.evar_map -> t -> Pp.t

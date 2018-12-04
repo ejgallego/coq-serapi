@@ -134,6 +134,7 @@ type coq_object =
                     * Goal.goal list
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
+  | CoqAssumptions of Serapi_assumptions.t
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -183,8 +184,7 @@ let pp_richpp xml =
   Buffer.contents buf
 *)
 
-let gen_pp_obj (obj : coq_object) : Pp.t =
-  let sigma, env = Pfedit.get_current_context () in
+let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   match obj with
   | CoqString  s    -> Pp.str s
   | CoqSList   s    -> Pp.(pr_sequence str) s
@@ -218,25 +218,30 @@ let gen_pp_obj (obj : coq_object) : Pp.t =
   | CoqImplicit(_,l)-> Pp.pr_sequence pp_implicit l
   | CoqNotation ntn -> Pp.str (snd ntn)
   | CoqUnparsing _  -> Pp.str "FIXME Unparsing"
+  | CoqAssumptions a-> Serapi_assumptions.print env sigma a
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
 
-let str_pp_obj fmt (obj : coq_object)  =
-  Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj obj)
+let str_pp_obj env sigma fmt (obj : coq_object)  =
+  Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj env sigma obj)
 
 (** Print output format  *)
 type print_format =
   | PpSer
+  (** Output in serialized format [usually sexp but could be extended in the future] *)
   | PpStr
+  (** Output a string with a human-friendly representation *)
   | PpTex
+  (** Output a TeX expression *)
   | PpCoq
+  (** Output a TeX expression *)
   (* | PpRichpp *)
 
 (* register printer *)
 
 type print_opt = {
-  pp_format : print_format  [@default PpStr];
+  pp_format : print_format  [@default PpSer];
   pp_depth  : int           [@default 0];
   pp_elide  : string        [@default "..."];
   pp_margin : int           [@default 72];
@@ -264,11 +269,11 @@ let pp_tex (obj : coq_object) =
   | CoqAst(_,ast) -> sexp_of_vernac_control ast |> tex_sexp
   | _             -> "not supported"
 
-let obj_print pr_opt obj =
+let obj_print env sigma pr_opt obj =
   let open Format in
   match pr_opt.pp_format with
   | PpSer    -> obj
-  | PpCoq    -> CoqPp (gen_pp_obj obj)
+  | PpCoq    -> CoqPp (gen_pp_obj env sigma obj)
   | PpTex    -> CoqString (pp_tex obj)
   (* | PpRichpp -> CoqRichpp (Richpp.richpp_of_pp pr_opt.pp_margin (gen_pp_obj obj)) *)
   | PpStr ->
@@ -279,7 +284,7 @@ let obj_print pr_opt obj =
     pp_set_ellipsis_text str_formatter pr_opt.pp_elide;
     pp_set_margin        str_formatter pr_opt.pp_margin;
 
-    fprintf str_formatter "@[%a@]" str_pp_obj obj;
+    fprintf str_formatter "@[%a@]" (str_pp_obj env sigma) obj;
     let str_obj = CoqString (flush_str_formatter ())    in
 
     pp_set_max_boxes     str_formatter mb;
@@ -340,6 +345,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqUnparsing _  -> true
   | CoqExtGoal _    -> true
   | CoqProof _      -> true
+  | CoqAssumptions _-> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -372,6 +378,7 @@ type query_cmd =
   | Proof                          (* Return the proof object *)
   | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
   | Env                            (* Return the current global enviroment *)
+  | Assumptions of string          (* Return the assumptions of given identifier *)
 
 module QueryUtil = struct
 
@@ -457,28 +464,29 @@ module QueryUtil = struct
   let type_of_constant cb = cb.Declarations.const_type
 
   (* Definition of an inductive *)
-  let info_of_ind (sp, _) =
-    [CoqMInd (sp, Global.lookup_mind sp)], []
+  let info_of_ind env (sp, _) =
+    [CoqMInd (sp, Environ.lookup_mind sp env)], []
 
-  let info_of_const cr =
-    let cdef = Global.lookup_constant cr in
-    Option.cata (fun (cb,_uctx) -> [CoqConstr cb] ) [] (Global.body_of_constant cr),
+  let info_of_const env cr =
+    let cdef = Environ.lookup_constant cr env in
+    let cb = Environ.lookup_constant cr env in
+    Option.cata (fun (cb,_uctx) -> [CoqConstr cb] ) [] (Global.body_of_constant_body cb),
     [CoqConstr(type_of_constant cdef)]
 
-  let info_of_var vr =
-    let vdef = Global.lookup_named vr in
+  let info_of_var env vr =
+    let vdef = Environ.lookup_named vr env in
     Option.cata (fun cb -> [CoqConstr cb] ) [] (Context.Named.Declaration.get_value vdef),
     [CoqConstr(Context.Named.Declaration.get_type vdef)]
 
   (* XXX: Some work to do wrt Global.type_of_global_unsafe  *)
-  let info_of_constructor cr =
+  let info_of_constructor env cr =
     (* let cdef = Global.lookup_pinductive (cn, cu) in *)
-    let (ctype, _uctx) = Global.type_of_global_in_context (Global.env()) (Globnames.ConstructRef cr) in
+    let (ctype, _uctx) = Global.type_of_global_in_context env (Globnames.ConstructRef cr) in
     [],[CoqConstr ctype]
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
   (*                  definition        type                              *)
-  let info_of_id id : coq_object list * coq_object list =
+  let info_of_id env id : coq_object list * coq_object list =
     (* parse string to a qualified name                 *)
     let qid = Libnames.qualid_of_string id in
     (* try locate the kind of object the name refers to *)
@@ -487,18 +495,31 @@ module QueryUtil = struct
       (* dispatch based on type *)
       let open Globnames in
       match lid with
-      | VarRef        vr -> info_of_var vr
-      | ConstRef      cr -> info_of_const cr
-      | IndRef        ir -> info_of_ind ir
-      | ConstructRef  cr -> info_of_constructor cr
+      | VarRef        vr -> info_of_var env vr
+      | ConstRef      cr -> info_of_const env cr
+      | IndRef        ir -> info_of_ind env ir
+      | ConstructRef  cr -> info_of_constructor env cr
     with _ -> [],[]
+
+  let assumptions env id =
+
+    let qid = Libnames.qualid_of_string id in
+
+    let smart_global r =
+      let gr = Nametab.locate r in
+      Dumpglob.add_glob ?loc:r.loc gr;
+      gr
+    in
+    let gr = smart_global qid in
+    let cstr = Globnames.printable_constr_of_global gr in
+    let st = Conv_oracle.get_transp_state (Environ.oracle env) in
+    let nassums =
+      Assumptions.assumptions st ~add_opaque:true ~add_transparent:true gr cstr in
+    Serapi_assumptions.build env nassums
 
 end
 
-let doc_id = ref 0
-
-let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
-  let doc = Stm.get_doc !doc_id in
+let obj_query ~doc env (opt : query_opt) (cmd : query_cmd) : coq_object list =
   match cmd with
   | Option         -> let table = Goptions.get_tables ()            in
                       let opts  = Goptions.OptionMap.bindings table in
@@ -525,14 +546,16 @@ let obj_query (opt : query_opt) (cmd : query_cmd) : coq_object list =
                       with _exn -> []
                       end
   | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
-  | Definition id  -> fst (QueryUtil.info_of_id id)
-  | TypeOf id      -> snd (QueryUtil.info_of_id id)
+  | Definition id  -> fst (QueryUtil.info_of_id env id)
+  | TypeOf id      -> snd (QueryUtil.info_of_id env id)
   | Search         -> [CoqString "Not Implemented"]
   (* XXX: should set printing options in all queries *)
   | Vernac q       -> let pa = Pcoq.Parsable.make (Stream.of_string q) in
                       Stm.query ~doc ~at:opt.sid ~route:opt.route pa; []
   (* XXX: Should set the proper sid state *)
-  | Env            -> [CoqEnv Global.(env ())]
+  | Env            -> [CoqEnv env]
+  | Assumptions id ->
+    [CoqAssumptions QueryUtil.(assumptions env id)]
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
@@ -549,12 +572,32 @@ let obj_limit limit objs =
   | Some n -> take n objs
 
 (* XXX: Need to protect queries... sad *)
+let doc_id = ref 0
+
+(* XXX: Needs to take into account possibly local proof state *)
+let context_of_st m = match m with
+  | `Valid (Some st) ->
+    begin try
+        Pfedit.get_current_context ~p:(Proof_global.proof_of_state st.Vernacstate.proof) ()
+      with Proof_global.NoCurrentProof ->
+        Pfedit.get_current_context ()
+    end
+    (* let pstate = st.Vernacstate.proof in *)
+    (* let summary = States.summary_of_state st.Vernacstate.system in
+     * Safe_typing.env_of_safe_env Summary.(project_from_summary summary Global.global_env_summary_tag) *)
+  | _ ->
+    let env = Global.env () in Evd.from_env env, env
+
 let exec_query opt cmd =
-  let res = obj_query opt cmd        in
+  let doc = Stm.get_doc !doc_id in
+  let st = Stm.state_of_id ~doc opt.sid in
+  let sigma, env = context_of_st st in
+
+  let res = obj_query ~doc env opt cmd in
   (* XXX: Filter should move to query once we have GADT *)
   let res = obj_filter opt.preds res in
   let res = obj_limit  opt.limit res in
-  List.map (obj_print opt.pp) res
+  List.map ((obj_print env sigma) opt.pp) res
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
@@ -751,7 +794,10 @@ let exec_cmd (cmd : cmd) =
   | Cancel st    -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) st
   | Exec st      -> ignore(Stm.observe ~doc st); []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
-  | Print(opts, obj)  -> [ObjList [obj_print opts obj]]
+  (* XXX: Print needs context / sid information *)
+  | Print(opts, obj)  ->
+    let sigma, env = Pfedit.get_current_context () in
+    [ObjList [obj_print env sigma opts obj]]
   | Join              -> ignore(Stm.join ~doc); []
   | Finish            -> ignore(Stm.finish ~doc); []
   (*  *)

@@ -101,6 +101,7 @@ module Ppextend   = Ser_ppextend
 module Notation_gram = Ser_notation_gram
 module Genarg     = Ser_genarg
 module Mltop      = Ser_mltop
+module Printer    = Ser_printer
 
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)
@@ -129,6 +130,16 @@ module Serapi_goals = struct
     [%import: 'a Serapi_goals.reified_goal]
     [@@deriving sexp]
 
+end
+
+module Serapi_assumptions = struct
+type ax_ctx =
+  [%import: Serapi_assumptions.ax_ctx]
+  [@@deriving sexp]
+
+type t =
+  [%import: Serapi_assumptions.t]
+  [@@deriving sexp]
 end
 
 (* Serialization to sexp *)
