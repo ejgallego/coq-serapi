@@ -22,6 +22,7 @@
  * [sertop]  Fix backtrace printing when using `--debug` (@ejgallego)
  * [serlib ] Don't serialize VM values (@ejgallego, bug report by @palmskog)
  * [serapi ] Output location on tokenization (@ejgallego , idea by @palmskog)
+ * [serapi ] Add basic documentation of the protocol (@ejgallego cc #109)
 
 ## Version 0.6.0:
 
