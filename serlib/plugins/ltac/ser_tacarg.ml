@@ -398,7 +398,7 @@ let ser_wit_by_arg_tac :
     top_des = Sexplib.Conv.option_of_sexp Ser_geninterp.Val.t_of_sexp;
   }
 
-let ser_wit_retroknowledge_field = 
+let ser_wit_retroknowledge_field =
   let open Sexplib.Conv in
   Ser_genarg.{
     raw_ser = Ser_retroknowledge.sexp_of_field;
@@ -408,6 +408,18 @@ let ser_wit_retroknowledge_field =
     raw_des = Ser_retroknowledge.field_of_sexp;
     glb_des = unit_of_sexp;
     top_des = unit_of_sexp;
+  }
+
+let ser_wit_occurences =
+  let open Sexplib.Conv in
+  Ser_genarg.{
+    raw_ser = Ser_locus.sexp_of_or_var (sexp_of_list sexp_of_int);
+    glb_ser = Ser_locus.sexp_of_or_var (sexp_of_list sexp_of_int);
+    top_ser = sexp_of_list sexp_of_int;
+
+    raw_des = Ser_locus.or_var_of_sexp (list_of_sexp int_of_sexp);
+    glb_des = Ser_locus.or_var_of_sexp (list_of_sexp int_of_sexp);
+    top_des = list_of_sexp int_of_sexp;
   }
 
 let register () =
@@ -455,6 +467,7 @@ let register () =
   Ser_genarg.register_genser Extraargs.wit_lglob ser_wit_lglob;
   Ser_genarg.register_genser Extraargs.wit_natural ser_wit_natural;
   Ser_genarg.register_genser Extraargs.wit_orient ser_wit_orient;
+  Ser_genarg.register_genser Extraargs.wit_occurrences ser_wit_occurences;
   Ser_genarg.register_genser Extraargs.wit_rename ser_wit_rename;
   Ser_genarg.register_genser Extraargs.wit_retroknowledge_field ser_wit_retroknowledge_field;
   Ser_genarg.register_genser Extraargs.wit_test_lpar_id_colon Ser_genarg.(mk_uniform sexp_of_unit unit_of_sexp);
