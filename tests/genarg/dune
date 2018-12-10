@@ -108,6 +108,12 @@
  (deps (:input revert.v))
  (action (run ./test_roundtrip %{input})))
 
+; Broken
+; (alias
+;  (name runtest)
+;  (deps (:input setoid_rewrite.v))
+;  (action (run ./test_roundtrip %{input})))
+
 (alias
  (name runtest)
  (deps (:input specialize.v))
