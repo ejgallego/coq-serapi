@@ -31,7 +31,10 @@ let map_serlib ml_mod =
     (* Supported *)
     | "ground_plugin"
     | "recdef_plugin"
-    | "newring_plugin" -> true
+    | "newring_plugin"
+    | "ssrmatching_plugin"
+    | "ssreflect_plugin"
+      -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
       false

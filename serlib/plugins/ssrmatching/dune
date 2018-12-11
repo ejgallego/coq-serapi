@@ -1,6 +1,6 @@
 (library
  (name serlib_ssrmatching)
- ; (public_name coq-serapi.serlib.ssrmatching)
+ (public_name coq-serapi.serlib.ssrmatching_plugin)
  (wrapped false)
  (synopsis "Serialization Library for Coq [SSR Matching plugin]")
  (preprocess (staged_pps ppx_import ppx_sexp_conv))

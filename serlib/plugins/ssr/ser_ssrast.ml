@@ -161,6 +161,10 @@ type 'tac fwdbinders =
   [%import: 'tac Ssrast.fwdbinders]
   [@@deriving sexp]
 
+type 'tac ffwbinders =
+  [%import: 'tac Ssrast.ffwbinders]
+  [@@deriving sexp]
+
 type clause =
   [%import: Ssrast.clause]
   [@@deriving sexp]
