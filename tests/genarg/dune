@@ -17,6 +17,12 @@
  (deps (:input add_field.v))
  (action (run ./test_roundtrip %{input})))
 
+; Broken
+; (alias
+;  (name runtest)
+;  (deps (:input assoc.v))
+;  (action (run ./test_roundtrip %{input})))
+
 (alias
  (name runtest)
  (deps (:input auto.v))
