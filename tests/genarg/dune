@@ -35,6 +35,11 @@
 
 (alias
  (name runtest)
+ (deps (:input case.v))
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
  (deps (:input clear.v))
  (action (run ./test_roundtrip %{input})))
 
@@ -108,6 +113,11 @@
 ;  (name runtest)
 ;  (deps (:input move.v))
 ;  (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input move.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)

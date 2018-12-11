@@ -3,6 +3,8 @@
  * [general] support Coq 8.10,
  * [serapi] `Goals` query return type has been modified due to
              upstream changes. (@ejgallego)
+ * [serlib]  Complete (hopefully) serialization for ssreflect ASTs.
+             (#73 @ejgallego)
 
 ## Version 0.6.1:
 

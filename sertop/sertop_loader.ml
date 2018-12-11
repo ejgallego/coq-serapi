@@ -29,9 +29,14 @@ let map_serlib ml_mod =
     | "ltac_plugin"
     | "tauto_plugin" -> false
     (* Supported *)
+    | "firstorder_plugin"
     | "ground_plugin"
     | "recdef_plugin"
-    | "setoid_ring_plugin" -> true
+    | "setoid_ring_plugin"
+    | "newring_plugin"
+    | "ssrmatching_plugin"
+    | "ssreflect_plugin"
+      -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
       false

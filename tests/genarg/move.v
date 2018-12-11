@@ -4,12 +4,12 @@ Set Implicit Arguments.
 Unset Strict Implicit.
 Unset Printing Implicit Defensive.
 
-Module Ordered. 
+Module Ordered.
 
 Section RawMixin.
 
-Structure mixin_of (T : eqType) := 
-  Mixin {ordering : rel T; 
+Structure mixin_of (T : eqType) :=
+  Mixin {ordering : rel T;
          _ : irreflexive ordering;
          _ : transitive ordering;
         }.
@@ -18,7 +18,7 @@ End RawMixin.
 Section ClassDef.
 
 Record class_of (T : Type) := Class {
-   base : Equality.class_of T; 
+   base : Equality.class_of T;
    mixin : mixin_of (Equality.Pack base T)}.
 
 Local Coercion base : class_of >-> Equality.class_of.
@@ -29,7 +29,7 @@ Local Coercion sort : type >-> Sortclass.
 Variables (T : Type) (cT : type).
 Definition class := let: Pack _ c as cT' := cT return class_of cT' in c.
 
-Definition pack b (m0 : mixin_of (EqType T b)) := 
+Definition pack b (m0 : mixin_of (EqType T b)) :=
   fun m & phant_id m0 m => Pack (@Class T b m).
 
 Definition eqType := Equality.Pack class cT.
@@ -53,15 +53,15 @@ Section Lemmas.
 Variable T : ordType.
 Implicit Types x y : T.
 
-Variable trans : transitive (@ord T). 
+Variable trans : transitive (@ord T).
 
 Lemma otrans : transitive (@oleq T).
 Proof.
-move=>x y z /=. 
+move=>x y z /=.
 case/orP; last by move/eqP=>->.
 rewrite /oleq; move=>T1.
 case/orP; first by move/(trans T1)=>->.
-by move/eqP=><-; rewrite T1. 
+by move/eqP=><-; rewrite T1.
 Qed.
 
 End Lemmas.
