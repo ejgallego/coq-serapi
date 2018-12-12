@@ -25,6 +25,9 @@ _Version 0.6.0_:
              attributes (such as location) (@ejallego)
  * [serapi]  Add `Assumptions` query, at the suggestion of @Armael
              (@ejgallego)
+ * [sercomp] Disable error resilience mode in compilers; semantics are
+             a bit dubious see coq/coq#9204 also #94.
+             (@ejgallego, report by @palmskog)
 
 _Version 0.5.7_:
 

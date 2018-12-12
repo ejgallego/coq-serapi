@@ -45,6 +45,13 @@ let create_document ~in_file ~async ~iload_path ~debug =
       ; deep_edits   = false
       } in
 
+  (* Disable due to https://github.com/ejgallego/coq-serapi/pull/94 *)
+  let stm_options =
+    { stm_options with
+      async_proofs_tac_error_resilience = `None
+    ; async_proofs_cmd_error_resilience = false
+    } in
+
   let require_libs = ["Coq.Init.Prelude", None, Some false] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
