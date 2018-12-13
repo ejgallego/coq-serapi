@@ -118,20 +118,22 @@ let exn_on_opaque : bool Term.t =
   Arg.(value & flag & info ["exn_on_opaque"] ~doc)
 
 (* sertop options *)
-type comp_mode = | C_parse | C_stats | C_sexp | C_vo
+type comp_mode = | C_parse | C_stats | C_sexp | C_check | C_vo
 
 let comp_mode_args =
   Arg.(enum
          [ "parse", C_parse
          ; "stats", C_stats
          ; "sexp",  C_sexp
+         ; "check", C_check
          ; "vo",    C_vo])
 
 let comp_mode_doc = Arg.doc_alts
   [ "parse: parse the file and remain silent (except for Coq output)"
   ; "stats: output stats on the input file"
   ;  "sexp: output serialized version of the input file"
-  ;    "vo: output .vo version of the input file"
+  ; "check: check proofs in the file and remain silent (except for Coq output)"
+  ;    "vo: check proofs and output .vo version of the input file"
   ]
 
 let comp_mode =

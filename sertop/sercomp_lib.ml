@@ -70,6 +70,7 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
   let open Sertop_arg in
   let () = match mode with
     | C_vo    -> ()
+    | C_check -> ()
     | C_parse -> ()
     | C_stats ->
       Sercomp_stats.do_stats ast
@@ -94,6 +95,9 @@ let close_document ~mode ~doc ~in_file =
   | C_sexp  -> ()
   | C_stats ->
     Sercomp_stats.print_stats ()
+  | C_check ->
+    let _doc = Stm.join ~doc in
+    check_pending_proofs ()
   | C_vo ->
     let _doc = Stm.join ~doc in
     check_pending_proofs ();
