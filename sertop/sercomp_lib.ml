@@ -26,7 +26,7 @@ let fatal_exn exn info =
                 ++ CErrors.iprint (exn, info)) in
   fatal_error msg
 
-let create_document ~in_file ~async ~iload_path ~debug =
+let create_document ~in_file ~async ~quick ~iload_path ~debug =
 
   let open Sertop_init in
 
@@ -51,6 +51,12 @@ let create_document ~in_file ~async ~iload_path ~debug =
       async_proofs_tac_error_resilience = `None
     ; async_proofs_cmd_error_resilience = false
     } in
+
+  let stm_options =
+    if quick
+    then { stm_options with async_proofs_mode = APonLazy }
+    else stm_options
+  in
 
   let require_libs = ["Coq.Init.Prelude", None, Some false] in
 
@@ -124,7 +130,7 @@ type compfun
 
 open Cmdliner
 
-let driver fn mode debug printer async coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
+let driver fn mode debug printer async quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop_ser.select_printer printer in
@@ -133,7 +139,7 @@ let driver fn mode debug printer async coq_path ml_path load_path rload_path in_
   (* initialization *)
   Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~in_file ~async ~iload_path ~debug in
+  let doc, sid = create_document ~in_file ~async ~quick ~iload_path ~debug in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -155,7 +161,7 @@ let maincomp ~ext ~name ~desc ~(compfun:compfun) =
     in
     let open Sertop_arg in
     Term.(const (driver compfun)
-          $ comp_mode $ debug $ printer $ async $ prelude
+          $ comp_mode $ debug $ printer $ async $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info name ~version:comp_version ~doc ~man

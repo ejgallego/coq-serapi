@@ -27,6 +27,10 @@ let async =
   let doc = "Enable async support using Coq binary $(docv) (experimental)." in
   Arg.(value & opt (some string) None & info ["async"] ~doc ~docv:"COQTOP")
 
+let quick =
+  let doc = "Skip checking opaque proofs (very experimental)." in
+  Arg.(value & flag & info ["quick"] ~doc)
+
 let async_full =
   let doc = "Enable Coq's async_full option." in
   Arg.(value & flag & info ["async-full"] ~doc)

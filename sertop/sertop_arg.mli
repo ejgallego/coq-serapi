@@ -20,6 +20,7 @@ open Cmdliner
 
 val prelude         : string Term.t
 val async           : string option Term.t
+val quick           : bool Term.t
 val async_full      : bool Term.t
 val deep_edits      : bool Term.t
 val implicit_stdlib : bool Term.t

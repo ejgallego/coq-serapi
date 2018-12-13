@@ -30,6 +30,8 @@ _Version 0.6.0_:
              (@ejgallego, report by @palmskog)
  * [sercomp] Add `check` mode to compilers to check all proofs without
              outputting `.vo`. (@palmskog)
+ * [sercomp] Add "hacky" `--quick` option to skip checking of opaque
+             proofs. (@ejgallego, request by @palmskog)
 
 _Version 0.5.7_:
 
