@@ -39,6 +39,10 @@ let deep_edits =
   let doc = "Enable Coq's deep document edits option." in
   Arg.(value & flag & info ["deep-edits"] ~doc)
 
+let async_workers =
+  let doc = "Maximum number of async workers." in
+  Arg.(value & opt int 3 & info ["async-workers"] ~doc)
+
 let implicit_stdlib =
   let doc = "Allow loading unqualified stdlib libraries (deprecated)." in
   Arg.(value & flag & info ["implicit"] ~doc)
