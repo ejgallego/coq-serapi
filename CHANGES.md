@@ -28,6 +28,8 @@ _Version 0.6.0_:
  * [sercomp] Disable error resilience mode in compilers; semantics are
              a bit dubious see coq/coq#9204 also #94.
              (@ejgallego, report by @palmskog)
+ * [sercomp] Add `check` mode to compilers to check all proofs without
+             outputting `.vo`. (@palmskog)
 
 _Version 0.5.7_:
 
