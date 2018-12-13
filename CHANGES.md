@@ -32,6 +32,8 @@ _Version 0.6.0_:
              outputting `.vo`. (@palmskog)
  * [sercomp] Add "hacky" `--quick` option to skip checking of opaque
              proofs. (@ejgallego, request by @palmskog)
+ * [sercomp] Add `--async_workers` option to set maximum number
+             of parallel async workers. (@palmskog)
 
 _Version 0.5.7_:
 

@@ -26,7 +26,7 @@ let fatal_exn exn info =
                 ++ CErrors.iprint (exn, info)) in
   fatal_error msg
 
-let create_document ~in_file ~async ~quick ~iload_path ~debug =
+let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let open Sertop_init in
 
@@ -40,9 +40,10 @@ let create_document ~in_file ~async ~quick ~iload_path ~debug =
   (* document initialization *)
 
   let stm_options = process_stm_flags
-      { enable_async = async
-      ; async_full   = false
-      ; deep_edits   = false
+      { enable_async  = async
+      ; async_full    = false
+      ; deep_edits    = false
+      ; async_workers = async_workers
       } in
 
   (* Disable due to https://github.com/ejgallego/coq-serapi/pull/94 *)
@@ -130,7 +131,7 @@ type compfun
 
 open Cmdliner
 
-let driver fn mode debug printer async quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
+let driver fn mode debug printer async async_workers quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop_ser.select_printer printer in
@@ -139,7 +140,7 @@ let driver fn mode debug printer async quick coq_path ml_path load_path rload_pa
   (* initialization *)
   Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~in_file ~async ~quick ~iload_path ~debug in
+  let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -161,7 +162,7 @@ let maincomp ~ext ~name ~desc ~(compfun:compfun) =
     in
     let open Sertop_arg in
     Term.(const (driver compfun)
-          $ comp_mode $ debug $ printer $ async $ quick $ prelude
+          $ comp_mode $ debug $ printer $ async $ async_workers $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info name ~version:comp_version ~doc ~man

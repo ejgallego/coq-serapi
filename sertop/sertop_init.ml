@@ -17,9 +17,10 @@
 
 (* Init options for coq *)
 type async_flags = {
-  enable_async : string option;
-  async_full   : bool;
-  deep_edits   : bool;
+  enable_async  : string option;
+  async_full    : bool;
+  deep_edits    : bool;
+  async_workers : int;
 }
 
 type coq_opts = {
@@ -104,8 +105,8 @@ let process_stm_flags opts = Option.cata (fun coqtop ->
         (* Imitate CoqIDE *)
         async_proofs_full = opts.async_full;
         async_proofs_never_reopen_branch = not opts.deep_edits;
-        async_proofs_n_workers    = 3;
-        async_proofs_n_tacworkers = 3;
+        async_proofs_n_workers    = opts.async_workers;
+        async_proofs_n_tacworkers = opts.async_workers;
       } in
     (* async_proofs_worker_priority); *)
     AsyncTaskQueue.async_proofs_flags_for_workers := [dump_opt];
