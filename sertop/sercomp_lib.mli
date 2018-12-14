@@ -48,6 +48,6 @@ type compfun
 val maincomp
   :  ext:string
   -> name:string
-  -> desc:string
+  -> man:Cmdliner.Manpage.block list
   -> compfun:compfun
   -> unit

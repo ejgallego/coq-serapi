@@ -31,6 +31,13 @@ let compfun ~in_file:_ ~in_chan ~process ~doc ~sid =
   with End_of_file -> fst !stt
 
 let _ =
-  Sercomp_lib.maincomp ~ext:".sexp" ~name:"compser"
-    ~desc:"Experimental Coq Compiler with deserialization support."
-    ~compfun
+  let man = [
+    `S "DESCRIPTION";
+    `P "Experimental Coq compiler with deserialization support.";
+    `S "USAGE";
+    `P "To deserialize and check `fun.sexp` in directory `fs` with path `Funs`:";
+    `Pre "compser -Q fs,Funs --mode=check fs/fun.sexp";
+    `P "See the documentation on the project's webpage for more information"
+  ]
+  in
+  Sercomp_lib.maincomp ~ext:".sexp" ~name:"compser" ~man ~compfun
