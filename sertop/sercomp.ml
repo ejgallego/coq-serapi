@@ -31,6 +31,13 @@ let compfun ~in_file ~in_chan ~process ~doc ~sid =
   with Stm.End_of_input -> fst !stt
 
 let _ =
-  Sercomp_lib.maincomp ~ext:".v" ~name:"sercomp"
-    ~desc:"Experimental Coq Compiler with serialization support."
-    ~compfun
+  let man = [
+    `S "DESCRIPTION";
+    `P "Experimental Coq compiler with serialization support.";
+    `S "USAGE";
+    `P "To serialize `fun.v` in directory `fs` with path `Funs`:";
+    `Pre "sercomp -Q fs,Funs --mode=sexp fs/fun.v > fs/fun.sexp";
+    `P "See the documentation on the project's webpage for more information"
+  ]
+  in
+  Sercomp_lib.maincomp ~ext:".v" ~name:"sercomp" ~man ~compfun

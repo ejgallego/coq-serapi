@@ -147,7 +147,7 @@ let driver fn mode debug printer async async_workers quick coq_path ml_path load
   let doc = fn ~in_file ~in_chan ~process ~doc ~sid in
   close_document ~mode ~doc ~in_file
 
-let maincomp ~ext ~name ~desc ~(compfun:compfun) =
+let maincomp ~ext ~name ~man ~(compfun:compfun) =
   let input_file =
     let doc = "Input " ^ ext ^ " file." in
     Arg.(required & pos 0 (some string) None & info [] ~docv:("FILE"^ext) ~doc)
@@ -155,11 +155,6 @@ let maincomp ~ext ~name ~desc ~(compfun:compfun) =
 
   let comp_cmd =
     let doc = name ^ " Coq Compiler" in
-    let man = [
-      `S "DESCRIPTION";
-      `P desc;
-    ]
-    in
     let open Sertop_arg in
     Term.(const (driver compfun)
           $ comp_mode $ debug $ printer $ async $ async_workers $ quick $ prelude
