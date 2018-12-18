@@ -10,7 +10,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
@@ -46,18 +46,18 @@ let coq_init opts =
     Flags.debug := true;
   end;
 
+  let load_obj = Sertop_loader.plugin_handler opts.ml_load in
+  let add_dir = Sertop_loader.add_ml_path in
+
   (* Custom toplevel is used for bytecode-to-js dynlink  *)
-  Option.iter (fun ml_load ->
-      let ser_mltop : Mltop.toplevel = let open Mltop in
-        {
-          load_obj = ml_load;
-          (* We ignore all the other operations for now. *)
-          use_file = (fun _ -> ());
-          add_dir  = (fun _ -> ());
-          ml_loop  = (fun _ -> ());
-        } in
-      Mltop.set_top ser_mltop
-    ) opts.ml_load;
+  let ser_mltop : Mltop.toplevel = let open Mltop in
+    { load_obj
+    (* We ignore all the other operations for now. *)
+    ; use_file = (fun _ -> ())
+    ; add_dir
+    ; ml_loop  = (fun _ -> ())
+    } in
+  Mltop.set_top ser_mltop;
 
   (* Core Coq initialization *)
   Lib.init();

@@ -83,3 +83,4 @@ let register () =
   Ser_genarg.register_genser Newring_plugin.G_newring.wit_ring_mods ser_wit_ring_mods;
   ()
 
+let _ = register ()

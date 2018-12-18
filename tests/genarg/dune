@@ -1,9 +1,9 @@
 ; Eventually we should use the "put binaries in scope feature of Dune"
 (rule
  (targets test_roundtrip)
- (deps (:input test_roundtrip.in)
-   ../../sertop/sercomp.exe
-   ../../sertop/compser.exe)
+ (deps
+  (:input test_roundtrip.in)
+  (package coq-serapi))
  (action
   (progn
    (copy test_roundtrip.in test_roundtrip)
@@ -12,22 +12,15 @@
    (bash "echo \"# $(md5sum ../../sertop/compser.exe)\" >> test_roundtrip")
    (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
 
-; Broken
-; (alias
-;  (name runtest)
-;  (deps (:input abstract.v))
-;  (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input abstract.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
  (deps (:input add_field.v))
  (action (run ./test_roundtrip %{input})))
-
-; Broken
-; (alias
-;  (name runtest)
-;  (deps (:input assoc.v))
-;  (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)

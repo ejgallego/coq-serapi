@@ -34,6 +34,9 @@ _Version 0.6.0_:
              proofs. (@ejgallego, request by @palmskog)
  * [sercomp] Add `--async_workers` option to set maximum number
              of parallel async workers. (@palmskog)
+ * [sertop] Stop linking Coq plugins statically and load `serlib`
+            plugins when Coq plugins are loaded instead (@ejgallego,
+            review by @palmskog)
 
 _Version 0.5.7_:
 
