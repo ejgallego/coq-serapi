@@ -55,12 +55,7 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let stm_options =
     if quick
-    then begin
-      (* Workaround, see
-         https://github.com/ejgallego/coq-serapi/pull/101 *)
-      Safe_typing.allow_delayed_constants := true;
-      { stm_options with async_proofs_mode = APonLazy }
-    end
+    then { stm_options with async_proofs_mode = APonLazy }
     else stm_options
   in
 
@@ -71,6 +66,11 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
              ; iload_path
              ; stm_options
              } in
+
+  (* Workaround, see
+     https://github.com/ejgallego/coq-serapi/pull/101 *)
+  if quick || async <> None
+  then Safe_typing.allow_delayed_constants := true;
 
   Stm.new_doc ndoc
 
