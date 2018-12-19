@@ -88,3 +88,5 @@ let register () =
   Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrrwargs   ser_wit_ssrrwargs;
   Ser_genarg.register_genser Ssreflect_plugin.Ssrparser.wit_ssrhavefwdwbinders ser_wit_ssrhavefwdwbinders;
   ()
+
+let _ = register ()

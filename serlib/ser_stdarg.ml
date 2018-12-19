@@ -156,3 +156,5 @@ let register () =
   Ser_genarg.register_genser Stdarg.wit_var ser_wit_var;
 
   ()
+
+let _ = register ()

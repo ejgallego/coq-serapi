@@ -245,14 +245,3 @@ type cmd =
 type tagged_cmd =
   [%import: Serapi_protocol.tagged_cmd]
   [@@deriving sexp]
-
-(* Registering of generic argument printers. These modules should be
-   linked statically but we don't use ocamlbuild trickery yet *)
-let _ =
-  Ser_stdarg.register ();
-  Ser_tacarg.register ();
-  Ser_g_ground.register ();
-  Ser_g_indfun.register ();
-  Ser_g_newring.register ();
-  Ser_ssrparser.register ();
-  ()

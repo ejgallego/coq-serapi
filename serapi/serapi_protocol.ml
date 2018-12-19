@@ -247,7 +247,8 @@ type print_opt = {
   pp_margin : int           [@default 72];
 }
 
-let pp_tex (obj : coq_object) =
+let pp_tex (_obj : coq_object) = ""
+(*
   let tex_sexp c = let open Format in
     pp_set_margin     str_formatter 300;
     pp_set_max_indent str_formatter 300;
@@ -268,6 +269,7 @@ let pp_tex (obj : coq_object) =
                      sexp_of_constr_expr cst |> tex_sexp
   | CoqAst(_,ast) -> sexp_of_vernac_control ast |> tex_sexp
   | _             -> "not supported"
+*)
 
 let obj_print env sigma pr_opt obj =
   let open Format in

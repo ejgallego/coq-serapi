@@ -101,3 +101,5 @@ let register () =
   Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
   Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_function_rec_definition_loc ser_wit_function_rec_definition_loc;
   ()
+
+let _ = register ()

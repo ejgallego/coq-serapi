@@ -473,3 +473,5 @@ let register () =
   Ser_genarg.register_genser Extraargs.wit_test_lpar_id_colon Ser_genarg.(mk_uniform sexp_of_unit unit_of_sexp);
 
   ()
+
+let _ = register ()
