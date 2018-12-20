@@ -15,16 +15,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* let add_coq_path (path : Mltop.coq_path) =
- *   let Mltop.{ path_spec; recursive } = path in
- *   match path_spec with
- *   | Mltop.VoPath _ -> (??)
- *   | Mltop.MlPath _ -> (??)
- *
- * (\* For Rec Add ML Path (-R) *\)
- * let add_rec_ml_dir unix_path =
- *   List.iter (fun (lp,_) -> add_ml_dir lp) (all_subdirs ~unix_path) *)
-
 let debug = false
 let ml_path = ref []
 
@@ -33,7 +23,7 @@ let add_ml_path path =
 
 (* Should improve *)
 let map_serlib ml_mod =
-  let plugin_name = Filename.remove_extension ml_mod in
+  let plugin_name = Filename.(remove_extension (basename ml_mod)) in
   let supported = match plugin_name with
     (* Linked-in statically *)
     | "ltac_plugin"
@@ -61,4 +51,3 @@ let plugin_handler user_handler =
       Dynlink.Error err ->
       let msg = Dynlink.error_message err in
       Format.eprintf "[sertop] Critical Dynlink error %s@\n%!" msg
-

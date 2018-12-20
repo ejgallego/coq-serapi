@@ -47,6 +47,8 @@ let coq_init opts =
   end;
 
   let load_obj = Sertop_loader.plugin_handler opts.ml_load in
+
+  (* XXX: We may not have to set path once the issue in Coq upstream is fixed. *)
   let add_dir = Sertop_loader.add_ml_path in
 
   (* Custom toplevel is used for bytecode-to-js dynlink  *)
