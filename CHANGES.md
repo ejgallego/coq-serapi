@@ -1,4 +1,4 @@
-_Version 0.6.0_:
+## Version 0.6.0:
 
  * [general] support Coq 8.9,
  * [general] SerAPI now uses Dune as a build system,
@@ -38,34 +38,34 @@ _Version 0.6.0_:
             plugins when Coq plugins are loaded instead (@ejgallego,
             review by @palmskog)
 
-_Version 0.5.7_:
+## Version 0.5.7:
 
  * [serlib] Fixed serializers for more tactics data, add support for
    `ground` plugin (#68). Thanks again to @palmskog for the report.
 
-_Version 0.5.6_:
+## Version 0.5.6:
 
  * [serlib] Fixed serializers for some tactics data (#66) Thanks to
    @palmskog for the report.
 
-_Version 0.5.5_:
+## Version 0.5.5:
 
  * [serlib] Be more lenient when parsing back `Id.t` as to accommodate
    hacks in the Coq AST (#64) Thanks to @palmskog for the report.
 
-_Version 0.5.4_:
+## Version 0.5.4:
 
  * [serlib] Fix critical bug in handling of abstract type (#60)
 
-_Version 0.5.3_:
+## Version 0.5.3:
 
  * [sertop] Support for `-I` option (`--ml-include-path`).
 
-_Version 0.5.2_:
+## Version 0.5.2:
 
  * [serlib] Compatibility with OCaml 4.07.0 [problems with `Stdlib` packing]
 
-_Version 0.5.1_:
+## Version 0.5.1:
 
  * [serlib] (basic) support for serialization of the ssreflect grammar,
  * [serapi] `(Query () (Ast n))` is now `(Query ((sid n)) Ast)`,
@@ -73,13 +73,13 @@ _Version 0.5.1_:
  * [doc] Improved man page.
  * [js] Miscellaneous improvements on the js build.
 
-_Version 0.5.0_:
+## Version 0.5.0:
 
  * [general] support Coq 8.8, use improved document API,
  * [sertop] By default `sertop` will create a new document with `doc_id` 0,
  * [sertop] new debug options, see `sertop --help`.
 
-_Version 0.4_:
+## Version 0.4:
 
  * [general] support Coq 8.7 , make use of improved upstream API,
  * [sertop] support `-R` and `-Q` options, note the slightly different
@@ -87,11 +87,11 @@ _Version 0.4_:
  * [serlib] support serialization of generic arguments [#41],
  * [serapi] `(ReadFile file)`: hack to load a completed file.
 
-_Version 0.2_:
+## Version 0.2:
 
  * Better Query/Object system.
 
-_Version 0.1_:
+## Version 0.1:
 
  * Serialization-independent protocol core,
  * [js] Javascript worker,
@@ -105,13 +105,13 @@ _Version 0.1_:
  * [proto] Printing: add depth limiting,
  * [proto] Better handling of options in the sexp backend.
 
-_Version 0.03_:
+## Version 0.03:
 
  * **[done]** Implicit arguments.
  * **[done]** Coq Workers support.
  * **[done]** Advanced Sentence splitting `(Parse (Sentence string))`, which can handle the whole document.
 
-_Version 0.02_:
+## Version 0.02:
 
  * **[done]** Serialization of the `Proof.proof` object.
  * **[done]** Improve API: add options.
