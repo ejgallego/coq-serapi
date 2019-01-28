@@ -22,7 +22,7 @@
  * [sercomp] Allow compilers to output `.vo` (@ejgallego , suggested by
              @palmskog)
  * [sercomp] Serialize top-level vernaculars with their syntactic
-             attributes (such as location) (@ejallego)
+             attributes (such as location) (@ejgallego)
  * [serapi]  Add `Assumptions` query, at the suggestion of @Armael
              (@ejgallego)
  * [sercomp] Disable error resilience mode in compilers; semantics are
