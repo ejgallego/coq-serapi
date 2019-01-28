@@ -45,7 +45,7 @@ install:
 - echo "yes" | sudo add-apt-repository ppa:ansible/bubblewrap
 - sudo apt-get update -qq
 - sudo apt-get install -qq bubblewrap
-- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.1/opam-2.0.1-x86_64-linux -o /usr/bin/opam
+- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.2/opam-2.0.2-x86_64-linux -o /usr/bin/opam
 - sudo chmod 755 /usr/bin/opam
 - opam init -c "$COMPILER"
 - opam switch set "$COMPILER"
