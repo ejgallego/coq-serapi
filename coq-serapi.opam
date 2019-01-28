@@ -1,4 +1,5 @@
 synopsis:     "Sexp-based serialization library and protocol for machine interaction with the Coq proof assistant"
+description:  "Sexp-based serialization library and protocol for machine interaction with the Coq proof assistant"
 name:         "coq-serapi"
 opam-version: "2.0"
 maintainer:   "e@x80.org"
@@ -7,6 +8,7 @@ homepage:     "https://github.com/ejgallego/coq-serapi"
 bug-reports:  "https://github.com/ejgallego/coq-serapi/issues"
 dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
 license:      "GPL 3"
+doc:          "https://ejgallego.github.io/coq-serapi/doc"
 
 depends: [
   "ocaml"         { >= "4.06.0"           }
