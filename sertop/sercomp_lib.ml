@@ -86,6 +86,8 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
     | C_parse -> ()
     | C_stats ->
       Sercomp_stats.do_stats ast
+    | C_print ->
+      printf "@[%a@]@\n%!" Pp.pp_with Ppvernac.(pr_vernac ast.v)
     | C_sexp ->
       printf "@[%a@]@\n%!" pp
         (Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
@@ -105,6 +107,7 @@ let close_document ~mode ~doc ~in_file =
   match mode with
   | C_parse -> ()
   | C_sexp  -> ()
+  | C_print -> ()
   | C_stats ->
     Sercomp_stats.print_stats ()
   | C_check ->
