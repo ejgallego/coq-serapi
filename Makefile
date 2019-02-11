@@ -5,6 +5,10 @@ SERAPI_COQ_HOME ?=
 # SERAPI_COQ_HOME=/home/egallego/external/coq-v8.9/
 # SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.9+32bit/
 
+ifneq ($SERAPI_COQ_HOME,)
+  export OCAMLPATH := $(SERAPI_COQ_HOME):$(OCAMLPATH)
+endif
+
 all: build
 
 GITDEPS=$(ls .git/HEAD .git/index)
@@ -12,15 +16,12 @@ sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
 build:
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	dune build
 
 test:
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	dune runtest
 
 doc:
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	dune build @doc-private
 
 #####################################################
@@ -44,7 +45,6 @@ js:
 force:
 
 _build/default/sertop/sertop_js.bc: force
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	dune build --profile=release sertop/sertop_js.bc
 
 js/sertop_js.js: js _build/default/sertop/sertop_js.bc
@@ -52,7 +52,6 @@ js/sertop_js.js: js _build/default/sertop/sertop_js.bc
 
 # We cannot use the separate compilation mode due to Coq's VM: libcoqrun.a
 js-dune:
-	OCAMLPATH=$(SERAPI_COQ_HOME)                              \
 	dune build --profile=release sertop/sertop_js.bc.js
 
 js-dist:
