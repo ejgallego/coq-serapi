@@ -1,3 +1,8 @@
+## Version 0.6.1:
+
+ * [sercomp] Add "print" `--mode` to print the input Coq document
+             (@ejgallego, cc: @Ptival)
+
 ## Version 0.6.0:
 
  * [general] support Coq 8.9,
