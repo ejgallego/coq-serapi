@@ -618,6 +618,9 @@ let coq_protect e =
     (* let msg = str msg ++ fnl () ++ CErrors.print ~info e in *)
     (* Richpp.richpp_of_pp msg *)
 
+type parse_opt =
+  { ontop  : Stateid.t sexp_option }
+
 type add_opts = {
   lim    : int       sexp_option;
   ontop  : Stateid.t sexp_option;
@@ -636,6 +639,11 @@ module ControlUtil = struct
 
   let _dump_doc () =
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
+
+  let parse_sentence ~doc ~(opt : parse_opt) sent =
+    let ontop = Extra.value opt.ontop ~default:(Stm.get_current_state ~doc) in
+    let pa = Pcoq.Parsable.make (Stream.of_string sent) in
+    Stm.parse_sentence ~doc ontop pa
 
   let add_sentences ~doc opts sent =
     let pa = Pcoq.Parsable.make (Stream.of_string sent) in
@@ -757,6 +765,7 @@ type cmd =
   | Exec       of Stateid.t
   | Query      of query_opt * query_cmd
   | Print      of print_opt * coq_object
+  | Parse      of parse_opt * string
   (* Full document checking *)
   | Join
   | Finish
@@ -800,6 +809,9 @@ let exec_cmd (cmd : cmd) =
   | Print(opts, obj)  ->
     let sigma, env = Pfedit.get_current_context () in
     [ObjList [obj_print env sigma opts obj]]
+  | Parse(opt,s) ->
+    let { CAst.loc; v } = ControlUtil.parse_sentence ~doc ~opt s in
+    [ObjList [CoqAst (loc,v)]]
   | Join              -> ignore(Stm.join ~doc); []
   | Finish            -> ignore(Stm.finish ~doc); []
   (*  *)

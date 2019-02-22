@@ -173,6 +173,9 @@ type query_cmd =
 
 (** {3 Control Sub-Protocol } *)
 
+type parse_opt =
+  { ontop  : Stateid.t sexp_option }
+
 type add_opts = {
   lim    : int       sexp_option;
   ontop  : Stateid.t sexp_option;
@@ -216,6 +219,7 @@ type cmd =
   | Exec       of Stateid.t
   | Query      of query_opt * query_cmd
   | Print      of print_opt * coq_object
+  | Parse      of parse_opt * string
   (* Full document checking *)
   | Join
   | Finish

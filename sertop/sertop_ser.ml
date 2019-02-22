@@ -238,6 +238,13 @@ type newdoc_opts =
   ]]
   [@@deriving sexp]
 
+type parse_opt =
+  [%import: Serapi_protocol.parse_opt
+  [@with
+     Sexplib.Conv.sexp_option := sexp_option;
+  ]]
+  [@@deriving sexp]
+
 type cmd =
   [%import: Serapi_protocol.cmd]
   [@@deriving sexp]

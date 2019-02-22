@@ -1,7 +1,10 @@
 ## Version 0.6.1:
 
+ * [serapi] Add `Parse` command to parse a sentence; c.f.
+            https://github.com/ejgallego/coq-serapi/issues/117
+            (@ejgallego) (cc: @yangky11)
  * [sercomp] Add "print" `--mode` to print the input Coq document
-             (@ejgallego, cc: @Ptival)
+             (@ejgallego) (cc: @Ptival)
 
 ## Version 0.6.0:
 
