@@ -8,15 +8,12 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-type opaque = [%import: Opaqueproof.opaque]
-let sexp_of_opaque = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaque"
-let opaque_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaque"
+type 'a key = 'a CEphemeron.key
 
-type opaquetab = [%import: Opaqueproof.opaquetab]
-let sexp_of_opaquetab = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaquetab"
-let opaquetab_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaquetab"
+let key_of_sexp f x = CEphemeron.create (f x)
+let sexp_of_key f v = f CEphemeron.(get v)

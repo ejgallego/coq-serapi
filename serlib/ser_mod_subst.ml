@@ -8,15 +8,25 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (************************************************************************)
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-type opaque = [%import: Opaqueproof.opaque]
-let sexp_of_opaque = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaque"
-let opaque_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaque"
+type delta_resolver =
+  [%import: Mod_subst.delta_resolver]
 
-type opaquetab = [%import: Opaqueproof.opaquetab]
-let sexp_of_opaquetab = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaquetab"
-let opaquetab_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaquetab"
+let sexp_of_delta_resolver =
+  Serlib_base.sexp_of_opaque ~typ:"Mod_subst.delta_resolver"
+
+let delta_resolver_of_sexp =
+  Serlib_base.opaque_of_sexp ~typ:"Mod_subst.delta_resolver"
+
+type 'a substituted =
+  [%import: 'a Mod_subst.substituted]
+
+let sexp_of_substituted _ =
+  Serlib_base.sexp_of_opaque ~typ:"Mod_subst.substituted"
+
+let substituted_of_sexp _ =
+  Serlib_base.opaque_of_sexp ~typ:"Mod_subst.substituted"

@@ -10,7 +10,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
@@ -84,6 +84,8 @@ module ModPath : sig
 
 end
 
+module MPmap : Ser_cMap.ExtS with type key = ModPath.t
+
 module KerName : sig
 
   type t = KerName.t
@@ -102,6 +104,8 @@ module Constant : sig
 
 end
 
+module Cmap_env : Ser_cMap.ExtS with type key = Constant.t
+
 module MutInd : sig
 
   type t = Names.MutInd.t
@@ -110,6 +114,8 @@ module MutInd : sig
   val sexp_of_t : t -> Sexp.t
 
 end
+
+module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t
 
 type 'a tableKey = 'a Names.tableKey
 
