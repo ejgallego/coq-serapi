@@ -5,6 +5,7 @@
             (@ejgallego) (cc: @yangky11)
  * [sercomp] Add "print" `--mode` to print the input Coq document
              (@ejgallego) (cc: @Ptival)
+ * [serlib]  Serialize `Universe.t` (@ejgallego, request by @yangky11)
 
 ## Version 0.6.0:
 

@@ -36,15 +36,11 @@ type universe_level = Level.t
 module Universe = struct
   type t = [%import: Univ.Universe.t]
 
-(* type _universe                = Ser_Universe of  [@@deriving sexp] *)
-(* let _universe_put  universe   = Ser_Universe (Universe.to_string universe) *)
-(* let _universe_get (Ser_Universe universe) = Universe.of_string universe *)
+  type _t = (Level.t * int) list
+  [@@deriving sexp]
 
-(* let universe_of_sexp sexp     = _universe_get (_universe_of_sexp sexp) *)
-(* let sexp_of_universe universe = sexp_of__universe (_universe_put universe) *)
-
-let t_of_sexp _sexp     = Univ.Universe.make (Univ.Level.prop)
-let sexp_of_t (_universe : t) = Sexp.Atom "UNIV"
+  let t_of_sexp sexp     = Obj.magic (_t_of_sexp sexp)
+  let sexp_of_t universe = sexp_of__t (Obj.magic universe)
 
 end
 
