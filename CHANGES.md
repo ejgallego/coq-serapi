@@ -6,6 +6,8 @@
  * [sercomp] Add "print" `--mode` to print the input Coq document
              (@ejgallego) (cc: @Ptival)
  * [serlib]  Serialize `Universe.t` (@ejgallego, request by @yangky11)
+ * [sercomp] Merge `sercomp` and `compser`, add `--input` parameter to `sercomp`
+             (@palmskog) (cc: @ejgallego)
 
 ## Version 0.6.0:
 

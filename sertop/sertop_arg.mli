@@ -38,6 +38,9 @@ val no_init         : bool Term.t
 type comp_mode = | C_parse | C_stats | C_print | C_sexp | C_check | C_vo
 val comp_mode : comp_mode Term.t
 
+type comp_input = | I_vernac | I_sexp
+val comp_input : comp_input Term.t
+
 (* debug options *)
 val omit_loc : bool Term.t
 val omit_att : bool Term.t
