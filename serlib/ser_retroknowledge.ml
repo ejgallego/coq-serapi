@@ -28,3 +28,12 @@ type retroknowledge =
 
 let sexp_of_retroknowledge = Serlib_base.sexp_of_opaque ~typ:"Retroknowledge.retroknowledge"
 let retroknowledge_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Retroknowledge.retroknowledge"
+
+type entry = 
+  [%import: Retroknowledge.entry]
+
+type action = 
+  [%import: Retroknowledge.action]
+
+let sexp_of_action = Serlib_base.sexp_of_opaque ~typ:"Retroknowledge.action"
+let action_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Retroknowledge.action"

@@ -15,7 +15,10 @@
 
 open Sexplib
 
-type opaquetab = Opaqueproof.opaquetab
+type opaque = Opaqueproof.opaque
+val sexp_of_opaque : opaque -> Sexp.t
+val opaque_of_sexp : Sexp.t -> opaque
 
+type opaquetab = Opaqueproof.opaquetab
 val sexp_of_opaquetab : opaquetab -> Sexp.t
 val opaquetab_of_sexp : Sexp.t -> opaquetab

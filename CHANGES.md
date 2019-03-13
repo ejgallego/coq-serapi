@@ -8,6 +8,8 @@
  * [serlib]  Serialize `Universe.t` (@ejgallego, request by @yangky11)
  * [sercomp] Merge `sercomp` and `compser`, add `--input` parameter to `sercomp`
              (@palmskog) (cc: @ejgallego)
+ * [serlib] Much improved support for serialization of `Environ.env`
+             (@yangky11 and @ejgallego c.f. #118)
 
 ## Version 0.6.0:
 

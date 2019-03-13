@@ -16,15 +16,20 @@
 
 open Sexplib
 open Sexplib.Conv
+open Declarations
 
 module Names   = Ser_names
 module Context = Ser_context
 module Constr  = Ser_constr
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
-module Decl_kinds = Ser_decl_kinds
-module Vmvalues = Ser_vmvalues
+module Decl_kinds  = Ser_decl_kinds
+module Vmvalues    = Ser_vmvalues
 module Conv_oracle = Ser_conv_oracle
+module Mod_subst   = Ser_mod_subst
+module Opaqueproof = Ser_opaqueproof
+module Cemitcodes  = Ser_cemitcodes
+module Retroknowledge = Ser_retroknowledge
 
 type template_arity =
   [%import: Declarations.template_arity]
@@ -76,14 +81,32 @@ type engagement =
   [%import: Declarations.engagement]
   [@@deriving sexp]
 
+type inline =
+  [%import: Declarations.inline]
+  [@@deriving sexp]
+
+type constant_universes =
+  [%import: Declarations.constant_universes]
+  [@@deriving sexp]
+
+type constant_def =
+  [%import: Declarations.constant_def]
+  [@@deriving sexp]
+
 type typing_flags =
   [%import: Declarations.typing_flags]
   [@@deriving sexp]
 
-(* type record_body =
- *   [%import: Declarations.record_body
- *   [@with Context.section_context := Context.Named.t;]]
- *   [@@deriving sexp] *)
+type constant_body =
+  [%import: Declarations.constant_body]
+  [@@deriving sexp]
+
+(* XXX: At least one serializer can be done *)
+let sexp_of_module_retroknowledge _ =
+  Serlib_base.sexp_of_opaque ~typ:"Declarations.module_retroknowledge"
+
+let module_retroknowledge_of_sexp _ =
+  Serlib_base.opaque_of_sexp ~typ:"Declarations.module_retroknowledge"
 
 type abstract_inductive_universes =
   [%import: Declarations.abstract_inductive_universes]
@@ -102,3 +125,46 @@ type mutual_inductive_body =
   [@with Context.section_context := Context.Named.t;]]
   [@@deriving sexp]
 
+type ('ty,'a) functorize =
+  [%import: ('ty, 'a) Declarations.functorize]
+  [@@deriving sexp]
+
+type with_declaration =
+  [%import: Declarations.with_declaration]
+  [@@deriving sexp]
+
+type module_alg_expr =
+  [%import: Declarations.module_alg_expr]
+  [@@deriving sexp]
+
+type structure_field_body =
+  [%import: Declarations.structure_field_body]
+  [@@deriving sexp]
+
+and structure_body =
+  [%import: Declarations.structure_body]
+  [@@deriving sexp]
+
+and module_signature =
+  [%import: Declarations.module_signature]
+  [@@deriving sexp]
+
+and module_expression =
+  [%import: Declarations.module_expression]
+  [@@deriving sexp]
+
+and module_implementation =
+  [%import: Declarations.module_implementation]
+  [@@deriving sexp]
+
+and 'a generic_module_body =
+  [%import: 'a Declarations.generic_module_body]
+  [@@deriving sexp]
+
+and module_body =
+  [%import: Declarations.module_body]
+  [@@deriving sexp]
+
+and module_type_body =
+  [%import: Declarations.module_type_body]
+  [@@deriving sexp]
