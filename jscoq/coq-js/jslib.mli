@@ -30,9 +30,9 @@ val to_desc : coq_pkg -> string
 val no_files : coq_pkg -> int
 
 (* JSON handling *)
-open Yojson.Safe
-
 (* XXX Use PPX *)
+type json = Yojson.Safe.json [@ocaml.warning "-3"]
+
 val coq_pkg_to_yojson : coq_pkg -> json
 val coq_pkg_of_yojson : json -> (coq_pkg, string) Result.result
 

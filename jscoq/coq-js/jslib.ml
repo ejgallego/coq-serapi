@@ -16,6 +16,8 @@ type digest  = Digest.t
 type _digest = string
 [@@deriving yojson]
 
+type json = Yojson.Safe.json [@ocaml.warning "-3"]
+
 let digest_of_yojson j =
   let open Result in
   match _digest_of_yojson j with
