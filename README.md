@@ -7,11 +7,11 @@ $ opam install coq-serapi
 $ sertop --help
 ```
 
-SerAPI is a library for machine-to-machine interaction with the [Coq proof assistant](https://github.com/coq/coq),
+SerAPI is a library for machine-to-machine interaction with the [Coq proof assistant](https://coq.inria.fr),
 with particular emphasis on IDE support and code analysis
 tools. SerAPI provides automatic serialization of
-[Ocaml](https://github.com/ocaml/ocaml) datatypes from/to
-S-expressions.
+[OCaml](https://github.com/ocaml/ocaml) datatypes from/to
+[S-expressions](https://en.wikipedia.org/wiki/S-expression).
 
 SerAPI is a proof-of-concept and should be considered
 alpha-quality. However, it is fully functional and supports, among
@@ -21,24 +21,24 @@ serialization of Coq's core datatypes. SerAPI can also be run as
 thread, providing a self-contained Coq system inside the
 browser. Typical load times in Google Chrome are less than a second.
 
-The main design philosophy of SerAPI is to **make clients life easy**,
-trying to provide a convenient, robust interface that hides away most
+The main design philosophy of SerAPI is to **make clients' lives easy**,
+by trying to provide a convenient, robust interface that hides most
 of the scary details involved in interacting with Coq.
 
 Feedback from Coq users and developers is very welcome and _intrinsic_
 to the project. We are open to implementing new features and exploring
-new use cases, let us know what you think via the [mailing
-list](https://x80.org/cgi-bin/mailman/listinfo/jscoq), the [issue
-tracker](https://github.com/ejgallego/coq-serapi/issues), or our
-[Gitter chat](https://gitter.im/coq-serapi/Lobby) channel. See also
+new use cases, let us know what you think via the [issue
+tracker](https://github.com/ejgallego/coq-serapi/issues), our
+[Gitter chat](https://gitter.im/coq-serapi/Lobby) channel, or
+the [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq). See also
 [SerAPI's FAQ](FAQ.md).
 
 ### Roadmap:
 
 SerAPI 0.6.x is based on Coq 8.9. These days, most work related to
-SerAPI is directly happening over Coq's upstream itself. The main
-objective is to improve the proof-document model; building a rich
-query language will be next.
+SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
+itself. The main objective is to improve the proof-document model; building
+a rich query language will be next.
 
 ### Quick Overview and Documentation:
 
@@ -47,13 +47,18 @@ for manual installation. The experimental [in-browser version](https://x80.org/r
 is also online.
 
 The principal entry point in SerAPI is the `sertop` REPL, a basic
-toplevel that reads and executes commands (S-Expressions) from stdin
-to stdout in both machine or human-friendly format. See `sertop --help`
-for an overview of the main options. `Ctrl-C` will interrupt a busy
-Coq process in the same way `coqtop` does.
+toplevel that reads and executes commands (S-expressions) from stdin,
+and writes to stdout in either machine or human-friendly format.
+See `sertop --help` for an overview of the main options. `Ctrl-C`
+will interrupt a busy Coq process in the same way `coqtop` does.
+We recommend using `rlwrap` or the [emacs mode](sertop.el) for direct
+interaction using `sertop`.
 
-We recommend `rlwrap` or the [emacs mode](sertop.el) for direct
-interaction.
+The program `sercomp` provides a command-line interface to some
+key functionality of SerAPI and can be used for batch processing
+of Coq documents, e.g., to serialize Coq source files from/to lists of
+S-expressions. See `sercomp --help` for some usage examples and an
+overview of the main options.
 
 ## Protocol Description
 
@@ -179,24 +184,25 @@ Mines de Paris) and partially supported by the
 
 ## Clients using SerAPI
 
-- [jsCoq](https://github.com/ejgallego/jscoq) allows you run Coq in
-  your browser. JsCoq is the predecessor of SerAPI and will be shortly
+- [jsCoq](https://github.com/ejgallego/jscoq) allows you to run Coq in
+  your browser. JsCoq is the predecessor of SerAPI and will shortly be
   fully based on it.
 - [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
   demo based on SerAPI by [Clément Pit--Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
-  functional but illustrates some cool features of SerAPI.
-- [peacoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
+  functional but illustrates some noteworthy features of SerAPI.
+- [PeaCoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
   browser has an experimental branch that uses SerAPI.
 
 ## Developer information
 
 ### Technical details
 
-Coq SerAPI has three main components:
+SerAPI has four main components:
 
-- `serapi`: an extended version of the current IDE protocol,
-- `serlib` a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress,
-- `sertop`, `sertop_js`, toplevels offering implementation of the protocol.
+- `serapi`: an extended version of the current IDE protocol;
+- `serlib` a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress;
+- `sertop`, `sertop_js`, toplevels offering implementations of the protocol;
+- `sercomp`, a command-line tool providing access to key features of `serlib`.
 
 Building your own toplevels using `serlib` and `serapi` is encouraged.
 
@@ -204,26 +210,26 @@ Building your own toplevels using `serlib` and `serapi` is encouraged.
 
 With a bit more development effort, you can also:
 
-- use SerAPI as an Ocaml library. The low-level serialization library
+- Use SerAPI as an OCaml library. The low-level serialization library
   [`serlib/`](/serlib) and the higher-level SerAPI protocol in
   [`serapi/serapi_protocol.mli`](/serapi/serapi_protocol.mli) can be
-  linked standalone,
+  linked standalone.
 
-- use SerAPI's web worker [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
+- Use SerAPI's web worker [JavaScript Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers)
   from your web/node application. In this model, you communicate with SerAPI using
   the typical `onmessage/postMessage` worker API. Ready-to-use builds
   may be found at
   [here](https://github.com/ejgallego/jscoq-builds/tree/serapi), we
   provide an example REPL at: https://x80.org/rhino-hawk
 
-- we would also like to provide a [Jupyter/IPython kernel](https://github.com/ejgallego/coq-serapi/issues/17).
+We would also like to provide a [Jupyter/IPython kernel](https://github.com/ejgallego/coq-serapi/issues/17).
 
 ### Developer/Users Mailing List ###
 
-SerApi development is main discussed in GitHub and in the Gitter
-channel. You can lso use the jsCoq mailing list, subscribe at:
+SerAPI development is mainly discussed on GitHub and in the Gitter
+channel. You can also use the jsCoq mailing list by subscribing at:
 https://x80.org/cgi-bin/mailman/listinfo/jscoq
 
-The list archives should be also available at the Gmane group:
+The mailing list archives should also be available at the Gmane group:
 `gmane.science.mathematics.logic.coq.jscoq`. You can post to the list
 using nntp.
