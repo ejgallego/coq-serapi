@@ -178,7 +178,9 @@ let driver input mode debug printer async async_workers quick coq_path ml_path l
   let process = process_vernac ~mode ~pp in
 
   (* initialization *)
-  Serlib_init.init ~omit_loc ~omit_att ~exn_on_opaque;
+  let options = Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
+  Serlib_init.init ~options;
+
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
   let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
 
