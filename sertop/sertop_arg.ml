@@ -149,3 +149,17 @@ let comp_mode_doc = Arg.doc_alts
 let comp_mode =
   Arg.(value & opt comp_mode_args C_parse & info ["mode"] ~doc:comp_mode_doc)
 
+type comp_input = | I_vernac | I_sexp
+
+let comp_input_args =
+  Arg.(enum
+         [ "vernac", I_vernac
+         ; "sexp", I_sexp])
+
+let comp_input_doc = Arg.doc_alts
+  [ "vernac: Coq vernacular"
+  ;   "sexp: serialized Coq vernacular"
+  ]
+
+let comp_input =
+  Arg.(value & opt comp_input_args I_vernac & info ["input"] ~doc:comp_input_doc)
