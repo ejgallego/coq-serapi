@@ -13,10 +13,46 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
+open Sexplib.Conv
+
+module Future = Ser_future
+module Names  = Ser_names
+module Univ   = Ser_univ
+module Constr = Ser_constr
+module Mod_subst = Ser_mod_subst
+
+type work_list =
+  (Univ.Instance.t * Names.Id.t array) Names.Cmap.t * (Univ.Instance.t * Names.Id.t array) Names.Mindmap.t
+  [@@deriving sexp]
+
+type cooking_info =
+  { modlist : work_list
+  ; abstract : Constr.named_context * Univ.Instance.t * Univ.AUContext.t
+  }
+  [@@deriving sexp]
+
+type proofterm = (Constr.constr * Univ.ContextSet.t) Future.computation
+  [@@deriving sexp]
+
+type _opaque =
+  | Indirect of Mod_subst.substitution list * Names.DirPath.t * int (* subst, lib, index *)
+  | Direct of cooking_info list * proofterm
+  [@@deriving sexp]
+
 type opaque = [%import: Opaqueproof.opaque]
-let sexp_of_opaque = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaque"
-let opaque_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaque"
+
+let sexp_of_opaque x = sexp_of__opaque Obj.(magic x)
+let opaque_of_sexp x = Obj.magic (_opaque_of_sexp x)
+
+module Map = Ser_cMap.Make(Int.Map)(Ser_int)
+type _opaquetab = {
+  opaque_val : (cooking_info list * proofterm) Map.t;
+  (** Actual proof terms *)
+  opaque_len : int;
+  (** Size of the above map *)
+  opaque_dir : Names.DirPath.t;
+} [@@deriving sexp]
 
 type opaquetab = [%import: Opaqueproof.opaquetab]
-let sexp_of_opaquetab = Serlib_base.sexp_of_opaque ~typ:"Opaqueproof.opaquetab"
-let opaquetab_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Opaqueproof.opaquetab"
+let sexp_of_opaquetab x = sexp_of__opaquetab Obj.(magic x)
+let opaquetab_of_sexp x = Obj.magic (_opaquetab_of_sexp x)
