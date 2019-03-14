@@ -35,7 +35,7 @@ val ml_include_path : Mltop.coq_path list Term.t
 val no_init         : bool Term.t
 
 (* sertop options *)
-type comp_mode = | C_parse | C_stats | C_print | C_sexp | C_check | C_vo
+type comp_mode = | C_parse | C_stats | C_print | C_sexp | C_check | C_vo | C_env
 val comp_mode : comp_mode Term.t
 
 type comp_input = | I_vernac | I_sexp

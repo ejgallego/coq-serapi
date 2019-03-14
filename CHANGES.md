@@ -12,6 +12,8 @@
              (@yangky11 and @ejgallego c.f. #118)
  * [serapi ] Make sure every command ends with `Completed`, even if it produced
              an exception (@brando90 and @ejgallego c.f. #124)
+ * [sercomp] Add `--mode=kexp` to output the final kernel environment.
+             (@ejgallego c.f. #119)
 
 ## Version 0.6.0:
 
