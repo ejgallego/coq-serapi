@@ -1,15 +1,17 @@
 ## Version 0.6.1:
 
- * [serapi] Add `Parse` command to parse a sentence; c.f.
-            https://github.com/ejgallego/coq-serapi/issues/117
-            (@ejgallego) (cc: @yangky11)
+ * [serapi ] Add `Parse` command to parse a sentence; c.f.
+             https://github.com/ejgallego/coq-serapi/issues/117
+             (@ejgallego) (cc: @yangky11)
  * [sercomp] Add "print" `--mode` to print the input Coq document
              (@ejgallego) (cc: @Ptival)
- * [serlib]  Serialize `Universe.t` (@ejgallego, request by @yangky11)
+ * [serlib ] Serialize `Universe.t` (@ejgallego, request by @yangky11)
  * [sercomp] Merge `sercomp` and `compser`, add `--input` parameter to `sercomp`
              (@palmskog) (cc: @ejgallego)
- * [serlib] Much improved support for serialization of `Environ.env`
+ * [serlib ] Much improved support for serialization of `Environ.env`
              (@yangky11 and @ejgallego c.f. #118)
+ * [serapi ] Make sure every command ends with `Completed`, even if it produced
+             an exception (@brando90 and @ejgallego c.f. #124)
 
 ## Version 0.6.0:
 
