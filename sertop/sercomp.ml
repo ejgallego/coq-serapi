@@ -111,6 +111,7 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
     fatal_error Pp.(str "fatal, got no `NewTip`");
   let open Sertop_arg in
   let () = match mode with
+    | C_env   -> ()
     | C_vo    -> ()
     | C_check -> ()
     | C_parse -> ()
@@ -132,7 +133,7 @@ let check_pending_proofs () =
           ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print; str "."] in
     fatal_error msg
 
-let close_document ~mode ~doc ~in_file =
+let close_document ~pp ~mode ~doc ~in_file =
   let open Sertop_arg in
   match mode with
   | C_parse -> ()
@@ -143,6 +144,10 @@ let close_document ~mode ~doc ~in_file =
   | C_check ->
     let _doc = Stm.join ~doc in
     check_pending_proofs ()
+  | C_env ->
+    let _doc = Stm.join ~doc in
+    check_pending_proofs ();
+    Format.printf "@[%a@]@\n%!" pp Ser_environ.(sexp_of_env Global.(env ()))
   | C_vo ->
     let _doc = Stm.join ~doc in
     check_pending_proofs ();
@@ -187,7 +192,8 @@ let driver input mode debug printer async async_workers quick coq_path ml_path l
   (* main loop *)
   let in_chan = open_in in_file in
   let doc = input_doc ~input ~in_file ~in_chan ~process ~doc ~sid in
-  close_document ~mode ~doc ~in_file
+  let () = close_document ~pp ~mode ~doc ~in_file in
+  ()
 
 let main () =
   let input_file =
