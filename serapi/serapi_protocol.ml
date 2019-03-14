@@ -614,7 +614,7 @@ let coq_exn_info exn =
 (* Simple protection for Coq-generated exceptions *)
 let coq_protect e =
   try  e () @ [Completed]
-  with exn -> [coq_exn_info exn]
+  with exn -> [coq_exn_info exn; Completed]
     (* let msg = str msg ++ fnl () ++ CErrors.print ~info e in *)
     (* Richpp.richpp_of_pp msg *)
 
