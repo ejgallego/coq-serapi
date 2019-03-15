@@ -19,6 +19,10 @@ type delta_resolver = Mod_subst.delta_resolver
 val sexp_of_delta_resolver : delta_resolver -> Sexp.t
 val delta_resolver_of_sexp : Sexp.t -> delta_resolver
 
+type substitution = Mod_subst.substitution
+val sexp_of_substitution : substitution -> Sexp.t
+val substitution_of_sexp : Sexp.t -> substitution
+
 type 'a substituted = 'a Mod_subst.substituted
 val sexp_of_substituted : ('a -> Sexp.t) -> 'a substituted -> Sexp.t
 val substituted_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a substituted

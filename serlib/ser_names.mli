@@ -104,6 +104,7 @@ module Constant : sig
 
 end
 
+module Cmap : Ser_cMap.ExtS with type key = Constant.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t
 
 module MutInd : sig
@@ -115,6 +116,7 @@ module MutInd : sig
 
 end
 
+module Mindmap : Ser_cMap.ExtS with type key = MutInd.t
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t
 
 type 'a tableKey = 'a Names.tableKey

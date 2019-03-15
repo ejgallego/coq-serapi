@@ -166,6 +166,7 @@ let sexp_of_t dp   = sexp_of__constant (_constant_put dp)
 
 end
 
+module Cmap = Ser_cMap.Make(Cmap)(Constant)
 module Cmap_env = Ser_cMap.Make(Cmap_env)(Constant)
 
 module MutInd = struct
@@ -185,6 +186,7 @@ let sexp_of_t dp   = sexp_of__mutind (_mutind_put dp)
 
 end
 
+module Mindmap = Ser_cMap.Make(Mindmap)(MutInd)
 module Mindmap_env = Ser_cMap.Make(Mindmap_env)(MutInd)
 
 type 'a tableKey =

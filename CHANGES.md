@@ -14,6 +14,7 @@
              an exception (@brando90 and @ejgallego c.f. #124)
  * [sercomp] Add `--mode=kexp` to output the final kernel environment.
              (@ejgallego c.f. #119)
+ * [serlib ] Serialize more internal environment fields (@ejgallego c.f. #119)
 
 ## Version 0.6.0:
 
