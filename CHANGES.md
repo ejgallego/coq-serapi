@@ -1,3 +1,8 @@
+## Version 0.11.2:
+
+ * [sercomp] Support for output of kernel traces `--mode=trace` (@ejgallego @palmskog)
+ * [serload] Support for loading of kernel traces (@ejgallego @palmskog)
+
 ## Version 0.11.1:
 
  * [general] Require dune >= 2.0 (@ejgallego, ??)

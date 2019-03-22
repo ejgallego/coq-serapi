@@ -10,7 +10,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
@@ -23,7 +23,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter =
+let create_document ~mode ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter =
 
   let open Sertop.Sertop_init in
 
@@ -65,6 +65,8 @@ let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~
      https://github.com/ejgallego/coq-serapi/pull/101 *)
   if quick || stm_flags.enable_async <> None
   then Safe_typing.allow_delayed_constants := true;
+
+  if mode = Sertop_arg.C_ktrace then Sercomp_ktrace.init ();
 
   Stm.new_doc ndoc
 
@@ -115,6 +117,7 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
     | C_vo    -> ()
     | C_check -> ()
     | C_parse -> ()
+    | C_ktrace -> ()
     | C_stats ->
       Sertop.Sercomp_stats.do_stats ast
     | C_print ->
@@ -142,6 +145,10 @@ let close_document ~pp ~mode ~doc ~in_file ~pstate =
   | C_parse -> ()
   | C_sexp  -> ()
   | C_print -> ()
+  | C_ktrace ->
+    let _doc = Stm.join ~doc in
+    check_pending_proofs ~pstate;
+    Sercomp_ktrace.dump pp
   | C_stats ->
     Sertop.Sercomp_stats.print_stats ()
   | C_check ->
@@ -191,6 +198,7 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
+<<<<<<< HEAD
   let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
   let allow_sprop = not disallow_sprop in
   let stm_flags =
@@ -200,6 +208,10 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
     ; error_recovery
     } in
   let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter in
+=======
+  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+  let doc, sid = create_document ~mode ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
+>>>>>>> [sertop] Add support for kernel trace serialization.
 
   (* main loop *)
   let in_chan = open_in in_file in
