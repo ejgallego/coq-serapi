@@ -30,6 +30,7 @@ module CAst = Ser_cAst
 (* Id.t: private *)
 module Id = struct
 
+module Self = struct
 type t   = [%import: Names.Id.t]
 
 type _t            = Id of string [@@deriving sexp]
@@ -38,34 +39,12 @@ let _t_get (Id id) = Id.of_string_soft id
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t id   = sexp_of__t (_t_put id)
-
-module Set = struct
-
-type t =
-  [%import: Names.Id.Set.t]
-  (* [@@deriving sexp] *)
-
-let t_of_sexp sexp =
-  Id.Set.of_list (list_of_sexp t_of_sexp sexp)
-
-let sexp_of_t cst =
-  sexp_of_list sexp_of_t (Id.Set.elements cst)
-
 end
 
-module Map = struct
+include Self
 
-type 'a t =
-  [%import: 'a Names.Id.Map.t]
-  (* [@@deriving sexp] *)
-
-let t_of_sexp f sexp =
-  List.fold_left (fun e (k,s) -> Id.Map.add k s e) Id.Map.empty (list_of_sexp (Sexplib.Conv.pair_of_sexp t_of_sexp f) sexp)
-
-let sexp_of_t f cst =
-  sexp_of_list (Sexplib.Conv.sexp_of_pair sexp_of_t f) (Id.Map.bindings cst)
-
-end
+module Set = Ser_cSet.Make(Names.Id.Set)(Self)
+module Map = Ser_cMap.Make(Names.Id.Map)(Self)
 
 end
 

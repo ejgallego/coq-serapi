@@ -21,14 +21,18 @@ module Univ   = Ser_univ
 module Constr = Ser_constr
 module Mod_subst = Ser_mod_subst
 
-type work_list =
+type _work_list =
   (Univ.Instance.t * Names.Id.t array) Names.Cmap.t * (Univ.Instance.t * Names.Id.t array) Names.Mindmap.t
+  (* Problem with map modules *)
+  (* [%import: Opaqueproof.work_list] *)
   [@@deriving sexp]
 
+type work_list = Opaqueproof.work_list
+let work_list_of_sexp x = Obj.magic (_work_list_of_sexp x)
+let sexp_of_work_list x = sexp_of__work_list Obj.(magic x)
+
 type cooking_info =
-  { modlist : work_list
-  ; abstract : Constr.named_context * Univ.Instance.t * Univ.AUContext.t
-  }
+  [%import: Opaqueproof.cooking_info]
   [@@deriving sexp]
 
 type proofterm = (Constr.constr * Univ.ContextSet.t) Future.computation

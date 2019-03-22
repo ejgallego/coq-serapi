@@ -10,35 +10,18 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib
 
-module type ExtS = sig
+type private_constants = Safe_typing.private_constants
+val private_constants_of_sexp : 'a -> Sexp.t -> private_constants
+val sexp_of_private_constants : 'a -> private_constants -> Sexp.t
 
-  include CSig.MapS
-
-  (* module SSet : Ser_cSet.ExtS *)
-
-  include SerType.S1 with type 'a t := 'a t
-
-end
-
-module Make (M : CSig.MapS) (S : SerType.S with type t := M.key) = struct
-
-  include M
-
-  (* module SSet = Ser_cSet.Make(M.Set)(S) *)
-
-  let sexp_of_t f cst =
-    sexp_of_list (Sexplib.Conv.sexp_of_pair S.sexp_of_t f) M.(bindings cst)
-
-  let t_of_sexp f sexp =
-    List.fold_left (fun e (k,s) -> M.add k s e) M.empty
-      (list_of_sexp (pair_of_sexp S.t_of_sexp f) sexp)
-
-end
+type global_declaration = Safe_typing.global_declaration
+val global_declaration_of_sexp : Sexp.t -> global_declaration
+val sexp_of_global_declaration : global_declaration -> Sexp.t

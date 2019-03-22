@@ -16,19 +16,35 @@
 open Sexplib
 open Sexplib.Conv
 
-module Level = struct
-  type t = [%import: Univ.Level.t]
+module Names = Ser_names
 
-  type _level = ULevel of int
+module Level_ = struct
+
+  type raw_level =
+  | Prop
+  | Set
+  | Level of int * Names.DirPath.t
+  | Var of int
   [@@deriving sexp]
 
-  let _level_put level          = ULevel (Option.default 0 (Univ.Level.var_index level))
-  let _level_get (ULevel level) = Univ.Level.var level
+  (* XXX: Should we refresh the hash value here? *)
+  type t =
+    { hash : int
+    ; data : raw_level
+    }
+  [@@deriving sexp]
+end
 
-  let t_of_sexp sexp  = _level_get (_level_of_sexp sexp)
-  let sexp_of_t level = sexp_of__level (_level_put level)
+module Level = struct
+
+  type t = Univ.Level.t
+
+  let t_of_sexp sexp  = Obj.magic (Level_.t_of_sexp sexp)
+  let sexp_of_t level = Level_.sexp_of_t (Obj.magic level)
 
 end
+
+module LSet = Ser_cSet.Make(Univ.LSet)(Level)
 
 type universe_level = Level.t
   [@@deriving sexp]
@@ -74,17 +90,14 @@ type univ_constraint =
   [%import: Univ.univ_constraint]
   [@@deriving sexp]
 
-module Constraint = struct
+module Constraint = Ser_cSet.Make(Univ.Constraint)(struct
+    let t_of_sexp = univ_constraint_of_sexp
+    let sexp_of_t = sexp_of_univ_constraint
+  end)
 
-  type t = Univ.Constraint.t
-
-  let t_of_sexp sexp =
-    Univ.Constraint.of_list (list_of_sexp univ_constraint_of_sexp sexp)
-
-  let sexp_of_t cst =
-    sexp_of_list sexp_of_univ_constraint (Univ.Constraint.elements cst)
-
-end
+type 'a constrained =
+  [%import: 'a Univ.constrained]
+  [@@deriving sexp]
 
 module Variance = struct
 
@@ -142,13 +155,22 @@ module ACumulativityInfo = struct
 end
 
 module ContextSet = struct
-
-  type t = Univ.ContextSet.t
-
-  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Univ.ContextSet.t"
-  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Univ.ContextSet.t"
-
+  type t =
+    [%import: Univ.ContextSet.t]
+    [@@deriving sexp]
 end
+
+type universe_context_set =
+  [%import: Univ.universe_context_set] [@warning "-3"]
+  [@@deriving sexp]
+
+type 'a in_universe_context =
+  [%import: 'a Univ.in_universe_context]
+  [@@deriving sexp]
+
+type 'a in_universe_context_set =
+  [%import: 'a Univ.in_universe_context_set]
+  [@@deriving sexp]
 
 type abstract_cumulativity_info = ACumulativityInfo.t
   [@@deriving sexp]
