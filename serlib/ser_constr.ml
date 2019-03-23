@@ -33,47 +33,47 @@ module Uint63  = Ser_uint63
 
 type pconstant =
   [%import: Constr.pconstant]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type pinductive =
   [%import: Constr.pinductive]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type pconstructor =
   [%import: Constr.pconstructor]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type cast_kind =
   [%import: Constr.cast_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type case_style =
   [%import: Constr.case_style]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type case_printing =
   [%import: Constr.case_printing]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type case_info =
   [%import: Constr.case_info]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'constr pexistential =
   [%import: 'constr Constr.pexistential]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type ('constr, 'types) prec_declaration =
   [%import: ('constr, 'types) Constr.prec_declaration]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type ('constr, 'types) pfixpoint =
   [%import: ('constr, 'types) Constr.pfixpoint]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type ('constr, 'types) pcofixpoint =
   [%import: ('constr, 'types) Constr.pcofixpoint]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type constr = Constr.constr
 type types  = Constr.constr
@@ -97,8 +97,9 @@ type _constr =
   | CoFix     of (_constr, _types) pcofixpoint
   | Proj      of Names.Projection.t * _constr
   | Int       of Uint63.t
+[@@deriving sexp,yojson]
 and _types = _constr
-[@@deriving sexp]
+[@@deriving sexp,yojson]
 
 let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
@@ -155,13 +156,22 @@ let constr_of_sexp (c : Sexp.t) : constr =
 let sexp_of_constr (c : constr) : Sexp.t =
   sexp_of__constr (_constr_put c)
 
+let constr_of_yojson json = Ppx_deriving_yojson_runtime.(_constr_of_yojson json >|= _constr_get)
+let constr_to_yojson level = _constr_to_yojson (_constr_put level)
+
 let types_of_sexp = constr_of_sexp
 let sexp_of_types = sexp_of_constr
+
+let types_of_yojson = constr_of_yojson
+let types_to_yojson = constr_to_yojson
 
 type t = constr
 
 let t_of_sexp = constr_of_sexp
 let sexp_of_t = sexp_of_constr
+
+let of_yojson = constr_of_yojson
+let to_yojson = constr_to_yojson
 
 type rec_declaration =
   [%import: Constr.rec_declaration]

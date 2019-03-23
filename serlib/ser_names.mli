@@ -20,14 +20,14 @@ open Names
 open Sexplib
 
 module Id : sig
-  include SerType.S with type t = Id.t
+  include SerType.SJ with type t = Id.t
 
   module Set : SerType.S with type t = Id.Set.t
   module Map : SerType.S1 with type 'a t = 'a Id.Map.t
 end
 
-module Name    : SerType.S with type t = Name.t
-module DirPath : SerType.S with type t = DirPath.t
+module Name    : SerType.SJ with type t = Name.t
+module DirPath : SerType.SJ with type t = DirPath.t
 module Label   : SerType.S with type t = Label.t
 module MBId    : SerType.S with type t = MBId.t
 module ModPath : SerType.S with type t = ModPath.t
@@ -35,7 +35,7 @@ module ModPath : SerType.S with type t = ModPath.t
 module MPmap : Ser_cMap.ExtS with type key = ModPath.t
 
 module KerName  : SerType.S with type t = KerName.t
-module Constant : SerType.S with type t = Constant.t
+module Constant : SerType.SJ with type t = Constant.t
 
 module Cmap : Ser_cMap.ExtS with type key = Constant.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t
@@ -56,7 +56,7 @@ type constructor = Names.constructor
 
 module Projection : sig
 
-  include SerType.S with type t = Projection.t
+  include SerType.SJ with type t = Projection.t
 
   module Repr : sig
     type t =
@@ -76,8 +76,14 @@ val sexp_of_variable : variable -> Sexp.t
 val inductive_of_sexp : Sexp.t -> inductive
 val sexp_of_inductive : inductive -> Sexp.t
 
+val inductive_of_yojson : Yojson.Safe.t -> (inductive, string) Result.result
+val inductive_to_yojson : inductive -> Yojson.Safe.t
+
 val constructor_of_sexp : Sexp.t -> constructor
 val sexp_of_constructor : constructor -> Sexp.t
+
+val constructor_of_yojson : Yojson.Safe.t -> (constructor, string) Result.result
+val constructor_to_yojson : constructor -> Yojson.Safe.t
 
 type evaluable_global_reference = Names.evaluable_global_reference
 val evaluable_global_reference_of_sexp : Sexp.t -> evaluable_global_reference

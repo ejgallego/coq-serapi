@@ -14,7 +14,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Self : SerType.S with type t = Evar.t
+module Self : SerType.SJ with type t = Evar.t
 
 include module type of Self
 

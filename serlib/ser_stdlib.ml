@@ -16,7 +16,9 @@
 open Sexplib.Conv
 
 type nonrec 'a ref = 'a ref
-[@@deriving sexp]
+
+let ref_of_sexp = ref_of_sexp
+let sexp_of_ref = sexp_of_ref
 
 module Lazy = struct
   type 'a t = 'a lazy_t
