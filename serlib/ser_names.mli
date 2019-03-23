@@ -20,101 +20,27 @@ open Names
 open Sexplib
 
 module Id : sig
+  include SerType.S with type t = Id.t
 
-  type t = Id.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-  module Set : sig
-    type t = Id.Set.t
-
-    val t_of_sexp : Sexp.t -> t
-    val sexp_of_t : t -> Sexp.t
-  end
-
-  module Map : sig
-    type 'a t = 'a Id.Map.t
-    val t_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a t
-    val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t
-  end
+  module Set : SerType.S with type t = Id.Set.t
+  module Map : SerType.S1 with type 'a t = 'a Id.Map.t
 end
 
-module Name : sig
-
-  type t = Name.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
-module DirPath : sig
-
-  type t = DirPath.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
-module Label : sig
-
-  type t = Label.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
-module MBId : sig
-
-  type t = MBId.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
-module ModPath : sig
-  type t = ModPath.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
+module Name    : SerType.S with type t = Name.t
+module DirPath : SerType.S with type t = DirPath.t
+module Label   : SerType.S with type t = Label.t
+module MBId    : SerType.S with type t = MBId.t
+module ModPath : SerType.S with type t = ModPath.t
 
 module MPmap : Ser_cMap.ExtS with type key = ModPath.t
 
-module KerName : sig
-
-  type t = KerName.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
-module Constant : sig
-
-  type t = Constant.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
+module KerName  : SerType.S with type t = KerName.t
+module Constant : SerType.S with type t = Constant.t
 
 module Cmap : Ser_cMap.ExtS with type key = Constant.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t
 
-module MutInd : sig
-
-  type t = Names.MutInd.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
+module MutInd : SerType.S with type t = MutInd.t
 
 module Mindmap : Ser_cMap.ExtS with type key = MutInd.t
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t
@@ -128,25 +54,11 @@ type variable    = Names.variable
 type inductive   = Names.inductive
 type constructor = Names.constructor
 
-module Projection : sig
-
-  type t = Names.Projection.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
+module Projection : SerType.S with type t = Projection.t
 
 type projection  = Names.Projection.t
 
-module GlobRef : sig
-
-  type t = Names.GlobRef.t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
+module GlobRef : SerType.S with type t = Names.GlobRef.t
 
 val variable_of_sexp : Sexp.t -> variable
 val sexp_of_variable : variable -> Sexp.t

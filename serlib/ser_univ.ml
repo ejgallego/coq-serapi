@@ -27,6 +27,7 @@ module Level = struct
 
   let t_of_sexp sexp  = _level_get (_level_of_sexp sexp)
   let sexp_of_t level = sexp_of__level (_level_put level)
+
 end
 
 type universe_level = Level.t
@@ -54,14 +55,14 @@ module Instance = struct
 type t =
   [%import: Univ.Instance.t]
 
-type _instance = Instance of Level.t array
+type _t = Instance of Level.t array
   [@@deriving sexp]
 
 let _instance_put instance            = Instance (Univ.Instance.to_array instance)
 let _instance_get (Instance instance) = Univ.Instance.of_array instance
 
-let t_of_sexp sexp     = _instance_get (_instance_of_sexp sexp)
-let sexp_of_t instance = sexp_of__instance (_instance_put instance)
+let t_of_sexp sexp     = _instance_get (_t_of_sexp sexp)
+let sexp_of_t instance = sexp_of__t (_instance_put instance)
 
 end
 
