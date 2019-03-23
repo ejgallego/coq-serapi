@@ -16,25 +16,19 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
-module type SerType = sig
-
-  type t
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
 module type ExtS = sig
 
   include CSig.MapS
 
-  val t_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a t
-  val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t
+  (* module SSet : Ser_cSet.ExtS *)
+
+  include SerType.S1 with type 'a t := 'a t
 
 end
 
-module Make (M : CSig.MapS) (S : SerType with type t := M.key)
-  : ExtS with type key = M.key
+module Make (M : CSig.MapS) (S : SerType.S with type t := M.key)
+  : ExtS
+    with type key = M.key
+     and type 'a t = 'a M.t
+     (* and module Set := M.Set *)
 

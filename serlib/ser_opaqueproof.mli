@@ -15,6 +15,14 @@
 
 open Sexplib
 
+type work_list = Opaqueproof.work_list
+val sexp_of_work_list : work_list -> Sexp.t
+val work_list_of_sexp : Sexp.t -> work_list
+
+type cooking_info = Opaqueproof.cooking_info
+val sexp_of_cooking_info : cooking_info -> Sexp.t
+val cooking_info_of_sexp : Sexp.t -> cooking_info
+
 type opaque = Opaqueproof.opaque
 val sexp_of_opaque : opaque -> Sexp.t
 val opaque_of_sexp : Sexp.t -> opaque

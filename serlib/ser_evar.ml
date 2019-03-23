@@ -17,6 +17,7 @@
 open Sexplib.Std
 
 (* Private *)
+module Self = struct
 type t = [%import: Evar.t]
 
 type _evar                    = Ser_Evar of int [@@deriving sexp]
@@ -25,15 +26,8 @@ let _evar_get (Ser_Evar evar) = Evar.unsafe_of_int evar
 
 let t_of_sexp sexp = _evar_get (_evar_of_sexp sexp)
 let sexp_of_t evar = sexp_of__evar (_evar_put evar)
-
-module Set = struct
-
-type t = Evar.Set.t
-
-let t_of_sexp sexp =
-  Evar.Set.of_list (list_of_sexp t_of_sexp sexp)
-
-let sexp_of_t cst =
-  sexp_of_list sexp_of_t (Evar.Set.elements cst)
-
 end
+
+include Self
+
+module Set = Ser_cSet.Make(Evar.Set)(Self)

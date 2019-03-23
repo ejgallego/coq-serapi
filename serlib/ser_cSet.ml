@@ -20,25 +20,21 @@ open Sexplib.Conv
 
 module type ExtS = sig
 
-  include CSig.MapS
+  include CSig.SetS
 
-  (* module SSet : Ser_cSet.ExtS *)
-
-  include SerType.S1 with type 'a t := 'a t
+  include SerType.S with type t := t
 
 end
 
-module Make (M : CSig.MapS) (S : SerType.S with type t := M.key) = struct
+module Make (M : CSig.SetS) (S : SerType.S with type t := M.elt) = struct
 
   include M
 
-  (* module SSet = Ser_cSet.Make(M.Set)(S) *)
+  let sexp_of_t cst =
+    sexp_of_list S.sexp_of_t M.(elements cst)
 
-  let sexp_of_t f cst =
-    sexp_of_list (Sexplib.Conv.sexp_of_pair S.sexp_of_t f) M.(bindings cst)
-
-  let t_of_sexp f sexp =
-    List.fold_left (fun e (k,s) -> M.add k s e) M.empty
-      (list_of_sexp (pair_of_sexp S.t_of_sexp f) sexp)
+  let t_of_sexp sexp =
+    List.fold_left (fun e s -> M.add s e) M.empty
+      (list_of_sexp S.t_of_sexp sexp)
 
 end

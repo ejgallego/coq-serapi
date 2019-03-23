@@ -32,10 +32,10 @@ env:
   - BASE_OPAM="camlp5 cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib dune"
   # Main test suites
   matrix:
-  - TEST_TARGET="build"   COMPILER="4.06.1"                                                 EXTRA_OPAM="coq"
-  - TEST_TARGET="build"   COMPILER="4.07.1"                                                 EXTRA_OPAM="coq"
-  - TEST_TARGET="test"    COMPILER="4.07.1"                                                 EXTRA_OPAM="coq"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte"
+  - TEST_TARGET="build"   COMPILER="4.06.1"       EXTRA_OPAM="coq"
+  - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
+  - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson" COQ_EXTRA_MAKE="byte" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/" 
   # Add COQ_EXTRA_CONF="-bytecode-compiler no" to 8.8
   # - TEST_TARGET="test2"
 
