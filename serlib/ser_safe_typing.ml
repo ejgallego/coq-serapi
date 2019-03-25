@@ -37,9 +37,9 @@ type 'a effect_entry =
 let effect_entry_of_sexp (_f : Sexp.t -> 'a) (x : Sexp.t) : 'a effect_entry =
   let open Sexp in
   match x with
-  | List [Atom "PureEntry"] ->
+  | Atom "PureEntry" ->
     Obj.magic PureEntry
-  | List [Atom "EffectEntry"] ->
+  | Atom "EffectEntry" ->
     Obj.magic EffectEntry
   | _ ->
     Sexplib.Conv_error.no_variant_match ()

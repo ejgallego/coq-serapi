@@ -61,6 +61,10 @@ type 'a definition_entry =
   [%import: 'a Entries.definition_entry]
   [@@deriving sexp]
 
+type section_def_entry =
+  [%import: Entries.section_def_entry]
+  [@@deriving sexp]
+
 type inline =
   [%import: Entries.inline]
   [@@deriving sexp]
