@@ -80,6 +80,10 @@ type mutual_inductive_body = Declarations.mutual_inductive_body
 val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body
 val sexp_of_mutual_inductive_body : mutual_inductive_body -> Sexp.t
 
+type structure_body = Declarations.structure_body
+val sexp_of_structure_body : structure_body -> Sexp.t
+val structure_body_of_sexp : Sexp.t -> structure_body
+
 type module_body = Declarations.module_body
 val sexp_of_module_body : module_body -> Sexp.t
 val module_body_of_sexp : Sexp.t -> module_body
