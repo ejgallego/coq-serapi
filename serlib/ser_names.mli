@@ -54,7 +54,19 @@ type variable    = Names.variable
 type inductive   = Names.inductive
 type constructor = Names.constructor
 
-module Projection : SerType.S with type t = Projection.t
+module Projection : sig
+
+  include SerType.S with type t = Projection.t
+
+  module Repr : sig
+    type t =
+      { proj_ind : inductive;
+        proj_npars : int;
+        proj_arg : int;
+        proj_name : Label.t; }
+  end
+
+end
 
 type projection  = Names.Projection.t
 

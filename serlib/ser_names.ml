@@ -184,6 +184,14 @@ type constructor = [%import: Names.constructor] [@@deriving sexp]
 (* Projection: private *)
 module Projection = struct
 
+  module Repr = struct
+    type t =
+      { proj_ind : inductive;
+        proj_npars : int;
+        proj_arg : int;
+        proj_name : Label.t; }
+  end
+
   type t = [%import: Names.Projection.t]
 
   type _projection = Projection of Constant.t * bool

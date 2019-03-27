@@ -16,7 +16,7 @@
              (@ejgallego c.f. #119)
  * [serlib ] Serialize more internal environment fields (@ejgallego c.f. #119)
  * [serlib ] Improvements in serialization org (@ejgallego)
- * [serlib ] Serialize kernel entries (@ejgallego)
+ * [serlib ] Serialize kernel entries (@ejgallego @palmskog)
 
 ## Version 0.6.0:
 

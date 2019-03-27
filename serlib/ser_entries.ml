@@ -76,3 +76,15 @@ type parameter_entry =
 type 'a constant_entry =
   [%import: 'a Entries.constant_entry]
   [@@deriving sexp]
+
+type seff_env =
+  [%import: Entries.seff_env]
+  [@@deriving sexp]
+
+type side_effect_role =
+  [%import: Entries.side_effect_role]
+  [@@deriving sexp]
+
+type side_eff =
+  [%import: Entries.side_eff]
+  [@@deriving sexp]
