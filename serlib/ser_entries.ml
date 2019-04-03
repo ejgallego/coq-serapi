@@ -77,6 +77,22 @@ type 'a constant_entry =
   [%import: 'a Entries.constant_entry]
   [@@deriving sexp]
 
+type module_struct_entry =
+  [%import: Entries.module_struct_entry]
+  [@@deriving sexp]
+
+type module_params_entry =
+  [%import: Entries.module_params_entry]
+  [@@deriving sexp]
+
+type module_entry =
+  [%import: Entries.module_entry]
+  [@@deriving sexp]
+
+type module_type_entry =
+  [%import: Entries.module_type_entry]
+  [@@deriving sexp]
+
 type seff_env =
   [%import: Entries.seff_env]
   [@@deriving sexp]

@@ -64,6 +64,10 @@ type typing_flags = Declarations.typing_flags
 val typing_flags_of_sexp : Sexp.t -> typing_flags
 val sexp_of_typing_flags : typing_flags -> Sexp.t
 
+type inline = Declarations.inline
+val sexp_of_inline : inline -> Sexp.t
+val inline_of_sexp : Sexp.t -> inline
+
 type constant_body = Declarations.constant_body
 val sexp_of_constant_body : constant_body -> Sexp.t
 val constant_body_of_sexp : Sexp.t -> constant_body
@@ -79,6 +83,10 @@ val sexp_of_recursivity_kind : recursivity_kind -> Sexp.t
 type mutual_inductive_body = Declarations.mutual_inductive_body
 val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body
 val sexp_of_mutual_inductive_body : mutual_inductive_body -> Sexp.t
+
+type module_alg_expr = Declarations.module_alg_expr
+val sexp_of_module_alg_expr : module_alg_expr -> Sexp.t
+val module_alg_expr_of_sexp : Sexp.t -> module_alg_expr
 
 type structure_body = Declarations.structure_body
 val sexp_of_structure_body : structure_body -> Sexp.t
