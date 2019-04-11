@@ -1,0 +1,84 @@
+; Eventually we should use the "put binaries in scope feature of Dune"
+(rule
+ (targets test_roundtrip)
+ (deps
+  (:input test_roundtrip.in)
+  (package coq-serapi))
+ (action
+  (progn
+   (copy test_roundtrip.in test_roundtrip)
+   ; We insert the digest of the binaries to force a rebuild of the
+   ; test cases if the binary has been modified.
+   (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
+
+(alias
+ (name runtest)
+ (deps (:input NthTransparent.v))
+ (action (run ./test_roundtrip %{input})))
+
+; unexpected sum tag error
+;(alias
+; (name runtest)
+; (deps (:input NthOpaque.v))
+; (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input AssocTransparent.v))
+ (action (run ./test_roundtrip %{input})))
+
+; missing serialization error
+;(alias
+; (name runtest)
+; (deps (:input AssocOpaque.v))
+; (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input FalsePolymorphic.v))
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input NthPolymorphic.v))
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input ModType.v))
+ (action (run ./test_roundtrip %{input})))
+
+(alias
+ (name runtest)
+ (deps (:input Mod.v))
+ (action (run ./test_roundtrip %{input})))
+
+; Not_found error
+;(alias
+; (name runtest)
+; (deps (:input Functor.v))
+; (action (run ./test_roundtrip %{input})))
+
+; Not_found error
+;(alias
+; (name runtest)
+; (deps (:input Dyadic.v))
+; (action (run ./test_roundtrip %{input})))
+
+; Serlib error
+;(alias
+; (name runtest)
+; (deps (:input BeforeSectionTransparent.v))
+; (action (run ./test_roundtrip %{input})))
+
+; Serlib error
+;(alias
+; (name runtest)
+; (deps (:input BeforeSectionOpaque.v))
+; (action (run ./test_roundtrip %{input})))
+
+; label already declared error
+;(alias
+; (name runtest)
+; (deps (:input Params.v))
+; (action (run ./test_roundtrip %{input})))

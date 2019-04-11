@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+SERCOMP=../../sertop/sercomp.exe
+SERLOAD=../../sertop/serload.exe
+FILE_IN="$1"
+FILE_OUT="${FILE_IN%.v}.ktrace"
+
+$SERCOMP --input=vernac --mode=trace --exn_on_opaque "$FILE_IN" > "$FILE_OUT"
+$SERLOAD "$FILE_OUT"
