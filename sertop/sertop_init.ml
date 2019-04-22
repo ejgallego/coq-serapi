@@ -42,7 +42,7 @@ type coq_opts = {
 let coq_init opts =
 
   if opts.debug then begin
-    Printexc.record_backtrace true;
+    Backtrace.record_backtrace true;
     Flags.debug := true;
   end;
 

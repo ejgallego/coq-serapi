@@ -19,6 +19,7 @@
  * [serlib ] Serialize kernel entries (@ejgallego @palmskog)
  * [serlib ] Fix critical bug on `Constr` deserialization; reported by @palmskog,
              fix by @SkySkimmer.
+ * [sertop]  Fix backtrace printing when using `--debug` (@ejgallego)
 
 ## Version 0.6.0:
 
