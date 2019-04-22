@@ -66,12 +66,14 @@ module Extra = struct
   (* End of Core_kernel code, (c) Jane Street *)
   (******************************************************************************)
 
-  let rec stream_tok acc str =
+  let rec stream_tok n_tok acc (str,loc_fn) =
     let e = Stream.next str in
+    let loc = Pcoq.to_coqloc (loc_fn n_tok) in
+    let l_tok = CAst.make ~loc e in
     if Tok.(equal e EOI) then
-      List.rev (e::acc)
+      List.rev (l_tok::acc)
     else
-      stream_tok (e::acc) str
+      stream_tok (n_tok+1) (l_tok::acc) (str,loc_fn)
 
 end
 
@@ -110,7 +112,7 @@ type coq_object =
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
-  | CoqTok       of Tok.t list
+  | CoqTok       of Tok.t CAst.t list
   | CoqAst       of Vernacexpr.vernac_control Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
@@ -191,7 +193,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   | CoqPp      s    -> s
   (* | CoqRichpp  s    -> Pp.str (pp_richpp s) *)
   | CoqLoc    _loc  -> Pp.mt ()
-  | CoqTok    tok   -> Pp.pr_sequence (fun tok -> Pp.str (Tok.(to_string tok))) tok
+  | CoqTok    toks  -> Pp.pr_sequence (fun {CAst.v = tok;_} -> Pp.str (Tok.(to_string tok))) toks
   | CoqAst (_l, v)  -> Ppvernac.pr_vernac v
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body env m mind None
   | CoqOption (n,s) -> pp_opt n s
@@ -831,7 +833,7 @@ let exec_cmd (cmd : cmd) =
         let istr = Stream.of_string input in
         let lex = CLexer.lexer.Plexing.tok_func istr in
         CLexer.set_lexer_state st;
-        let objs = Extra.stream_tok [] (fst lex) in
+        let objs = Extra.stream_tok 0 [] lex in
         [ObjList [CoqTok objs]]
       with exn ->
         CLexer.set_lexer_state st;

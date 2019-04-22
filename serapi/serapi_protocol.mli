@@ -56,7 +56,7 @@ type coq_object =
   | CoqPp        of Pp.t
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
-  | CoqTok       of Tok.t list
+  | CoqTok       of Tok.t CAst.t list
   | CoqAst       of Vernacexpr.vernac_control Loc.located
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr

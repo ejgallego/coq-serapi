@@ -83,6 +83,7 @@ let _ =
 (******************************************************************************)
 
 module Loc      = Ser_loc
+module CAst     = Ser_cAst
 module Pp       = Ser_pp
 module Names    = Ser_names
 module Environ  = Ser_environ
