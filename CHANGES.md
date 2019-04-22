@@ -20,6 +20,7 @@
  * [serlib ] Fix critical bug on `Constr` deserialization; reported by @palmskog,
              fix by @SkySkimmer.
  * [sertop]  Fix backtrace printing when using `--debug` (@ejgallego)
+ * [serlib ] Don't serialize VM values (@ejgallego, bug report by @palmskog)
 
 ## Version 0.6.0:
 

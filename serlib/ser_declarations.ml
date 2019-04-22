@@ -101,6 +101,10 @@ type constant_body =
   [%import: Declarations.constant_body]
   [@@deriving sexp]
 
+let sexp_of_constant_body e =
+  (* We cannot handle VM values *)
+  sexp_of_constant_body { e with const_body_code = None }
+
 (* XXX: At least one serializer can be done *)
 let sexp_of_module_retroknowledge _ =
   Serlib_base.sexp_of_opaque ~typ:"Declarations.module_retroknowledge"
