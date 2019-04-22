@@ -75,8 +75,7 @@
 ; (deps (:input BeforeSectionOpaque.v))
 ; (action (run ./test_roundtrip %{input})))
 
-; label already declared error
-;(alias
-; (name runtest)
-; (deps (:input Params.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input Params.v))
+ (action (run ./test_roundtrip %{input})))

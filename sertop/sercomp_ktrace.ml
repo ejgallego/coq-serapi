@@ -49,6 +49,8 @@ module Event = struct
     | Mod_type_start of Label.t
     | Mod_type_end of Label.t
     | Mod_type of Label.t * Entries.module_type_entry * Declarations.inline
+    | Env_snapshot of int
+    | Env_restore of int
     | Other of string
   [@@deriving sexp]
 end
@@ -73,15 +75,23 @@ let sercomp_log_st = Event.(ST.
   ; other = (fun str -> trace := (Other str)::!trace)
   })
 
-let sercomp_log_lib = Event.(Library.
+let sercomp_log_lib = Event.(Lib.
+  { snapshot_env = (fun id -> trace := Env_snapshot id::!trace)
+  ; restore_env = (fun id -> trace := Env_restore id::!trace)
+  })
+
+let sercomp_log_library = Event.(Library.
   { require = (fun libs export -> trace := (Require(libs,export))::!trace) })
 
 let init () =
   ST.set_trace_ops sercomp_log_st;
-  Library.set_trace_ops sercomp_log_lib
+  Lib.set_trace_ops sercomp_log_lib;
+  Library.set_trace_ops sercomp_log_library
 
 let dump pp =
   List.iter Format.(printf "@[%a@]@\n%!" pp) List.(rev_map Event.sexp_of_t !trace)
+
+let env_map = ref Int.Map.empty
 
 (* XXX: We are using the global env, for now that should be good, but
    beware. *)
@@ -121,5 +131,13 @@ let replay (e : Event.t) =
     (* XXX This is wrong // *)
     let fs = Summary.freeze_summaries ~marshallable:false in
     ignore (Global.end_modtype fs LB.(to_id lb))
+  | Env_snapshot id ->
+    let env = Summary.(project_from_summary (freeze_summaries ~marshallable:`No) Global.global_env_summary_tag) in
+    env_map := Int.Map.add id env !env_map
+  | Env_restore id ->
+    let env = Int.Map.find id !env_map in
+    let fs = Summary.freeze_summaries ~marshallable:`No in
+    let fs = Summary.modify_summary fs Global.global_env_summary_tag env in
+    Summary.unfreeze_summaries fs
   | Other _ ->
     ()
