@@ -16,22 +16,20 @@
  (deps (:input NthTransparent.v))
  (action (run ./test_roundtrip %{input})))
 
-; unexpected sum tag error
-;(alias
-; (name runtest)
-; (deps (:input NthOpaque.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input NthOpaque.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
  (deps (:input AssocTransparent.v))
  (action (run ./test_roundtrip %{input})))
 
-; missing serialization error
-;(alias
-; (name runtest)
-; (deps (:input AssocOpaque.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input AssocOpaque.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
