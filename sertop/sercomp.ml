@@ -16,15 +16,12 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-let fatal_error msg =
-  Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
-  exit 1
-
 let fatal_exn exn info =
   let loc = Loc.get_loc info in
   let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
                 ++ CErrors.iprint (exn, info)) in
-  fatal_error msg
+  Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
+  exit 1
 
 let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
@@ -108,7 +105,7 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
   let open Format in
   let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
   if tip <> `NewTip then
-    fatal_error Pp.(str "fatal, got no `NewTip`");
+    CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
   let open Sertop_arg in
   let () = match mode with
     | C_env   -> ()
@@ -131,7 +128,7 @@ let check_pending_proofs () =
     let msg = let open Pp in
       seq [ str "There are pending proofs: "
           ; pfs |> List.rev |> prlist_with_sep pr_comma Names.Id.print; str "."] in
-    fatal_error msg
+    CErrors.user_err msg
 
 let close_document ~pp ~mode ~doc ~in_file =
   let open Sertop_arg in

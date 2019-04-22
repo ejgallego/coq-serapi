@@ -123,8 +123,9 @@ module AUContext = struct
 
   type t = Univ.AUContext.t
 
-  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Univ.AUContext.t"
-  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Univ.AUContext.t"
+  (* XXX: Opaque, so check they are the same *)
+  let t_of_sexp x = Obj.magic (UContext.t_of_sexp x)
+  let sexp_of_t c = UContext.sexp_of_t (Obj.magic c)
 
 end
 

@@ -8,16 +8,16 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
 open Sexplib.Conv
 open Declarations
 
+module Rtree   = Ser_rtree
 module Names   = Ser_names
 module Context = Ser_context
 module Constr  = Ser_constr
@@ -42,19 +42,6 @@ type ('a, 'b) declaration_arity =
 type recarg =
   [%import: Declarations.recarg]
   [@@deriving sexp]
-
-(* XXX: Fixme *)
-module Rtree = struct
-
-  type 'a t = 'a Rtree.t
-
-  let t_of_sexp f s = Rtree.mk_node (f s) [||]
-
-  let sexp_of_t f t =
-    let n, ll = Rtree.dest_node t in
-    Sexp.(List [Atom "RTree"; f n; sexp_of_int @@ Array.length ll])
-
-end
 
 type wf_paths =
   [%import: Declarations.wf_paths]
@@ -100,6 +87,10 @@ type typing_flags =
 type constant_body =
   [%import: Declarations.constant_body]
   [@@deriving sexp]
+
+let sexp_of_constant_body e =
+  (* We cannot handle VM values *)
+  sexp_of_constant_body { e with const_body_code = None }
 
 (* XXX: At least one serializer can be done *)
 let sexp_of_module_retroknowledge _ =
