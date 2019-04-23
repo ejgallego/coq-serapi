@@ -23,8 +23,8 @@ type econstr =
   [%import: Evd.econstr]
 
 (* ahhh *)
-let econstr_of_sexp s = Obj.(magic Constr.t_of_sexp s)
-let sexp_of_econstr c = Constr.sexp_of_t Obj.(magic c)
+let econstr_of_sexp s = Obj.magic (Constr.t_of_sexp s)
+let sexp_of_econstr c = Constr.sexp_of_t (Obj.magic c)
 
 type conv_pb = Reduction.conv_pb
   [@@deriving sexp]

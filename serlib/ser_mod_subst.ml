@@ -43,5 +43,5 @@ type 'a _substituted = {
 type 'a substituted =
   [%import: 'a Mod_subst.substituted]
 
-let sexp_of_substituted f x = sexp_of__substituted f Obj.(magic x)
+let sexp_of_substituted f x = sexp_of__substituted f (Obj.magic x)
 let substituted_of_sexp f x = Obj.magic (_substituted_of_sexp f x)

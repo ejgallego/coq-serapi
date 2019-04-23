@@ -29,7 +29,7 @@ type _work_list =
 
 type work_list = Opaqueproof.work_list
 let work_list_of_sexp x = Obj.magic (_work_list_of_sexp x)
-let sexp_of_work_list x = sexp_of__work_list Obj.(magic x)
+let sexp_of_work_list x = sexp_of__work_list (Obj.magic x)
 
 type cooking_info =
   [%import: Opaqueproof.cooking_info]
@@ -45,7 +45,7 @@ type _opaque =
 
 type opaque = [%import: Opaqueproof.opaque]
 
-let sexp_of_opaque x = sexp_of__opaque Obj.(magic x)
+let sexp_of_opaque x = sexp_of__opaque (Obj.magic x)
 let opaque_of_sexp x = Obj.magic (_opaque_of_sexp x)
 
 module Map = Ser_cMap.Make(Int.Map)(Ser_int)
@@ -58,5 +58,5 @@ type _opaquetab = {
 } [@@deriving sexp]
 
 type opaquetab = [%import: Opaqueproof.opaquetab]
-let sexp_of_opaquetab x = sexp_of__opaquetab Obj.(magic x)
+let sexp_of_opaquetab x = sexp_of__opaquetab (Obj.magic x)
 let opaquetab_of_sexp x = Obj.magic (_opaquetab_of_sexp x)

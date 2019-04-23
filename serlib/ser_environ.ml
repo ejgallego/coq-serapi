@@ -66,7 +66,7 @@ type _globals = {
 
 type globals = Environ.globals
 
-let sexp_of_globals g = sexp_of__globals Obj.(magic g)
+let sexp_of_globals g = sexp_of__globals (Obj.magic g)
 let _globals_of_sexp g = Obj.magic (_globals_of_sexp g)
 
 type env =
