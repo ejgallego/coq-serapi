@@ -31,7 +31,7 @@ new use cases.
 
 ### Documentation and help:
 
-- [Protocol Documentation]()
+- [Protocol Documentation](http://ejgallego.github.io/coq-serapi/priv-serapi/Serapi_protocol/)
 - [interface file](serapi/serapi_protocol.mli)
 - [SerAPI's FAQ](FAQ.md).
 - [issue tracker](https://github.com/ejgallego/coq-serapi/issues)
