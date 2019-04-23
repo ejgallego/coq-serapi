@@ -22,7 +22,10 @@ test:
 	dune runtest
 
 doc:
-	dune build @doc-private
+	dune build @doc-private @doc
+
+browser:
+	google-chrome _build/default/_doc/_html/index.html
 
 #####################################################
 # Javascript support

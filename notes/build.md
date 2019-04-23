@@ -1,6 +1,6 @@
 # Building SerAPI Manually
 
-`sertop` is available for different Coq versions, which each of its
+SerAPI is available for different Coq versions, which each of its
 branches targetting the corresponding Coq branch. The current
 development branch is `v8.9` for Coq v8.9.
 
@@ -17,22 +17,29 @@ success in NixOS.
    `$ git clone -b ${COQVER} https://github.com/coq/coq.git ~/external/coq-${COQVER} && cd ~/external/coq-${COQVER} && ./configure -local -native-compiler no && make -j $NJOBS`.
 3. Type `make SERAPI_COQ_HOME=~/external/coq-${COQVER}` to build `sertop`.
 
-Alternatively, you can install Coq `>= 8.9` using OPAM and build
-against it using just `make`.
+Alternatively, you can install Coq `>= 8.9` using OPAM and build against it using just `make`.
 
 The above instructions assume that you use `~/external/coq-${COQVER}`
 directory to place the coq build that SerAPI needs; you can modify
 the `SERAPI_COQ_HOME` variable in `Makefile` to make this change
 permanent, or override the provided default.
 
-Another alternative is to modify your `findlib.conf` file to add Coq's
-path to findlib's search path: for example, edit the file `~/.opam/4.07.1/lib/findlib.conf` and change
-`path="/home/egallego/.opam/4.07.01/lib"` by `path="/home/egallego/.opam/4.07.1/lib:/home/egallego/external/coq-v8.9"`.
+SerAPI does use the [Dune](https://github.com/ocaml/dune) build
+system, thus standard Dune considerations do apply.
 
-This is convenient to use `merlin`. If you install Coq globally, these
-steps may not be needed, findlib may be able to locate Coq for you;
-YMMV.
+## Executing built binaries
 
+A special consideration is that SerAPI does provide serialization
+plugins that are loaded when Coq plugins are. In particular, SerAPI
+does use `findlib` to manage plugins' dependencies, so you must
+execute `sertop` and `sercomp` using `dune exec` or with the proper
+`OCAMLPATH` pointing out to the right install location of Coq.
+
+If that is not properly done, the usual symptom is the error message:
+```
+(CoqExn "Cannot link ml-object ground_plugin.cmxs to Coq code (Fl_package_base.No_such_package(\"coq-serapi.serlib.ground_plugin\", \"\"))."))
+```
+When executing binaries via `dune exec`, be sure to pass any arguments after `--`, e.g., `dune exec sercomp -- --help`.
 ## Advanced Developer Setup
 
 SerAPI builds using Dune which supports modular builds. Starting with

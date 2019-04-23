@@ -27,53 +27,44 @@ of the scary details involved in interacting with Coq.
 
 Feedback from Coq users and developers is very welcome and _intrinsic_
 to the project. We are open to implementing new features and exploring
-new use cases, let us know what you think via the [issue
-tracker](https://github.com/ejgallego/coq-serapi/issues), our
-[Gitter chat](https://gitter.im/coq-serapi/Lobby) channel, or
-the [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq). See also
-[SerAPI's FAQ](FAQ.md).
+new use cases.
 
-### Roadmap:
+### Documentation and help:
 
-SerAPI 0.6.x is based on Coq 8.9. These days, most work related to
-SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
-itself. The main objective is to improve the proof-document model; building
-a rich query language will be next.
+- [Protocol Documentation]()
+- [interface file](serapi/serapi_protocol.mli)
+- [SerAPI's FAQ](FAQ.md).
+- [issue tracker](https://github.com/ejgallego/coq-serapi/issues)
+- [Gitter chat](https://gitter.im/coq-serapi/Lobby) channel
+- [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq)
 
-### Quick Overview and Documentation:
+**API WARNING:** _The protocol is experimental and may change often_.
+
+### Quick Overview and Install:
 
 SerAPI can be installed as the OPAM package `coq-serapi`. See [build instructions](notes/build.md)
 for manual installation. The experimental [in-browser version](https://x80.org/rhino-hawk)
 is also online.
 
-The principal entry point in SerAPI is the `sertop` REPL, a basic
-toplevel that reads and executes commands (S-expressions) from stdin,
-and writes to stdout in either machine or human-friendly format.
-See `sertop --help` for an overview of the main options. `Ctrl-C`
-will interrupt a busy Coq process in the same way `coqtop` does.
-We recommend using `rlwrap` or the [emacs mode](sertop.el) for direct
-interaction using `sertop`.
+SerAPI provides an interactive "Read-Print-Eval-Loop", `sertop` and a
+batch-oriented compiler `sercomp`. See the manual pages and `--help`
+pages of each command for more details.
+
+To get familiar with SerAPI we recommend to launch the `sertop` REPL,
+as it provides a reasonably human-friendly experience; we recommend:
+
+```
+$ rlwrap sertop --printer=human
+```
+
+You can then input commands. `Ctrl-C` will interrupt a busy Coq
+process in the same way `coqtop` does.
 
 The program `sercomp` provides a command-line interface to some
 key functionality of SerAPI and can be used for batch processing
 of Coq documents, e.g., to serialize Coq source files from/to lists of
 S-expressions. See `sercomp --help` for some usage examples and an
 overview of the main options.
-
-## Protocol Description
-
-**API WARNING:** _The protocol is experimental and may change often_.
-
-The canonical documentation for the protocol is the [interface
-file](serapi/serapi_protocol.mli) itself; the data types exposed there
-are serialized in an automatic way so any change in that file will
-imply a change in the actual protocol.
-
-### Coq Objects:
-
-An important part of the SerAPI protocol is the
-[`CoqObject`](serapi/serapi_protocol.mli#L22) data type, a _union
-type_ that encapsulates most core Coq objects.
 
 ### Commands:
 
@@ -104,6 +95,13 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
   currently supported queries can be seen [here](serapi/serapi_protocol.mli#L118)
 
 - **Printing:** `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
+
+### Roadmap:
+
+SerAPI 0.6.x is based on Coq 8.9. These days, most work related to
+SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
+itself. The main objective is to improve the proof-document model; building
+a rich query language will be next.
 
 ### Quick demo (not always up to date)
 
