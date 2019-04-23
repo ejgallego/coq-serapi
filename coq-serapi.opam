@@ -8,7 +8,7 @@ homepage:     "https://github.com/ejgallego/coq-serapi"
 bug-reports:  "https://github.com/ejgallego/coq-serapi/issues"
 dev-repo:     "git+https://github.com/ejgallego/coq-serapi.git"
 license:      "GPL 3"
-doc:          "https://ejgallego.github.io/coq-serapi/doc"
+doc:          "https://ejgallego.github.io/coq-serapi/"
 
 depends: [
   "ocaml"         { >= "4.06.0"           }
