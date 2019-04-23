@@ -40,6 +40,7 @@ module Event = struct
     | Constraints of Univ.Constraint.t
     | Named_assum of (Id.t * Constr.types * bool) Univ.in_universe_context_set
     | Named_def of Id.t * Entries.section_def_entry
+    | Push_context_set of bool * Univ.ContextSet.t
     | Lib_start of DirPath.t
     | Mod_impl of Label.t * Entries.module_entry * Declarations.inline
     | Mod_start of Label.t
@@ -63,6 +64,7 @@ let sercomp_log_st = Event.(ST.
   ; constraints = (fun cst -> trace := (Constraints cst)::!trace)
   ; named_assum = (fun c -> trace := (Named_assum c)::!trace)
   ; named_def = (fun (id,s) -> trace := (Named_def (id,s))::!trace)
+  ; push_context_set = (fun (poly,ctx) -> trace := Push_context_set (poly,ctx)::!trace)
   ; lib_start = (fun dp -> trace := (Lib_start dp)::!trace)
   ; mod_impl = (fun (a,b,c) -> trace := Mod_impl (a,b,c)::!trace)
   ; mod_start = (fun lb -> trace := Mod_start lb::!trace)
@@ -109,6 +111,8 @@ let replay (e : Event.t) =
     Global.push_named_assum c
   | Named_def (id,c) ->
     Global.push_named_def (id, c)
+  | Push_context_set (poly,ctx) ->
+    Global.push_context_set poly ctx
   | Lib_start dp ->
     ignore (Global.start_library dp)
   | Mod_impl (a,b,c)->
@@ -132,11 +136,11 @@ let replay (e : Event.t) =
     let fs = Summary.freeze_summaries ~marshallable:false in
     ignore (Global.end_modtype fs LB.(to_id lb))
   | Env_snapshot id ->
-    let env = Summary.(project_from_summary (freeze_summaries ~marshallable:`No) Global.global_env_summary_tag) in
+    let env = Summary.(project_from_summary (freeze_summaries ~marshallable:false) Global.global_env_summary_tag) in
     env_map := Int.Map.add id env !env_map
   | Env_restore id ->
     let env = Int.Map.find id !env_map in
-    let fs = Summary.freeze_summaries ~marshallable:`No in
+    let fs = Summary.freeze_summaries ~marshallable:false in
     let fs = Summary.modify_summary fs Global.global_env_summary_tag env in
     Summary.unfreeze_summaries fs
   | Other _ ->

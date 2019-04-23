@@ -64,16 +64,16 @@
 ; (action (run ./test_roundtrip %{input})))
 
 ; Serlib error
-;(alias
-; (name runtest)
-; (deps (:input BeforeSectionTransparent.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input BeforeSectionTransparent.v))
+ (action (run ./test_roundtrip %{input})))
 
 ; Serlib error
-;(alias
-; (name runtest)
-; (deps (:input BeforeSectionOpaque.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input BeforeSectionOpaque.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
