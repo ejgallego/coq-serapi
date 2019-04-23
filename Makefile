@@ -18,6 +18,9 @@ sertop/ser_version.ml: $(GITDEPS)
 build:
 	dune build
 
+build-install:
+	dune build coq-serapi.install
+
 test:
 	dune runtest
 

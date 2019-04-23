@@ -41,7 +41,7 @@ env:
   # - TEST_TARGET="test"                                                                               EXTRA_OPAM="coq"
 
 install:
-- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.3/opam-2.0.3-x86_64-linux -o /usr/bin/opam
+- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.4/opam-2.0.4-x86_64-linux -o /usr/bin/opam
 - sudo chmod 755 /usr/bin/opam
 - opam init -c "$COMPILER" --disable-sandboxing
 - opam switch set "$COMPILER"
