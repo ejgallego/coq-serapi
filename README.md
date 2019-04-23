@@ -103,6 +103,48 @@ SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
 itself. The main objective is to improve the proof-document model; building
 a rich query language will be next.
 
+## Clients and Users
+
+SerAPI has been used in a few contexts already, we provide a few
+pointers here, feel free to add your own!
+
+- [jsCoq](https://github.com/ejgallego/jscoq) allows you to run Coq in
+  your browser. JsCoq is the predecessor of SerAPI and will shortly be
+  fully based on it.
+- [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
+  demo based on SerAPI by [Clément Pit--Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
+  functional but illustrates some noteworthy features of SerAPI.
+- [PeaCoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
+  browser has an experimental branch that uses SerAPI.
+- [GrammaTech's Software Evolution Library
+  (SEL)](https://grammatech.github.io/sel/) provides tools for
+  programmatically modifying and evaluating software. SEL operates
+  over multiple software representations including source code in
+  several languages and compiled machine code. Its Coq module uses
+  SerAPI to serialize Coq source code into ASTs, which are parsed into
+  Common Lisp objects for further manipulation. GrammaTech uses this
+  library to synthesize modifications to software so that it satisfies
+  an objective function, e.g., a suite of unit tests.
+  ```bibtex
+  @manual{sel2018manual,
+    title        = {Software Evolution Library},
+    author       = {Eric Schulte and Contributors},
+    organization = {GrammaTech},
+    address      = {eschulte@grammatech.com},
+    month        = 1,
+    year         = 2018,
+    note         = {https://grammatech.github.io/sel/}
+  }
+  ```
+  SerAPI support was added by Rebecca Swords.
+- SerAPI is being used to improve the Coq regression proof
+  selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/)
+  See paper at http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf
+- SerAPI is being used to some software testing projects, we will
+  update this link as papers get out of embargo.
+- SerAPI is being used in some machine learning projects, we will
+  update this link as papers get out of embargo.
+
 ### Quick demo (not always up to date)
 
 ```lisp
@@ -179,17 +221,6 @@ SerAPI has been developed at the
 [MINES ParisTech](http://www.mines-paristech.fr/) (former École de
 Mines de Paris) and partially supported by the
 [FEEVER](http://www.feever.fr) project.
-
-## Clients using SerAPI
-
-- [jsCoq](https://github.com/ejgallego/jscoq) allows you to run Coq in
-  your browser. JsCoq is the predecessor of SerAPI and will shortly be
-  fully based on it.
-- [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
-  demo based on SerAPI by [Clément Pit--Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
-  functional but illustrates some noteworthy features of SerAPI.
-- [PeaCoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
-  browser has an experimental branch that uses SerAPI.
 
 ## Developer information
 
