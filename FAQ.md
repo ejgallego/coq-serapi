@@ -20,7 +20,7 @@ once the project stabilizes.
 
 The supported way is to use the OPAM package manager. The
 `.travis.yml` file contains up to date install instructions if you
-want to build SerAPI manually.
+want to build SerAPI manually, see also the [build instructions](notes/build.md) file.
 
 ## SerAPI hangs with inputs larger than 4096 characters:
 
@@ -29,9 +29,24 @@ This is due to a historical limitation of the UNIX/Linux TTY API. See
 communicate with SerAPI using a **pipe** this shouldn't be a problem.
 Alternatively, you can use the `ReadFile` experimental command.
 
+## I get error "Cannot link ml-object ..."
+
+Your OCaml path is not properly setup, see [build instructions](notes/build.md) for more help.
+
 ## Can SerAPI produce `.vo` files?
 
-Not yet, but support for this is planned.
+Yes, see `sercomp --help`
+
+## How does SerAPI compare to TCoq
+
+[TCoq](https://github.com/ml4tp/tcoq/) provides some support for
+exporting Coq structures; the main differences with SerAPI is that
+SerAPI works against stock Coq and is maintained; it also provides a
+faithful, automatically generated printers.
+
+A more detailed comparison is needed, in particular TCoq does provide
+some hooks that insert themselves in the proof execution, it is not
+clear that SerAPI can provide that.
 
 ## Can SerAPI evaluate a document incrementally?
 
