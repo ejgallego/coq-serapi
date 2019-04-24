@@ -76,11 +76,17 @@ type cases_pattern =
   [%import: Glob_term.cases_pattern]
   [@@deriving sexp]
 
+type glob_recarg =
+  [%import: Glob_term.glob_recarg]
+  [@@deriving sexp]
+
+type glob_fix_kind =
+  [%import: Glob_term.glob_fix_kind]
+  [@@deriving sexp]
+
 type 'a glob_constr_r        = [%import: 'a Glob_term.glob_constr_r]
 and 'a glob_constr_g         = [%import: 'a Glob_term.glob_constr_g]
 and 'a glob_decl_g           = [%import: 'a Glob_term.glob_decl_g]
-and 'a fix_recursion_order_g = [%import: 'a Glob_term.fix_recursion_order_g]
-and 'a fix_kind_g            = [%import: 'a Glob_term.fix_kind_g]
 and 'a predicate_pattern_g   = [%import: 'a Glob_term.predicate_pattern_g]
 and 'a tomatch_tuple_g       = [%import: 'a Glob_term.tomatch_tuple_g]
 and 'a tomatch_tuples_g      = [%import: 'a Glob_term.tomatch_tuples_g]
@@ -94,13 +100,6 @@ type glob_constr =
 
 type glob_decl =
   [%import: Glob_term.glob_decl]
-  [@@deriving sexp]
-
-type fix_recursion_order =
-  [%import: Glob_term.fix_recursion_order]
-  [@@deriving sexp]
-
-type fix_kind            = [%import: Glob_term.fix_kind]
   [@@deriving sexp]
 
 type predicate_pattern   = [%import: Glob_term.predicate_pattern]
