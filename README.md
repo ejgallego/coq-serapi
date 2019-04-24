@@ -29,11 +29,12 @@ Feedback from Coq users and developers is very welcome and _intrinsic_
 to the project. We are open to implementing new features and exploring
 new use cases.
 
-### Documentation and help:
+### Documentation and Help:
 
 - [Protocol Documentation](http://ejgallego.github.io/coq-serapi/priv-serapi/Serapi_protocol/)
 - [interface file](serapi/serapi_protocol.mli)
-- [SerAPI's FAQ](FAQ.md).
+- [SerAPI's FAQ](FAQ.md)
+- [technical report](https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408)
 - [issue tracker](https://github.com/ejgallego/coq-serapi/issues)
 - [Gitter chat](https://gitter.im/coq-serapi/Lobby) channel
 - [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq)
@@ -50,15 +51,15 @@ SerAPI provides an interactive "Read-Print-Eval-Loop", `sertop` and a
 batch-oriented compiler `sercomp`. See the manual pages and `--help`
 pages of each command for more details.
 
-To get familiar with SerAPI we recommend to launch the `sertop` REPL,
-as it provides a reasonably human-friendly experience; we recommend:
+To get familiar with SerAPI we recommend launching the `sertop` REPL,
+as it provides a reasonably human-friendly experience:
 
 ```
 $ rlwrap sertop --printer=human
 ```
 
 You can then input commands. `Ctrl-C` will interrupt a busy Coq
-process in the same way `coqtop` does.
+process in the same way it interrupts `coqtop`.
 
 The program `sercomp` provides a command-line interface to some
 key functionality of SerAPI and can be used for batch processing
@@ -66,7 +67,7 @@ of Coq documents, e.g., to serialize Coq source files from/to lists of
 S-expressions. See `sercomp --help` for some usage examples and an
 overview of the main options.
 
-### Commands:
+### Protocol Commands:
 
 Interaction with `sertop` is done using _commands_, which can be optionally tagged in the form of `(tag cmd)`; otherwise, an automatic tag will be assigned.
 For every command, SerAPI **will always** reply with `(Answer tag Ack)` to indicate that the command was successfully parsed and delivered to Coq, or with a `SexpError` if parsing failed.
@@ -103,7 +104,7 @@ SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
 itself. The main objective is to improve the proof-document model; building
 a rich query language will be next.
 
-## Clients and Users
+### Clients and Users:
 
 SerAPI has been used in a few contexts already, we provide a few
 pointers here, feel free to add your own!
@@ -115,7 +116,7 @@ pointers here, feel free to add your own!
   demo based on SerAPI by [Clément Pit--Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
   functional but illustrates some noteworthy features of SerAPI.
 - [PeaCoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
-  browser has an experimental branch that uses SerAPI.
+  browser, has an experimental branch that uses SerAPI.
 - [GrammaTech's Software Evolution Library
   (SEL)](https://grammatech.github.io/sel/) provides tools for
   programmatically modifying and evaluating software. SEL operates
@@ -138,14 +139,14 @@ pointers here, feel free to add your own!
   ```
   SerAPI support was added by Rebecca Swords.
 - SerAPI is being used to improve the Coq regression proof
-  selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/)
-  See paper at http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf
+  selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/);
+  see the [paper](http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
 - SerAPI is being used to some software testing projects, we will
   update this link as papers get out of embargo.
 - SerAPI is being used in some machine learning projects, we will
   update this link as papers get out of embargo.
 
-### Quick demo (not always up to date)
+### Quick Demo (not always up to date):
 
 ```lisp
 $ rlwrap sertop --printer=human
@@ -209,22 +210,25 @@ $ rlwrap sertop --printer=human
   > (Answer 7 Completed)
 ```
 
-### Technical Report
+### Technical Report:
 
-There is a brief technical report with some details at
-https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408
+There is a brief [technical report](https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408)
+describing the motivation, design, and implementation of SerAPI.
 
-## Acknowledgments
+```bibtex
+@techreport{GallegoArias2016SerAPI,
+  title = {{SerAPI: Machine-Friendly, Data-Centric Serialization for Coq}},
+  author = {Gallego Arias, Emilio Jes{\'u}s},
+  url = {https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408},
+  institution = {MINES ParisTech},
+  year = {2016},
+  month = Oct,
+}
+```
 
-SerAPI has been developed at the
-[Centre de Recherche en Informatique](https://www.cri.ensmp.fr/") of
-[MINES ParisTech](http://www.mines-paristech.fr/) (former École de
-Mines de Paris) and partially supported by the
-[FEEVER](http://www.feever.fr) project.
+## Developer Information
 
-## Developer information
-
-### Technical details
+### Technical Details
 
 SerAPI has four main components:
 
@@ -235,7 +239,7 @@ SerAPI has four main components:
 
 Building your own toplevels using `serlib` and `serapi` is encouraged.
 
-### Advanced use cases
+### Advanced Use Cases
 
 With a bit more development effort, you can also:
 
@@ -253,7 +257,7 @@ With a bit more development effort, you can also:
 
 We would also like to provide a [Jupyter/IPython kernel](https://github.com/ejgallego/coq-serapi/issues/17).
 
-### Developer/Users Mailing List ###
+### Developer/Users Mailing List
 
 SerAPI development is mainly discussed on GitHub and in the Gitter
 channel. You can also use the jsCoq mailing list by subscribing at:
@@ -262,3 +266,11 @@ https://x80.org/cgi-bin/mailman/listinfo/jscoq
 The mailing list archives should also be available at the Gmane group:
 `gmane.science.mathematics.logic.coq.jscoq`. You can post to the list
 using nntp.
+
+## Acknowledgments
+
+SerAPI has been developed at the
+[Centre de Recherche en Informatique](https://www.cri.ensmp.fr) of
+[MINES ParisTech](http://www.mines-paristech.fr/) (former École de
+Mines de Paris) and partially supported by the
+[FEEVER](http://www.feever.fr) project.
