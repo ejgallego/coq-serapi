@@ -37,8 +37,6 @@ type cases_pattern    = Glob_term.cases_pattern
 
 type glob_constr        = Glob_term.glob_constr
 and glob_decl           = Glob_term.glob_decl
-and fix_recursion_order = Glob_term.fix_recursion_order
-and fix_kind            = Glob_term.fix_kind
 and predicate_pattern   = Glob_term.predicate_pattern
 and tomatch_tuple       = Glob_term.tomatch_tuple
 and tomatch_tuples      = Glob_term.tomatch_tuples
@@ -56,12 +54,6 @@ val sexp_of_glob_constr : glob_constr -> Sexp.t
 
 val glob_decl_of_sexp : Sexp.t -> glob_decl
 val sexp_of_glob_decl : glob_decl -> Sexp.t
-
-val fix_recursion_order_of_sexp : Sexp.t -> fix_recursion_order
-val sexp_of_fix_recursion_order : fix_recursion_order -> Sexp.t
-
-val fix_kind_of_sexp : Sexp.t -> fix_kind
-val sexp_of_fix_kind : fix_kind -> Sexp.t
 
 val predicate_pattern_of_sexp : Sexp.t -> predicate_pattern
 val sexp_of_predicate_pattern : predicate_pattern -> Sexp.t

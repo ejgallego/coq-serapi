@@ -100,6 +100,7 @@ and branch_expr = [%import: Constrexpr.branch_expr]
 (* and binder_expr = [%import: Constrexpr.binder_expr] *)
 and fix_expr    = [%import: Constrexpr.fix_expr]
 and cofix_expr  = [%import: Constrexpr.cofix_expr]
+and recursion_order_expr_r = [%import: Constrexpr.recursion_order_expr_r]
 and recursion_order_expr = [%import: Constrexpr.recursion_order_expr]
 and local_binder_expr    = [%import: Constrexpr.local_binder_expr]
 and constr_notation_substitution = [%import: Constrexpr.constr_notation_substitution]
