@@ -15,6 +15,7 @@
 
 open Sexplib.Conv
 
+module Stdlib = Ser_stdlib
 module CEphemeron = Ser_cEphemeron
 module Range  = Ser_range
 module Names  = Ser_names
@@ -42,18 +43,6 @@ type named_context_val =
 type link_info =
   [%import: Environ.link_info]
   [@@deriving sexp]
-
-(* For 4.06 *)
-module Pervasives = struct
-  type nonrec 'a ref = 'a ref
-    [@@deriving sexp]
-end
-
-(* For 4.07 *)
-module Stdlib = struct
-  type nonrec 'a ref = 'a ref
-    [@@deriving sexp]
-end
 
 type key = 
   [%import: Environ.key]

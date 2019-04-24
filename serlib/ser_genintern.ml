@@ -17,6 +17,7 @@
 
 open Sexplib.Conv
 
+module Stdlib     = Ser_stdlib
 module Names      = Ser_names
 module Environ    = Ser_environ
 module Glob_term  = Ser_glob_term
@@ -30,11 +31,6 @@ module Store = struct
   let t_of_sexp _ = CErrors.user_err Pp.(str "[GI Store: Cannot deserialize stores.")
   let sexp_of_t _ = Sexplib.Sexp.Atom "[GENINTERN STORE]"
 
-end
-
-module Stdlib = struct
-  type nonrec 'a ref = 'a ref
-  [@@deriving sexp]
 end
 
 type intern_variable_status =
