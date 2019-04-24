@@ -5,19 +5,18 @@ Dear Coq users and developers,
 we are happy to announce the releases of jsCoq 0.9.3 and SerAPI 0.6.1
 for Coq 8.9.
 
-JsCoq and SerAPI are free software, please don't hesitate to report
+jsCoq and SerAPI are free software, please don't hesitate to report
 issues and contribute at:
 
 - https://github.com/ejgallego/jscoq
 - https://github.com/ejgallego/coq-serapi
 
-## JsCoq 0.9:
+## jsCoq 0.9:
 
-JsCoq allows interacting with Coq developments as standard-compliant
-HTML documents using a browser.  standard-compliant web pages. The
-project aims to ease the development of interactive Coq documents and
-teaching material, to improve the accessibility of the platform, and
-to explore new user interaction possibilities.
+jsCoq allows interacting with Coq developments as standard-compliant
+HTML documents using a browser. The project aims to ease the development
+of interactive Coq documents and teaching material, to improve the
+accessibility of the platform, and to explore new user interaction possibilities.
 
 jsCoq 0.9 has been three years in the making, and it features a long list
 of improvements, most of them due to the incredible work of Shachar
@@ -45,13 +44,13 @@ at https://github.com/ejgallego/jscoq/blob/v8.9%2Bworker/CHANGES.md
 
 ## SerAPI 0.6.1
 
-Coq-SerAPI provides an S-expression based API suitable for machine
+SerAPI provides an S-expression based API suitable for machine
 interaction with Coq. Capabilities include full round-trip
 serialization of Coq's AST and most internal structures, easy access
 to the document build and checking API, and facilities for querying
 Coq's environment and proof state.
 
-The 0.6.1 release brings many improvements and features in the
+The 0.6.1 release brings many improvements and features on the
 serialization front. Thanks to the awesome efforts of Karl Palmskog
 and Ahmet Celik, SerAPI is now able to serialize/deserialize large Coq
 developments reliably, and we have improved the `sercomp` command-line
