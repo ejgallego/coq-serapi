@@ -29,7 +29,6 @@ env:
   - COQ_BRANCH="v8.10"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.07.1"
-  - BASE_OPAM="cmdliner ppx_deriving ppx_import ppx_sexp_conv sexplib dune"
   # Main test suites
   - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   matrix:
@@ -45,9 +44,11 @@ install:
 - opam init -c "$COMPILER" --disable-sandboxing
 - opam switch set "$COMPILER"
 - eval $(opam env)
-# OPAM 2 is quite broken here
+# OPAM 2 seems quite broken here
 - opam config set-global jobs $NJOBS
-- opam install $BASE_OPAM $EXTRA_OPAM
+- opam pin add -y -n --kind=path coq-serapi .
+- opam install -y --deps-only -j $NJOBS coq-serapi
+- opam pin remove coq-serapi
 - opam list
 - >
   if [[ -v SERAPI_COQ_HOME ]]; then
