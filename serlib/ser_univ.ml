@@ -53,9 +53,6 @@ end
 
 module LSet = Ser_cSet.Make(Univ.LSet)(Level)
 
-type universe_level = Level.t
-  [@@deriving sexp]
-
 (* XXX: Think what to do with this  *)
 module Universe = struct
   type t = [%import: Univ.Universe.t]
@@ -67,9 +64,6 @@ module Universe = struct
   let sexp_of_t universe = sexp_of__t (Obj.magic universe)
 
 end
-
-type universe = Universe.t
-  [@@deriving sexp]
 
 (*************************************************************************)
 
@@ -123,9 +117,6 @@ module UContext = struct
 
 end
 
-type universe_context = UContext.t
-  [@@deriving sexp]
-
 module AUContext = struct
 
   type t = Univ.AUContext.t
@@ -136,46 +127,11 @@ module AUContext = struct
 
 end
 
-type abstract_universe_context = AUContext.t
-  [@@deriving sexp]
-
-(*
-module CumulativityInfo = struct
-
-  type t = Univ.CumulativityInfo.t
-
-  let t_of_sexp s = Univ.CumulativityInfo.make (Conv.pair_of_sexp universe_context_of_sexp (array_of_sexp Variance.t_of_sexp) s)
-  let sexp_of_t t =
-    Conv.sexp_of_pair sexp_of_universe_context
-      (sexp_of_array Variance.sexp_of_t) Univ.CumulativityInfo.(univ_context t, variance t)
-
-end
-*)
-
-(* type cumulativity_info = CumulativityInfo.t
- *   [@@deriving sexp] *)
-
-(*
-module ACumulativityInfo = struct
-
-  type t = Univ.ACumulativityInfo.t
-
-  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Univ.ACumulativityInfo.t"
-  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Univ.ACumulativityInfo.t"
-
-end
-
-*)
-
 module ContextSet = struct
   type t =
     [%import: Univ.ContextSet.t]
     [@@deriving sexp]
 end
-
-(* type universe_context_set =
- *   [%import: Univ.universe_context_set] [@warning "-3"]
- *   [@@deriving sexp] *)
 
 type 'a in_universe_context =
   [%import: 'a Univ.in_universe_context]
@@ -184,9 +140,6 @@ type 'a in_universe_context =
 type 'a in_universe_context_set =
   [%import: 'a Univ.in_universe_context_set]
   [@@deriving sexp]
-
-(* type abstract_cumulativity_info = ACumulativityInfo.t
- *   [@@deriving sexp] *)
 
 type 'a puniverses =
   [%import: 'a Univ.puniverses]

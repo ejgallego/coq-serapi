@@ -95,7 +95,7 @@ type _constr =
   | Case      of case_info * _constr * _constr * _constr array
   | Fix       of (_constr, _types) pfixpoint
   | CoFix     of (_constr, _types) pcofixpoint
-  | Proj      of Names.projection * _constr
+  | Proj      of Names.Projection.t * _constr
   | Int       of Uint63.t
 and _types = _constr
 [@@deriving sexp]
