@@ -68,8 +68,6 @@ module Projection : sig
 
 end
 
-type projection  = Names.Projection.t
-
 module GlobRef : SerType.S with type t = Names.GlobRef.t
 
 val variable_of_sexp : Sexp.t -> variable
@@ -80,9 +78,6 @@ val sexp_of_inductive : inductive -> Sexp.t
 
 val constructor_of_sexp : Sexp.t -> constructor
 val sexp_of_constructor : constructor -> Sexp.t
-
-val projection_of_sexp : Sexp.t -> projection
-val sexp_of_projection : projection -> Sexp.t
 
 type evaluable_global_reference = Names.evaluable_global_reference
 val evaluable_global_reference_of_sexp : Sexp.t -> evaluable_global_reference

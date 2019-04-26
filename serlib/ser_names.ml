@@ -210,9 +210,6 @@ module Projection = struct
 
 end
 
-type projection = Projection.t
-  [@@deriving sexp]
-
 module GlobRef = struct
 
 type t = [%import: Names.GlobRef.t]
