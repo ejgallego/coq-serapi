@@ -25,7 +25,7 @@ module Glob_term = Ser_glob_term
 
 type patvar =
   [%import: Pattern.patvar]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type case_info_pattern =
   [%import: Pattern.case_info_pattern]

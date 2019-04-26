@@ -28,6 +28,8 @@ type binding_kind = Decl_kinds.binding_kind
 
 val binding_kind_of_sexp : Sexp.t -> binding_kind
 val sexp_of_binding_kind : binding_kind -> Sexp.t
+val binding_kind_of_yojson : Yojson.Safe.t -> (binding_kind, string) Result.result
+val binding_kind_to_yojson : binding_kind -> Yojson.Safe.t
 
 type polymorphic = Decl_kinds.polymorphic
 

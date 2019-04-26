@@ -21,11 +21,11 @@ open Sexplib.Std
 
 type source =
   [%import: Loc.source]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type t =
   [%import: Loc.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 let omit_loc = ref false
 let sexp_of_t x =
@@ -34,4 +34,4 @@ let sexp_of_t x =
 (* located: public *)
 type 'a located =
   [%import: 'a Loc.located]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

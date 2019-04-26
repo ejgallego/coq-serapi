@@ -68,7 +68,7 @@ module Projection : sig
 
 end
 
-module GlobRef : SerType.S with type t = Names.GlobRef.t
+module GlobRef : SerType.SJ with type t = Names.GlobRef.t
 
 val variable_of_sexp : Sexp.t -> variable
 val sexp_of_variable : variable -> Sexp.t
@@ -92,11 +92,17 @@ val sexp_of_evaluable_global_reference : evaluable_global_reference -> Sexp.t
 type lident = Names.lident
 val lident_of_sexp : Sexp.t -> lident
 val sexp_of_lident : lident -> Sexp.t
+val lident_of_yojson : Yojson.Safe.t -> (lident, string) Result.result
+val lident_to_yojson : lident -> Yojson.Safe.t
 
 type lname = Names.lname
 val lname_of_sexp : Sexp.t -> lname
 val sexp_of_lname : lname -> Sexp.t
+val lname_of_yojson : Yojson.Safe.t -> (lname, string) Result.result
+val lname_to_yojson : lname -> Yojson.Safe.t
 
 type lstring = Names.lstring
 val lstring_of_sexp : Sexp.t -> lstring
 val sexp_of_lstring : lstring -> Sexp.t
+val lstring_of_yojson : Yojson.Safe.t -> (lstring, string) Result.result
+val lstring_to_yojson : lstring -> Yojson.Safe.t

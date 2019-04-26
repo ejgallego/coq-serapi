@@ -21,7 +21,7 @@ module L = struct
 type 'a t = {
   v   : 'a;
   loc : Loc.t option;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson]
 end
 
 type 'a t = 'a CAst.t = private {
@@ -32,7 +32,13 @@ type 'a t = 'a CAst.t = private {
 let t_of_sexp f s = let { L.v ; loc } = L.t_of_sexp f s in CAst.make ?loc:loc v
 let sexp_of_t f { CAst.v ; loc } = L.sexp_of_t f { L.v ; loc }
 
+let of_yojson f json = Ppx_deriving_yojson_runtime.(L.of_yojson f json >|= fun { L.v; loc } -> CAst.make ?loc:loc v)
+let to_yojson f { CAst.v ; loc } = L.to_yojson f { L.v ; loc }
+
 let omit_att = ref false
 
 let sexp_of_t f x =
   if !omit_att then f x.CAst.v else sexp_of_t f x
+
+(* let to_yojson f x =
+   if !omit_att then ... *)

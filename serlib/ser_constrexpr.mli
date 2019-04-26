@@ -109,6 +109,9 @@ val sexp_of_recursion_order_expr : recursion_order_expr -> Sexp.t
 val sexp_of_local_binder_expr : local_binder_expr -> Sexp.t
 val sexp_of_constr_notation_substitution : constr_notation_substitution -> Sexp.t
 
+val constr_expr_of_yojson : Yojson.Safe.t -> (constr_expr, string) Result.result
+val constr_expr_to_yojson : constr_expr -> Yojson.Safe.t
+
 type constr_pattern_expr = Constrexpr.constr_pattern_expr
 val constr_pattern_expr_of_sexp : Sexp.t -> constr_pattern_expr
 val sexp_of_constr_pattern_expr : constr_pattern_expr -> Sexp.t

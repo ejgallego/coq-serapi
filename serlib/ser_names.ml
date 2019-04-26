@@ -190,14 +190,18 @@ type 'a tableKey =
   [%import: 'a Names.tableKey]
   [@@deriving sexp]
 
-type variable   = [%import: Names.variable]
-                  [@@deriving sexp]
+type variable =
+  [%import: Names.variable]
+  [@@deriving sexp,yojson]
 
 (* Inductive and constructor = public *)
-type inductive   = [%import: Names.inductive]
-                   [@@deriving sexp,yojson]
+type inductive =
+  [%import: Names.inductive]
+  [@@deriving sexp,yojson]
 
-type constructor = [%import: Names.constructor] [@@deriving sexp, yojson]
+type constructor =
+  [%import: Names.constructor]
+  [@@deriving sexp, yojson]
 
 (* Projection: private *)
 module Projection = struct
@@ -226,7 +230,7 @@ end
 module GlobRef = struct
 
 type t = [%import: Names.GlobRef.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 end
 
@@ -237,12 +241,12 @@ type evaluable_global_reference =
 
 type lident =
   [%import: Names.lident]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type lname =
   [%import: Names.lname]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type lstring =
   [%import: Names.lstring]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

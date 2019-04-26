@@ -6,7 +6,7 @@
  * [serlib]  Complete (hopefully) serialization for ssreflect ASTs.
              (#73 @ejgallego)
  * [general] Drop support for OCaml < 4.07 (#140 @ejgallego)
- * [serlib ] Partial Yojson support (@ejgallego)
+ * [serlib ] JSON serialization for kernel and AST terms (@ejgallego)
  * [serapi ] Add `Complete` support (@ejgallego
              c.f. https://github.com/coq/coq/pull/8766)
 

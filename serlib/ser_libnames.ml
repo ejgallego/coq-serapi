@@ -21,24 +21,27 @@ module Loc   = Ser_loc
 module CAst  = Ser_cAst
 module Names = Ser_names
 
-type _qualid =
+type _t =
     Ser_Qualid of Names.DirPath.t * Names.Id.t
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
-let _qualid_put qid =
+let _t_put qid =
   let (dp, id) = Libnames.repr_qualid (cmake qid) in
   Ser_Qualid (dp, id)
 
-let _qualid_get (Ser_Qualid (dp, id)) = Libnames.(make_qualid dp id).CAst.v
+let _t_get (Ser_Qualid (dp, id)) = Libnames.(make_qualid dp id).CAst.v
 
 type qualid_r =
   [%import: Libnames.qualid_r]
 
-let qualid_r_of_sexp sexp = _qualid_get (_qualid_of_sexp sexp)
-let sexp_of_qualid_r qid  = sexp_of__qualid (_qualid_put qid)
+let qualid_r_of_sexp sexp = _t_get (_t_of_sexp sexp)
+let sexp_of_qualid_r qid  = sexp_of__t (_t_put qid)
+
+let qualid_r_of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let qualid_r_to_yojson level = _t_to_yojson (_t_put level)
 
 (* qualid: private *)
 type qualid =
   [%import: Libnames.qualid]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 

@@ -48,6 +48,8 @@ val sexp_of_glob_generic_argument : Genarg.glob_generic_argument -> Sexp.t
 type raw_generic_argument = Genarg.raw_generic_argument
 val raw_generic_argument_of_sexp : Sexp.t -> Genarg.raw_generic_argument
 val sexp_of_raw_generic_argument : Genarg.raw_generic_argument -> Sexp.t
+val raw_generic_argument_of_yojson : Yojson.Safe.t -> (raw_generic_argument, string) Result.result
+val raw_generic_argument_to_yojson : raw_generic_argument -> Yojson.Safe.t
 
 type typed_generic_argument = Genarg.typed_generic_argument
 val typed_generic_argument_of_sexp : Sexp.t -> Genarg.typed_generic_argument

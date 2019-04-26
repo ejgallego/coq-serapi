@@ -20,22 +20,22 @@
 open Sexplib.Std
 
 type locality = [%import: Decl_kinds.locality]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type binding_kind = [%import: Decl_kinds.binding_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type polymorphic =
   [%import: Decl_kinds.polymorphic]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type private_flag =
   [%import: Decl_kinds.private_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type cumulative_inductive_flag =
   [%import: Decl_kinds.cumulative_inductive_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type theorem_kind =
   [%import: Decl_kinds.theorem_kind]
