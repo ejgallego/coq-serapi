@@ -33,12 +33,16 @@ module Id = struct
 module Self = struct
 type t   = [%import: Names.Id.t]
 
-type _t            = Id of string [@@deriving sexp]
+type _t            = Id of string [@@deriving sexp, yojson]
 let _t_put  id     = Id (Id.to_string id)
 let _t_get (Id id) = Id.of_string_soft id
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t id   = sexp_of__t (_t_put id)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let to_yojson level = _t_to_yojson (_t_put level)
+
 end
 
 include Self
@@ -53,7 +57,7 @@ module Name = struct
 (* Name.t: public *)
 type t =
   [%import: Names.Name.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 end
 
@@ -62,14 +66,17 @@ module DirPath = struct
 (* DirPath.t: private *)
 type t = [%import: Names.DirPath.t]
 
-type _dirpath = DirPath of Id.t list
-      [@@deriving sexp]
+type _t = DirPath of Id.t list
+      [@@deriving sexp,yojson]
 
-let _dirpath_put dp            = DirPath (DirPath.repr dp)
-let _dirpath_get (DirPath dpl) = DirPath.make dpl
+let _t_put dp            = DirPath (DirPath.repr dp)
+let _t_get (DirPath dpl) = DirPath.make dpl
 
-let t_of_sexp sexp = _dirpath_get (_dirpath_of_sexp sexp)
-let sexp_of_t dp   = sexp_of__dirpath (_dirpath_put dp)
+let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
+let sexp_of_t dp   = sexp_of__t (_t_put dp)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let to_yojson level = _t_to_yojson (_t_put level)
 
 end
 
@@ -82,6 +89,9 @@ type t = [%import: Names.Label.t]
 let t_of_sexp sexp  = Label.of_id (Id.t_of_sexp sexp)
 let sexp_of_t label = Id.sexp_of_t (Label.to_id label)
 
+let of_yojson json = Ppx_deriving_yojson_runtime.(Id.of_yojson json >|= Label.of_id)
+let to_yojson level = Id.to_yojson (Label.to_id level)
+
 end
 
 module MBId = struct
@@ -89,15 +99,18 @@ module MBId = struct
 (* MBId.t: private *)
 type t = [%import: Names.MBId.t]
 
-type _mbid = Mbid of Id.t * DirPath.t
-      [@@deriving sexp]
+type _t = Mbid of Id.t * DirPath.t
+      [@@deriving sexp,yojson]
 
-let _mbid_put dp              =
+let _t_put dp              =
   let _, n, dp = MBId.repr dp in Mbid (n,dp)
-let _mbid_get (Mbid (n, dp)) = MBId.make dp n
+let _t_get (Mbid (n, dp)) = MBId.make dp n
 
-let t_of_sexp sexp = _mbid_get (_mbid_of_sexp sexp)
-let sexp_of_t dp   = sexp_of__mbid (_mbid_put dp)
+let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
+let sexp_of_t dp   = sexp_of__t (_t_put dp)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let to_yojson level = _t_to_yojson (_t_put level)
 
 end
 
@@ -105,7 +118,7 @@ module ModPath = struct
 
 (* ModPath.t: public *)
 type t = [%import: Names.ModPath.t]
-         [@@deriving sexp]
+         [@@deriving sexp,yojson]
 
 end
 
@@ -133,15 +146,17 @@ module Constant = struct
 (* Constant.t: private *)
 type t = [%import: Names.Constant.t]
 
-type _constant = Constant of ModPath.t * Label.t
-      [@@deriving sexp]
+type _t = Constant of ModPath.t * Label.t
+      [@@deriving sexp,yojson]
 
-let _constant_put cs              =
-  let mp, l = Constant.repr2 cs in Constant (mp,l)
-let _constant_get (Constant (mp,l)) = Constant.make2 mp l
+let _t_put cs = let mp, l = Constant.repr2 cs in Constant (mp,l)
+let _t_get (Constant (mp,l)) = Constant.make2 mp l
 
-let t_of_sexp sexp = _constant_get (_constant_of_sexp sexp)
-let sexp_of_t dp   = sexp_of__constant (_constant_put dp)
+let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
+let sexp_of_t dp   = sexp_of__t (_t_put dp)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let to_yojson level = _t_to_yojson (_t_put level)
 
 end
 
@@ -153,15 +168,18 @@ module MutInd = struct
 (* MutInd.t: private *)
 type t = [%import: Names.MutInd.t]
 
-type _mutind = Mutind of ModPath.t * Label.t
-      [@@deriving sexp]
+type _t = Mutind of ModPath.t * Label.t
+      [@@deriving sexp,yojson]
 
-let _mutind_put cs              =
+let _t_put cs              =
   let mp, l = MutInd.repr2 cs in Mutind (mp,l)
-let _mutind_get (Mutind (mp,l)) = MutInd.make2 mp l
+let _t_get (Mutind (mp,l)) = MutInd.make2 mp l
 
-let t_of_sexp sexp = _mutind_get (_mutind_of_sexp sexp)
-let sexp_of_t dp   = sexp_of__mutind (_mutind_put dp)
+let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
+let sexp_of_t dp   = sexp_of__t (_t_put dp)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let to_yojson level = _t_to_yojson (_t_put level)
 
 end
 
@@ -177,9 +195,9 @@ type variable   = [%import: Names.variable]
 
 (* Inductive and constructor = public *)
 type inductive   = [%import: Names.inductive]
-                   [@@deriving sexp]
+                   [@@deriving sexp,yojson]
 
-type constructor = [%import: Names.constructor] [@@deriving sexp]
+type constructor = [%import: Names.constructor] [@@deriving sexp, yojson]
 
 (* Projection: private *)
 module Projection = struct
@@ -190,24 +208,19 @@ module Projection = struct
         proj_npars : int;
         proj_arg : int;
         proj_name : Label.t; }
+    [@@deriving sexp,yojson]
   end
+
+  type _t = Repr.t * bool
+  [@@deriving sexp,yojson]
 
   type t = [%import: Names.Projection.t]
 
-  type _projection = Projection of Constant.t * bool
-  [@@deriving sexp]
+  let t_of_sexp se = Obj.magic (_t_of_sexp se)
+  let sexp_of_t dp = sexp_of__t (Obj.magic dp)
 
-  let _projection_put prj              =
-    let cs, uf = Projection.constant prj, Projection.unfolded prj in
-    Projection (cs, uf)
-
-  (* let _projection_get (Projection (cs,uf)) = Projection.make cs uf *)
-  (* let _projection_get _ = Obj.magic 0 *)
-
-  (* let t_of_sexp sexp = _projection_get (_projection_of_sexp sexp) *)
-  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Projection.t"
-  let sexp_of_t dp = sexp_of__projection (_projection_put dp)
-
+  let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
+  let to_yojson level = _t_to_yojson (Obj.magic level)
 end
 
 module GlobRef = struct

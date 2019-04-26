@@ -21,7 +21,7 @@ module Sorts   = Ser_sorts
 
 type 'a binder_annot =
   [%import: 'a Context.binder_annot]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 module Rel = struct
 

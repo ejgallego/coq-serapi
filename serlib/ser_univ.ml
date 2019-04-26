@@ -23,7 +23,7 @@ module RawLevel = struct
 
   module UGlobal = struct
     type t = Names.DirPath.t * int
-    [@@deriving sexp]
+    [@@deriving sexp, yojson]
   end
 
   type t =
@@ -32,7 +32,7 @@ module RawLevel = struct
   | Set
   | Level of UGlobal.t
   | Var of int
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 end
 
@@ -42,12 +42,16 @@ module Level = struct
     { hash : int
     ; data : RawLevel.t
     }
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
   type t = Univ.Level.t
 
   let t_of_sexp sexp  = Obj.magic (_t_of_sexp sexp)
   let sexp_of_t level = sexp_of__t (Obj.magic level)
+
+  let of_yojson json  =
+    Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
+  let to_yojson level = _t_to_yojson Obj.(magic level)
 
 end
 
@@ -58,11 +62,14 @@ module Universe = struct
   type t = [%import: Univ.Universe.t]
 
   type _t = (Level.t * int) list
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
   let t_of_sexp sexp     = Obj.magic (_t_of_sexp sexp)
   let sexp_of_t universe = sexp_of__t (Obj.magic universe)
 
+  let of_yojson json  =
+    Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
+  let to_yojson level = _t_to_yojson Obj.(magic level)
 end
 
 (*************************************************************************)
@@ -81,7 +88,7 @@ type t =
   [%import: Univ.Instance.t]
 
 type _t = Instance of Level.t array
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 let _instance_put instance            = Instance (Univ.Instance.to_array instance)
 let _instance_get (Instance instance) = Univ.Instance.of_array instance
@@ -89,19 +96,25 @@ let _instance_get (Instance instance) = Univ.Instance.of_array instance
 let t_of_sexp sexp     = _instance_get (_t_of_sexp sexp)
 let sexp_of_t instance = sexp_of__t (_instance_put instance)
 
+let of_yojson json  =
+  Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _instance_get)
+let to_yojson level = _t_to_yojson (_instance_put level)
+
 end
 
 type constraint_type =
   [%import: Univ.constraint_type]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type univ_constraint =
   [%import: Univ.univ_constraint]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
-module Constraint = Ser_cSet.Make(Univ.Constraint)(struct
+module Constraint = Ser_cSet.MakeJ(Univ.Constraint)(struct
     let t_of_sexp = univ_constraint_of_sexp
     let sexp_of_t = sexp_of_univ_constraint
+    let of_yojson = univ_constraint_of_yojson
+    let to_yojson = univ_constraint_to_yojson
   end)
 
 type 'a constrained =
@@ -143,7 +156,7 @@ type 'a in_universe_context_set =
 
 type 'a puniverses =
   [%import: 'a Univ.puniverses]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type explanation =
   [%import: Univ.explanation]

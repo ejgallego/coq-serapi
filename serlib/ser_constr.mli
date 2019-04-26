@@ -104,14 +104,23 @@ type t = Constr.t
 val t_of_sexp : Sexp.t -> t
 val sexp_of_t : t -> Sexp.t
 
+val of_yojson : Yojson.Safe.t -> (t, string) Result.result
+val to_yojson : t -> Yojson.Safe.t
+
 type constr = t
 
 val constr_of_sexp : Sexp.t -> constr
 val sexp_of_constr : constr -> Sexp.t
 
+val constr_of_yojson : Yojson.Safe.t -> (constr, string) Result.result
+val constr_to_yojson : constr -> Yojson.Safe.t
+
 type types  = constr
 val types_of_sexp : Sexp.t -> types
 val sexp_of_types : types -> Sexp.t
+
+val types_of_yojson : Yojson.Safe.t -> (types, string) Result.result
+val types_to_yojson : types -> Yojson.Safe.t
 
 type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential

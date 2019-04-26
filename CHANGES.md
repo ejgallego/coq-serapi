@@ -6,6 +6,7 @@
  * [serlib]  Complete (hopefully) serialization for ssreflect ASTs.
              (#73 @ejgallego)
  * [general] Drop support for OCaml < 4.07 (#140 @ejgallego)
+ * [serlib ] Partial Yojson support (@ejgallego)
 
 ## Version 0.6.1:
 

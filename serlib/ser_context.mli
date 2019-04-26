@@ -20,6 +20,10 @@ type 'a binder_annot = 'a Context.binder_annot
 val binder_annot_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a binder_annot
 val sexp_of_binder_annot : ('a -> Sexp.t) -> 'a binder_annot -> Sexp.t
 
+val binder_annot_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a binder_annot, string) Result.result
+val binder_annot_to_yojson : ('a -> Yojson.Safe.t) -> 'a binder_annot -> Yojson.Safe.t
+
+
 module Rel : sig
   module Declaration : sig
 

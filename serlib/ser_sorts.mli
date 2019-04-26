@@ -19,11 +19,13 @@ type family = Sorts.family
 val family_of_sexp : Sexp.t -> family
 val sexp_of_family : family -> Sexp.t
 
-type t = Sorts.t
+val family_of_yojson : Yojson.Safe.t -> (family, string) Result.result
+val family_to_yojson : family -> Yojson.Safe.t
 
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
+include SerType.SJ with type t = Sorts.t
 
 type relevance = Sorts.relevance
 val relevance_of_sexp : Sexp.t -> relevance
 val sexp_of_relevance : relevance -> Sexp.t
+val relevance_of_yojson : Yojson.Safe.t -> (relevance, string) Result.result
+val relevance_to_yojson : relevance -> Yojson.Safe.t
