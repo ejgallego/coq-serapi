@@ -46,10 +46,10 @@ install:
 - eval $(opam env)
 # OPAM 2 seems quite broken here
 - opam config set-global jobs $NJOBS
+- opam pin add -y ppx_deriving_yojson --dev
 - opam pin add -y -n --kind=path coq-serapi .
-- opam install -y --deps-only -j $NJOBS coq-serapi
+- opam install -y --deps-only --ignore-constraints-on=ppx_deriving_yojson -j $NJOBS coq-serapi
 - opam pin remove coq-serapi
-- opam pin add ppx_deriving_yojson --dev
 # - opam install --ignore-constraints-on=yojson yojson.1.7.0 ppx_deriving_yojson.3.3
 - opam list
 - >
