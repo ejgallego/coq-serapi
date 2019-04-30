@@ -197,6 +197,8 @@ type coq_object =
   (** Qualified identifier *)
   | CoqGlobRef   of Names.GlobRef.t
   (** "Global Reference", which is a type that can point to a module, a constant, a variable, a constructor... *)
+  | CoqGlobRefExt of Globnames.extended_global_reference
+  (** "Extended Global Reference", as they can contain syntactic definitions too *)
   | CoqImplicit  of Impargs.implicits_list
   (** Implicit status for a constant *)
   | CoqProfData  of Profile_ltac.treenode
@@ -327,6 +329,8 @@ type query_cmd =
   (** Return the current enviroment *)
   | Assumptions of string
   (** Return the assumptions of a given global *)
+  | Complete of string
+  (** Naïve but efficient prefix-based completion of identifiers *)
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)

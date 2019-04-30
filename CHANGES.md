@@ -7,6 +7,8 @@
              (#73 @ejgallego)
  * [general] Drop support for OCaml < 4.07 (#140 @ejgallego)
  * [serlib ] Partial Yojson support (@ejgallego)
+ * [serapi ] Add `Complete` support (@ejgallego
+             c.f. https://github.com/coq/coq/pull/8766)
 
 ## Version 0.6.1:
 

@@ -124,6 +124,7 @@ type coq_object =
   | CoqGenArg    of Genarg.raw_generic_argument
   | CoqQualId    of Libnames.qualid
   | CoqGlobRef   of Names.GlobRef.t
+  | CoqGlobRefExt of Globnames.extended_global_reference
   | CoqImplicit  of Impargs.implicits_list
   | CoqProfData  of Profile_ltac.treenode
   | CoqNotation  of Constrexpr.notation
@@ -216,7 +217,12 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   | CoqProof  _     -> Pp.str "FIXME UPSTREAM, provide pr_proof"
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
-  | CoqGlobRef _gr  -> Pp.str "FIXME GlobRef"
+  | CoqGlobRef gr   -> Printer.pr_global gr
+  | CoqGlobRefExt gr ->
+    (match gr with
+     | Globnames.TrueGlobal gr -> Printer.pr_global gr
+     | Globnames.SynDef kn -> Names.KerName.print kn
+    )
   | CoqImplicit(_,l)-> Pp.pr_sequence pp_implicit l
   | CoqNotation ntn -> Pp.str (snd ntn)
   | CoqUnparsing _  -> Pp.str "FIXME Unparsing"
@@ -341,6 +347,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   (* | CoqPhyLoc _     -> true *)
   | CoqQualId _     -> true
   | CoqGlobRef _    -> true
+  | CoqGlobRefExt _ -> true
   | CoqProfData _   -> true
   | CoqImplicit _   -> true
   | CoqGoal _       -> true
@@ -382,6 +389,7 @@ type query_cmd =
   | Vernac     of string           (* [legacy] Execute arbitrary Coq command in an isolated state. *)
   | Env                            (* Return the current global enviroment *)
   | Assumptions of string          (* Return the assumptions of given identifier *)
+  | Complete of string
 
 module QueryUtil = struct
 
@@ -558,6 +566,8 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Env            -> [CoqEnv env]
   | Assumptions id ->
     [CoqAssumptions QueryUtil.(assumptions env id)]
+  | Complete prefix ->
+    List.map (fun x -> CoqGlobRefExt x) (Nametab.completion_canditates (Libnames.qualid_of_string prefix))
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
