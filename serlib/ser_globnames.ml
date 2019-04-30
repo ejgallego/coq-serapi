@@ -13,10 +13,12 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-(* open Sexplib *)
+module Names = Ser_names
 
-module Names      = Ser_names
+type syndef_name =
+  [%import: Globnames.syndef_name]
+  [@@deriving sexp]
 
-type intro_pattern_naming_expr =
-  [%import: Namegen.intro_pattern_naming_expr]
+type extended_global_reference =
+  [%import: Globnames.extended_global_reference]
   [@@deriving sexp]
