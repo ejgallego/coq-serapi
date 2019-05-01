@@ -24,19 +24,15 @@ env:
   - OPAMROOTISOK="true"
   - OPAMYES="true"
   - NJOBS="2"
-  - COQ_REPOS="https://github.com/coq/coq.git"
-  - COQ_VERSION="v8.10"
+  - COQ_REPOS="https://github.com/ejgallego/coq.git"
   - COQ_BRANCH="v8.10"
-  - COQ_CONF="-local -native-compiler no -coqide no"
-  - COMPILER="4.07.1"
+  - COMPILER="ocaml-base-compiler.4.07.1"
   # Main test suites
-  - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   matrix:
-  - TEST_TARGET="build"   COMPILER="4.07.0"
-  - TEST_TARGET="test"    COMPILER="4.07.1"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson"
-  # Don't test opam in 8.10 [yet]
-  # - TEST_TARGET="test"                                                                               EXTRA_OPAM="coq"
+  - TEST_TARGET="build"   COMPILER="ocaml-base-compiler.4.07.0"  LOCAL_COQ="yes"
+  - TEST_TARGET="test"    COMPILER="ocaml-base-compiler.4.07.1"  LOCAL_COQ="yes" EXTRA_OPAM="coq-mathcomp-ssreflect"
+  - TEST_TARGET="js-dune" COMPILER="ocaml-variants.4.07.1+32bit" LOCAL_COQ="yes" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt"
+  - TEST_TARGET="test"    COMPILER="ocaml-base-compiler.4.07.1"                  EXTRA_OPAM="coq.8.10.dev coq-mathcomp-ssreflect"
 
 install:
 - sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.4/opam-2.0.4-x86_64-linux -o /usr/bin/opam
@@ -46,30 +42,27 @@ install:
 - eval $(opam env)
 # OPAM 2 seems quite broken here
 - opam config set-global jobs $NJOBS
-- opam pin add -y ppx_deriving_yojson --dev
-- opam pin add -y -n --kind=path coq-serapi .
-- opam install -y --deps-only --ignore-constraints-on=ppx_deriving_yojson -j $NJOBS coq-serapi
+# Core dev repo, to remove on stable releases
+- opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
+- opam repos add coq-extra-dev http://coq.inria.fr/opam/extra-dev
+# Install deps for coq-serapi
+- opam pin add ppx_deriving_yojson --dev
+- opam pin add -n --kind=path coq-serapi .
+- opam install --deps-only --ignore-constraints-on=ppx_deriving_yojson -j $NJOBS coq-serapi
 - opam pin remove coq-serapi
 # - opam install --ignore-constraints-on=yojson yojson.1.7.0 ppx_deriving_yojson.3.3
 - opam list
 - >
-  if [[ -v SERAPI_COQ_HOME ]]; then
-    git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_VERSION" &&
-    pushd "$HOME/coq-$COQ_VERSION"        &&
-    make -f Makefile.dune coq             &&
-    popd;
-    PATH="$HOME/coq-$COQ_VERSION/_build/install/default/bin":$PATH &&
-    git clone --depth=3 -b master https://github.com/math-comp/math-comp.git &&
-    pushd math-comp/mathcomp/ssreflect &&
-    make && make install &&
-    popd;
+  if [[ -v LOCAL_COQ ]]; then
+    git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH" &&
+    opam pin add coq --kind=path "$HOME/coq-$COQ_BRANCH"
   fi
 - if [[ -v EXTRA_OPAM ]]; then opam install --ignore-constraints-on=coq $EXTRA_OPAM; fi
 
 script:
 - set -e
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME/_build/install/default/lib/" "$TEST_TARGET"
+- make "$TEST_TARGET"
 - ls -lR _build/install/default/ || true
 - ls -lR _build/default/sertop/*.js || true
 - echo -en 'travis_fold:end:serapi.build\\r'
