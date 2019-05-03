@@ -13,6 +13,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Serlib
 open Ltac_plugin
 
 module CAst         = Ser_cAst

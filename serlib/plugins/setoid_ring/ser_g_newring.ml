@@ -1,4 +1,5 @@
 open Sexplib.Conv
+open Serlib
 
 module CAst       = Ser_cAst
 module Libnames   = Ser_libnames

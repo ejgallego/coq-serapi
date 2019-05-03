@@ -16,6 +16,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Serlib
 
 module Loc        = Ser_loc
 module Names      = Ser_names

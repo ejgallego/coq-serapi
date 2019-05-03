@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Serlib
 
 type cpattern =
   [%import: Ssrmatching_plugin.Ssrmatching.cpattern]
