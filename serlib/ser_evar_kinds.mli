@@ -28,8 +28,4 @@ type obligation_definition_status = Evar_kinds.obligation_definition_status
 val obligation_definition_status_of_sexp : Sexp.t -> obligation_definition_status
 val sexp_of_obligation_definition_status : obligation_definition_status -> Sexp.t
 
-type t = Evar_kinds.t
-
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
-
+include SerType.SJ with type t = Evar_kinds.t

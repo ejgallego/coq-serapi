@@ -64,6 +64,7 @@ install:
     make && make install &&
     popd;
   fi
+- if [[ -v EXTRA_OPAM ]]; then opam install --ignore-constraints-on=coq $EXTRA_OPAM; fi
 
 script:
 - set -e

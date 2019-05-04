@@ -19,13 +19,20 @@ type glob_level = Glob_term.glob_level
 val glob_level_of_sexp : Sexp.t -> Glob_term.glob_level
 val sexp_of_glob_level : Glob_term.glob_level -> Sexp.t
 
+val glob_level_of_yojson : Yojson.Safe.t -> (glob_level,string) result
+val glob_level_to_yojson : Glob_term.glob_level -> Yojson.Safe.t
+
 type glob_sort = Glob_term.glob_sort
 val glob_sort_of_sexp : Sexp.t -> Glob_term.glob_sort
 val sexp_of_glob_sort : Glob_term.glob_sort -> Sexp.t
+val glob_sort_of_yojson : Yojson.Safe.t -> (glob_sort, string) Result.result
+val glob_sort_to_yojson : glob_sort -> Yojson.Safe.t
 
 type 'a cast_type = 'a Glob_term.cast_type
 val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Glob_term.cast_type
 val sexp_of_cast_type : ('a -> Sexp.t) -> 'a Glob_term.cast_type -> Sexp.t
+val cast_type_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a cast_type, string) Result.result
+val cast_type_to_yojson : ('a -> Yojson.Safe.t) -> 'a cast_type -> Yojson.Safe.t
 
 type glob_constraint = Glob_term.glob_constraint
 val glob_constraint_of_sexp : Sexp.t -> Glob_term.glob_constraint
@@ -45,6 +52,8 @@ and cases_clauses       = Glob_term.cases_clauses
 
 val existential_name_of_sexp : Sexp.t -> Glob_term.existential_name
 val sexp_of_existential_name : Glob_term.existential_name -> Sexp.t
+val existential_name_of_yojson : Yojson.Safe.t -> (existential_name, string) Result.result
+val existential_name_to_yojson : existential_name -> Yojson.Safe.t
 
 val cases_pattern_of_sexp : Sexp.t -> cases_pattern
 val sexp_of_cases_pattern : cases_pattern -> Sexp.t

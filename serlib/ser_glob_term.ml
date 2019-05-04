@@ -34,19 +34,19 @@ module Namegen    = Ser_namegen
 
 type 'a glob_sort_gen =
   [%import: 'a Glob_term.glob_sort_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a universe_kind =
   [%import: 'a Glob_term.universe_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type level_info =
   [%import: Glob_term.level_info]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type glob_level =
   [%import: Glob_term.glob_level]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type glob_constraint =
   [%import: Glob_term.glob_constraint]
@@ -54,19 +54,19 @@ type glob_constraint =
 
 type sort_info =
   [%import: Glob_term.sort_info]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type glob_sort =
   [%import: Glob_term.glob_sort]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a cast_type =
   [%import: 'a Glob_term.cast_type]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
-type existential_name = Glob_term.existential_name
-let existential_name_of_sexp = Names.Id.t_of_sexp
-let sexp_of_existential_name = Names.Id.sexp_of_t
+type existential_name =
+  [%import: Glob_term.existential_name]
+  [@@deriving sexp,yojson]
 
 type 'a cases_pattern_r = [%import: 'a Glob_term.cases_pattern_r]
 and 'a cases_pattern_g  = [%import: 'a Glob_term.cases_pattern_g]

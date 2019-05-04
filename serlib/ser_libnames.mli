@@ -19,3 +19,5 @@ type qualid = Libnames.qualid
 
 val qualid_of_sexp : Sexp.t -> Libnames.qualid
 val sexp_of_qualid : Libnames.qualid -> Sexp.t
+val qualid_of_yojson : Yojson.Safe.t -> (qualid, string) Result.result
+val qualid_to_yojson : qualid -> Yojson.Safe.t

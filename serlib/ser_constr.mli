@@ -39,6 +39,8 @@ type case_style = Constr.case_style
 
 val case_style_of_sexp : Sexp.t -> case_style
 val sexp_of_case_style : case_style -> Sexp.t
+val case_style_of_yojson : Yojson.Safe.t -> (case_style, string) Result.result
+val case_style_to_yojson : case_style -> Yojson.Safe.t
 
 type case_printing = Constr.case_printing
 

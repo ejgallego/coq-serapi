@@ -16,4 +16,4 @@
 open Sexplib.Std
 
 type t =  [%import: NumTok.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

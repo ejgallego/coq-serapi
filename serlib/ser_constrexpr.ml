@@ -53,42 +53,42 @@ type name_decl =
 
 type notation_entry_level =
   [%import: Constrexpr.notation_entry_level]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type notation_entry =
   [%import: Constrexpr.notation_entry]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type notation_key =
   [%import: Constrexpr.notation_key]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type notation =  [%import: Constrexpr.notation]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type explicitation = [%import: Constrexpr.explicitation]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type binder_kind = [%import: Constrexpr.binder_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type abstraction_kind = [%import: Constrexpr.abstraction_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type proj_flag = [%import: Constrexpr.proj_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type raw_numeral = [%import: Constrexpr.raw_numeral]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type sign = [%import: Constrexpr.sign]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type prim_token = [%import: Constrexpr.prim_token]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type instance_expr = [%import: Constrexpr.instance_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type cases_pattern_expr_r = [%import: Constrexpr.cases_pattern_expr_r]
 and cases_pattern_expr = [%import: Constrexpr.cases_pattern_expr]
@@ -104,7 +104,7 @@ and recursion_order_expr_r = [%import: Constrexpr.recursion_order_expr_r]
 and recursion_order_expr = [%import: Constrexpr.recursion_order_expr]
 and local_binder_expr    = [%import: Constrexpr.local_binder_expr]
 and constr_notation_substitution = [%import: Constrexpr.constr_notation_substitution]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type constr_pattern_expr = [%import: Constrexpr.constr_pattern_expr]
   [@@deriving sexp]

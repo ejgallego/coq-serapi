@@ -23,13 +23,13 @@ open Genarg
 
 type rlevel =
   [%import: Genarg.rlevel]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 type glevel =
   [%import: Genarg.glevel]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 type tlevel =
   [%import: Genarg.tlevel]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 open Sexp
 
@@ -193,19 +193,22 @@ let generic_argument_of_sexp _lvl sexp : 'a Genarg.generic_argument =
   let (RG ga) = gen_abstype_of_sexp sexp in
   Obj.magic ga
 
+let generic_argument_of_yojson _lvl _json = Error "not supported generic_argument_of_yojson"
+let generic_argument_to_yojson _lvl _g = `String "foo"
+
 type 'a generic_argument = 'a Genarg.generic_argument
 
 type glob_generic_argument =
   [%import: Genarg.glob_generic_argument]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type raw_generic_argument =
   [%import: Genarg.raw_generic_argument]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type typed_generic_argument =
   [%import: Genarg.typed_generic_argument]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 let mk_uniform pin pout = {
     raw_ser = pin;

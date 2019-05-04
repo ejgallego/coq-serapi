@@ -25,7 +25,7 @@
   (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js))
 ; (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js --pretty --noinline --disable shortvar --debug-info)
  (link_flags -linkall -noautolink -no-check-prims)
- (libraries sertoplib js_of_ocaml ppx_deriving_yojson.runtime jscoq_lib))
+ (libraries sertoplib ppx_deriving_yojson.runtime jscoq_lib))
 
 (rule
  (targets ser_version.ml)
