@@ -99,7 +99,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
            let doc, sid = !stt in
            if String.trim line <> "" then
              let sxp = Sexplib.Sexp.of_string line in
-             let ast = Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp in
+             let ast = Serlib.(Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp) in
              stt := process ~doc ~sid ast
          done;
          !stt
@@ -123,7 +123,7 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
       printf "@[%a@]@\n%!" Pp.pp_with Ppvernac.(pr_vernac ast.v)
     | C_sexp ->
       printf "@[%a@]@\n%!" pp
-        (Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
+        Serlib.(Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
   in
   doc, n_st
 
@@ -151,7 +151,7 @@ let close_document ~pp ~mode ~doc ~in_file ~pstate =
   | C_env ->
     let _doc = Stm.join ~doc in
     check_pending_proofs ~pstate;
-    Format.printf "@[%a@]@\n%!" pp Ser_environ.(sexp_of_env Global.(env ()))
+    Format.printf "@[%a@]@\n%!" pp Serlib.Ser_environ.(sexp_of_env Global.(env ()))
   | C_vo ->
     let _doc = Stm.join ~doc in
     check_pending_proofs ~pstate;
@@ -187,8 +187,8 @@ let driver input mode debug printer async async_workers quick coq_path ml_path l
   let process = process_vernac ~mode ~pp in
 
   (* initialization *)
-  let options = Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
-  Serlib_init.init ~options;
+  let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
+  Serlib.Serlib_init.init ~options;
 
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
   let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in

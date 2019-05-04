@@ -16,6 +16,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Serlib
 
 module Ssrmatching = Ser_ssrmatching
 open Ssrmatching

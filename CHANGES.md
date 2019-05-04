@@ -9,6 +9,7 @@
  * [serlib ] JSON serialization for kernel and AST terms (@ejgallego)
  * [serapi ] Add `Complete` support (@ejgallego
              c.f. https://github.com/coq/coq/pull/8766)
+ * [serlib ] Serlib is now built as a wrapped module (@ejgallego)
 
 ## Version 0.6.1:
 

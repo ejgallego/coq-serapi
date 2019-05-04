@@ -18,6 +18,7 @@
 
 open Sexplib
 open Sexplib.Conv
+open Serlib
 
 type ser_printer =
   | SP_Sertop                   (* sertop custom printer (UTF-8, stronger quoting) *)

@@ -16,4 +16,4 @@
 open Ltac_plugin
 
 val ser_wit_tactic :
-  (Tacexpr.raw_tactic_expr, Tacexpr.glob_tactic_expr, Geninterp.Val.t) Ser_genarg.gen_ser
+  (Tacexpr.raw_tactic_expr, Tacexpr.glob_tactic_expr, Geninterp.Val.t) Serlib.Ser_genarg.gen_ser

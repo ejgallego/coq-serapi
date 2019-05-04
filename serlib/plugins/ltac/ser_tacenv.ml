@@ -16,6 +16,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Serlib
 
 module Names        = Ser_names
 module Attributes   = Ser_attributes

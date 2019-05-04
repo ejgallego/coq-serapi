@@ -17,6 +17,7 @@
 
 open Sexplib
 open Sexplib.Std
+open Serlib
 
 module C = CAst
 
