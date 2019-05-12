@@ -17,7 +17,15 @@
 (************************************************************************)
 
 type 'a hyp = (Names.Id.t list * 'a option * 'a)
-type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
+type info =
+  { evar : Evar.t
+  ; name : Names.Id.t option
+  }
+type 'a reified_goal =
+  { info : info
+  ; ty   : 'a
+  ; hyp  : 'a hyp list
+  }
 
 type 'a ser_goals =
   { goals : 'a list
@@ -48,14 +56,20 @@ let get_goal_type (ppx : Constr.t -> 'pc)
     (g : Goal.goal) =
   ppx @@ EConstr.to_constr sigma (Goal.V82.concl sigma g)
 
+let build_info sigma g =
+  { evar = g
+  ; name = Evd.evar_ident g sigma
+  }
+
 (** Generic processor  *)
 let process_goal_gen ppx sigma g : 'a reified_goal =
   let env       = Goal.V82.env sigma g                                      in
   (* why is compaction neccesary... ? [eg for better display] *)
   let ctx       = Termops.compact_named_context (Environ.named_context env) in
   let ppx       = ppx env sigma                                             in
-  let hyps      = List.map (get_hyp ppx sigma) ctx                          in
-  { name = Goal.uid g; ty = get_goal_type ppx sigma g; hyp = hyps }
+  let hyp       = List.map (get_hyp ppx sigma) ctx                          in
+  let info      = build_info sigma g                                        in
+  { info; ty = get_goal_type ppx sigma g; hyp }
 
 let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) ~doc sid
   : 'a reified_goal ser_goals option =

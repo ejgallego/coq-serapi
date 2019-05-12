@@ -90,6 +90,7 @@ module Names    = Ser_names
 module Environ  = Ser_environ
 module Goptions = Ser_goptions
 module Stateid  = Ser_stateid
+module Evar     = Ser_evar
 module Context  = Ser_context
 module Feedback = Ser_feedback
 module Libnames = Ser_libnames
@@ -127,6 +128,10 @@ module Serapi_goals = struct
 
   type 'a hyp =
     [%import: 'a Serapi_goals.hyp]
+    [@@deriving sexp]
+
+  type info =
+    [%import: Serapi_goals.info]
     [@@deriving sexp]
 
   type 'a reified_goal =

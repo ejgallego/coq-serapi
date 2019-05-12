@@ -30,6 +30,9 @@ doc:
 browser:
 	google-chrome _build/default/_doc/_html/index.html
 
+sertop:
+	dune exec -- sertop
+
 #####################################################
 # Javascript support
 
