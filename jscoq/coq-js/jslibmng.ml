@@ -14,6 +14,7 @@
 open Jslib
 open Lwt
 open Js_of_ocaml
+open Js_of_ocaml_lwt
 
 let verb = false
 
@@ -45,7 +46,6 @@ type out_fn = lib_event -> unit
 
 let preload_file ?(refresh=false) base_path base_url (file, _hash) : unit Lwt.t =
   let open XmlHttpRequest                           in
-  let open Lwt_xmlHttpRequest                       in
   if verb then Format.eprintf "preload_request: %s / %s\n%!" base_path base_url;
   let js_file = if Filename.(check_suffix file "cma"
                           || check_suffix file "cmo")
@@ -100,7 +100,7 @@ let preload_pkg ?(verb=false) out_fn base_path bundle pkg : unit Lwt.t =
   Lwt.return_unit
 
 let parse_bundle base_path file : coq_bundle Lwt.t =
-  let open Lwt_xmlHttpRequest in
+  let open XmlHttpRequest in
   let file_url = base_path ^ file ^ ".json" in
   get file_url >>= (fun res ->
       match Jslib.coq_bundle_of_yojson

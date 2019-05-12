@@ -76,6 +76,10 @@ type clear_flag =
   [%import: Ltac_plugin.Tacexpr.clear_flag]
   [@@deriving sexp]
 
+type check_flag =
+  [%import: Ltac_plugin.Tacexpr.check_flag]
+  [@@deriving sexp]
+
 type ltac_constant =
   [%import: Ltac_plugin.Tacexpr.ltac_constant]
   [@@deriving sexp]
@@ -151,7 +155,7 @@ type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_exp
   | TacInductionDestruct of
       rec_flag * evars_flag * ('trm,'dtrm,'nam) induction_clause_list
   | TacReduce of ('trm,'cst,'pat) Genredexpr.red_expr_gen * 'nam Locus.clause_expr
-  | TacChange of 'pat option * 'dtrm * 'nam Locus.clause_expr
+  | TacChange of check_flag * 'pat option * 'dtrm * 'nam Locus.clause_expr
   | TacRewrite of evars_flag *
       (bool * Equality.multi * 'dtrm with_bindings_arg) list * 'nam Locus.clause_expr *
       'tacexpr option
@@ -248,7 +252,7 @@ let rec _gen_atom_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_atomic_tactic_
   | Ltac_plugin.Tacexpr.TacLetTac (a,b,c,d,e,f)      -> ITac.TacLetTac (a,b,c,d,e,f)
   | Ltac_plugin.Tacexpr.TacInductionDestruct (a,b,c) -> ITac.TacInductionDestruct (a,b,c)
   | Ltac_plugin.Tacexpr.TacReduce (a,b)              -> ITac.TacReduce (a,b)
-  | Ltac_plugin.Tacexpr.TacChange (a,b,c)            -> ITac.TacChange (a,b,c)
+  | Ltac_plugin.Tacexpr.TacChange (a,b,c,d)          -> ITac.TacChange (a,b,c,d)
   | Ltac_plugin.Tacexpr.TacRewrite (a,b,c,d)         -> ITac.TacRewrite (a,b,c,d)
   | Ltac_plugin.Tacexpr.TacInversion (a,b)           -> ITac.TacInversion (a,b)
 and _gen_tactic_arg_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_arg) :
@@ -339,7 +343,7 @@ let rec _gen_atom_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l)
   | ITac.TacLetTac (a,b,c,d,e,f)      -> Ltac_plugin.Tacexpr.TacLetTac (a,b,c,d,e,f)
   | ITac.TacInductionDestruct (a,b,c) -> Ltac_plugin.Tacexpr.TacInductionDestruct (a,b,c)
   | ITac.TacReduce (a,b)              -> Ltac_plugin.Tacexpr.TacReduce (a,b)
-  | ITac.TacChange (a,b,c)            -> Ltac_plugin.Tacexpr.TacChange (a,b,c)
+  | ITac.TacChange (a,b,c,d)          -> Ltac_plugin.Tacexpr.TacChange (a,b,c,d)
   | ITac.TacRewrite (a,b,c,d)         -> Ltac_plugin.Tacexpr.TacRewrite (a,b,c,d)
   | ITac.TacInversion (a,b)           -> Ltac_plugin.Tacexpr.TacInversion (a,b)
 and _gen_tactic_arg_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_arg) :
