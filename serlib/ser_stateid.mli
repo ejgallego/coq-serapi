@@ -13,9 +13,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+module Self : SerType.SJ with type t = Stateid.t
 
-type t = Stateid.t
-
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
+include module type of Self

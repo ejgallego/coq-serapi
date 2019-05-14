@@ -17,9 +17,9 @@ open Sexplib.Std
 
 type 'a gxml =
   [%import: 'a Xml_datatype.gxml]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type xml =
   [%import: Xml_datatype.xml]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 

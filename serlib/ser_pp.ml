@@ -17,28 +17,28 @@ open Sexplib.Std
 
 type pp_tag =
   [%import: Pp.pp_tag]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type block_type =
   [%import: Pp.block_type]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 module P = struct
-  type _doc_view =
+  type _t =
   | Pp_empty
   | Pp_string of string
-  | Pp_glue of _doc_view list
-  | Pp_box  of block_type * _doc_view
-  | Pp_tag  of pp_tag * _doc_view
+  | Pp_glue of _t list
+  | Pp_box  of block_type * _t
+  | Pp_tag  of pp_tag * _t
   (* Are those redundant? *)
   | Pp_print_break of int * int
   | Pp_force_newline
   | Pp_comment of string list
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
   open Pp
 
-  let rec from_t (d : t) : _doc_view = match repr d with
+  let rec from_t (d : t) : _t = match repr d with
   | Ppcmd_empty -> Pp_empty
   | Ppcmd_string s -> Pp_string s
   | Ppcmd_glue l -> Pp_glue (List.map from_t l)
@@ -48,7 +48,7 @@ module P = struct
   | Ppcmd_force_newline -> Pp_force_newline
   | Ppcmd_comment s -> Pp_comment s
 
-  let rec to_t (d : _doc_view) : t = unrepr (match d with
+  let rec to_t (d : _t) : t = unrepr (match d with
   | Pp_empty -> Ppcmd_empty
   | Pp_string s -> Ppcmd_string s
   | Pp_glue l -> Ppcmd_glue (List.map to_t l)
@@ -61,9 +61,12 @@ module P = struct
 end
 
 type t = Pp.t
-let t_of_sexp s = P.(to_t (_doc_view_of_sexp s))
-let sexp_of_t d = P.(sexp_of__doc_view (from_t d))
+let t_of_sexp s = P.(to_t (_t_of_sexp s))
+let sexp_of_t d = P.(sexp_of__t (from_t d))
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(P.(_t_of_yojson json >|= to_t))
+let to_yojson level = P.(_t_to_yojson (from_t level))
 
 type doc_view =
   [%import: Pp.doc_view]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
