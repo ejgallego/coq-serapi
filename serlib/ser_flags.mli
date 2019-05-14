@@ -19,3 +19,5 @@ type compat_version = Flags.compat_version
 
 val compat_version_of_sexp : Sexp.t -> compat_version
 val sexp_of_compat_version : compat_version -> Sexp.t
+val compat_version_of_yojson : Yojson.Safe.t -> (compat_version, string) Result.result
+val compat_version_to_yojson : compat_version -> Yojson.Safe.t

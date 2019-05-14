@@ -28,11 +28,11 @@ type 'a red_atom =
 
 type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type ('a,'b,'c) red_expr_gen =
   [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type ('a,'b,'c) may_eval =
   [%import: ('a,'b,'c) Genredexpr.may_eval]
@@ -41,19 +41,19 @@ type ('a,'b,'c) may_eval =
 (* Helpers for raw_red_expr *)
 type r_trm =
   [%import: Genredexpr.r_trm]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type r_cst =
   [%import: Genredexpr.r_cst]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type r_pat =
   [%import: Genredexpr.r_pat]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type raw_red_expr =
   [%import: Genredexpr.raw_red_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a and_short_name =
   [%import: 'a Genredexpr.and_short_name]

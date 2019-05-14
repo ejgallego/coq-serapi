@@ -106,7 +106,7 @@ let module_retroknowledge_of_sexp _ =
 
 type recursivity_kind =
   [%import: Declarations.recursivity_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type record_info =
   [%import: Declarations.record_info]

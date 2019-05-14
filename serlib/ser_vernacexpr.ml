@@ -46,62 +46,64 @@ module Gramlib       = Ser_gramlib
 module Impargs       = Ser_impargs
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type goal_identifier = [%import: Vernacexpr.goal_identifier]
   [@@deriving sexp]
 
 type scope_name      = [%import: Vernacexpr.scope_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
-type goal_reference = [%import: Vernacexpr.goal_reference]
-  [@@deriving sexp]
+type goal_reference =
+  [%import: Vernacexpr.goal_reference]
+  [@@deriving sexp,yojson]
 
-type printable = [%import: Vernacexpr.printable]
-  [@@deriving sexp]
+type printable =
+  [%import: Vernacexpr.printable]
+  [@@deriving sexp,yojson]
 
 type vernac_cumulative =
   [%import: Vernacexpr.vernac_cumulative]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type search_about_item =
   [%import: Vernacexpr.search_about_item]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type searchable =
   [%import: Vernacexpr.searchable]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type locatable = [%import: Vernacexpr.locatable]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type showable =  [%import: Vernacexpr.showable]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type comment =
   [%import: Vernacexpr.comment]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type search_restriction =  [%import: Vernacexpr.search_restriction]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
-type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving sexp]
-type verbose_flag      = [%import: Vernacexpr.verbose_flag      ] [@@deriving sexp]
-type coercion_flag     = [%import: Vernacexpr.coercion_flag     ] [@@deriving sexp]
-type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp]
-type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving sexp]
-type export_flag       = [%import: Vernacexpr.export_flag       ] [@@deriving sexp]
-type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp]
-type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp]
+type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving sexp,yojson]
+type verbose_flag      = [%import: Vernacexpr.verbose_flag      ] [@@deriving sexp,yojson]
+type coercion_flag     = [%import: Vernacexpr.coercion_flag     ] [@@deriving sexp,yojson]
+type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp,yojson]
+type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving sexp,yojson]
+type export_flag       = [%import: Vernacexpr.export_flag       ] [@@deriving sexp,yojson]
+type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp,yojson]
+type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp,yojson]
 (* type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp] *)
 
 type option_setting =
   [%import: Vernacexpr.option_setting]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type option_ref_value =
   [%import: Vernacexpr.option_ref_value]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 (* type plident =
  *   [%import: Vernacexpr.plident ]
@@ -109,116 +111,116 @@ type option_ref_value =
 
 type sort_expr =
   [%import: Vernacexpr.sort_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type definition_expr =
   [%import: Vernacexpr.definition_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type fixpoint_expr =
   [%import: Vernacexpr.fixpoint_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type cofixpoint_expr =
   [%import: Vernacexpr.cofixpoint_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type local_decl_expr =
   [%import: Vernacexpr.local_decl_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type inductive_kind =
   [%import: Vernacexpr.inductive_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type decl_notation =
   [%import: Vernacexpr.decl_notation]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type simple_binder =
   [%import: Vernacexpr.simple_binder]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type class_binder =
   [%import: Vernacexpr.class_binder]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a with_coercion =
   [%import: 'a Vernacexpr.with_coercion]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a with_instance =
   [%import: 'a Vernacexpr.with_instance]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a with_notation =
   [%import: 'a Vernacexpr.with_notation]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a with_priority =
   [%import: 'a Vernacexpr.with_priority]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type constructor_expr =
   [%import: Vernacexpr.constructor_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type constructor_list_or_record_decl_expr =
   [%import: Vernacexpr.constructor_list_or_record_decl_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type inductive_expr =
   [%import: Vernacexpr.inductive_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type one_inductive_expr =
   [%import: Vernacexpr.one_inductive_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type proof_expr =
   [%import: Vernacexpr.proof_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type syntax_modifier =
   [%import: Vernacexpr.syntax_modifier]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type proof_end =
   [%import: Vernacexpr.proof_end]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type scheme =
   [%import: Vernacexpr.scheme]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type section_subset_expr =
   [%import: Vernacexpr.section_subset_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type extend_name =
   [%import: Vernacexpr.extend_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type register_kind =
   [%import: Vernacexpr.register_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type module_ast_inl =
   [%import: Vernacexpr.module_ast_inl]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type module_binder =
   [%import: Vernacexpr.module_binder]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type typeclass_constraint =
   [%import: Vernacexpr.typeclass_constraint]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type vernac_expr           = [%import: Vernacexpr.vernac_expr]
 and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type vernac_control =
   [%import: Vernacexpr.vernac_control]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]

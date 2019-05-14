@@ -14,4 +14,4 @@
 (************************************************************************)
 
 type compat_version = [%import: Flags.compat_version]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

@@ -24,7 +24,7 @@ type argument_position =
 
 type implicit_kind =
   [%import: Impargs.implicit_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type implicit_explanation =
   [%import: Impargs.implicit_explanation]

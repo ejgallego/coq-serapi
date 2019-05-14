@@ -37,6 +37,8 @@ val cast_type_to_yojson : ('a -> Yojson.Safe.t) -> 'a cast_type -> Yojson.Safe.t
 type glob_constraint = Glob_term.glob_constraint
 val glob_constraint_of_sexp : Sexp.t -> Glob_term.glob_constraint
 val sexp_of_glob_constraint : Glob_term.glob_constraint -> Sexp.t
+val glob_constraint_of_yojson : Yojson.Safe.t -> (glob_constraint, string) Result.result
+val glob_constraint_to_yojson : glob_constraint -> Yojson.Safe.t
 
 type existential_name = Glob_term.existential_name
 

@@ -22,6 +22,8 @@ val sexp_of_subscopes : subscopes -> Sexp.t
 type constr_as_binder_kind = Notation_term.constr_as_binder_kind
 val constr_as_binder_kind_of_sexp : Sexp.t -> constr_as_binder_kind
 val sexp_of_constr_as_binder_kind : constr_as_binder_kind -> Sexp.t
+val constr_as_binder_kind_of_yojson : Yojson.Safe.t -> (constr_as_binder_kind, string) Result.result
+val constr_as_binder_kind_to_yojson : constr_as_binder_kind -> Yojson.Safe.t
 
 type notation_var_internalization_type = Notation_term.notation_var_internalization_type
 val notation_var_internalization_type_of_sexp : Sexp.t -> notation_var_internalization_type

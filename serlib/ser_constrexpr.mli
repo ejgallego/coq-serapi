@@ -18,10 +18,14 @@ open Sexplib
 type 'a or_by_notation = 'a Constrexpr.or_by_notation
 val or_by_notation_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a or_by_notation
 val sexp_of_or_by_notation : ('a -> Sexp.t) -> 'a or_by_notation -> Sexp.t
+val or_by_notation_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a or_by_notation, string) Result.result
+val or_by_notation_to_yojson : ('a -> Yojson.Safe.t) -> 'a or_by_notation -> Yojson.Safe.t
 
 type notation_entry = Constrexpr.notation_entry
 val notation_entry_of_sexp : Sexp.t -> notation_entry
 val sexp_of_notation_entry : notation_entry -> Sexp.t
+val notation_entry_of_yojson : Yojson.Safe.t -> (notation_entry, string) Result.result
+val notation_entry_to_yojson : notation_entry -> Yojson.Safe.t
 
 type universe_decl_expr = Constrexpr.universe_decl_expr
 val universe_decl_expr_of_sexp : Sexp.t -> universe_decl_expr
@@ -30,10 +34,14 @@ val sexp_of_universe_decl_expr : universe_decl_expr -> Sexp.t
 type ident_decl = Constrexpr.ident_decl
 val ident_decl_of_sexp : Sexp.t -> ident_decl
 val sexp_of_ident_decl : ident_decl -> Sexp.t
+val ident_decl_of_yojson : Yojson.Safe.t -> (ident_decl, string) Result.result
+val ident_decl_to_yojson : ident_decl -> Yojson.Safe.t
 
 type name_decl = Constrexpr.name_decl
 val name_decl_of_sexp : Sexp.t -> name_decl
 val sexp_of_name_decl : name_decl -> Sexp.t
+val name_decl_of_yojson : Yojson.Safe.t -> (name_decl, string) Result.result
+val name_decl_to_yojson : name_decl -> Yojson.Safe.t
 
 type notation = Constrexpr.notation
 
@@ -95,8 +103,6 @@ val branch_expr_of_sexp : Sexp.t -> branch_expr
 (* val binder_expr_of_sexp : Sexp.t -> binder_expr *)
 val fix_expr_of_sexp : Sexp.t -> fix_expr
 val cofix_expr_of_sexp : Sexp.t -> cofix_expr
-val recursion_order_expr_of_sexp : Sexp.t -> recursion_order_expr
-val local_binder_expr_of_sexp : Sexp.t -> local_binder_expr
 val constr_notation_substitution_of_sexp : Sexp.t -> constr_notation_substitution
 
 val sexp_of_constr_expr : constr_expr -> Sexp.t
@@ -105,9 +111,17 @@ val sexp_of_branch_expr : branch_expr -> Sexp.t
 (* val sexp_of_binder_expr : binder_expr -> Sexp.t *)
 val sexp_of_fix_expr : fix_expr -> Sexp.t
 val sexp_of_cofix_expr : cofix_expr -> Sexp.t
-val sexp_of_recursion_order_expr : recursion_order_expr -> Sexp.t
-val sexp_of_local_binder_expr : local_binder_expr -> Sexp.t
 val sexp_of_constr_notation_substitution : constr_notation_substitution -> Sexp.t
+
+val recursion_order_expr_of_sexp : Sexp.t -> recursion_order_expr
+val sexp_of_recursion_order_expr : recursion_order_expr -> Sexp.t
+val recursion_order_expr_of_yojson : Yojson.Safe.t -> (recursion_order_expr, string) Result.result
+val recursion_order_expr_to_yojson : recursion_order_expr -> Yojson.Safe.t
+
+val sexp_of_local_binder_expr : local_binder_expr -> Sexp.t
+val local_binder_expr_of_sexp : Sexp.t -> local_binder_expr
+val local_binder_expr_of_yojson : Yojson.Safe.t -> (local_binder_expr, string) Result.result
+val local_binder_expr_to_yojson : local_binder_expr -> Yojson.Safe.t
 
 val constr_expr_of_yojson : Yojson.Safe.t -> (constr_expr, string) Result.result
 val constr_expr_to_yojson : constr_expr -> Yojson.Safe.t
@@ -115,13 +129,19 @@ val constr_expr_to_yojson : constr_expr -> Yojson.Safe.t
 type constr_pattern_expr = Constrexpr.constr_pattern_expr
 val constr_pattern_expr_of_sexp : Sexp.t -> constr_pattern_expr
 val sexp_of_constr_pattern_expr : constr_pattern_expr -> Sexp.t
+val constr_pattern_expr_of_yojson : Yojson.Safe.t -> (constr_pattern_expr, string) Result.result
+val constr_pattern_expr_to_yojson : constr_pattern_expr -> Yojson.Safe.t
 
 type with_declaration_ast = Constrexpr.with_declaration_ast
 
 val with_declaration_ast_of_sexp : Sexp.t -> with_declaration_ast
 val sexp_of_with_declaration_ast : with_declaration_ast -> Sexp.t
+val with_declaration_ast_of_yojson : Yojson.Safe.t -> (with_declaration_ast, string) Result.result
+val with_declaration_ast_to_yojson : with_declaration_ast -> Yojson.Safe.t
 
 type module_ast = Constrexpr.module_ast
 
 val module_ast_of_sexp : Sexp.t -> module_ast
 val sexp_of_module_ast : module_ast -> Sexp.t
+val module_ast_of_yojson : Yojson.Safe.t -> (module_ast, string) Result.result
+val module_ast_to_yojson : module_ast -> Yojson.Safe.t

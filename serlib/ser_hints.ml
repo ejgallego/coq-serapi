@@ -23,36 +23,36 @@ module Genarg      = Ser_genarg
 
 type hint_db_name =
   [%import: Hints.hint_db_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a hints_path_atom_gen =
   [%import: 'a Hints.hints_path_atom_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a hints_path_gen =
   [%import: 'a Hints.hints_path_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type hints_path =
   [%import: Hints.hints_path]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type reference_or_constr =
   [%import: Hints.reference_or_constr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type hint_mode =
   [%import: Hints.hint_mode]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type hint_info_expr =
   [%import: Hints.hint_info_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a hints_transparency_target =
   [%import: 'a Hints.hints_transparency_target]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type hints_expr =
   [%import: Hints.hints_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

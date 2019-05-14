@@ -26,6 +26,8 @@ type option_name = Goptions.option_name
 
 val option_name_of_sexp : Sexp.t -> option_name
 val sexp_of_option_name : option_name -> Sexp.t
+val option_name_of_yojson : Yojson.Safe.t -> (option_name, string) Result.result
+val option_name_to_yojson : option_name -> Yojson.Safe.t
 
 type option_value = Goptions.option_value
 

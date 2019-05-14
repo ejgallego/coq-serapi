@@ -22,15 +22,15 @@ module Gramlib       = Ser_gramlib
 
 type side =
   [%import: Extend.side]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type production_position =
   [%import: Extend.production_position]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type production_level =
   [%import: Extend.production_level]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type binder_entry_kind =
   [%import: Extend.binder_entry_kind]
@@ -38,11 +38,11 @@ type binder_entry_kind =
 
 type 'lev constr_entry_key_gen =
   [%import: 'lev Extend.constr_entry_key_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type constr_entry_key =
   [%import: Extend.constr_entry_key]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type constr_prod_entry_key =
   [%import: Extend.constr_prod_entry_key]
@@ -50,5 +50,5 @@ type constr_prod_entry_key =
 
 type simple_constr_prod_entry_key =
   [%import: Extend.simple_constr_prod_entry_key]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 

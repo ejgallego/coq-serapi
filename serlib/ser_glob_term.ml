@@ -50,7 +50,7 @@ type glob_level =
 
 type glob_constraint =
   [%import: Glob_term.glob_constraint]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type sort_info =
   [%import: Glob_term.sort_info]

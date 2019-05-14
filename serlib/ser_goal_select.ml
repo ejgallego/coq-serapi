@@ -25,4 +25,4 @@ module Names       = Ser_names
 
 type t =
   [%import: Goal_select.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

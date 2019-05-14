@@ -39,19 +39,19 @@ type cumulative_inductive_flag =
 
 type theorem_kind =
   [%import: Decl_kinds.theorem_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type definition_object_kind =
   [%import: Decl_kinds.definition_object_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type assumption_object_kind =
   [%import: Decl_kinds.assumption_object_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type assumption_kind =
   [%import: Decl_kinds.assumption_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type definition_kind =
   [%import: Decl_kinds.definition_kind]
@@ -71,4 +71,4 @@ type logical_kind =
 
 type discharge =
   [%import: Decl_kinds.discharge]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
