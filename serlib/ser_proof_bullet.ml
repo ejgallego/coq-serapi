@@ -19,4 +19,4 @@ open Sexplib.Conv
 
 type t =
   [%import: Proof_bullet.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

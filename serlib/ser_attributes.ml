@@ -7,8 +7,8 @@ and
   [%import: Attributes.vernac_flag_value]
 and vernac_flags =
   [%import: Attributes.vernac_flags]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type deprecation =
   [%import: Attributes.deprecation]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

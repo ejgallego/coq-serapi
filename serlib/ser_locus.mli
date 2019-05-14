@@ -18,6 +18,8 @@ open Sexplib
 type 'a or_var = 'a Locus.or_var
 val or_var_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a or_var
 val sexp_of_or_var : ('a -> Sexp.t) -> 'a or_var -> Sexp.t
+val or_var_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a or_var, string) Result.result
+val or_var_to_yojson : ('a -> Yojson.Safe.t) -> 'a or_var -> Yojson.Safe.t
 
 type 'a occurrences_gen = 'a Locus.occurrences_gen
 val occurrences_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a occurrences_gen
@@ -32,6 +34,8 @@ type 'a with_occurrences = 'a Locus.with_occurrences
 
 val with_occurrences_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_occurrences
 val sexp_of_with_occurrences : ('a -> Sexp.t) -> 'a with_occurrences -> Sexp.t
+val with_occurrences_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a with_occurrences, string) Result.result
+val with_occurrences_to_yojson : ('a -> Yojson.Safe.t) -> 'a with_occurrences -> Yojson.Safe.t
 
 type occurrences = Locus.occurrences
 val occurrences_of_sexp : Sexp.t -> occurrences

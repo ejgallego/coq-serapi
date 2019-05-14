@@ -79,6 +79,8 @@ val constant_body_of_sexp : Sexp.t -> constant_body
 type recursivity_kind = Declarations.recursivity_kind
 val recursivity_kind_of_sexp : Sexp.t -> recursivity_kind
 val sexp_of_recursivity_kind : recursivity_kind -> Sexp.t
+val recursivity_kind_of_yojson : Yojson.Safe.t -> (recursivity_kind, string) Result.result
+val recursivity_kind_to_yojson : recursivity_kind -> Yojson.Safe.t
 
 type mutual_inductive_body = Declarations.mutual_inductive_body
 val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body

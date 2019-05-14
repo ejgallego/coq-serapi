@@ -17,4 +17,4 @@ open Sexplib.Std
 
 type ('a,'b) gen_universe_decl =
   [%import: ('a,'b) UState.gen_universe_decl]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

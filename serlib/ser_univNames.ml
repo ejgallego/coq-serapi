@@ -19,4 +19,4 @@ module Names       = Ser_names
 
 type univ_name_list =
   [%import: UnivNames.univ_name_list]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

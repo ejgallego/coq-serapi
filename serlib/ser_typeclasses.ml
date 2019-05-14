@@ -19,4 +19,4 @@ open Sexplib.Conv
 
 type 'a hint_info_gen =
   [%import: 'a Typeclasses.hint_info_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

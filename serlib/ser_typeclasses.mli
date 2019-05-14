@@ -21,3 +21,5 @@ type 'a hint_info_gen = 'a Typeclasses.hint_info_gen
 
 val sexp_of_hint_info_gen : ('a -> Sexp.t) -> 'a hint_info_gen -> Sexp.t
 val hint_info_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hint_info_gen
+val hint_info_gen_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a hint_info_gen, string) Result.result
+val hint_info_gen_to_yojson : ('a -> Yojson.Safe.t) -> 'a hint_info_gen -> Yojson.Safe.t

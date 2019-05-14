@@ -19,8 +19,8 @@ open Sexplib.Conv
 
 type 'a module_signature =
   [%import: 'a Declaremods.module_signature]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type inline =
   [%import: Declaremods.inline]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

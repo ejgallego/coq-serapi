@@ -17,7 +17,7 @@ open Sexplib.Std
 
 type level =
   [%import: Conv_oracle.level]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 (* XXX: Fixme *)
 type oracle =

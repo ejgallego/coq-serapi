@@ -232,6 +232,8 @@ type vernac_expr = Vernacexpr.vernac_expr
 
 val vernac_expr_of_sexp : Sexp.t -> vernac_expr
 val sexp_of_vernac_expr : vernac_expr -> Sexp.t
+val vernac_expr_of_yojson : Yojson.Safe.t -> (vernac_expr, string) Result.result
+val vernac_expr_to_yojson : vernac_expr -> Yojson.Safe.t
 
 (* val located_vernac_expr_of_sexp : Sexp.t -> located_vernac_expr *)
 (* val sexp_of_located_vernac_expr : located_vernac_expr -> Sexp.t *)
@@ -242,3 +244,5 @@ val sexp_of_vernac_expr : vernac_expr -> Sexp.t
 type vernac_control = Vernacexpr.vernac_control
 val vernac_control_of_sexp : Sexp.t -> vernac_control
 val sexp_of_vernac_control : vernac_control -> Sexp.t
+val vernac_control_of_yojson : Yojson.Safe.t -> (vernac_control, string) Result.result
+val vernac_control_to_yojson : vernac_control -> Yojson.Safe.t

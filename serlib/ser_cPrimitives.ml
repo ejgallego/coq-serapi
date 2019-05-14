@@ -15,12 +15,12 @@
 
 type t =
   [%import: CPrimitives.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type prim_type =
   [%import: CPrimitives.prim_type]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type op_or_type =
   [%import: CPrimitives.op_or_type]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

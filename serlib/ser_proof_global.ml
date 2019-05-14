@@ -15,4 +15,4 @@
 
 type opacity_flag =
   [%import: Proof_global.opacity_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]

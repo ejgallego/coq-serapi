@@ -12,6 +12,7 @@
  * [serlib ] Serlib is now built as a wrapped module (@ejgallego)
  * [serapi ] (!) Goals info has been extended to print name metadta if available,
              cc #151 (@ejgallego , suggested by @cpitclaudel)
+ * [serlib ] JSON support for vernac_expr (@ejgallego)
 
 ## Version 0.6.1:
 

@@ -19,23 +19,23 @@ module Names     = Ser_names
 
 type 'a or_var =
   [%import: 'a Locus.or_var]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a occurrences_gen =
   [%import: 'a Locus.occurrences_gen]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type occurrences_expr =
   [%import: Locus.occurrences_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a with_occurrences =
   [%import: 'a Locus.with_occurrences]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type occurrences =
   [%import: Locus.occurrences]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type hyp_location_flag =
   [%import: Locus.hyp_location_flag]

@@ -25,6 +25,8 @@ type constraint_type = Univ.constraint_type
 
 val constraint_type_of_sexp : Sexp.t -> constraint_type
 val sexp_of_constraint_type : constraint_type -> Sexp.t
+val constraint_type_of_yojson : Yojson.Safe.t -> (constraint_type, string) Result.result
+val constraint_type_to_yojson : constraint_type -> Yojson.Safe.t
 
 type univ_constraint = Univ.univ_constraint
 

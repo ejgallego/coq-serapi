@@ -33,23 +33,23 @@ module NumTok     = Ser_numTok
 
 type 'a or_by_notation_r =
   [%import: 'a Constrexpr.or_by_notation_r]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type 'a or_by_notation =
   [%import: 'a Constrexpr.or_by_notation]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type universe_decl_expr =
   [%import: Constrexpr.universe_decl_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type ident_decl =
   [%import: Constrexpr.ident_decl]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type name_decl =
   [%import: Constrexpr.name_decl]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type notation_entry_level =
   [%import: Constrexpr.notation_entry_level]
@@ -107,13 +107,13 @@ and constr_notation_substitution = [%import: Constrexpr.constr_notation_substitu
   [@@deriving sexp,yojson]
 
 type constr_pattern_expr = [%import: Constrexpr.constr_pattern_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type with_declaration_ast =
   [%import: Constrexpr.with_declaration_ast]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type module_ast_r = [%import: Constrexpr.module_ast_r]
 and module_ast =
   [%import: Constrexpr.module_ast]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
