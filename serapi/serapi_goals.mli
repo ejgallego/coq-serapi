@@ -19,7 +19,15 @@
 (* We ship our own type due to Context lack of support for anything
    other than Constr.t *)
 type 'a hyp = (Names.Id.t list * 'a option * 'a)
-type 'a reified_goal = { name: string; ty: 'a; hyp: 'a hyp list }
+type info =
+  { evar : Evar.t
+  ; name : Names.Id.t option
+  }
+type 'a reified_goal =
+  { info : info
+  ; ty   : 'a
+  ; hyp  : 'a hyp list
+  }
 
 type 'a ser_goals =
   { goals : 'a list

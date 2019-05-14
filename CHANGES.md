@@ -1,7 +1,7 @@
 ## Version 0.7.0:
 
- * [general] support Coq 8.10,
- * [serapi] `Goals` query return type has been modified due to
+ * [general] (!) support Coq 8.10,
+ * [serapi]  (!) `Goals` query return type has been modified due to
              upstream changes. (@ejgallego)
  * [serlib]  Complete (hopefully) serialization for ssreflect ASTs.
              (#73 @ejgallego)
@@ -10,6 +10,8 @@
  * [serapi ] Add `Complete` support (@ejgallego
              c.f. https://github.com/coq/coq/pull/8766)
  * [serlib ] Serlib is now built as a wrapped module (@ejgallego)
+ * [serapi ] (!) Goals info has been extended to print name metadta if available,
+             cc #151 (@ejgallego , suggested by @cpitclaudel)
 
 ## Version 0.6.1:
 
