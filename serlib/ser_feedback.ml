@@ -23,21 +23,21 @@ module Stateid      = Ser_stateid
 
 type level =
   [%import: Feedback.level]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type route_id =
   [%import: Feedback.route_id]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type doc_id =
   [%import: Feedback.doc_id]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type feedback_content =
   [%import: Feedback.feedback_content]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type feedback =
   [%import: Feedback.feedback]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 

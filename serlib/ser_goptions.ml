@@ -19,15 +19,15 @@ open Sexplib.Std
 
 type option_locality =
   [%import: Goptions.option_locality]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type option_name =
   [%import: Goptions.option_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type option_value =
   [%import: Goptions.option_value]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 type option_state =
   [%import: Goptions.option_state]

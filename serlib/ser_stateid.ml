@@ -15,14 +15,21 @@
 
 open Sexplib.Std
 
-(* Id: private *)
-type t = [%import: Stateid.t]
+module Self = struct
 
-type _stateid                = int [@@deriving sexp]
-(* type _stateid             = Ser_Stateid of int [@@deriving sexp] *)
+type t =
+  [%import: Stateid.t]
 
-let _stateid_put stateid = (Stateid.to_int stateid)
-let _stateid_get stateid = Stateid.of_int stateid
+type _t = int [@@deriving sexp, yojson]
 
-let t_of_sexp sexp    = _stateid_get (_stateid_of_sexp sexp)
-let sexp_of_t stateid = sexp_of__stateid (_stateid_put stateid)
+let _t_put stateid = (Stateid.to_int stateid)
+let _t_get stateid = Stateid.of_int stateid
+
+let t_of_sexp sexp    = _t_get (_t_of_sexp sexp)
+let sexp_of_t stateid = sexp_of__t (_t_put stateid)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
+let to_yojson level = _t_to_yojson (_t_put level)
+end
+
+include Self
