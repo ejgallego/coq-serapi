@@ -13,6 +13,7 @@
  * [serapi ] (!) Goals info has been extended to print name metadta if available,
              cc #151 (@ejgallego , suggested by @cpitclaudel)
  * [serlib ] JSON support for vernac_expr (@ejgallego)
+ * [sertop ] (!) Do as Coq upstream and load Coq's stdlib with `-R` (closes #56)
 
 ## Version 0.6.1:
 

@@ -44,7 +44,7 @@ let async_workers =
   Arg.(value & opt int 3 & info ["async-workers"] ~doc)
 
 let implicit_stdlib =
-  let doc = "Allow loading unqualified stdlib libraries (deprecated)." in
+  let doc = "No-op (used to allow loading unqualified stdlib libraries, which is now the default)." in
   Arg.(value & flag & info ["implicit"] ~doc)
 
 let print_args = let open Sertop_ser in
