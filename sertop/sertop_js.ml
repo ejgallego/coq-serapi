@@ -17,7 +17,7 @@ open Sexplib
 open Sertop_async
 open Js_of_ocaml
 
-open Js_of_ocaml
+open Jscoq_lib
 
 (* Send answer to the main thread *)
 let post_message (msg : Sexp.t) : unit =
@@ -49,33 +49,37 @@ let setup_std_printers out_fn =
 
 open Sexplib.Conv
 
+module Yojson = struct
+  module Safe = struct
+    type t = Yojson.Safe.t
+    let t_of_sexp _ = `String "XXX"
+    let sexp_of_t _ = Sexp.Atom "XXX"
+  end
+end
+
 type progress_info =
-  [%import: Jslibmng.progress_info]
+  [%import: Jscoq_lib.Jslibmng.progress_info]
   [@@deriving sexp]
 
-type _digest = string
+type digest =
+  [%import: Digest.t]
   [@@deriving sexp]
-
-type digest = Digest.t
-let digest_of_sexp s = Digest.from_hex (_digest_of_sexp s)
-let sexp_of_digest d = sexp_of__digest (Digest.to_hex d)
 
 type coq_pkg =
-  [%import: Jslib.coq_pkg
+  [%import: Jscoq_lib.Jslib.coq_pkg
   [@with
-     Digest.t := digest;
      Stdlib.Digest.t := digest;
   ]]
   [@@deriving sexp]
 
 type coq_bundle =
-  [%import: Jslib.coq_bundle]
+  [%import: Jscoq_lib.Jslib.coq_bundle]
   [@@deriving sexp]
 
 type lib_event =
-  [%import: Jslibmng.lib_event
+  [%import: Jscoq_lib.Jslibmng.lib_event
   [@with
-     Jslib.coq_bundle := coq_bundle;
+    Jscoq_lib.Jslib.coq_bundle := coq_bundle;
   ]]
   [@@deriving sexp]
 
@@ -104,7 +108,7 @@ let _ =
       let base_path = "./coq-pkgs/"                             in
       let pkgs      = ["init"] (*"peacoq"]*)                    in
 
-      let pkg_to_bb cp = Mltop.{
+      let _pkg_to_bb cp = Mltop.{
           recursive = false;
           path_spec = VoPath {
               coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string cp.pkg_id);
@@ -114,9 +118,10 @@ let _ =
             }
         } in
 
-      Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
-      let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
-      let iload_path  = List.map pkg_to_bb all_pkgs                      in
+      Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun _bundles ->
+      (* let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in *)
+      (* let iload_path  = List.map pkg_to_bb all_pkgs                      in *)
+      let iload_path = [] in
       let require_libs= ["Coq.Init.Prelude", None, Some true]            in
       let debug       = false                                            in
       ignore (sertop_init ~fb_out:post_message ~iload_path ~require_libs ~debug);

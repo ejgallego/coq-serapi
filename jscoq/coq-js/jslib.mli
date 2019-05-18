@@ -12,30 +12,27 @@
  * this module separated from Coq
  *)
 
+(* JSON handling *)
 type coq_pkg = {
   pkg_id    : string list;
   vo_files  : (string * Digest.t) list;
   cma_files : (string * Digest.t) list;
 }
 
+val coq_pkg_to_yojson : coq_pkg -> Yojson.Safe.t
+val coq_pkg_of_yojson : Yojson.Safe.t -> (coq_pkg, string) Result.result
+
+val to_dir  : coq_pkg -> string
+val to_desc : coq_pkg -> string
+val no_files : coq_pkg -> int
+
 type coq_bundle = {
   desc      : string;
   deps      : string list;
   pkgs      : coq_pkg list;
+  archive   : string option;
+  modDeps   : Yojson.Safe.t option;
 }
 
-val to_dir  : coq_pkg -> string
-val to_desc : coq_pkg -> string
-
-val no_files : coq_pkg -> int
-
-(* JSON handling *)
-(* XXX Use PPX *)
-type json = Yojson.Safe.json [@ocaml.warning "-3"]
-
-val coq_pkg_to_yojson : coq_pkg -> json
-val coq_pkg_of_yojson : json -> (coq_pkg, string) Result.result
-
-val coq_bundle_to_yojson : coq_bundle -> json
-val coq_bundle_of_yojson : json -> (coq_bundle, string) Result.result
-
+val coq_bundle_to_yojson : coq_bundle -> Yojson.Safe.t
+val coq_bundle_of_yojson : Yojson.Safe.t -> (coq_bundle, string) Result.result

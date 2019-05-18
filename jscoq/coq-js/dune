@@ -1,7 +1,6 @@
 (library
  (name jscoq_lib)
- (preprocess (pps ppx_deriving_yojson))
- (wrapped false)
+ (preprocess (staged_pps lwt_ppx js_of_ocaml.ppx ppx_import ppx_deriving_yojson))
  (optional)
  (flags :standard -w -39)
- (libraries yojson ppx_deriving_yojson.runtime js_of_ocaml-lwt))
+ (libraries yojson ppx_deriving_yojson.runtime js_of_ocaml-lwt coq.stm))
