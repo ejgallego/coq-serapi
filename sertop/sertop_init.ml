@@ -62,7 +62,10 @@ let coq_init opts =
 
   (* Core Coq initialization *)
   Lib.init();
+
+  (* This should be configurable somehow. *)
   Global.set_engagement Declarations.PredicativeSet;
+  Global.set_indices_matter false;
 
   (**************************************************************************)
   (* Feedback setup                                                         *)
