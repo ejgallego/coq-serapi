@@ -14,6 +14,8 @@
              cc #151 (@ejgallego , suggested by @cpitclaudel)
  * [serlib ] JSON support for vernac_expr (@ejgallego)
  * [sertop ] (!) Do as Coq upstream and load Coq's stdlib with `-R` (closes #56)
+ * [sertop ] Follow Coq upstream and unset `indices_matter` (closes #157,
+             thanks to @palmskog for the report)
 
 ## Version 0.6.1:
 
