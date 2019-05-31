@@ -143,7 +143,11 @@ pointers here, feel free to add your own!
   see the [paper](http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
 - SerAPI is being used to some software testing projects, we will
   update this link as papers get out of embargo.
-- SerAPI is being used in some machine learning projects, we will
+- [CoqGym](https://github.com/princeton-vl/CoqGym) is "A Learning
+  Environment for Theorem Proving with the Coq proof assistant". It
+  uses SerAPI to interact with Coq and perform feature-extraction. Its author notes:
+  > CoqGym relies heavily on SerAPI for serializing the internal structures of Coq. I tried to use Coq's native printing functions when I started with this project, but soon I found SerAPI could save a lot of the headaches with parsing Coq's output. Thanks to SerAPI authors, this project wouldn't be possible (or at least in its current form) without SerAPI.
+- SerAPI is being used in some more machine learning projects, we will
   update this link as papers get out of embargo.
 
 ### Quick Demo (not always up to date):
