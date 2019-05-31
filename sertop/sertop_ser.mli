@@ -61,5 +61,9 @@ val sexp_of_tagged_cmd : tagged_cmd -> Sexp.t
 val sexp_of_answer : answer -> Sexp.t
 val answer_of_sexp : Sexp.t -> answer
 
+type sentence = Sentence of Tok.t CAst.t list
+val sexp_of_sentence : sentence -> Sexp.t
+val sentence_of_sexp : Sexp.t -> sentence
+
 (* end *)
 

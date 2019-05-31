@@ -273,3 +273,6 @@ type cmd =
 type tagged_cmd =
   [%import: Serapi_protocol.tagged_cmd]
   [@@deriving sexp]
+
+type sentence = Sentence of Tok.t CAst.t list
+  [@@deriving sexp]

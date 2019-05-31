@@ -95,9 +95,9 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
       let sstr = Stream.of_string istr in
       try
         let lex = CLexer.Lexer.tok_func sstr in
-        let toks = stream_tok 0 [] lex in
+        let sen = Sertop_ser.Sentence (stream_tok 0 [] lex) in
         CLexer.set_lexer_state st;
-        printf "@[%a@]@\n%!" pp (Sexplib.Conv.sexp_of_list Serlib.(Ser_cAst.sexp_of_t Ser_tok.sexp_of_t) toks);
+        printf "@[%a@]@\n%!" pp (Sertop_ser.sexp_of_sentence sen);
         let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
         if tip <> `NewTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
         stt := doc, n_st
