@@ -437,6 +437,16 @@ type cmd =
 
 exception NoSuchState of Stateid.t
 
+module ExnInfo : sig
+  type t =
+    { loc : Loc.t option
+    ; stm_ids : (Stateid.t * Stateid.t) option
+    ; backtrace : Printexc.raw_backtrace
+    ; exn : exn
+    ; pp : Pp.t
+    }
+end
+
 type answer_kind =
   | Ack
   (** The command was received, Coq is processing it. *)
@@ -448,7 +458,7 @@ type answer_kind =
   (** A set of sentences are not valid anymore. *)
   | ObjList   of coq_object list
   (** Set of objects, usually the answer to a query *)
-  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
+  | CoqExn    of ExnInfo.t
   (** The command produced an error, optionally at a document location *)
 
 (** {3 Entry points to the DSL evaluator} *)

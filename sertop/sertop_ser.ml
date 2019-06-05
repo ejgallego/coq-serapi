@@ -218,12 +218,20 @@ let sexp_of_raw_backtrace (bt : Printexc.raw_backtrace) : Sexp.t =
   let bt = sexp_of_option (sexp_of_array (fun x -> x)) bt in
   Sexp.(List [Atom "Backtrace"; bt])
 
+module ExnInfo = struct
+  type t =
+    [%import: Serapi_protocol.ExnInfo.t
+    [@with
+       Stm.focus := Ser_stm.focus;
+       Printexc.raw_backtrace := raw_backtrace;
+       Stdlib.Printexc.raw_backtrace := raw_backtrace;
+    ]]
+    [@@deriving sexp]
+end
+
 type answer_kind =
   [%import: Serapi_protocol.answer_kind
-  [@with
-     Stm.focus := Ser_stm.focus;
-     Printexc.raw_backtrace := raw_backtrace;
-     Stdlib.Printexc.raw_backtrace := raw_backtrace;
+  [@with Exninfo.t := Exninfo.t;
   ]]
   [@@deriving sexp]
 
