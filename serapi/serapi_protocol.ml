@@ -305,6 +305,16 @@ let obj_print env sigma pr_opt obj =
 (* Answer Types                                                               *)
 (******************************************************************************)
 
+module ExnInfo = struct
+  type t =
+    { loc : Loc.t option
+    ; stm_ids : (Stateid.t * Stateid.t) option
+    ; backtrace : Printexc.raw_backtrace
+    ; exn : exn
+    ; pp : Pp.t
+    }
+end
+
 (* XXX: Fixme: adapt to 4.03 matching? *)
 type answer_kind =
     Ack
@@ -312,7 +322,7 @@ type answer_kind =
   | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
   | Canceled  of Stateid.t list
   | ObjList   of coq_object list
-  | CoqExn    of Loc.t option * (Stateid.t * Stateid.t) option * Printexc.raw_backtrace * exn
+  | CoqExn    of ExnInfo.t
 
 (******************************************************************************)
 (* Query Sub-Protocol                                                         *)
@@ -618,9 +628,15 @@ let exec_query opt cmd =
 
 (* coq_exn info *)
 let coq_exn_info exn =
-  let bt = Printexc.get_raw_backtrace () in
-  let (e, info) = CErrors.push exn in
-  CoqExn (Loc.get_loc info, Stateid.get info, bt, e)
+  let backtrace = Printexc.get_raw_backtrace () in
+  let exn, info = CErrors.push exn in
+  CoqExn
+    { loc = Loc.get_loc info
+    ; stm_ids = Stateid.get info
+    ; backtrace
+    ; exn
+    ; pp = CErrors.iprint (exn, info)
+    }
 
 (* Simple protection for Coq-generated exceptions *)
 let coq_protect e =

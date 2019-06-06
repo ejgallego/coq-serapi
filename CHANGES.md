@@ -16,6 +16,8 @@
  * [sertop ] (!) Do as Coq upstream and load Coq's stdlib with `-R` (closes #56)
  * [sertop ] Follow Coq upstream and unset `indices_matter` (closes #157,
              thanks to @palmskog for the report)
+ * [serapi ] (!) Improve CoqExn answer to have pretty-printed message (improves #162,
+             thanks to @cpitclaudel for the request)
 
 ## Version 0.6.1:
 
