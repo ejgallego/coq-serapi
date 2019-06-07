@@ -1,5 +1,6 @@
 (library
  (name sertoplib)
+ (public_name coq-serapi.sertop_v8_9)
  (modules :standard \ sertop sercomp sertop_js sertop_async)
  (wrapped false)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
