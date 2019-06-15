@@ -34,6 +34,7 @@ type 'a ser_goals =
   ; stack : ('a list * 'a list) list
   ; shelf : 'a list
   ; given_up : 'a list
+  ; bullet : Pp.t option
   }
 
 (* Ready to make into a GADT *)
