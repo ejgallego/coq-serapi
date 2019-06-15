@@ -9,6 +9,7 @@
 (executables
  (public_names sertop sercomp)
  (modules sertop sercomp)
+ (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (link_flags -linkall)
  (libraries sertoplib num))
 
