@@ -38,5 +38,9 @@ type 'a ser_goals =
   }
 
 (* Ready to make into a GADT *)
+val get_goals_gen
+  :  (Environ.env -> Evd.evar_map -> Constr.t -> 'a)
+  -> doc:Stm.doc -> Stateid.t -> 'a reified_goal ser_goals option
+
 val get_goals  : doc:Stm.doc -> Stateid.t -> Constr.t               reified_goal ser_goals option
 val get_egoals : doc:Stm.doc -> Stateid.t -> Constrexpr.constr_expr reified_goal ser_goals option
