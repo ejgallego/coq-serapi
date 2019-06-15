@@ -18,6 +18,8 @@
              thanks to @palmskog for the report)
  * [serapi ] (!) Improve CoqExn answer to have pretty-printed message (improves #162,
              thanks to @cpitclaudel for the request)
+ * [serlib ] (!) Fix capitalization conventions for a few types in `Names`
+             (closes #167 thanks to @corwin-of-amber for the report)
 
 ## Version 0.6.1:
 
