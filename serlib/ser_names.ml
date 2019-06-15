@@ -129,12 +129,12 @@ module KerName = struct
 
 type t = [%import: Names.KerName.t]
 
-type _kername = Kername of ModPath.t * Label.t
+type _kername = KerName of ModPath.t * Label.t
       [@@deriving sexp]
 
 let _kername_put kn              =
-  let mp, l = KerName.repr kn in Kername (mp,l)
-let _kername_get (Kername (mp,l)) = KerName.make mp l
+  let mp, l = KerName.repr kn in KerName (mp,l)
+let _kername_get (KerName (mp,l)) = KerName.make mp l
 
 let t_of_sexp sexp = _kername_get (_kername_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__kername (_kername_put dp)
@@ -168,12 +168,12 @@ module MutInd = struct
 (* MutInd.t: private *)
 type t = [%import: Names.MutInd.t]
 
-type _t = Mutind of ModPath.t * Label.t
+type _t = MutInd of ModPath.t * Label.t
       [@@deriving sexp,yojson]
 
 let _t_put cs              =
-  let mp, l = MutInd.repr2 cs in Mutind (mp,l)
-let _t_get (Mutind (mp,l)) = MutInd.make2 mp l
+  let mp, l = MutInd.repr2 cs in MutInd (mp,l)
+let _t_get (MutInd (mp,l)) = MutInd.make2 mp l
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__t (_t_put dp)
