@@ -34,7 +34,7 @@ env:
   matrix:
   - TEST_TARGET="build"   COMPILER="4.07.0"
   - TEST_TARGET="test"    COMPILER="4.07.1"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt ppx_deriving_yojson"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt"
   # Don't test opam in 8.10 [yet]
   # - TEST_TARGET="test"                                                                               EXTRA_OPAM="coq"
 
@@ -46,11 +46,9 @@ install:
 - eval $(opam env)
 # OPAM 2 seems quite broken here
 - opam config set-global jobs $NJOBS
-- opam pin add -y ppx_deriving_yojson --dev
 - opam pin add -y -n --kind=path coq-serapi .
-- opam install -y --deps-only --ignore-constraints-on=ppx_deriving_yojson -j $NJOBS coq-serapi
+- opam install -y --deps-only -j $NJOBS coq-serapi
 - opam pin remove coq-serapi
-# - opam install --ignore-constraints-on=yojson yojson.1.7.0 ppx_deriving_yojson.3.3
 - opam list
 - >
   if [[ -v SERAPI_COQ_HOME ]]; then
