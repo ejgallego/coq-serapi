@@ -15,6 +15,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+let load_file f =
+  let ic = open_in f in
+  let n = in_channel_length ic in
+  let s = Bytes.create n in
+  really_input ic s 0 n;
+  close_in ic;
+  (s)
+
 let fatal_exn exn info =
   let loc = Loc.get_loc info in
   let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
@@ -69,21 +77,31 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   Stm.new_doc ndoc
 
-let rec stream_tok n_tok acc (str,loc_fn) =
+let rec stream_tok n_tok acc (str,loc_fn) source begin_line begin_char =
   let e = Stream.next str in
-  let loc = loc_fn n_tok in
+  let pre_loc : Loc.t = loc_fn n_tok in
+  let loc =
+    { pre_loc with
+      fname = source;
+      line_nb = begin_line;
+      line_nb_last = begin_line + pre_loc.line_nb_last - 1;
+      bp = begin_char + pre_loc.bp;
+      ep = begin_char + pre_loc.ep;
+    } in
   let l_tok = CAst.make ~loc e in
   if Tok.(equal e EOI) then
-    List.rev (l_tok::acc)
+    List.rev acc
   else
-    stream_tok (n_tok+1) (l_tok::acc) (str,loc_fn)
+    stream_tok (n_tok+1) (l_tok::acc) (str,loc_fn) source begin_line begin_char
 
 exception End_of_input
 let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let open Format in
   let stt = ref (doc, sid) in
   let in_strm = Stream.of_channel in_chan in
-  let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
+  let source = Loc.InFile in_file in
+  let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
+  let in_bytes = load_file in_file in
   let st = CLexer.get_lexer_state () in
   try while true do
       let doc, sid = !stt in
@@ -91,11 +109,17 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
         match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
         | Some ast -> ast
         | None -> raise End_of_input in
-      let istr = asprintf "@[%a@]@\n%!" Pp.pp_with Ppvernac.(pr_vernac ast.v) in
+      let begin_line, begin_char, end_char =
+	match ast.loc with
+	| Some lc -> lc.line_nb, lc.bp, lc.ep
+	| None -> raise End_of_input in
+      let istr =
+	Bytes.sub_string in_bytes begin_char (end_char - begin_char)
+      in
       let sstr = Stream.of_string istr in
       try
         let lex = CLexer.Lexer.tok_func sstr in
-        let sen = Sertop_ser.Sentence (stream_tok 0 [] lex) in
+        let sen = Sertop_ser.Sentence (stream_tok 0 [] lex source begin_line begin_char) in
         CLexer.set_lexer_state st;
         printf "@[%a@]@\n%!" pp (Sertop_ser.sexp_of_sentence sen);
         let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
