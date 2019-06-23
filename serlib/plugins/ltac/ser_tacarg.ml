@@ -32,7 +32,7 @@ module A1 = struct
   [@@deriving sexp]
 end
 
-let ser_wit_intropattern = let open A1 in Ser_genarg.
+let ser_wit_simple_intropattern = let open A1 in Ser_genarg.
   { raw_ser = sexp_of_h1
   ; raw_des = h1_of_sexp
 
@@ -423,7 +423,7 @@ let register () =
   Ser_genarg.register_genser Tacarg.wit_constr_with_bindings      ser_wit_constr_with_bindings;
   Ser_genarg.register_genser Tacarg.wit_open_constr_with_bindings ser_wit_constr_with_bindings;
   Ser_genarg.register_genser Tacarg.wit_destruction_arg ser_wit_destruction_arg;
-  Ser_genarg.register_genser Tacarg.wit_intropattern  ser_wit_intropattern;
+  Ser_genarg.register_genser Tacarg.wit_simple_intropattern  ser_wit_simple_intropattern;
   (* Ser_genarg.register_genser Tacarg.wit_intro_pattern ser_wit_intropattern; *)
   Ser_genarg.register_genser Tacarg.wit_ltac ser_wit_ltac;
   Ser_genarg.register_genser Tacarg.wit_quant_hyp ser_wit_quant_hyp;
