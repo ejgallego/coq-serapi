@@ -78,12 +78,34 @@ let input_doc ~in_chan ~process ~doc ~sid =
     done
   with End_of_file -> ()
 
+let context_of_st m = match m with
+  | `Valid (Some { Vernacstate.proof = Some pstate; _ } ) ->
+    Pfedit.get_current_context pstate
+  | _ ->
+    let env = Global.env () in Evd.from_env env, env    
+
+let str_pp_obj env sigma fmt (obj : Serapi_protocol.coq_object) : unit =
+  Format.fprintf fmt "%a" Pp.pp_with (Serapi_protocol.gen_pp_obj env sigma obj)
+
 let process_line ~pp ~doc ~sid line =
-  let open Format in
   let _pp = pp in
-  let _doc = doc in
-  let _sid = sid in
-  printf "%s\n%!" line;
+  let open Serapi_protocol in
+  let st = Stm.state_of_id ~doc sid in
+  let sigma, env = context_of_st st in
+  (* 1. query to get the coq_object Definition *)
+  let info = QueryUtil.info_of_id env line in
+  let def = snd info in
+  (* 2. print name *)
+  Format.printf "%s: %!" line;
+  match def with
+  | [(CoqConstr def_term)] ->
+     Format.pp_set_margin Format.std_formatter 1000;
+     Format.printf "@[%a@] %!" pp (Serlib.Ser_constr.sexp_of_constr def_term);
+     Format.fprintf Format.std_formatter "\"@[%a@]\"@\n%!" (str_pp_obj env sigma) (CoqConstr def_term)
+  | _ -> ();
+  (* 3. print serialized content of the coq_object *)
+  (* 4. print prettified version of the coq_object *)
+  (*printf "%s\n%!" line;*)
   ()
 
 let check_pending_proofs ~pstate =
