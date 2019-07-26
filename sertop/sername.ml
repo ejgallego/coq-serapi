@@ -88,25 +88,22 @@ let str_pp_obj env sigma fmt (obj : Serapi_protocol.coq_object) : unit =
   Format.fprintf fmt "%a" Pp.pp_with (Serapi_protocol.gen_pp_obj env sigma obj)
 
 let process_line ~pp ~doc ~sid line =
-  let _pp = pp in
   let open Serapi_protocol in
   let st = Stm.state_of_id ~doc sid in
   let sigma, env = context_of_st st in
-  (* 1. query to get the coq_object Definition *)
   let info = QueryUtil.info_of_id env line in
   let def = snd info in
-  (* 2. print name *)
-  Format.printf "%s: %!" line;
   match def with
-  | [(CoqConstr def_term)] ->
-     Format.pp_set_margin Format.std_formatter 1000;
-     Format.printf "@[%a@] %!" pp (Serlib.Ser_constr.sexp_of_constr def_term);
-     Format.fprintf Format.std_formatter "\"@[%a@]\"@\n%!" (str_pp_obj env sigma) (CoqConstr def_term)
-  | _ -> ();
-  (* 3. print serialized content of the coq_object *)
-  (* 4. print prettified version of the coq_object *)
-  (*printf "%s\n%!" line;*)
-  ()
+  | [CoqConstr def_term] ->
+     let evd = Evd.from_env env in
+     let edef_term = EConstr.of_constr def_term in
+     let gdef_term = Detyping.detype Detyping.Now false Names.Id.Set.empty env evd edef_term in
+     Format.pp_set_margin Format.std_formatter 100000;
+     Format.printf "%s: %!" line;
+     Format.fprintf Format.std_formatter "\"@[%a@]\" %!" (str_pp_obj env sigma) (CoqConstr def_term);
+     Format.printf "@[%a@] %!" pp (Serlib.Ser_glob_term.sexp_of_glob_constr gdef_term);
+     Format.printf "@[%a@]\n%!" pp (Serlib.Ser_constr.sexp_of_constr def_term)
+  | _ -> ()
 
 let check_pending_proofs ~pstate =
   Option.iter (fun pstate ->
