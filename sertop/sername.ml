@@ -22,7 +22,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
+let create_document ~require_lib ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -57,7 +57,12 @@ let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
     else stm_options
   in
 
-  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+  let require_libs =
+    let prelude = ["Coq.Init.Prelude", None, Some false] in
+    match require_lib with
+    | Some l -> prelude @ [l, None, Some false]
+    | None -> prelude
+  in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; require_libs
@@ -140,7 +145,7 @@ let sername_doc = "sername Coq tool"
 
 open Cmdliner
 
-let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
+let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
@@ -158,7 +163,7 @@ let driver debug printer disallow_sprop async async_workers error_recovery quick
     ; error_recovery
     } in
   let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~in_file:"file.v" ~stm_flags ~allow_sprop ~quick ~iload_path ~debug in
+  let doc, sid = create_document ~require_lib ~in_file:"file.v" ~stm_flags ~allow_sprop ~quick ~iload_path ~debug in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -180,7 +185,7 @@ let main () =
     let open Sertop.Sertop_arg in
     Term.(const driver
           $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque
+          $ ml_include_path $ load_path $ rload_path $ require_lib $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man
   in
