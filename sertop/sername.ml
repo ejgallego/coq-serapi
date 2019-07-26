@@ -96,7 +96,7 @@ let context_of_st m = match m with
 let str_pp_obj env sigma fmt (obj : Serapi.Serapi_protocol.coq_object) : unit =
   Format.fprintf fmt "%a" Pp.pp_with (Serapi.Serapi_protocol.gen_pp_obj env sigma obj)
 
-let process_line ~pp ~doc ~sid line =
+let process_line ~pp ~str_pp ~de_bruijn ~doc ~sid line =
   let open Serapi.Serapi_protocol in
   let st = Stm.state_of_id ~doc sid in
   let sigma, env = context_of_st st in
@@ -109,9 +109,9 @@ let process_line ~pp ~doc ~sid line =
      let gdef_term = Detyping.detype Detyping.Now false Names.Id.Set.empty env evd edef_term in
      Format.pp_set_margin Format.std_formatter 100000;
      Format.printf "%s: %!" line;
-     Format.fprintf Format.std_formatter "\"@[%a@]\" %!" (str_pp_obj env sigma) (CoqConstr def_term);
-     Format.printf "@[%a@] %!" pp (Serlib.Ser_glob_term.sexp_of_glob_constr gdef_term);
-     Format.printf "@[%a@]\n%!" pp (Serlib.Ser_constr.sexp_of_constr def_term)
+     if str_pp then Format.fprintf Format.std_formatter "\"@[%a@]\" %!" (str_pp_obj env sigma) (CoqConstr def_term);
+     if de_bruijn then Format.printf "@[%a@] %!" pp (Serlib.Ser_constr.sexp_of_constr def_term);
+     Format.printf "@[%a@]@\n%!" pp (Serlib.Ser_glob_term.sexp_of_glob_constr gdef_term)
   | _ -> ()
 
 let check_pending_proofs ~pstate =
@@ -145,11 +145,11 @@ let sername_doc = "sername Coq tool"
 
 open Cmdliner
 
-let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib in_file omit_loc omit_att exn_on_opaque =
+let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
-  let process = process_line ~pp in
+  let process = process_line ~pp ~str_pp ~de_bruijn in
 
   (* initialization *)
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
@@ -185,7 +185,7 @@ let main () =
     let open Sertop.Sertop_arg in
     Term.(const driver
           $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ require_lib $ input_file $ omit_loc $ omit_att $ exn_on_opaque
+          $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man
   in
