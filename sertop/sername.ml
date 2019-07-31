@@ -54,12 +54,15 @@ let create_document ~require_lib ~in_file ~async ~async_workers ~quick ~iload_pa
     else stm_options
   in
 
+  (*
   let require_libs =
     let prelude = ["Coq.Init.Prelude", None, Some false] in
     match require_lib with
     | Some l -> prelude @ [l, None, Some false]
     | None -> prelude
   in
+  *)
+  let require_libs = ["Coq.Init.Prelude", None, Some false] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; require_libs
@@ -72,7 +75,27 @@ let create_document ~require_lib ~in_file ~async ~async_workers ~quick ~iload_pa
   if quick || async <> None
   then Safe_typing.allow_delayed_constants := true;
 
-  Stm.new_doc ndoc
+  match require_lib with
+  | None -> Stm.new_doc ndoc
+  | Some l ->
+     (*
+     let sdoc = Stm.new_doc ndoc in
+     let dir,from,exp = l,None,Some false in
+     let mp = Libnames.qualid_of_string dir in
+     let mfrom = Option.map Libnames.qualid_of_string from in
+     Flags.silently (Vernacentries.vernac_require mfrom exp) [mp];
+     sdoc
+     *)
+     let doc,sid = Stm.new_doc ndoc in
+     let sent = Printf.sprintf "Require %s." l in
+     let in_strm = Stream.of_string sent in
+     let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
+     match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
+     | Some ast ->
+	let doc, sid, tip = Stm.add ~doc ~ontop:sid false ast in
+	if tip <> `NewTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
+	doc, sid
+     | None -> assert false
 
 exception End_of_input
 
