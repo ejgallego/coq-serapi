@@ -154,8 +154,8 @@ let sername_man =
     `S "DESCRIPTION";
     `P "Experimental Coq name serializer.";
     `S "USAGE";
-    `P "To serialize names listed in `n.txt`:";
-    `Pre "sername -Q fs,Funs n.txt > n.sexp";
+    `P "To serialize names listed in `n.txt` in module `Funs.mod`:";
+    `Pre "sername -Q fs,Funs --require-lib=Funs.mod n.txt";
     `P "See the documentation on the project's webpage for more information."
   ]
 
