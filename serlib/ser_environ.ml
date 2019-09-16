@@ -20,6 +20,7 @@ module CEphemeron = Ser_cEphemeron
 module Range  = Ser_range
 module Names  = Ser_names
 module Constr = Ser_constr
+module Univ   = Ser_univ
 module Opaqueproof    = Ser_opaqueproof
 module Retroknowledge = Ser_retroknowledge
 module UGraph         = Ser_uGraph

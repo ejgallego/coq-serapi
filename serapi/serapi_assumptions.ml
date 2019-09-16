@@ -73,6 +73,9 @@ let print env sigma { predicative; type_in_type; vars; axioms; opaque; trans } =
         Pp.(seq [Printer.pr_inductive env (m,0); str "is positive."])
       | Guarded kn ->
         Pp.(seq [Names.Constant.print kn; str "is positive."])
+      | TemplatePolymorphic m ->
+        Pp.(seq [Printer.pr_inductive env (m,0); spc ();
+                 strbrk "is assumed template polymorphic on all its universe parameters."])
     in
     Pp.(seq [
         pr_ax env sigma typ ax
