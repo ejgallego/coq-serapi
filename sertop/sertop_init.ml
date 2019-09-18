@@ -90,17 +90,7 @@ let coq_init opts =
 let process_stm_flags opts = Option.cata (fun coqtop ->
 
     (* Whether to forward Glob output to the IDE. *)
-    let dumpglob = false in
-
-    let dump_opt =
-      if dumpglob then begin
-        Dumpglob.feedback_glob ();
-        "-feedback-glob"
-      end else begin
-        Dumpglob.noglob ();
-        "-no-glob"
-      end
-    in
+    let dump_opt = "-no-glob" in
 
     let open Stm.AsyncOpts in
     let opts =
