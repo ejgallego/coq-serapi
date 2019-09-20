@@ -8,8 +8,8 @@ $ sertop --help
 ```
 
 SerAPI is a library for machine-to-machine interaction with the [Coq proof assistant](https://coq.inria.fr),
-with particular emphasis on IDE support and code analysis
-tools. SerAPI provides automatic serialization of
+with particular emphasis on applications in IDEs, code analysis tools, and machine learning.
+SerAPI provides automatic serialization of Coq's
 [OCaml](https://github.com/ocaml/ocaml) datatypes from/to
 [S-expressions](https://en.wikipedia.org/wiki/S-expression).
 
@@ -22,7 +22,7 @@ thread, providing a self-contained Coq system inside the
 browser. Typical load times in Google Chrome are less than a second.
 
 The main design philosophy of SerAPI is to **make clients' lives easy**,
-by trying to provide a convenient, robust interface that hides most
+by providing a convenient, robust interface that hides most
 of the scary details involved in interacting with Coq.
 
 Feedback from Coq users and developers is very welcome and _intrinsic_
