@@ -43,9 +43,9 @@ new use cases.
 
 ### Quick Overview and Install:
 
-SerAPI can be installed as the OPAM package `coq-serapi`. See [build instructions](notes/build.md)
-for manual installation. The experimental [in-browser version](https://x80.org/rhino-hawk)
-is also online.
+SerAPI can be installed as the [OPAM](https://opam.ocaml.org) package `coq-serapi`.
+See [build instructions](notes/build.md) for manual installation. The experimental
+[in-browser version](https://x80.org/rhino-hawk) is also online.
 
 SerAPI provides an interactive "Read-Print-Eval-Loop", `sertop` and a
 batch-oriented compiler `sercomp`. See the manual pages and `--help`
@@ -81,21 +81,24 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 
 - **Queries:** `(Query ((opt value) ...) kind)`:
 
-  Queries stream Coq objects of type `kind`. This can range from options, goals and hypotheses, tactics, etc... The first argument is a list of options: `preds` is a list of conjunctive filters, `limit` specifies how many values the query may return. `pp` controls the output format: `PpSer` for full serialization, or `PpStr` for "pretty printing". For instance:
-   ```lisp
-   (tag (Query ((preds (Prefix "Debug")) (limit 10) (pp PpSexp)) Option))
-   ```
-   will stream all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
-   ```lisp
-   (CoqOption (Default Goal Selector)
-      ((opt_sync true) (opt_depr false) (opt_name "default goal selector")
-      (opt_value (StringValue 1))))
-   ...
-   ```
+  Queries stream Coq objects of type `kind`. This can range from options, goals and hypotheses, tactics, etc.
+  The first argument is a list of options: `preds` is a list of conjunctive filters, `limit` specifies how many values the query may return.
+  `pp` controls the output format: `PpSer` for full serialization, or `PpStr` for "pretty printing". For instance:
+  ```lisp
+  (tag (Query ((preds (Prefix "Debug")) (limit 10) (pp PpSexp)) Option))
+  ```
+  will stream all Coq options that start with "Debug", limiting to the first 10 and printing the full internal Coq datatype:
+  ```lisp
+  (CoqOption (Default Goal Selector)
+     ((opt_sync true) (opt_depr false) (opt_name "default goal selector")
+     (opt_value (StringValue 1))))
+  ...
+  ```
   Options can be omitted, as in: `(tag (Query ((limit 10)) Option))`, and
   currently supported queries can be seen [here](serapi/serapi_protocol.mli#L118)
 
-- **Printing:** `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers. Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
+- **Printing:** `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers.
+  Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
 
 ### Roadmap:
 
@@ -112,43 +115,38 @@ pointers here, feel free to add your own!
 - [jsCoq](https://github.com/ejgallego/jscoq) allows you to run Coq in
   your browser. JsCoq is the predecessor of SerAPI and will shortly be
   fully based on it.
+- [mCoq](http://cozy.ece.utexas.edu/mcoq/) is a tool for mutation analysis
+  of Coq projects, based on serializing and deserializing Coq code via SerAPI.
+  See the accompanying [paper](https://users.ece.utexas.edu/~gligoric/papers/CelikETAL19mCoq.pdf)
+  for more details and an evaluation of the tool on several large projects.
 - [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
-  demo based on SerAPI by [Clément Pit--Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
+  demo based on SerAPI by [Clément Pit-Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
   functional but illustrates some noteworthy features of SerAPI.
 - [PeaCoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
   browser, has an experimental branch that uses SerAPI.
-- [GrammaTech's Software Evolution Library
-  (SEL)](https://grammatech.github.io/sel/) provides tools for
-  programmatically modifying and evaluating software. SEL operates
+- [GrammaTech's Software Evolution Library(SEL)](https://grammatech.github.io/sel/)
+  provides tools for programmatically modifying and evaluating software. SEL operates
   over multiple software representations including source code in
   several languages and compiled machine code. Its Coq module uses
   SerAPI to serialize Coq source code into ASTs, which are parsed into
   Common Lisp objects for further manipulation. GrammaTech uses this
   library to synthesize modifications to software so that it satisfies
   an objective function, e.g., a suite of unit tests.
-  ```bibtex
-  @manual{sel2018manual,
-    title        = {Software Evolution Library},
-    author       = {Eric Schulte and Contributors},
-    organization = {GrammaTech},
-    address      = {eschulte@grammatech.com},
-    month        = 1,
-    year         = 2018,
-    note         = {https://grammatech.github.io/sel/}
-  }
-  ```
   SerAPI support was added by Rebecca Swords.
 - SerAPI is being used to improve the Coq regression proof
   selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/);
   see the [paper](http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
-- SerAPI is being used to some software testing projects, we will
-  update this link as papers get out of embargo.
 - [CoqGym](https://github.com/princeton-vl/CoqGym) is "A Learning
   Environment for Theorem Proving with the Coq proof assistant". It
   uses SerAPI to interact with Coq and perform feature-extraction. Its author notes:
-  > CoqGym relies heavily on SerAPI for serializing the internal structures of Coq. I tried to use Coq's native printing functions when I started with this project, but soon I found SerAPI could save a lot of the headaches with parsing Coq's output. Thanks to SerAPI authors, this project wouldn't be possible (or at least in its current form) without SerAPI.
-- SerAPI is being used in some more machine learning projects, we will
-  update this link as papers get out of embargo.
+  > CoqGym relies heavily on SerAPI for serializing the internal structures of Coq.
+  > I tried to use Coq's native printing functions when I started with this project,
+  > but soon I found SerAPI could save a lot of the headaches with parsing Coq's output.
+  > Thanks to SerAPI authors, this project wouldn't be possible (or at least in its current form) without SerAPI.
+- [Proverbot9001](https://arxiv.org/abs/1907.07794) is a proof search system based on machine
+  learning techniques, and uses SerAPI to interface with Coq.
+- SerAPI is being used in additional software testing and machine learning projects. We will
+  update this list as papers get out of embargo.
 
 ### Quick Demo (not always up to date):
 
@@ -217,7 +215,8 @@ $ rlwrap sertop --printer=human
 ### Technical Report:
 
 There is a brief [technical report](https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408)
-describing the motivation, design, and implementation of SerAPI.
+describing the motivation, design, and implementation of SerAPI. If you are using
+SerAPI in a project, please cite the technical report in any related publications:
 
 ```bibtex
 @techreport{GallegoArias2016SerAPI,
@@ -276,5 +275,5 @@ using nntp.
 SerAPI has been developed at the
 [Centre de Recherche en Informatique](https://www.cri.ensmp.fr) of
 [MINES ParisTech](http://www.mines-paristech.fr/) (former École de
-Mines de Paris) and partially supported by the
+Mines de Paris) and was partially supported by the
 [FEEVER](http://www.feever.fr) project.
