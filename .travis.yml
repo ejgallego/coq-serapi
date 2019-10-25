@@ -30,13 +30,12 @@ env:
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.07.1"
   # Main test suites
-  - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/"
   matrix:
-  - TEST_TARGET="build"   COMPILER="4.07.0"
-  - TEST_TARGET="test"    COMPILER="4.07.1"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt"
+  - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
+  - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq coq-mathcomp-ssreflect"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq js_of_ocaml js_of_ocaml-lwt"
   # Don't test opam in 8.10 [yet]
-  # - TEST_TARGET="test"                                                                               EXTRA_OPAM="coq"
+  - TEST_TARGET="test"    SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
 
 install:
 - sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.4/opam-2.0.4-x86_64-linux -o /usr/bin/opam
@@ -45,6 +44,7 @@ install:
 - opam switch set "$COMPILER"
 - eval $(opam env)
 # OPAM 2 seems quite broken here
+- opam repos add coq-released http://coq.inria.fr/opam/released
 - opam config set-global jobs $NJOBS
 - opam pin add -y -n --kind=path coq-serapi .
 - opam install -y --deps-only -j $NJOBS coq-serapi
@@ -67,7 +67,7 @@ install:
 script:
 - set -e
 - echo 'Building SerAPI...' && echo -en 'travis_fold:start:serapi.build\\r'
-- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME/_build/install/default/lib/" "$TEST_TARGET"
+- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "$TEST_TARGET"
 - ls -lR _build/install/default/ || true
 - ls -lR _build/default/sertop/*.js || true
 - echo -en 'travis_fold:end:serapi.build\\r'

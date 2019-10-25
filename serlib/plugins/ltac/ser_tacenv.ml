@@ -26,6 +26,8 @@ module Ltac_plugin = struct
   module Tacenv  = Ltac_plugin.Tacenv
 end
 
+open Ltac_plugin [@@ocaml.warning "-33"]
+
 type ltac_entry =
   [%import: Ltac_plugin.Tacenv.ltac_entry]
   [@@deriving sexp]

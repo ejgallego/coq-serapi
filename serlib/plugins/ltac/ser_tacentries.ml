@@ -19,6 +19,8 @@ open Serlib
 module Loc   = Ser_loc
 module Names = Ser_names
 
+open Ltac_plugin [@@ocaml.warning "-33"]
+
 type 'a grammar_tactic_prod_item_expr =
   [%import: 'a Ltac_plugin.Tacentries.grammar_tactic_prod_item_expr]
   [@@deriving sexp]

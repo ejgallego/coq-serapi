@@ -24,6 +24,8 @@ module Ssreflect_plugin = struct
   module Ssrequality = Ssreflect_plugin.Ssrequality
 end
 
+open Ssreflect_plugin [@@ocaml.warning "-33"]
+
 type ssrwkind =
   [%import: Ssreflect_plugin.Ssrequality.ssrwkind]
   [@@deriving sexp]
