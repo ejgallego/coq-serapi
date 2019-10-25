@@ -51,25 +51,21 @@
  (deps (:input Mod.v))
  (action (run ./test_roundtrip %{input})))
 
-; Not_found error
-;(alias
-; (name runtest)
-; (deps (:input Functor.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+(name runtest)
+(deps (:input Functor.v))
+(action (run ./test_roundtrip %{input})))
 
-; Not_found error
-;(alias
-; (name runtest)
-; (deps (:input Dyadic.v))
-; (action (run ./test_roundtrip %{input})))
+(alias
+(name runtest)
+(deps (:input Dyadic.v))
+(action (run ./test_roundtrip %{input})))
 
-; Serlib error
 (alias
  (name runtest)
  (deps (:input BeforeSectionTransparent.v))
  (action (run ./test_roundtrip %{input})))
 
-; Serlib error
 (alias
  (name runtest)
  (deps (:input BeforeSectionOpaque.v))
