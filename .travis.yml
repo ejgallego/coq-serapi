@@ -33,6 +33,7 @@ env:
   matrix:
   - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
   - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq coq-mathcomp-ssreflect"
+  - TEST_TARGET="test"    COMPILER="4.09.0"       EXTRA_OPAM="coq coq-mathcomp-ssreflect"
   - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq js_of_ocaml js_of_ocaml-lwt"
   # Don't test opam in 8.10 [yet]
   - TEST_TARGET="test"    SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
