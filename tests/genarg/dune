@@ -26,12 +26,6 @@
  (deps (:input auto.v))
  (action (run ./test_roundtrip %{input})))
 
-; Broken
-; (alias
-;  (name runtest)
-;  (deps (:input case.v))
-;  (action (run ./test_roundtrip %{input})))
-
 (alias
  (name runtest)
  (deps (:input case.v))
@@ -107,11 +101,10 @@
  (deps (:input libTactics.v))
  (action (run ./test_roundtrip %{input})))
 
-; Broken
-; (alias
-;  (name runtest)
-;  (deps (:input move.v))
-;  (action (run ./test_roundtrip %{input})))
+(alias
+ (name runtest)
+ (deps (:input mbid.v))
+ (action (run ./test_roundtrip %{input})))
 
 (alias
  (name runtest)
