@@ -32,6 +32,7 @@ type ser_opts =
 ; lheader  : bool                (** Print lenght header (deprecated)         *)
 
 ; no_init  : bool                (** Whether to create the initial document   *)
+; no_prelude : bool              (** Whether to load stdlib's prelude         *)
 
 (* Coq options *)
 ; loadpath : Mltop.coq_path list (** From -R and -Q options usually           *)

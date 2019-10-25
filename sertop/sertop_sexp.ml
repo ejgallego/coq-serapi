@@ -37,6 +37,7 @@ type ser_opts =
 
   (* Coq options *)
 ; no_init  : bool                (* Whether to create the initial document     *)
+; no_prelude : bool              (* Whether to load stdlib's prelude           *)
 
 ; loadpath : Mltop.coq_path list (* From -R and -Q options usually *)
 ; async    : Sertop_init.async_flags
@@ -129,7 +130,10 @@ let ser_loop ser_opts =
    *)
   Sys.catch_break true;
 
-  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+  let require_libs =
+    if ser_opts.no_prelude then []
+    else ["Coq.Init.Prelude", None, Some false] in
+
   let iload_path = ser_opts.loadpath in
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
 
