@@ -82,6 +82,10 @@ let no_init =
              and set there the proper loadpath, requires, ..." in
   Arg.(value & flag & info ["no_init"] ~doc)
 
+let no_prelude =
+  let doc = "Omits requiring any module on start, thus `Prelude`, ltac, etc... won't be available" in
+  Arg.(value & flag & info ["no_prelude"] ~doc)
+
 let coq_lp_conv ~implicit (unix_path,lp) = Mltop.{
     path_spec = VoPath {
         coq_path  = Libnames.dirpath_of_string lp;

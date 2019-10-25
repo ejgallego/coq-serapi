@@ -21,6 +21,7 @@
  * [serlib ] (!) Fix capitalization conventions for a few types in `Names`
              (closes #167 thanks to @corwin-of-amber for the report)
  * [serapi ] (!) Add bullet suggest information to goal query (@corwin-of-amber)
+ * [sertop ] Add `--no_prelude` option (closes #176, @ejgallego, request of @darbyhaller)
 
 ## Version 0.6.1:
 
