@@ -23,6 +23,7 @@
  * [serapi ] (!) Add bullet suggest information to goal query (@corwin-of-amber)
  * [sertop ] Add `--no_prelude` option (closes #176, @ejgallego, request of @darbyhaller)
  * [serlib ] (!) Add index to `MBId` serialization` (fixes #150, @ejgallego)
+ * [serapi ] (!) Add `sid` parameter to `Print` (helps #150, @ejgallego, reported by @cpitclaudel)
 
 ## Version 0.6.1:
 

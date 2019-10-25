@@ -248,12 +248,19 @@ type print_format =
 
 (* register printer *)
 
-type print_opt = {
+type format_opt = {
   pp_format : print_format  [@default PpSer];
   pp_depth  : int           [@default 0];
   pp_elide  : string        [@default "..."];
   pp_margin : int           [@default 72];
 }
+
+type print_opt =
+  { sid   : Stateid.t [@default Stm.get_current_state ~doc:Stm.(get_doc 0)];
+    (** [sid] denotes the {e sentence id} we are querying over, essential information as goals for example will vary. *)
+    pp    : format_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
+    (** Printing format of the query, this can be used to select the type of the answer, as for example to show goals in human-form. *)
+  }
 
 let pp_tex (_obj : coq_object) = ""
 (*
@@ -374,7 +381,7 @@ type query_opt =
   { preds : query_pred sexp_list;
     limit : int sexp_option;
     sid   : Stateid.t [@default Stm.get_current_state()];
-    pp    : print_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
+    pp    : format_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (* Legacy/Deprecated *)
     route : Feedback.route_id [@default 0];
   }
@@ -829,12 +836,10 @@ let exec_cmd (cmd : cmd) =
   | Cancel st    -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) st
   | Exec st      -> ignore(Stm.observe ~doc st); []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
-  (* XXX: Print needs context / sid information *)
   | Print(opts, obj)  ->
-    let sigma, env = let env = Global.env () in Evd.from_env env, env in
-    (* XXX: Refactor better *)
-    (* let sigma, env = Pfedit.get_current_context () in *)
-    [ObjList [obj_print env sigma opts obj]]
+    let st = Stm.state_of_id ~doc opts.sid in
+    let sigma, env = context_of_st st in
+    [ObjList [obj_print env sigma opts.pp obj]]
   | Parse(opt,s) ->
     Option.cata (fun { CAst.loc; v } ->
         [ObjList [CoqAst (loc,v)]])

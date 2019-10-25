@@ -241,7 +241,7 @@ type print_format =
   (* | PpRichpp *)
 
 (** Printing options, not all options are relevant for all printing backends *)
-type print_opt =
+type format_opt =
   { pp_format : print_format  [@default PpSer]
   (** Output format ({e default PpSer}) *)
   ; pp_depth  : int           [@default 0]
@@ -250,6 +250,13 @@ type print_opt =
   (** Elipsis ({e default: "..."}) *)
   ; pp_margin : int           [@default 72]
   (** Margin ({e default: 72}) *)
+  }
+
+type print_opt =
+  { sid   : Stateid.t [@default Stm.get_current_state ~doc:Stm.(get_doc 0)];
+    (** [sid] denotes the {e sentence id} we are querying over, essential information as goals for example will vary. *)
+    pp    : format_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
+    (** Printing format of the query, this can be used to select the type of the answer, as for example to show goals in human-form. *)
   }
 
 (******************************************************************************)
@@ -278,7 +285,7 @@ type query_opt =
     (** Limit the number of results, should evolve into an API with resume functionality, maybe we adopt LSP conventions here *)
     sid   : Stateid.t [@default Stm.get_current_state ~doc:Stm.(get_doc 0)];
     (** [sid] denotes the {e sentence id} we are querying over, essential information as goals for example will vary. *)
-    pp    : print_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
+    pp    : format_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (** Printing format of the query, this can be used to select the type of the answer, as for example to show goals in human-form. *)
     route : Feedback.route_id [@default 0];
     (** Legacy/Deprecated STM query method *)
