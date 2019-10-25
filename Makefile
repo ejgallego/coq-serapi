@@ -31,7 +31,8 @@ browser:
 	google-chrome _build/default/_doc/_html/index.html
 
 sertop:
-	dune exec -- sertop
+	dune build
+	dune exec -- rlwrap sertop
 
 #####################################################
 # Javascript support

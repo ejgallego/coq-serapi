@@ -194,7 +194,7 @@ $ rlwrap sertop --printer=human
   > ...
   > (Answer 4 Completed)
 
-(pp_ex (Print ((pp_format PpStr)) (CoqConstr (App (Rel 0) ((Rel 0))))))
+(pp_ex (Print ((sid 4) (pp ((pp_format PpStr)))) (CoqConstr (App (Rel 0) ((Rel 0))))))
   > (Answer pp_ex Ack)
   > (Answer pp_ex(ObjList((CoqString"(_UNBOUND_REL_0 _UNBOUND_REL_0)"))))
 

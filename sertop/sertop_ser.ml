@@ -166,6 +166,10 @@ type print_format =
   [%import: Serapi_protocol.print_format]
   [@@deriving sexp]
 
+type format_opt =
+  [%import: Serapi_protocol.format_opt]
+  [@@deriving sexp]
+
 type print_opt =
   [%import: Serapi_protocol.print_opt]
   [@@deriving sexp]

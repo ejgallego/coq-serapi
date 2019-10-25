@@ -99,12 +99,12 @@ module MBId = struct
 (* MBId.t: private *)
 type t = [%import: Names.MBId.t]
 
-type _t = Mbid of Id.t * DirPath.t
+type _t = Mbid of int * Id.t * DirPath.t
       [@@deriving sexp,yojson]
 
 let _t_put dp              =
-  let _, n, dp = MBId.repr dp in Mbid (n,dp)
-let _t_get (Mbid (n, dp)) = MBId.make dp n
+  let i, n, dp = MBId.repr dp in Mbid (i,n,dp)
+let _t_get (Mbid (i, n, dp)) = Obj.magic (i, n, dp)
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__t (_t_put dp)
