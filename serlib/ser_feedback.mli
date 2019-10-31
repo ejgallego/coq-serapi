@@ -15,6 +15,13 @@
 
 open Sexplib
 
+type doc_id = Feedback.doc_id
+
+val doc_id_of_sexp : Sexp.t -> doc_id
+val sexp_of_doc_id : doc_id -> Sexp.t
+val doc_id_of_yojson : Yojson.Safe.t -> (doc_id, string) Result.result
+val doc_id_to_yojson : doc_id -> Yojson.Safe.t
+
 type level = Feedback.level
 
 val level_of_sexp : Sexp.t -> level

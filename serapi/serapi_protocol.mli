@@ -451,6 +451,7 @@ module ExnInfo : sig
     ; backtrace : Printexc.raw_backtrace
     ; exn : exn
     ; pp : Pp.t
+    ; str : string
     }
 end
 
@@ -477,10 +478,32 @@ val exec_cmd : cmd -> answer_kind list
 type cmd_tag = string
 type tagged_cmd = cmd_tag * cmd
 
+(** We introduce our own feedback type to overcome some limitations of
+   Coq's Feedback, for now we only modify the Message data *)
+
+type feedback_content =
+  | Processed
+  | Incomplete
+  | Complete
+  | ProcessingIn of string
+  | InProgress of int
+  | WorkerStatus of string * string
+  | AddedAxiom
+  | FileDependency of string option * string
+  | FileLoaded of string * string
+  | Message of { level: Feedback.level ; loc : Loc.t option ; pp : Pp.t ; str: string }
+
+type feedback =
+  { doc_id   : Feedback.doc_id
+  ; span_id  : Stateid.t
+  ; route    : Feedback.route_id
+  ; contents : feedback_content
+  }
+
 (** General answers of the protocol can be responses to commands, or
    Coq messages *)
 type answer =
   | Answer    of cmd_tag * answer_kind
   (** The answer is comming from a user-issued command *)
-  | Feedback  of Feedback.feedback
+  | Feedback  of feedback
   (** Output produced by Coq (asynchronously) *)
