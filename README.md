@@ -1,4 +1,4 @@
-## The Coq Se(xp)rialized Protocol
+## SerAPI: Machine-Friendly, Data-Centric Serialization for Coq
 
 [![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=v8.10)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
@@ -9,9 +9,9 @@ $ sertop --help
 
 SerAPI is a library for machine-to-machine interaction with the [Coq proof assistant](https://coq.inria.fr),
 with particular emphasis on applications in IDEs, code analysis tools, and machine learning.
-SerAPI provides automatic serialization of Coq's
-[OCaml](https://github.com/ocaml/ocaml) datatypes from/to
-[S-expressions](https://en.wikipedia.org/wiki/S-expression).
+SerAPI provides automatic serialization of Coq's internal
+[OCaml](https://github.com/ocaml/ocaml) datatypes from/to [JSON](https://www.json.org) or
+[S-expressions](https://en.wikipedia.org/wiki/S-expression) (sexps).
 
 SerAPI is a proof-of-concept and should be considered
 alpha-quality. However, it is fully functional and supports, among
@@ -113,7 +113,7 @@ SerAPI has been used in a few contexts already, we provide a few
 pointers here, feel free to add your own!
 
 - [jsCoq](https://github.com/ejgallego/jscoq) allows you to run Coq in
-  your browser. JsCoq is the predecessor of SerAPI and will shortly be
+  your browser. jsCoq is the predecessor of SerAPI and will shortly be
   fully based on it.
 - [mCoq](http://cozy.ece.utexas.edu/mcoq/) is a tool for mutation analysis
   of Coq projects, based on serializing and deserializing Coq code via SerAPI.
@@ -133,19 +133,20 @@ pointers here, feel free to add your own!
   library to synthesize modifications to software so that it satisfies
   an objective function, e.g., a suite of unit tests.
   SerAPI support was added by Rebecca Swords.
-- SerAPI is being used to improve the Coq regression proof
-  selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/);
-  see the [paper](http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
-- [CoqGym](https://github.com/princeton-vl/CoqGym) is "A Learning
-  Environment for Theorem Proving with the Coq proof assistant". It
-  uses SerAPI to interact with Coq and perform feature-extraction. Its author notes:
+- [CoqGym](https://github.com/princeton-vl/CoqGym) is a Coq-based learning environment for theorem proving.
+  It uses SerAPI to interact with Coq and perform feature-extraction. Its author notes:
   > CoqGym relies heavily on SerAPI for serializing the internal structures of Coq.
   > I tried to use Coq's native printing functions when I started with this project,
   > but soon I found SerAPI could save a lot of the headaches with parsing Coq's output.
   > Thanks to SerAPI authors, this project wouldn't be possible (or at least in its current form) without SerAPI.
-- [Proverbot9001](https://arxiv.org/abs/1907.07794) is a proof search system based on machine
+  See also the [paper](https://arxiv.org/abs/1905.09381) describing CoqGym.
+- [Proverbot9001](https://github.com/UCSD-PL/proverbot9001) is a proof search system based on machine
   learning techniques, and uses SerAPI to interface with Coq.
-- SerAPI is being used in additional software testing and machine learning projects. We will
+  See also the [paper](https://arxiv.org/abs/1907.07794) describing the system.
+- SerAPI is being used to improve the Coq regression proof
+  selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/),
+  see the [paper](http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
+- SerAPI is being used in additional software testing and machine learning projects; we will
   update this list as papers get out of embargo.
 
 ### Quick Demo (not always up to date):
@@ -262,8 +263,9 @@ We would also like to provide a [Jupyter/IPython kernel](https://github.com/ejga
 
 ### Developer/Users Mailing List
 
-SerAPI development is mainly discussed on GitHub and in the Gitter
-channel. You can also use the jsCoq mailing list by subscribing at:
+SerAPI development is mainly discussed [on GitHub](https://github.com/ejgallego/coq-serapi)
+and in the [Gitter channel](https://gitter.im/coq-serapi/Lobby).
+You can also use the jsCoq mailing list by subscribing at:
 https://x80.org/cgi-bin/mailman/listinfo/jscoq
 
 The mailing list archives should also be available at the Gmane group:
