@@ -170,7 +170,32 @@ let default_fb_filter_opts = {
   pp_opt = true;
 }
 
-let feedback_opt_filter ?(opts=default_fb_filter_opts) = let open Feedback in function
+let feedback_content_tr (fb : F.feedback_content) : Serapi_protocol.feedback_content =
+  match fb with
+  | F.Message (level, loc, pp) ->
+    let str = Pp.string_of_ppcmds pp in
+    Message { level; loc; pp; str }
+  | F.Processed -> Processed
+  | F.Incomplete -> Incomplete
+  | F.Complete -> Complete
+  | F.ProcessingIn s -> ProcessingIn s
+  | F.InProgress i -> InProgress i
+  | F.WorkerStatus (s1,s2) -> WorkerStatus (s1,s2)
+  | F.AddedAxiom -> AddedAxiom
+  | F.GlobRef (_, _, _, _, _) -> assert false
+  | F.GlobDef (_, _, _, _) -> assert false
+  | F.FileDependency (o, p) -> FileDependency (o,p)
+  | F.FileLoaded (o, p) -> FileLoaded (o, p)
+  | F.Custom (_, _, _) -> assert false
+
+let feedback_tr (fb : Feedback.feedback) : Serapi_protocol.feedback =
+  match fb with
+  | { doc_id; span_id; route; contents } ->
+    let contents = feedback_content_tr contents in
+    { doc_id; span_id; route; contents }
+
+let feedback_opt_filter ?(opts=default_fb_filter_opts) =
+  let open Feedback in function
     | { F.contents = Message (lvl, loc, msg); _ } as fb ->
       Some (if opts.pp_opt
             then { fb with contents = Message(lvl, loc, coq_pp_opt msg) }

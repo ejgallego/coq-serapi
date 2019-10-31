@@ -25,6 +25,8 @@
  * [serlib ] (!) Add index to `MBId` serialization` (fixes #150, @ejgallego)
  * [serapi ] (!) Add `sid` parameter to `Print` (helps #150, @ejgallego, reported by @cpitclaudel)
  * [sertop ] Add `sertok` program for batch serialization of tokens and their source locations (@palmskog)
+ * [serapi ] (!) Add string-formatted messages to `CoqExn` and `Message`
+             (@ejgallego closes #184 , closes #162)
 
 ## Version 0.6.1:
 

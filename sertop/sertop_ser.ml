@@ -239,6 +239,14 @@ type answer_kind =
   ]]
   [@@deriving sexp]
 
+type feedback_content =
+  [%import: Serapi_protocol.feedback_content]
+  [@@deriving sexp]
+
+type feedback =
+  [%import: Serapi_protocol.feedback]
+  [@@deriving sexp]
+
 type answer =
   [%import: Serapi_protocol.answer]
   [@@deriving sexp]

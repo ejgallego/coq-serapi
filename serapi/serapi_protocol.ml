@@ -319,6 +319,7 @@ module ExnInfo = struct
     ; backtrace : Printexc.raw_backtrace
     ; exn : exn
     ; pp : Pp.t
+    ; str : string
     }
 end
 
@@ -637,12 +638,14 @@ let exec_query opt cmd =
 let coq_exn_info exn =
   let backtrace = Printexc.get_raw_backtrace () in
   let exn, info = CErrors.push exn in
+  let pp = CErrors.iprint (exn, info) in
   CoqExn
     { loc = Loc.get_loc info
     ; stm_ids = Stateid.get info
     ; backtrace
     ; exn
-    ; pp = CErrors.iprint (exn, info)
+    ; pp
+    ; str = Pp.string_of_ppcmds pp
     }
 
 (* Simple protection for Coq-generated exceptions *)
@@ -877,6 +880,25 @@ let exec_cmd (cmd : cmd) =
 type cmd_tag    = string
 type tagged_cmd = cmd_tag * cmd
 
+type feedback_content =
+  | Processed
+  | Incomplete
+  | Complete
+  | ProcessingIn of string
+  | InProgress of int
+  | WorkerStatus of string * string
+  | AddedAxiom
+  | FileDependency of string option * string
+  | FileLoaded of string * string
+  | Message of { level: Feedback.level ; loc : Loc.t option ; pp : Pp.t ; str: string }
+
+type feedback =
+  { doc_id   : Feedback.doc_id
+  ; span_id  : Stateid.t
+  ; route    : Feedback.route_id
+  ; contents : feedback_content
+  }
+
 type answer =
   | Answer    of cmd_tag * answer_kind
-  | Feedback  of Feedback.feedback
+  | Feedback  of feedback

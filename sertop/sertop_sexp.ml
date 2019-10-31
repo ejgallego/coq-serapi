@@ -113,7 +113,7 @@ let ser_loop ser_opts =
   let pp_err       = ser_lock (out_sexp ser_opts out_fmt)              in
   let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
   let pp_opt  fb   = Sertop_util.feedback_opt_filter fb                in
-  let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback fb)) (pp_opt fb) in
+  let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback (Sertop_util.feedback_tr fb))) (pp_opt fb) in
 
   (* Init Coq *)
   let () = Sertop_init.(
