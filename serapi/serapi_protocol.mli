@@ -125,10 +125,19 @@ sentence twice is usually a noop.
 {4 Modification of the Document}
 
 In order to modify a "live" document, SerAPI does provide a [(Cancel sid)] command.
-Cancel will take a sentence id and return the list of sentences that are
+[Cancel] will take a sentence id and return the list of sentences that are
 not valid anymore.
 
 Thus, you can edit a document by cancelling and re-adding sentences.
+
+{5 Caveats}
+
+Cancelling a non-executed part is poorly supported by the underlying Coq checking algorithm.
+In particular, [Cancel] will force execution up to the previous sentence; thus it is not possible
+to parse a list of sentences and then replace them without incurring in the cost of executing them.
+In particular, it could be even the case that after issuing [Cancel sid], there is an error in the
+execution of an unrelated sentence. It should be possible to identify this sentence using the
+exception attributes. As of today, this remains a hard-limitation of the STM.
 
 {3 Querying documents: }
 
