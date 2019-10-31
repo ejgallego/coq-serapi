@@ -10,7 +10,7 @@ $ sertop --help
 SerAPI is a library for machine-to-machine interaction with the [Coq proof assistant](https://coq.inria.fr),
 with particular emphasis on applications in IDEs, code analysis tools, and machine learning.
 SerAPI provides automatic serialization of Coq's internal
-[OCaml](https://github.com/ocaml/ocaml) datatypes from/to [JSON](https://www.json.org) or
+[OCaml](https://ocaml.org) datatypes from/to [JSON](https://www.json.org) or
 [S-expressions](https://en.wikipedia.org/wiki/S-expression) (sexps).
 
 SerAPI is a proof-of-concept and should be considered
@@ -125,7 +125,7 @@ pointers here, feel free to add your own!
   functional but illustrates some noteworthy features of SerAPI.
 - [PeaCoq](https://github.com/Ptival/PeaCoq), a Coq IDE for the
   browser, has an experimental branch that uses SerAPI.
-- [GrammaTech's Software Evolution Library(SEL)](https://grammatech.github.io/sel/)
+- [GrammaTech's Software Evolution Library (SEL)](https://grammatech.github.io/sel/)
   provides tools for programmatically modifying and evaluating software. SEL operates
   over multiple software representations including source code in
   several languages and compiled machine code. Its Coq module uses
@@ -133,13 +133,15 @@ pointers here, feel free to add your own!
   Common Lisp objects for further manipulation. GrammaTech uses this
   library to synthesize modifications to software so that it satisfies
   an objective function, e.g., a suite of unit tests.
-  SerAPI support was added by Rebecca Swords.
+  SerAPI support was added to SEL by Rebecca Swords.
 - [CoqGym](https://github.com/princeton-vl/CoqGym) is a Coq-based learning environment for theorem proving.
   It uses SerAPI to interact with Coq and perform feature-extraction. Its author notes:
+
   > CoqGym relies heavily on SerAPI for serializing the internal structures of Coq.
   > I tried to use Coq's native printing functions when I started with this project,
   > but soon I found SerAPI could save a lot of the headaches with parsing Coq's output.
   > Thanks to SerAPI authors, this project wouldn't be possible (or at least in its current form) without SerAPI.
+
   See also the [paper](https://arxiv.org/abs/1905.09381) describing CoqGym.
 - [Proverbot9001](https://github.com/UCSD-PL/proverbot9001) is a proof search system based on machine
   learning techniques, and uses SerAPI to interface with Coq.
