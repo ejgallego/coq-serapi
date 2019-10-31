@@ -156,9 +156,9 @@ let sertok_man =
     `S "DESCRIPTION";
     `P "Experimental Coq tokenizer.";
     `S "USAGE";
-    `P "To serialize `fs/fun.v` with logical path `Funs`:";
+    `P "To serialize tokens in the file `fs/fun.v` with logical path `Funs`:";
     `Pre "sertok -Q fs,Funs fs/fun.v > fs/fun.sexp";
-    `P "See the documentation on the project's webpage for more information."
+    `P "See the documentation on the project's website for more information."
   ]
 
 let sertok_doc = "sertok Coq tokenizer"
