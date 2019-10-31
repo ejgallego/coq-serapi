@@ -47,9 +47,9 @@ SerAPI can be installed as the [OPAM](https://opam.ocaml.org) package `coq-serap
 See [build instructions](notes/build.md) for manual installation. The experimental
 [in-browser version](https://x80.org/rhino-hawk) is also online.
 
-SerAPI provides an interactive "Read-Print-Eval-Loop", `sertop` and a
-batch-oriented compiler `sercomp`. See the manual pages and `--help`
-pages of each command for more details.
+SerAPI provides an interactive "Read-Print-Eval-Loop" `sertop`, a
+batch-oriented compiler `sercomp`, and a batch-oriented tokenizer `sertok`.
+See the manual pages and `--help` pages of each command for more details.
 
 To get familiar with SerAPI we recommend launching the `sertop` REPL,
 as it provides a reasonably human-friendly experience:
@@ -64,8 +64,9 @@ process in the same way it interrupts `coqtop`.
 The program `sercomp` provides a command-line interface to some
 key functionality of SerAPI and can be used for batch processing
 of Coq documents, e.g., to serialize Coq source files from/to lists of
-S-expressions. See `sercomp --help` for some usage examples and an
-overview of the main options.
+S-expressions of Coq vernacular sentences. See `sercomp --help` for some
+usage examples and an overview of the main options. The program `sertok`
+provides similar functionality at the level of Coq source file tokens.
 
 ### Protocol Commands:
 
@@ -235,10 +236,10 @@ SerAPI in a project, please cite the technical report in any related publication
 
 SerAPI has four main components:
 
-- `serapi`: an extended version of the current IDE protocol;
-- `serlib` a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress;
+- `serapi`, an extended version of the current IDE protocol;
+- `serlib`, a library providing automatic de/serialization of most Coq data structures using `ppx_conv_sexp`. This should be eventually incorporated into Coq itself. Support for `ppx_deriving_yojson` is work in progress;
 - `sertop`, `sertop_js`, toplevels offering implementations of the protocol;
-- `sercomp`, a command-line tool providing access to key features of `serlib`.
+- `sercomp`, `sertok`, command-line tools providing access to key features of `serlib`.
 
 Building your own toplevels using `serlib` and `serapi` is encouraged.
 
