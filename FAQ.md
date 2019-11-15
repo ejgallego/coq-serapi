@@ -1,20 +1,21 @@
 ## What is SerAPI?
 
-Is a library plus a set of "toplevels" aimed to improve the
+Is a library plus a set of command line tools aimed to improve the
 communication of third party tools with Coq.
 
 ## How mature is SerAPI?
 
-SerAPI has _extremely experimental_ status, and there are no protocol
-stability guarantees. In fact, the protocol is expected to evolve.
+SerAPI has _experimental_ status; while there are no protocol
+stability guarantees, we got moderate experience with it and evolution
+should be controlled. SerAPI have been used with success in several
+research projects. Protocol-breaking changes are marked in the
+changelog with `(!)`.
 
 ## Which Coq versions does SerAPI support?
 
-At the moment, Coq 8.8 is the current supported version for the
-current protocol. Older versions (8.6/8.7) should work however the
-protocol will differ. SerAPI is thus only suitable for developers
-willing to use up-to-date Coq versions. This will change in the future
-once the project stabilizes.
+At the moment, Coq 8.10 is the current supported version for the
+current protocol. Older versions (8.6---8.9) work, however the
+protocol and feature sets do differ.
 
 ## How can I install SerAPI?
 
@@ -29,7 +30,7 @@ This is due to a historical limitation of the UNIX/Linux TTY API. See
 communicate with SerAPI using a **pipe** this shouldn't be a problem.
 Alternatively, you can use the `ReadFile` experimental command.
 
-## I get error "Cannot link ml-object ..."
+## I get an error "Cannot link ml-object ..."
 
 Your OCaml path is not properly setup, see [build instructions](notes/build.md) for more help.
 
@@ -47,6 +48,9 @@ faithful, automatically generated printers.
 A more detailed comparison is needed, in particular TCoq does provide
 some hooks that insert themselves in the proof execution, it is not
 clear that SerAPI can provide that.
+
+For a more detailed discussion see
+https://github.com/ejgallego/coq-serapi/issues/109
 
 ## Can SerAPI evaluate a document incrementally?
 
