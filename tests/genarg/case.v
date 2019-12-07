@@ -1,4 +1,4 @@
-Require Import mathcomp.ssreflect.ssreflect.
+From Coq Require Import ssreflect.
 
 Structure stuff :=
   Stuff { one : bool; two : nat }.
