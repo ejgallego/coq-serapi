@@ -25,3 +25,7 @@ val sexp_of_private_constants : private_constants -> Sexp.t
 type global_declaration = Safe_typing.global_declaration
 val global_declaration_of_sexp : Sexp.t -> global_declaration
 val sexp_of_global_declaration : global_declaration -> Sexp.t
+
+type side_effect_declaration = Safe_typing.side_effect_declaration
+val side_effect_declaration_of_sexp : Sexp.t -> side_effect_declaration
+val sexp_of_side_effect_declaration : side_effect_declaration -> Sexp.t

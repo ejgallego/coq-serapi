@@ -22,7 +22,6 @@ let fatal_error msg =
 
 let fatal_exn exn info =
   let loc = Loc.get_loc info in
-  let exn, info = ExplainErr.process_vernac_interp_error (exn,info) in
   let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
                 ++ CErrors.iprint (exn, info)) in
   fatal_error msg
@@ -42,7 +41,7 @@ let driver in_file coq_path =
   (* We need to set the load path first to properly compute the lib
      name below *)
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path in
-  List.iter Mltop.add_coq_path iload_path;
+  List.iter Loadpath.add_coq_path iload_path;
 
   (* The kernel replay needed this because our trace was too weak. *)
   (* let _dp = Library.start_library in_file in *)

@@ -35,12 +35,14 @@ open Names
 module Event = struct
   type t =
     | Require of (DirPath.t * string) list * bool option
-    | Constant of bool * Label.t * Safe_typing.global_declaration
+    | Constant of Label.t * Safe_typing.global_declaration
+    | Private_constant of Label.t * Safe_typing.side_effect_declaration
     | Inductive of Label.t * Entries.mutual_inductive_entry
     | Constraints of Univ.Constraint.t
-    | Named_assum of (Id.t * Constr.types * bool) Univ.in_universe_context_set
+    | Named_assum of Id.t * Constr.types
     | Named_def of Id.t * Entries.section_def_entry
     | Push_context_set of bool * Univ.ContextSet.t
+    | Push_section_context of Name.t array * Univ.UContext.t
     | Lib_start of DirPath.t
     | Mod_impl of Label.t * Entries.module_entry * Declarations.inline
     | Mod_start of Label.t
@@ -59,12 +61,14 @@ end
 let trace = ref []
 
 let sercomp_log_st = Event.(ST.
-  { constant = (fun (dp, l, decl) -> trace := (Constant (dp, l, decl))::!trace)
+  { constant = (fun (l, decl) -> trace := (Constant (l, decl))::!trace)
+  ; private_constant = (fun (l, decl) -> trace := (Private_constant (l, decl))::!trace)
   ; mind = (fun (l, mind) -> trace := (Inductive (l,mind))::!trace)
   ; constraints = (fun cst -> trace := (Constraints cst)::!trace)
-  ; named_assum = (fun c -> trace := (Named_assum c)::!trace)
+  ; named_assum = (fun (c,u) -> trace := (Named_assum (c,u))::!trace)
   ; named_def = (fun (id,s) -> trace := (Named_def (id,s))::!trace)
   ; push_context_set = (fun (poly,ctx) -> trace := Push_context_set (poly,ctx)::!trace)
+  ; push_section_context = (fun (ids,ctx) -> trace := Push_section_context (ids,ctx)::!trace)
   ; lib_start = (fun dp -> trace := (Lib_start dp)::!trace)
   ; mod_impl = (fun (a,b,c) -> trace := Mod_impl (a,b,c)::!trace)
   ; mod_start = (fun lb -> trace := Mod_start lb::!trace)
@@ -100,19 +104,24 @@ let env_map = ref Int.Map.empty
 let replay (e : Event.t) =
   match e with
   | Require (modrefl,exports) ->
-    Library.require_library_from_dirpath modrefl exports
-  | Constant (in_section, l, decl) ->
-    let _kname = Global.add_constant ~in_section LB.(to_id l) decl in ()
+    let lib_resolver = Loadpath.try_locate_absolute_library in
+    Library.require_library_from_dirpath ~lib_resolver modrefl exports
+  | Constant (l, decl) ->
+    let _kname = Global.add_constant LB.(to_id l) decl in ()
+  | Private_constant (l, decl) ->
+    let _kname = Global.add_private_constant LB.(to_id l) decl in ()
   | Inductive (l, mind) ->
     let _kname = Global.add_mind LB.(to_id l) mind in ()
   | Constraints c ->
     Global.add_constraints c
-  | Named_assum c ->
-    Global.push_named_assum c
+  | Named_assum (c,u) ->
+    Global.push_named_assum (c,u)
   | Named_def (id,c) ->
     Global.push_named_def (id, c)
   | Push_context_set (poly,ctx) ->
     Global.push_context_set poly ctx
+  | Push_section_context (ids,ctx) ->
+    Global.push_section_context (ids,ctx)
   | Lib_start dp ->
     ignore (Global.start_library dp)
   | Mod_impl (a,b,c)->
@@ -135,13 +144,16 @@ let replay (e : Event.t) =
     (* XXX This is wrong // *)
     let fs = Summary.freeze_summaries ~marshallable:false in
     ignore (Global.end_modtype fs LB.(to_id lb))
+  (* Open section *)
   | Env_snapshot id ->
     let env = Summary.(project_from_summary (freeze_summaries ~marshallable:false) Global.global_env_summary_tag) in
-    env_map := Int.Map.add id env !env_map
+    env_map := Int.Map.add id env !env_map;
+    Global.open_section ()
   | Env_restore id ->
     let env = Int.Map.find id !env_map in
     let fs = Summary.freeze_summaries ~marshallable:false in
     let fs = Summary.modify_summary fs Global.global_env_summary_tag env in
-    Summary.unfreeze_summaries fs
+    (* Summary.unfreeze_summaries fs; *)
+    Global.close_section fs
   | Other _ ->
     ()

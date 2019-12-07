@@ -74,3 +74,7 @@ let _effect_entry_of_sexp (_f : Sexp.t -> 'a) (x : Sexp.t) : 'a effect_entry =
 type global_declaration =
   [%import: Safe_typing.global_declaration]
   [@@deriving sexp]
+
+type side_effect_declaration =
+  [%import: Safe_typing.side_effect_declaration]
+  [@@deriving sexp]
