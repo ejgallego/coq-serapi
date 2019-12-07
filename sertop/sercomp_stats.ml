@@ -31,7 +31,7 @@ let stats =
 (* XXX: Move to sertop_stats.ml *)
 let do_stats =
   let proof_loc = ref None in
-  fun CAst.{ loc ; v = vrn } ->
+  fun CAst.{ loc ; v = { Vernacexpr.expr; _ } } ->
   let open Vernacexpr in
   let incS ?loc f =
     Option.cata (fun loc ->
@@ -39,7 +39,7 @@ let do_stats =
         Format.printf "@[Adding %d lines@]@\n%!" n_lines;
         f + n_lines) f loc
   in
-  match Vernacprop.under_control vrn with
+  match expr with
   (* Definition *)
   | VernacDefinition (_,_,_)
   | VernacFixpoint   (_,_)

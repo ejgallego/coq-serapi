@@ -52,23 +52,15 @@ let _ =
         let hdr = Option.default "" hdr in
         List [Atom "CErrors.UserError"; List [Atom hdr; sexp_of_std_ppcmds msg]]
       | _ -> assert false);
-  Conv.Exn_converter.add [%extension_constructor CErrors.AlreadyDeclared] (function
-      | CErrors.AlreadyDeclared msg ->
-        List [Atom "CErrors.AlreadyDeclared"; List [sexp_of_std_ppcmds msg]]
+  Conv.Exn_converter.add [%extension_constructor Declare.AlreadyDeclared] (function
+      | Declare.AlreadyDeclared (msg, id) ->
+        List [Atom "Declare.AlreadyDeclared"; List [sexp_of_option sexp_of_string msg; Ser_names.Id.sexp_of_t id]]
       | _ -> assert false);
   Conv.Exn_converter.add [%extension_constructor Pretype_errors.PretypeError] (function
       (* Pretype Errors XXX what to do with _env, _envmap *)
       | Pretype_errors.PretypeError(_env, _evmap, pterr) ->
         List [Atom "Pretype_errors.PretypeError";
               List [Ser_pretype_errors.sexp_of_pretype_error pterr]]
-      | _ -> assert false);
-  Conv.Exn_converter.add [%extension_constructor ExplainErr.EvaluatedError] (function
-      (* Cerrors *)
-      | ExplainErr.EvaluatedError(msg, exn) -> begin
-          match exn with
-          | Some exn -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg; sexp_of_exn exn]
-          | None     -> List [Atom "ExplainErr.EvaluatedError"; sexp_of_std_ppcmds msg]
-        end
       | _ -> assert false);
   (* Conv.Exn_converter.add [%extension_constructor Proof_global.NoCurrentProof] (function
    *     | Proof_global.NoCurrentProof ->
@@ -104,7 +96,7 @@ module Tok        = Ser_tok
 module Ppextend   = Ser_ppextend
 module Notation_gram = Ser_notation_gram
 module Genarg     = Ser_genarg
-module Mltop      = Ser_mltop
+module Loadpath   = Ser_loadpath
 module Printer    = Ser_printer
 
 (* Alias fails due to the [@@default in protocol] *)

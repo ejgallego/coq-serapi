@@ -24,7 +24,6 @@ module Constr  = Ser_constr
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
 module CPrimitives = Ser_cPrimitives
-module Decl_kinds  = Ser_decl_kinds
 module Vmvalues    = Ser_vmvalues
 module Conv_oracle = Ser_conv_oracle
 module Mod_subst   = Ser_mod_subst
@@ -77,21 +76,21 @@ type universes =
   [%import: Declarations.universes]
   [@@deriving sexp]
 
-type 'a constant_def =
-  [%import: 'a Declarations.constant_def]
+type ('a, 'b) constant_def =
+  [%import: ('a, 'b) Declarations.constant_def]
   [@@deriving sexp]
 
 type typing_flags =
   [%import: Declarations.typing_flags]
   [@@deriving sexp]
 
-type constant_body =
-  [%import: Declarations.constant_body]
+type 'a constant_body =
+  [%import: 'a Declarations.constant_body]
   [@@deriving sexp]
 
-let sexp_of_constant_body e =
+let sexp_of_constant_body f e =
   (* We cannot handle VM values *)
-  sexp_of_constant_body { e with const_body_code = None }
+  sexp_of_constant_body f { e with const_body_code = None }
 
 (* XXX: At least one serializer can be done *)
 let sexp_of_module_retroknowledge _ =

@@ -99,7 +99,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
            let doc, sid = !stt in
            if String.trim line <> "" then
              let sxp = Sexplib.Sexp.of_string line in
-             let ast = Serlib.(Ser_cAst.t_of_sexp Ser_vernacexpr.vernac_control_of_sexp sxp) in
+             let ast = Serlib.Ser_vernacexpr.vernac_control_of_sexp sxp in
              stt := process ~doc ~sid ast
          done;
          !stt
@@ -120,16 +120,17 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
     | C_stats ->
       Sercomp_stats.do_stats ast
     | C_print ->
-      printf "@[%a@]@\n%!" Pp.pp_with Ppvernac.(pr_vernac ast.v)
+      printf "@[%a@]@\n%!" Pp.pp_with Ppvernac.(pr_vernac ast)
     | C_sexp ->
       printf "@[%a@]@\n%!" pp
-        Serlib.(Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
+        (Serlib.Ser_vernacexpr.sexp_of_vernac_control ast)
   in
   doc, n_st
 
 let check_pending_proofs ~pstate =
-  Option.iter (fun pstate ->
-  let pfs = Proof_global.get_all_proof_names pstate in
+  Option.iter (fun _pstate ->
+  (* let pfs = Proof_global.get_all_proof_names pstate in *)
+  let pfs = [] in
   if not CList.(is_empty pfs) then
     let msg = let open Pp in
       seq [ str "There are pending proofs: "
@@ -157,7 +158,8 @@ let close_document ~pp ~mode ~doc ~in_file ~pstate =
     check_pending_proofs ~pstate;
     let ldir = Stm.get_ldir ~doc in
     let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
-    Library.save_library_to ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
+    let todo_proofs = Library.ProofsTodoNone in
+    Library.save_library_to todo_proofs ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
 
 (* Command line processing *)
 let sercomp_version = Ser_version.ser_git_version
@@ -197,7 +199,7 @@ let driver input mode debug printer async async_workers quick coq_path ml_path l
   let in_chan = open_in in_file in
   let doc, _sid = input_doc ~input ~in_file ~in_chan ~process ~doc ~sid in
   let pstate = match Stm.state_of_id ~doc sid with
-    | `Valid (Some { Vernacstate.proof; _ }) -> proof
+    | `Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~pp ~mode ~doc ~in_file ~pstate in

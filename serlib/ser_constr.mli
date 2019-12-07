@@ -16,6 +16,11 @@
 
 open Sexplib
 
+type metavariable = Constr.metavariable
+
+val metavariable_of_sexp : Sexp.t -> metavariable
+val sexp_of_metavariable : metavariable -> Sexp.t
+
 type pconstant = Constr.pconstant
 
 val pconstant_of_sexp : Sexp.t -> pconstant

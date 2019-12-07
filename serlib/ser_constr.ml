@@ -30,6 +30,11 @@ module Evar    = Ser_evar
 module Univ    = Ser_univ
 module Context = Ser_context
 module Uint63  = Ser_uint63
+module Float64 = Ser_float64
+
+type metavariable =
+  [%import: Constr.metavariable]
+  [@@deriving sexp, yojson]
 
 type pconstant =
   [%import: Constr.pconstant]
@@ -97,6 +102,7 @@ type _constr =
   | CoFix     of (_constr, _types) pcofixpoint
   | Proj      of Names.Projection.t * _constr
   | Int       of Uint63.t
+  | Float     of Float64.t
 [@@deriving sexp,yojson]
 and _types = _constr
 [@@deriving sexp,yojson]
@@ -125,6 +131,7 @@ let rec _constr_put (c : constr) : _constr =
   | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
   | C.Proj(p,c)           -> Proj(p, cr c)
   | C.Int i               -> Int i
+  | C.Float i             -> Float i
 
 let rec _constr_get (c : _constr) : constr =
   let cr  = _constr_get           in
@@ -149,6 +156,7 @@ let rec _constr_get (c : _constr) : constr =
   | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
   | Proj(p,c)           -> C.mkProj(p, cr c)
   | Int i               -> C.mkInt i
+  | Float f             -> C.mkFloat f
 
 let constr_of_sexp (c : Sexp.t) : constr =
   _constr_get (_constr_of_sexp c)

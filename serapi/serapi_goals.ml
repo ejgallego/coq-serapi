@@ -77,8 +77,9 @@ let if_not_empty (pp : Pp.t) = if Pp.(repr pp = Ppcmd_empty) then None else Some
 let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) ~doc sid
   : 'a reified_goal ser_goals option =
   match Stm.state_of_id ~doc sid with
-  | `Valid (Some { Vernacstate.proof = Some pstate ; _ } ) ->
-    let proof = Proof_global.give_me_the_proof pstate in
+  | `Valid (Some { Vernacstate.lemmas = Some lemmas ; _ } ) ->
+    let proof = Vernacstate.LemmaStack.with_top_pstate lemmas
+        ~f:(fun pstate -> Proof_global.get_proof pstate) in
     let Proof.{ goals; stack; shelf; given_up; sigma; _ } = Proof.data proof in
     let ppx = List.map (process_goal_gen ppx sigma) in Some
       { goals = ppx goals

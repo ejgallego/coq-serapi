@@ -8,14 +8,19 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2020 MINES ParisTech / INRIA                          *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+type definition_object_kind =
+  [%import: Decls.definition_object_kind]
+  [@@deriving sexp,yojson]
 
-type library_location = Library.library_location
+type theorem_kind =
+  [%import: Decls.theorem_kind]
+  [@@deriving sexp,yojson]
 
-val library_location_of_sexp : Sexp.t -> library_location
-val sexp_of_library_location : library_location -> Sexp.t
+type assumption_object_kind =
+  [%import: Decls.assumption_object_kind]
+  [@@deriving sexp,yojson]

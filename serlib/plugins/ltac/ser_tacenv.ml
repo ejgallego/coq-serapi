@@ -19,7 +19,7 @@ open Sexplib.Std
 open Serlib
 
 module Names        = Ser_names
-module Attributes   = Ser_attributes
+module Deprecation  = Ser_deprecation
 
 module Ltac_plugin = struct
   module Tacexpr = Ser_tacexpr

@@ -19,7 +19,7 @@ open Sexplib
     [fb_handler] *)
 val sertop_init :
   fb_out:(Sexp.t -> unit) ->
-  iload_path:Mltop.coq_path list ->
+  iload_path:Loadpath.coq_path list ->
   require_libs:(string * string option * bool option) list ->
   debug:bool ->
   Stm.doc * Stateid.t

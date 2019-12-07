@@ -184,7 +184,7 @@ type coq_object =
   (** A Coq Location object, used for positions inside the document. *)
   | CoqTok       of Tok.t CAst.t list
   (** Coq Tokens, as produced by the lexer  *)
-  | CoqAst       of Vernacexpr.vernac_control Loc.located
+  | CoqAst       of Vernacexpr.vernac_control
   (** Coq Abstract Syntax tress, as produced by the parser *)
   | CoqOption    of Goptions.option_name * Goptions.option_state
   (** Coq Options, as in [Set Resolution Depth] *)
@@ -385,7 +385,7 @@ type add_opts = {
 type newdoc_opts =
   { top_name     : Stm.interactive_top
   (** name of the top-level module of the new document *)
-  ; iload_path   : Mltop.coq_path list sexp_option
+  ; iload_path   : Loadpath.coq_path list sexp_option
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
   ; require_libs : (string * string option * bool option) list sexp_option
   (** Libraries to load in the initial document state *)

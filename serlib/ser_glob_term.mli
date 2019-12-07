@@ -15,6 +15,12 @@
 
 open Sexplib
 
+type binding_kind = Glob_term.binding_kind
+val binding_kind_of_sexp : Sexp.t -> Glob_term.binding_kind
+val sexp_of_binding_kind : Glob_term.binding_kind -> Sexp.t
+val binding_kind_of_yojson : Yojson.Safe.t -> (binding_kind,string) result
+val binding_kind_to_yojson : Glob_term.binding_kind -> Yojson.Safe.t
+
 type glob_level = Glob_term.glob_level
 val glob_level_of_sexp : Sexp.t -> Glob_term.glob_level
 val sexp_of_glob_level : Glob_term.glob_level -> Sexp.t

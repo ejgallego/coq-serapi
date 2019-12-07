@@ -149,18 +149,6 @@ type 'a with_coercion = 'a Vernacexpr.with_coercion
 val with_coercion_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_coercion
 val sexp_of_with_coercion : ('a -> Sexp.t) -> 'a with_coercion -> Sexp.t
 
-type 'a with_instance = 'a Vernacexpr.with_instance
-val with_instance_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_instance
-val sexp_of_with_instance : ('a -> Sexp.t) -> 'a with_instance -> Sexp.t
-
-type 'a with_notation = 'a Vernacexpr.with_notation
-val with_notation_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_notation
-val sexp_of_with_notation : ('a -> Sexp.t) -> 'a with_notation -> Sexp.t
-
-type 'a with_priority = 'a Vernacexpr.with_priority
-val with_priority_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_priority
-val sexp_of_with_priority : ('a -> Sexp.t) -> 'a with_priority -> Sexp.t
-
 type constructor_expr = Vernacexpr.constructor_expr
 val constructor_expr_of_sexp : Sexp.t -> constructor_expr
 val sexp_of_constructor_expr : constructor_expr -> Sexp.t

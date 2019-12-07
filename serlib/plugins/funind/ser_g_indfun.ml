@@ -75,8 +75,7 @@ let ser_wit_fun_scheme_arg :
 module Loc = Ser_loc
 module Vernacexpr = Ser_vernacexpr
 
-type function_rec_definition_loc_argtype =
-  [%import: Recdef_plugin.G_indfun.function_rec_definition_loc_argtype]
+type function_rec_definition_loc_argtype = Vernacexpr.fixpoint_expr Loc.located
   [@@deriving sexp]
 
 let ser_wit_function_rec_definition_loc =

@@ -35,7 +35,7 @@ type ser_opts =
 ; no_prelude : bool              (** Whether to load stdlib's prelude         *)
 
 (* Coq options *)
-; loadpath : Mltop.coq_path list (** From -R and -Q options usually           *)
+; loadpath : Loadpath.coq_path list (** From -R and -Q options usually           *)
 ; async    : Sertop_init.async_flags
                                  (** Async flags                              *)
 }

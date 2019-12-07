@@ -7,6 +7,7 @@ branches:
   - v8.8
   - v8.9
   - v8.10
+  - v8.11
 
 cache:
   apt: true
@@ -25,20 +26,22 @@ env:
   - OPAMYES="true"
   - NJOBS="2"
   - COQ_REPOS="https://github.com/coq/coq.git"
-  - COQ_VERSION="v8.10"
-  - COQ_BRANCH="v8.10"
+  - COQ_VERSION="v8.11"
+  - COQ_BRANCH="v8.11"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.07.1"
+  - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
   # Main test suites
   matrix:
-  - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
-  - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq coq-mathcomp-ssreflect"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq js_of_ocaml js_of_ocaml-lwt"
-  # Don't test opam in 8.10 [yet]
-  - TEST_TARGET="test"    SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
+  # - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
+  # - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq coq-mathcomp-ssreflect"
+  # - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq js_of_ocaml js_of_ocaml-lwt"
+  # Don't test opam in 8.11 [yet]
+  - TEST_TARGET="test"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="js_of_ocaml js_of_ocaml-lwt"
 
 install:
-- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.4/opam-2.0.4-x86_64-linux -o /usr/bin/opam
+- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.5/opam-2.0.5-x86_64-linux -o /usr/bin/opam
 - sudo chmod 755 /usr/bin/opam
 - opam init -c "$COMPILER" --disable-sandboxing
 - opam switch set "$COMPILER"

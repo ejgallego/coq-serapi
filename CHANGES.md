@@ -1,3 +1,9 @@
+## Version 0.11.0:
+
+ * [general] (!) support Coq 8.11, a few datatypes have changed, in
+             particular `CoqAst` handles locations as an AST node, and
+             the kernel type includes primitive floats.
+
 ## Version 0.7.0:
 
  * [general] (!) support Coq 8.10,

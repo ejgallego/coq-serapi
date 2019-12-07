@@ -66,8 +66,8 @@ type 'a const_entry_body =
  *   [%import: 'a Entries.in_constant_universes_entry]
  *   [@@deriving sexp] *)
 
-type 'a definition_entry =
-  [%import: 'a Entries.definition_entry]
+type definition_entry =
+  [%import: Entries.definition_entry]
   [@@deriving sexp]
 
 type section_def_entry =
@@ -78,6 +78,10 @@ type inline =
   [%import: Entries.inline]
   [@@deriving sexp]
 
+type 'a opaque_entry =
+  [%import: 'a Entries.opaque_entry]
+  [@@deriving sexp]
+
 type parameter_entry =
   [%import: Entries.parameter_entry]
   [@@deriving sexp]
@@ -86,8 +90,8 @@ type primitive_entry =
   [%import: Entries.primitive_entry]
   [@@deriving sexp]
 
-type 'a constant_entry =
-  [%import: 'a Entries.constant_entry]
+type constant_entry =
+  [%import: Entries.constant_entry]
   [@@deriving sexp]
 
 type module_struct_entry =
@@ -106,14 +110,14 @@ type module_type_entry =
   [%import: Entries.module_type_entry]
   [@@deriving sexp]
 
-type seff_env =
-  [%import: Entries.seff_env]
-  [@@deriving sexp]
+(* type seff_env =
+ *   [%import: Entries.seff_env]
+ *   [@@deriving sexp] *)
 
-type side_effect_role =
-  [%import: Entries.side_effect_role]
-  [@@deriving sexp]
+(* type side_effect_role =
+ *   [%import: Entries.side_effect_role]
+ *   [@@deriving sexp] *)
 
-type side_eff =
-  [%import: Entries.side_eff]
-  [@@deriving sexp]
+(* type side_eff =
+ *   [%import: Entries.side_eff]
+ *   [@@deriving sexp] *)

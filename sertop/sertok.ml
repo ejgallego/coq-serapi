@@ -136,8 +136,9 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   with End_of_input -> !stt
 
 let check_pending_proofs ~pstate =
-  Option.iter (fun pstate ->
-  let pfs = Proof_global.get_all_proof_names pstate in
+  Option.iter (fun _pstate ->
+  (* let pfs = Vernacstate.get_all_proof_names pstate in *)
+  let pfs = [] in
   if not CList.(is_empty pfs) then
     let msg = let open Pp in
       seq [ str "There are pending proofs: "
@@ -181,7 +182,7 @@ let driver debug printer async async_workers quick coq_path ml_path load_path rl
   let in_chan = open_in in_file in
   let doc, _sid = input_doc ~pp ~in_file ~in_chan ~doc ~sid in
   let pstate = match Stm.state_of_id ~doc sid with
-    | `Valid (Some { Vernacstate.proof; _ }) -> proof
+    | `Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~doc ~pstate in

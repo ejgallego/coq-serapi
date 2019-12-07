@@ -68,9 +68,9 @@ type inline = Declarations.inline
 val sexp_of_inline : inline -> Sexp.t
 val inline_of_sexp : Sexp.t -> inline
 
-type constant_body = Declarations.constant_body
-val sexp_of_constant_body : constant_body -> Sexp.t
-val constant_body_of_sexp : Sexp.t -> constant_body
+type 'opaque constant_body = 'opaque Declarations.constant_body
+val sexp_of_constant_body : ('opaque -> Sexp.t) -> 'opaque constant_body -> Sexp.t
+val constant_body_of_sexp : (Sexp.t -> 'opaque) -> Sexp.t -> 'opaque constant_body
 
 (* type record_body = Declarations.record_body
  * val record_body_of_sexp : Sexp.t -> record_body

@@ -8,7 +8,7 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2016-2020 MINES ParisTech / INRIA                          *)
 (************************************************************************)
 (* Status: Experimental                                                 *)
 (************************************************************************)
@@ -21,6 +21,7 @@ module Range  = Ser_range
 module Names  = Ser_names
 module Constr = Ser_constr
 module Univ   = Ser_univ
+module Nativevalues   = Ser_nativevalues
 module Opaqueproof    = Ser_opaqueproof
 module Retroknowledge = Ser_retroknowledge
 module UGraph         = Ser_uGraph
@@ -45,29 +46,29 @@ type link_info =
   [%import: Environ.link_info]
   [@@deriving sexp]
 
-type key = 
+type key =
   [%import: Environ.key]
   [@@deriving sexp]
 
-type constant_key = 
+type constant_key =
   [%import: Environ.constant_key]
   [@@deriving sexp]
 
-type mind_key =   
+type mind_key =
   [%import: Environ.mind_key]
   [@@deriving sexp]
 
-type _globals = {
-  env_constants : constant_key Names.Cmap_env.t;
-  env_inductives : mind_key Names.Mindmap_env.t;
-  env_modules : Declarations.module_body Names.MPmap.t;
-  env_modtypes : Declarations.module_type_body Names.MPmap.t;
-} [@@deriving sexp]
+module Globals = struct
 
-type globals = Environ.globals
+  type t = Environ.Globals.t
 
-let sexp_of_globals g = sexp_of__globals (Obj.magic g)
-let _globals_of_sexp g = Obj.magic (_globals_of_sexp g)
+  type _t =
+    [%import: Environ.Globals.view]
+    [@@deriving sexp]
+
+  let sexp_of_t g = sexp_of__t (Obj.magic g)
+  let _t_of_sexp s = Obj.magic (_t_of_sexp s)
+end
 
 type env =
   [%import: Environ.env]

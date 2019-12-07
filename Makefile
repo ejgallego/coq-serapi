@@ -2,7 +2,7 @@
 
 # Leave empty to use OPAM-installed Coq
 SERAPI_COQ_HOME ?=
-# SERAPI_COQ_HOME=/home/egallego/external/coq-v8.10/_build/install/default/lib/
+# SERAPI_COQ_HOME=/home/egallego/external/coq-v8.11/_build/install/default/lib/
 # SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.9+32bit/
 
 ifneq ($SERAPI_COQ_HOME,)

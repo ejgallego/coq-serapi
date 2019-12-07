@@ -17,8 +17,6 @@ open Sexplib
 open Sertop_async
 open Js_of_ocaml
 
-open Js_of_ocaml
-
 (* Send answer to the main thread *)
 let post_message (msg : Sexp.t) : unit =
   let msg_str = Js.string (Sexp.to_string msg) in
@@ -104,7 +102,7 @@ let _ =
       let base_path = "./coq-pkgs/"                             in
       let pkgs      = ["init"] (*"peacoq"]*)                    in
 
-      let pkg_to_bb cp = Mltop.{
+      let pkg_to_bb cp = Loadpath.{
           recursive = false;
           path_spec = VoPath {
               coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string cp.pkg_id);

@@ -1,6 +1,6 @@
 (************************************************************************)
 (*         *   The Coq Proof Assistant / The Coq Development Team       *)
-(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2018       *)
+(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2019       *)
 (* <O___,, *       (see CREDITS file for the list of authors)           *)
 (*   \VV/  **************************************************************)
 (*    //   *    This file is distributed under the terms of the         *)
@@ -10,14 +10,13 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
-(* Written by: Emilio J. Gallego Arias                                  *)
+(* Copyright 2016-2020 MINES ParisTech / INRIA                          *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-val do_stats    : Vernacexpr.vernac_control -> unit
-(** [do_stats ast] update stats over processed Asts *)
+open Sexplib.Std
 
-val print_stats : unit -> unit
-(** [print_stats ()] print stats to stdout *)
+type t =
+  [%import: Deprecation.t]
+  [@@deriving sexp,yojson]

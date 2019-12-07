@@ -23,7 +23,6 @@ module Constr     = Ser_constr
 module UState     = Ser_uState
 module Namegen    = Ser_namegen
 module Pattern    = Ser_pattern
-module Decl_kinds = Ser_decl_kinds
 module Evar_kinds = Ser_evar_kinds
 module Genarg     = Ser_genarg
 module Libnames   = Ser_libnames

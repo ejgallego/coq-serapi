@@ -86,7 +86,7 @@ let no_prelude =
   let doc = "Omits requiring any module on start, thus `Prelude`, ltac, etc... won't be available" in
   Arg.(value & flag & info ["no_prelude"] ~doc)
 
-let coq_lp_conv ~implicit (unix_path,lp) = Mltop.{
+let coq_lp_conv ~implicit (unix_path,lp) = Loadpath.{
     path_spec = VoPath {
         coq_path  = Libnames.dirpath_of_string lp;
         unix_path;
@@ -96,22 +96,22 @@ let coq_lp_conv ~implicit (unix_path,lp) = Mltop.{
     recursive = true;
   }
 
-let rload_path : Mltop.coq_path list Term.t =
+let rload_path : Loadpath.coq_path list Term.t =
   let doc = "Bind a logical loadpath LP to a directory DIR and implicitly open its namespace." in
   Term.(const List.(map (coq_lp_conv ~implicit:true)) $
         Arg.(value & opt_all (pair dir string) [] & info ["R"; "rec-load-path"] ~docv:"DIR,LP"~doc))
 
-let load_path : Mltop.coq_path list Term.t =
+let load_path : Loadpath.coq_path list Term.t =
   let doc = "Bind a logical loadpath LP to a directory DIR" in
   Term.(const List.(map (coq_lp_conv ~implicit:false)) $
         Arg.(value & opt_all (pair dir string) [] & info ["Q"; "load-path"] ~docv:"DIR,LP" ~doc))
 
-let coq_include_conv unix_path = Mltop.{
+let coq_include_conv unix_path = Loadpath.{
     path_spec = MlPath unix_path;
     recursive = false;
   }
 
-let ml_include_path : Mltop.coq_path list Term.t =
+let ml_include_path : Loadpath.coq_path list Term.t =
   let doc = "Include DIR in default loadpath, for locating ML files" in
   Term.(const List.(map coq_include_conv) $
         Arg.(value & opt_all dir [] & info ["I"; "ml-include-path"] ~docv:"DIR" ~doc))

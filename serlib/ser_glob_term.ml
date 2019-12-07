@@ -21,8 +21,8 @@ module DAst       = Ser_dAst
 module Names      = Ser_names
 module Univ       = Ser_univ
 module Uint63     = Ser_uint63
+module Float64    = Ser_float64
 module Constr     = Ser_constr
-module Decl_kinds = Ser_decl_kinds
 module Libnames   = Ser_libnames
 module Genarg     = Ser_genarg
 module Evar_kinds = Ser_evar_kinds
@@ -32,16 +32,24 @@ module Namegen    = Ser_namegen
 (* Glob_term                                                          *)
 (**********************************************************************)
 
-type 'a glob_sort_gen =
-  [%import: 'a Glob_term.glob_sort_gen]
+type binding_kind =
+  [%import: Glob_term.binding_kind]
   [@@deriving sexp,yojson]
 
-type 'a universe_kind =
-  [%import: 'a Glob_term.universe_kind]
+(* type 'a universe_kind =
+ *   [%import: 'a Glob_term.universe_kind]
+ *   [@@deriving sexp,yojson] *)
+
+(* type level_info =
+ *   [%import: Glob_term.level_info]
+ *   [@@deriving sexp,yojson] *)
+
+type glob_sort_name =
+  [%import: Glob_term.glob_sort_name]
   [@@deriving sexp,yojson]
 
-type level_info =
-  [%import: Glob_term.level_info]
+type 'a glob_sort_expr =
+  [%import: 'a Glob_term.glob_sort_expr]
   [@@deriving sexp,yojson]
 
 type glob_level =
@@ -52,9 +60,9 @@ type glob_constraint =
   [%import: Glob_term.glob_constraint]
   [@@deriving sexp,yojson]
 
-type sort_info =
-  [%import: Glob_term.sort_info]
-  [@@deriving sexp,yojson]
+(* type sort_info =
+ *   [%import: Glob_term.sort_info]
+ *   [@@deriving sexp,yojson] *)
 
 type glob_sort =
   [%import: Glob_term.glob_sort]

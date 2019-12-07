@@ -21,7 +21,7 @@
 (******************************************************************************)
 
 let coq_loadpath_default ~implicit ~coq_path =
-  let open Mltop in
+  let open Loadpath in
   let mk_path prefix = coq_path ^ "/" ^ prefix in
   let mk_lp ~ml ~root ~dir ~implicit =
     { recursive = true;

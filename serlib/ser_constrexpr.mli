@@ -30,6 +30,8 @@ val notation_entry_to_yojson : notation_entry -> Yojson.Safe.t
 type universe_decl_expr = Constrexpr.universe_decl_expr
 val universe_decl_expr_of_sexp : Sexp.t -> universe_decl_expr
 val sexp_of_universe_decl_expr : universe_decl_expr -> Sexp.t
+val universe_decl_expr_of_yojson : Yojson.Safe.t -> (universe_decl_expr, string) Result.result
+val universe_decl_expr_to_yojson : universe_decl_expr -> Yojson.Safe.t
 
 type ident_decl = Constrexpr.ident_decl
 val ident_decl_of_sexp : Sexp.t -> ident_decl

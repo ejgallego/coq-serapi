@@ -80,6 +80,8 @@ let to_yojson level = _t_to_yojson (_t_put level)
 
 end
 
+module DPmap = Ser_cMap.Make(DPmap)(DirPath)
+
 module Label = struct
 
 (* Label.t: private *)

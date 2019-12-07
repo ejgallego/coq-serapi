@@ -25,7 +25,7 @@ module Univ        = Ser_univ
 module UnivNames   = Ser_univNames
 module Conv_oracle = Ser_conv_oracle
 module Declarations= Ser_declarations
-module Decl_kinds  = Ser_decl_kinds
+module Decls       = Ser_decls
 module Genarg      = Ser_genarg
 module Declaremods = Ser_declaremods
 module Libnames    = Ser_libnames
@@ -117,6 +117,14 @@ type definition_expr =
   [%import: Vernacexpr.definition_expr]
   [@@deriving sexp,yojson]
 
+type decl_notation =
+  [%import: Vernacexpr.decl_notation]
+  [@@deriving sexp,yojson]
+
+type 'a fix_expr_gen =
+  [%import: 'a Vernacexpr.fix_expr_gen]
+  [@@deriving sexp,yojson]
+
 type fixpoint_expr =
   [%import: Vernacexpr.fixpoint_expr]
   [@@deriving sexp,yojson]
@@ -133,10 +141,6 @@ type inductive_kind =
   [%import: Vernacexpr.inductive_kind]
   [@@deriving sexp,yojson]
 
-type decl_notation =
-  [%import: Vernacexpr.decl_notation]
-  [@@deriving sexp,yojson]
-
 type simple_binder =
   [%import: Vernacexpr.simple_binder]
   [@@deriving sexp,yojson]
@@ -149,20 +153,24 @@ type 'a with_coercion =
   [%import: 'a Vernacexpr.with_coercion]
   [@@deriving sexp,yojson]
 
-type 'a with_instance =
-  [%import: 'a Vernacexpr.with_instance]
-  [@@deriving sexp,yojson]
+(* type 'a with_instance =
+ *   [%import: 'a Vernacexpr.with_instance]
+ *   [@@deriving sexp,yojson] *)
 
-type 'a with_notation =
-  [%import: 'a Vernacexpr.with_notation]
-  [@@deriving sexp,yojson]
+(* type 'a with_notation =
+ *   [%import: 'a Vernacexpr.with_notation]
+ *   [@@deriving sexp,yojson] *)
 
-type 'a with_priority =
-  [%import: 'a Vernacexpr.with_priority]
-  [@@deriving sexp,yojson]
+(* type 'a with_priority =
+ *   [%import: 'a Vernacexpr.with_priority]
+ *   [@@deriving sexp,yojson] *)
 
 type constructor_expr =
   [%import: Vernacexpr.constructor_expr]
+  [@@deriving sexp,yojson]
+
+type record_field_attr =
+  [%import: Vernacexpr.record_field_attr]
   [@@deriving sexp,yojson]
 
 type constructor_list_or_record_decl_expr =
@@ -217,8 +225,32 @@ type typeclass_constraint =
   [%import: Vernacexpr.typeclass_constraint]
   [@@deriving sexp,yojson]
 
-type vernac_expr           = [%import: Vernacexpr.vernac_expr]
-and vernac_argument_status = [%import: Vernacexpr.vernac_argument_status]
+type discharge =
+  [%import: Vernacexpr.discharge]
+  [@@deriving sexp,yojson]
+
+type arguments_modifier =
+  [%import: Vernacexpr.arguments_modifier]
+  [@@deriving sexp,yojson]
+
+type vernac_one_argument_status =
+  [%import: Vernacexpr.vernac_one_argument_status]
+  [@@deriving sexp,yojson]
+
+type vernac_argument_status =
+  [%import: Vernacexpr.vernac_argument_status]
+  [@@deriving sexp,yojson]
+
+type vernac_expr =
+  [%import: Vernacexpr.vernac_expr]
+  [@@deriving sexp, yojson]
+
+type control_flag =
+  [%import: Vernacexpr.control_flag]
+  [@@deriving sexp, yojson]
+
+type vernac_control_r =
+  [%import: Vernacexpr.vernac_control_r]
   [@@deriving sexp, yojson]
 
 type vernac_control =

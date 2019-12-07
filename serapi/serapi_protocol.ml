@@ -113,7 +113,7 @@ type coq_object =
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
   | CoqTok       of Tok.t CAst.t list
-  | CoqAst       of Vernacexpr.vernac_control Loc.located
+  | CoqAst       of Vernacexpr.vernac_control
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
   | CoqExpr      of Constrexpr.constr_expr
@@ -195,7 +195,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   (* | CoqRichpp  s    -> Pp.str (pp_richpp s) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqTok    toks  -> Pp.pr_sequence (fun {CAst.v = tok;_} -> Pp.str (Tok.(extract_string false tok))) toks
-  | CoqAst (_l, v)  -> Ppvernac.pr_vernac v
+  | CoqAst v        -> Ppvernac.pr_vernac v
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body env m mind None
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr_env env sigma c
@@ -499,7 +499,8 @@ module QueryUtil = struct
   let info_of_const env cr =
     let cdef = Environ.lookup_constant cr env in
     let cb = Environ.lookup_constant cr env in
-    Option.cata (fun (cb,_uctx) -> [CoqConstr cb] ) [] (Global.body_of_constant_body cb),
+    Option.cata (fun (cb,_univs,_uctx) -> [CoqConstr cb] ) []
+      (Global.body_of_constant_body Library.indirect_accessor cb),
     [CoqConstr(type_of_constant cdef)]
 
   let info_of_var env vr =
@@ -510,7 +511,7 @@ module QueryUtil = struct
   (* XXX: Some work to do wrt Global.type_of_global_unsafe  *)
   let info_of_constructor env cr =
     (* let cdef = Global.lookup_pinductive (cn, cu) in *)
-    let (ctype, _uctx) = Typeops.type_of_global_in_context env (Globnames.ConstructRef cr) in
+    let (ctype, _uctx) = Typeops.type_of_global_in_context env (Names.GlobRef.ConstructRef cr) in
     [],[CoqConstr ctype]
 
   (* Queries a generic definition, in the style of the `Print` vernacular *)
@@ -522,7 +523,7 @@ module QueryUtil = struct
     try
       let lid = Nametab.locate qid in
       (* dispatch based on type *)
-      let open Globnames in
+      let open Names.GlobRef in
       match lid with
       | VarRef        vr -> info_of_var env vr
       | ConstRef      cr -> info_of_const env cr
@@ -563,7 +564,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
   | Proof          -> Option.cata (fun pstate ->
                         let Proof.{goals; stack; shelf; given_up; _} =
-                          Proof.data (Proof_global.give_me_the_proof pstate) in
+                          Proof.data (Proof_global.get_proof pstate) in
                         [CoqProof (goals,stack,shelf,given_up)])
                       [] pstate
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
@@ -606,12 +607,14 @@ let doc_id = ref 0
 
 (* XXX: Needs to take into account possibly local proof state *)
 let pstate_of_st m = match m with
-  | `Valid (Some { Vernacstate.proof; _ } ) -> proof
+  | `Valid (Some { Vernacstate.lemmas; _ } ) ->
+    Option.map (Vernacstate.LemmaStack.with_top_pstate ~f:(fun p -> p)) lemmas
   | _ -> None
 
 let context_of_st m = match m with
-  | `Valid (Some { Vernacstate.proof = Some pstate; _ } ) ->
-    Pfedit.get_current_context pstate
+  | `Valid (Some { Vernacstate.lemmas = Some lemma; _ } ) ->
+    Vernacstate.LemmaStack.with_top_pstate lemma
+      ~f:(fun p -> Pfedit.get_current_context p)
     (* let pstate = st.Vernacstate.proof in *)
     (* let summary = States.summary_of_state st.Vernacstate.system in
      * Safe_typing.env_of_safe_env Summary.(project_from_summary summary Global.global_env_summary_tag) *)
@@ -680,7 +683,8 @@ module ControlUtil = struct
   let parse_sentence ~doc ~(opt : parse_opt) sent =
     let ontop = Extra.value opt.ontop ~default:(Stm.get_current_state ~doc) in
     let pa = Pcoq.Parsable.make (Stream.of_string sent) in
-    Stm.parse_sentence ~doc ontop pa
+    let entry = Pvernac.main_entry in
+    Stm.parse_sentence ~doc ontop ~entry pa
 
   exception End_of_input
 
@@ -770,7 +774,7 @@ type newdoc_opts =
   (* name of the top-level module *)
   { top_name     : Stm.interactive_top
   (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
-  ; iload_path   : Mltop.coq_path list sexp_option
+  ; iload_path   : Loadpath.coq_path list sexp_option
   (* Libs to require in STM init *)
   ; require_libs : (string * string option * bool option) list sexp_option
   }
@@ -844,10 +848,8 @@ let exec_cmd (cmd : cmd) =
     let sigma, env = context_of_st st in
     [ObjList [obj_print env sigma opts.pp obj]]
   | Parse(opt,s) ->
-    Option.cata (fun { CAst.loc; v } ->
-        [ObjList [CoqAst (loc,v)]])
-      []
-    ControlUtil.(parse_sentence ~entry:Pvernac.main_entry ~doc ~opt s)
+    Option.cata (fun ast -> [ObjList [CoqAst ast]]) []
+      ControlUtil.(parse_sentence ~doc ~opt s)
   | Join              -> ignore(Stm.join ~doc); []
   | Finish            -> ignore(Stm.finish ~doc); []
   (*  *)
