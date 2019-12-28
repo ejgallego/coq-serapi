@@ -275,6 +275,8 @@ type print_opt =
     (** Printing format of the query, this can be used to select the type of the answer, as for example to show goals in human-form. *)
   }
 
+val gen_pp_obj : Environ.env -> Evd.evar_map -> coq_object -> Pp.t
+
 (******************************************************************************)
 (* Parsing Sub-Protocol                                                       *)
 (******************************************************************************)
@@ -356,6 +358,10 @@ type query_cmd =
   (** Naïve but efficient prefix-based completion of identifiers *)
   | Comments
   (** Get all comments of a document *)
+
+module QueryUtil : sig
+  val info_of_id : Environ.env -> string -> coq_object list * coq_object list
+end
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
