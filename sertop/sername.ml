@@ -110,7 +110,7 @@ let context_of_st m = match m with
   | `Valid (Some { Vernacstate.proof = Some pstate; _ } ) ->
     Pfedit.get_current_context pstate
   | _ ->
-    let env = Global.env () in Evd.from_env env, env    
+    let env = Global.env () in Evd.from_env env, env
 
 let str_pp_obj env sigma fmt (obj : Serapi_protocol.coq_object) : unit =
   Format.fprintf fmt "%a" Pp.pp_with (Serapi_protocol.gen_pp_obj env sigma obj)
