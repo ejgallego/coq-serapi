@@ -57,7 +57,7 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let require_libs = ["Coq.Init.Prelude", None, Some false] in
 
-  let ndoc = { Stm.doc_type = Stm.VoDoc in_file
+  let ndoc = { Stm.doc_type = Stm.VioDoc in_file
              ; require_libs
              ; iload_path
              ; stm_options
@@ -125,12 +125,12 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
       printf "@[%a@]@\n%!" pp
         Serlib.(Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
     | C_goals ->
-       ignore (Stm.observe ~doc:doc n_st);
+       let doc = Stm.observe ~doc:doc n_st in
        let sg_pre = Serapi_goals.get_goals ~doc:doc n_st in
        match sg_pre with
        | Some g ->
-	  let Serapi_goals.{ goals; stack; _ } = g in
-	  printf "%d %d\n%!" (List.length goals) (List.length stack)
+          let Serapi_goals.{ goals; stack; _ } = g in
+          printf "%d %d\n%!" (List.length goals) (List.length stack)
        | None -> printf "- -\n%!"
   in
   doc, n_st
