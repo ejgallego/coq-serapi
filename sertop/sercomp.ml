@@ -23,7 +23,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
+let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~mode =
 
   let open Sertop_init in
 
@@ -57,7 +57,13 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
   let require_libs = ["Coq.Init.Prelude", None, Some false] in
 
-  let ndoc = { Stm.doc_type = Stm.VioDoc in_file
+  let doc_type = match mode with
+    | Sertop_arg.C_goals ->
+      Stm.Interactive (Stm.TopPhysical in_file)
+    | _ -> Stm.VoDoc in_file
+  in
+
+  let ndoc = { Stm.doc_type
              ; require_libs
              ; iload_path
              ; stm_options
@@ -125,13 +131,14 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
       printf "@[%a@]@\n%!" pp
         Serlib.(Ser_cAst.sexp_of_t Ser_vernacexpr.sexp_of_vernac_control ast)
     | C_goals ->
-       let doc = Stm.observe ~doc:doc n_st in
-       let sg_pre = Serapi_goals.get_goals ~doc:doc n_st in
-       match sg_pre with
-       | Some g ->
+      let doc = Stm.observe ~doc n_st in
+      let sg_pre = Serapi_goals.get_goals ~doc n_st in
+      begin match sg_pre with
+        | Some g ->
           let Serapi_goals.{ goals; stack; _ } = g in
           printf "%d %d\n%!" (List.length goals) (List.length stack)
-       | None -> printf "- -\n%!"
+        | None -> printf "- -\n%!"
+      end
   in
   doc, n_st
 
@@ -200,7 +207,7 @@ let driver input mode debug printer async async_workers quick coq_path ml_path l
   Serlib.Serlib_init.init ~options;
 
   let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
+  let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~mode in
 
   (* main loop *)
   let in_chan = open_in in_file in

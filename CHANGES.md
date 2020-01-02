@@ -1,3 +1,7 @@
+## Version 0.7.1:
+
+ * [sercomp] Add `--mode=goals` output format (@palmskog, @ejgallego) #174
+
 ## Version 0.7.0:
 
  * [general] (!) support Coq 8.10,
