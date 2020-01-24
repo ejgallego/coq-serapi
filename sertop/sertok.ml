@@ -32,7 +32,7 @@ let fatal_exn exn info =
 
 let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
-  let open Sertop_init in
+  let open Sertop.Sertop_init in
 
   (* coq initialization *)
   coq_init
@@ -121,9 +121,9 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
       try
 	CLexer.set_lexer_state l_pre_st;
         let lex = CLexer.Lexer.tok_func sstr in
-        let sen = Sertop_ser.Sentence (stream_tok 0 [] lex source begin_line begin_char) in
+        let sen = Sertop.Sertop_ser.Sentence (stream_tok 0 [] lex source begin_line begin_char) in
         CLexer.set_lexer_state l_post_st;
-        printf "@[%a@]@\n%!" pp (Sertop_ser.sexp_of_sentence sen);
+        printf "@[%a@]@\n%!" pp (Sertop.Sertop_ser.sexp_of_sentence sen);
         let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
         if tip <> `NewTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
         stt := doc, n_st
@@ -150,7 +150,7 @@ let close_document ~doc ~pstate =
   let _doc = Stm.join ~doc in
   check_pending_proofs ~pstate
 
-let sertok_version = Ser_version.ser_git_version
+let sertok_version = Sertop.Ser_version.ser_git_version
 
 let sertok_man =
   [
@@ -169,13 +169,13 @@ open Cmdliner
 let driver debug printer async async_workers quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
-  let pp = Sertop_ser.select_printer printer in
+  let pp = Sertop.Sertop_ser.select_printer printer in
 
   (* initialization *)
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+  let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
   let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
 
   (* main loop *)
@@ -195,7 +195,7 @@ let main () =
   in
 
   let sertok_cmd =
-    let open Sertop_arg in
+    let open Sertop.Sertop_arg in
     Term.(const driver
           $ debug $ printer $ async $ async_workers $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque

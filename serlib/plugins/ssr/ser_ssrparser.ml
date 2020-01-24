@@ -18,11 +18,11 @@
 open Sexplib.Conv
 open Serlib
 
-module Ssrmatching = Ser_ssrmatching
+module Ssrmatching = Serlib_ssrmatching.Ser_ssrmatching
 open Ssrmatching
 
 module Ltac_plugin = struct
-  module Tacexpr = Ser_tacexpr
+  module Tacexpr = Serlib_ltac.Ser_tacexpr
 end
 
 module Ssrast = Ser_ssrast
@@ -108,9 +108,9 @@ let ser_wit_ssrhintarg =
   }
 
 module A1 = struct
-  type h1 = Ser_tacexpr.raw_tactic_expr ssrseqarg
+  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrseqarg
   [@@deriving sexp]
-  type h2 = Ser_tacexpr.glob_tactic_expr ssrseqarg
+  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrseqarg
   [@@deriving sexp]
   type h3 = Geninterp.Val.t ssrseqarg
   [@@deriving sexp]
@@ -128,9 +128,9 @@ let ser_wit_ssrseqarg = let open A1 in Ser_genarg.
   }
 
 module A2 = struct
-  type h1 = Ser_tacexpr.raw_tactic_expr * ssripats
+  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr * ssripats
   [@@deriving sexp]
-  type h2 = Ser_tacexpr.glob_tactic_expr * ssripats
+  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr * ssripats
   [@@deriving sexp]
   type h3 = Geninterp.Val.t * ssripats
   [@@deriving sexp]
@@ -148,9 +148,9 @@ let ser_wit_ssrintrosarg = let open A2 in Ser_genarg.
   }
 
 module A3 = struct
-  type h1 = Ser_tacexpr.raw_tactic_expr ffwbinders
+  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ffwbinders
   [@@deriving sexp]
-  type h2 = Ser_tacexpr.glob_tactic_expr ffwbinders
+  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ffwbinders
   [@@deriving sexp]
   type h3 = Geninterp.Val.t ffwbinders
   [@@deriving sexp]
@@ -169,9 +169,9 @@ end
 let ser_wit_ssrcongrarg = let open A4 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
 
 module A5 = struct
-  type h1 = Ser_tacexpr.raw_tactic_expr ssrdoarg
+  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrdoarg
   [@@deriving sexp]
-  type h2 = Ser_tacexpr.glob_tactic_expr ssrdoarg
+  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrdoarg
   [@@deriving sexp]
   type h3 = Geninterp.Val.t ssrdoarg
   [@@deriving sexp]
@@ -191,9 +191,9 @@ end
 let ser_wit_ssrsetfwd = let open A6 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
 
 module A7 = struct
-  type h1 = Ser_tacexpr.raw_tactic_expr ssrhint
+  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrhint
   [@@deriving sexp]
-  type h2 = Ser_tacexpr.glob_tactic_expr ssrhint
+  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrhint
   [@@deriving sexp]
   type h3 = Geninterp.Val.t ssrhint
   [@@deriving sexp]
@@ -345,8 +345,8 @@ let register () =
   Ssreflect_plugin.Ssrparser.wit_ssrstruct
 *)
   register_genser wit_ssrsufffwd ser_wit_ssrsufffwd;
-  register_genser wit_ssrtacarg Ser_tacarg.ser_wit_tactic;
-  register_genser wit_ssrtclarg Ser_tacarg.ser_wit_tactic;
+  register_genser wit_ssrtacarg Serlib_ltac.Ser_tacarg.ser_wit_tactic;
+  register_genser wit_ssrtclarg Serlib_ltac.Ser_tacarg.ser_wit_tactic;
 
   register_genser wit_ssrterm       (mk_uniform sexp_of_ssrterm ssrterm_of_sexp);
   register_genser wit_ssrunlockarg  ser_wit_ssrunlockarg;

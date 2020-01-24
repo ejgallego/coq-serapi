@@ -30,7 +30,7 @@ let select_printer pr = match pr with
   | SP_Mach   -> Sexp.pp
   | SP_Human  -> Sexp.pp_hum
 
-module SP = Serapi_protocol
+module SP = Serapi.Serapi_protocol
 
 (******************************************************************************)
 (* Exception Registration                                                     *)
@@ -104,9 +104,9 @@ module Printer    = Ser_printer
 module Ser_stm    = Ser_stm
 
 module Ltac_plugin = struct
-  module Tacenv       = Ser_tacenv
-  module Profile_ltac = Ser_profile_ltac
-  module Tacexpr      = Ser_tacexpr
+  module Tacenv       = Serlib_ltac.Ser_tacenv
+  module Profile_ltac = Serlib_ltac.Ser_profile_ltac
+  module Tacexpr      = Serlib_ltac.Ser_tacexpr
 end
 
 module Notation   = Ser_notation
@@ -116,62 +116,68 @@ module Vernacexpr   = Ser_vernacexpr
 module Declarations = Ser_declarations
 (* module Richpp       = Ser_richpp *)
 
+module Serapi = struct
 module Serapi_goals = struct
 
   type 'a hyp =
-    [%import: 'a Serapi_goals.hyp]
+    [%import: 'a Serapi.Serapi_goals.hyp]
     [@@deriving sexp]
 
   type info =
-    [%import: Serapi_goals.info]
+    [%import: Serapi.Serapi_goals.info]
     [@@deriving sexp]
 
   type 'a reified_goal =
-    [%import: 'a Serapi_goals.reified_goal]
+    [%import: 'a Serapi.Serapi_goals.reified_goal]
     [@@deriving sexp]
 
   type 'a ser_goals =
-    [%import: 'a Serapi_goals.ser_goals]
+    [%import: 'a Serapi.Serapi_goals.ser_goals]
     [@@deriving sexp]
 
 end
 
 module Serapi_assumptions = struct
 type ax_ctx =
-  [%import: Serapi_assumptions.ax_ctx]
+  [%import: Serapi.Serapi_assumptions.ax_ctx]
   [@@deriving sexp]
 
 type t =
-  [%import: Serapi_assumptions.t]
+  [%import: Serapi.Serapi_assumptions.t]
   [@@deriving sexp]
+
+end
+
+module Serapi_protocol = Serapi.Serapi_protocol
+
 end
 
 (* Serialization to sexp *)
 type coq_object =
-  [%import: Serapi_protocol.coq_object]
+  [%import: Serapi.Serapi_protocol.coq_object]
   [@@deriving sexp]
 
 exception AnswerExn of Sexp.t
 let exn_of_sexp sexp = AnswerExn sexp
 
 type print_format =
-  [%import: Serapi_protocol.print_format]
+  [%import: Serapi.Serapi_protocol.print_format]
   [@@deriving sexp]
 
 type format_opt =
-  [%import: Serapi_protocol.format_opt]
+  [%import: Serapi.Serapi_protocol.format_opt]
   [@@deriving sexp]
 
 type print_opt =
-  [%import: Serapi_protocol.print_opt]
+  [%import: Serapi.Serapi_protocol.print_opt]
   [@@deriving sexp]
 
 type query_pred =
-  [%import: Serapi_protocol.query_pred]
+  [%import: Serapi.Serapi_protocol.query_pred]
   [@@deriving sexp]
 
 type query_opt =
-  [%import: Serapi_protocol.query_opt
+  [%import: Serapi.Serapi_protocol.query_opt
   [@with
      Sexplib.Conv.sexp_list   := sexp_list;
      Sexplib.Conv.sexp_option := sexp_option;
@@ -179,11 +185,11 @@ type query_opt =
   [@@deriving sexp]
 
 type query_cmd =
-  [%import: Serapi_protocol.query_cmd]
+  [%import: Serapi.Serapi_protocol.query_cmd]
   [@@deriving sexp]
 
 type cmd_tag =
-  [%import: Serapi_protocol.cmd_tag]
+  [%import: Serapi.Serapi_protocol.cmd_tag]
   [@@deriving sexp]
 
 type location =
@@ -216,7 +222,7 @@ let sexp_of_raw_backtrace (bt : Printexc.raw_backtrace) : Sexp.t =
 
 module ExnInfo = struct
   type t =
-    [%import: Serapi_protocol.ExnInfo.t
+    [%import: Serapi.Serapi_protocol.ExnInfo.t
     [@with
        Stm.focus := Ser_stm.focus;
        Printexc.raw_backtrace := raw_backtrace;
@@ -226,32 +232,32 @@ module ExnInfo = struct
 end
 
 type answer_kind =
-  [%import: Serapi_protocol.answer_kind
+  [%import: Serapi.Serapi_protocol.answer_kind
   [@with Exninfo.t := Exninfo.t;
   ]]
   [@@deriving sexp]
 
 type feedback_content =
-  [%import: Serapi_protocol.feedback_content]
+  [%import: Serapi.Serapi_protocol.feedback_content]
   [@@deriving sexp]
 
 type feedback =
-  [%import: Serapi_protocol.feedback]
+  [%import: Serapi.Serapi_protocol.feedback]
   [@@deriving sexp]
 
 type answer =
-  [%import: Serapi_protocol.answer]
+  [%import: Serapi.Serapi_protocol.answer]
   [@@deriving sexp]
 
 type add_opts =
-  [%import: Serapi_protocol.add_opts
+  [%import: Serapi.Serapi_protocol.add_opts
   [@with
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
 
 type newdoc_opts =
-  [%import: Serapi_protocol.newdoc_opts
+  [%import: Serapi.Serapi_protocol.newdoc_opts
   [@with
      Stm.interactive_top      := Ser_stm.interactive_top;
      Sexplib.Conv.sexp_list   := sexp_list;
@@ -260,18 +266,18 @@ type newdoc_opts =
   [@@deriving sexp]
 
 type parse_opt =
-  [%import: Serapi_protocol.parse_opt
+  [%import: Serapi.Serapi_protocol.parse_opt
   [@with
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
 
 type cmd =
-  [%import: Serapi_protocol.cmd]
+  [%import: Serapi.Serapi_protocol.cmd]
   [@@deriving sexp]
 
 type tagged_cmd =
-  [%import: Serapi_protocol.tagged_cmd]
+  [%import: Serapi.Serapi_protocol.tagged_cmd]
   [@@deriving sexp]
 
 type sentence = Sentence of Tok.t CAst.t list

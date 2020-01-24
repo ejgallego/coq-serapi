@@ -32,4 +32,4 @@ val default_fb_filter_opts : fb_filter_opts
 
 val feedback_opt_filter : ?opts:fb_filter_opts -> Feedback.feedback -> Feedback.feedback option
 
-val feedback_tr : Feedback.feedback -> Serapi_protocol.feedback
+val feedback_tr : Feedback.feedback -> Serapi.Serapi_protocol.feedback

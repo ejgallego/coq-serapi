@@ -25,7 +25,7 @@ let fatal_exn exn info =
 
 let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 
-  let open Sertop_init in
+  let open Sertop.Sertop_init in
 
   (* coq initialization *)
   coq_init
@@ -75,7 +75,7 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
 exception End_of_input
 let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   let stt = ref (doc, sid) in
-  let open Sertop_arg in
+  let open Sertop.Sertop_arg in
   match input with
   | I_vernac ->
      begin
@@ -111,14 +111,14 @@ let process_vernac ~mode ~pp ~doc ~sid ast =
   let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
   if tip <> `NewTip then
     CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
-  let open Sertop_arg in
+  let open Sertop.Sertop_arg in
   let () = match mode with
     | C_env   -> ()
     | C_vo    -> ()
     | C_check -> ()
     | C_parse -> ()
     | C_stats ->
-      Sercomp_stats.do_stats ast
+      Sertop.Sercomp_stats.do_stats ast
     | C_print ->
       printf "@[%a@]@\n%!" Pp.pp_with Ppvernac.(pr_vernac ast)
     | C_sexp ->
@@ -139,13 +139,13 @@ let check_pending_proofs ~pstate =
     ) pstate
 
 let close_document ~pp ~mode ~doc ~in_file ~pstate =
-  let open Sertop_arg in
+  let open Sertop.Sertop_arg in
   match mode with
   | C_parse -> ()
   | C_sexp  -> ()
   | C_print -> ()
   | C_stats ->
-    Sercomp_stats.print_stats ()
+    Sertop.Sercomp_stats.print_stats ()
   | C_check ->
     let _doc = Stm.join ~doc in
     check_pending_proofs ~pstate
@@ -162,7 +162,7 @@ let close_document ~pp ~mode ~doc ~in_file ~pstate =
     Library.save_library_to todo_proofs ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
 
 (* Command line processing *)
-let sercomp_version = Ser_version.ser_git_version
+let sercomp_version = Sertop.Ser_version.ser_git_version
 
 let sercomp_man =
   [
@@ -185,14 +185,14 @@ open Cmdliner
 let driver input mode debug printer async async_workers quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
-  let pp = Sertop_ser.select_printer printer in
+  let pp = Sertop.Sertop_ser.select_printer printer in
   let process = process_vernac ~mode ~pp in
 
   (* initialization *)
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+  let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
   let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
 
   (* main loop *)
@@ -212,7 +212,7 @@ let main () =
   in
 
   let sercomp_cmd =
-    let open Sertop_arg in
+    let open Sertop.Sertop_arg in
     Term.(const driver
           $ comp_input $ comp_mode $ debug $ printer $ async $ async_workers $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque

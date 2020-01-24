@@ -170,7 +170,7 @@ let default_fb_filter_opts = {
   pp_opt = true;
 }
 
-let feedback_content_tr (fb : F.feedback_content) : Serapi_protocol.feedback_content =
+let feedback_content_tr (fb : F.feedback_content) : Serapi.Serapi_protocol.feedback_content =
   match fb with
   | F.Message (level, loc, pp) ->
     let str = Pp.string_of_ppcmds pp in
@@ -188,7 +188,7 @@ let feedback_content_tr (fb : F.feedback_content) : Serapi_protocol.feedback_con
   | F.FileLoaded (o, p) -> FileLoaded (o, p)
   | F.Custom (_, _, _) -> assert false
 
-let feedback_tr (fb : Feedback.feedback) : Serapi_protocol.feedback =
+let feedback_tr (fb : Feedback.feedback) : Serapi.Serapi_protocol.feedback =
   match fb with
   | { doc_id; span_id; route; contents } ->
     let contents = feedback_content_tr contents in

@@ -26,11 +26,11 @@ module Genintern  = Ser_genintern
 module Geninterp  = Ser_geninterp
 
 module Ssrmatching_plugin = struct
-  module Ssrmatching = Ser_ssrmatching
+  module Ssrmatching = Serlib_ssrmatching.Ser_ssrmatching
 end
 
 module Ltac_plugin = struct
-  module Tacexpr = Ser_tacexpr
+  module Tacexpr = Serlib_ltac.Ser_tacexpr
 end
 
 (* What a hack is ssreflect using... *)

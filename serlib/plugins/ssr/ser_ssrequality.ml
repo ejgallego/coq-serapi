@@ -16,7 +16,7 @@
 open Sexplib.Conv
 
 module Ssrmatching_plugin = struct
-  module Ssrmatching = Ser_ssrmatching
+  module Ssrmatching = Serlib_ssrmatching.Ser_ssrmatching
 end
 
 module Ssreflect_plugin = struct
