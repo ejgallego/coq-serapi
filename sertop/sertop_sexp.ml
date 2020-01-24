@@ -19,7 +19,7 @@
 open Sexplib
 open Sexplib.Conv
 
-module SP = Serapi_protocol
+module SP = Serapi.Serapi_protocol
 
 (******************************************************************************)
 (* Global Protocol Options                                                    *)

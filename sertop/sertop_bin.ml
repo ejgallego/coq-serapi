@@ -18,16 +18,16 @@
 
 open Cmdliner
 
-let sertop_version = Ser_version.ser_git_version
+let sertop_version = Sertop.Ser_version.ser_git_version
 let sertop printer print0 debug lheader coq_path ml_path no_init no_prelude lp1 lp2 _std_impl async deep_edits async_workers omit_loc omit_att exn_on_opaque =
 
-  let open  Sertop_init         in
-  let open! Sertop_sexp         in
+  let open  Sertop.Sertop_init         in
+  let open! Sertop.Sertop_sexp         in
 
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-  let loadpath = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @
+  let loadpath = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @
                  ml_path @ lp1 @ lp2 in
 
   ser_loop
@@ -51,7 +51,7 @@ let sertop printer print0 debug lheader coq_path ml_path no_init no_prelude lp1 
     }
 
 let sertop_cmd =
-  let open Sertop_arg in
+  let open Sertop.Sertop_arg in
   let doc = "SerAPI Coq Toplevel" in
   let man = [
     `S "DESCRIPTION";

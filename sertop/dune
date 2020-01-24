@@ -1,17 +1,17 @@
 (library
- (name sertoplib)
- (public_name coq-serapi.sertop_v8_10)
- (modules :standard \ sertop sercomp sertok sertop_js sertop_async)
- (wrapped false)
+ (name sertop)
+ (public_name coq-serapi.sertop_v8_11)
+ (modules :standard \ sertop_bin sercomp sertok sertop_js sertop_async)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (libraries findlib.dynload cmdliner serapi serlib serlib_ltac))
 
 (executables
  (public_names sertop sercomp sertok)
- (modules sertop sercomp sertok)
+ (names sertop_bin sercomp sertok)
+ (modules sertop_bin sercomp sertok)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (link_flags -linkall)
- (libraries sertoplib num))
+ (libraries sertop num))
 
 (executable
  (name sertop_js)
@@ -27,7 +27,7 @@
   (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js))
 ; (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js --pretty --noinline --disable shortvar --debug-info)
  (link_flags -linkall -noautolink -no-check-prims)
- (libraries sertoplib ppx_deriving_yojson.runtime jscoq_lib))
+ (libraries sertop ppx_deriving_yojson.runtime jscoq_lib))
 
 (rule
  (targets ser_version.ml)

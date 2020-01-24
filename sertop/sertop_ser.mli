@@ -29,7 +29,7 @@ type ser_printer =
 
 val select_printer : ser_printer -> Format.formatter -> Sexp.t -> unit
 
-open Serapi_protocol
+open Serapi.Serapi_protocol
 
 val coq_object_of_sexp : Sexp.t -> coq_object
 val sexp_of_coq_object : coq_object -> Sexp.t

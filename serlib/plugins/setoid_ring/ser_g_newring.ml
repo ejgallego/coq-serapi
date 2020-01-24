@@ -7,10 +7,10 @@ module Constrexpr = Ser_constrexpr
 module Tactypes   = Ser_tactypes
 module Genintern  = Ser_genintern
 module EConstr    = Ser_eConstr
-module Tacexpr    = Ser_tacexpr
+module Tacexpr    = Serlib_ltac.Ser_tacexpr
 
 module Ltac_plugin = struct
-  module Tacexpr = Ser_tacexpr
+  module Tacexpr = Serlib_ltac.Ser_tacexpr
 end
 
 type 'constr coeff_spec =

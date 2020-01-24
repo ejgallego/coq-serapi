@@ -6,7 +6,7 @@ module Constrexpr = Ser_constrexpr
 module Tactypes   = Ser_tactypes
 module Genintern  = Ser_genintern
 module EConstr    = Ser_eConstr
-module Tacexpr    = Ser_tacexpr
+module Tacexpr    = Serlib_ltac.Ser_tacexpr
 
 module A1 = struct
 
