@@ -2,7 +2,7 @@
 
  * [general] (!) support Coq 8.11, a few datatypes have changed, in
              particular `CoqAst` handles locations as an AST node, and
-             the kernel type includes primitive floats.
+             the kernel type includes primitive floats (@ejgallego).
  * [general] (!) Now the `sertop` and `serapi` OCaml libraries are
              built packed, we've also bumped their compat version number
              (#192 @ejgallego)
