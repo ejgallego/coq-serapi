@@ -13,9 +13,15 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* open Sexplib.Std *)
+open Sexplib.Std
 
 (* module Ppextend = Ser_ppextend
  * module Notation_term = Ser_notation_term *)
+
+module Constrexpr = Ser_constrexpr
+
+type level =
+  [%import: Notation.level]
+  [@@deriving sexp,yojson]
 
 

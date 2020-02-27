@@ -17,6 +17,13 @@
 
 open Sexplib
 
+module Store : SerType.S with type t = Genintern.Store.t
+
+type intern_variable_status = Genintern.intern_variable_status
+
+val intern_variable_status_of_sexp : Sexp.t -> intern_variable_status
+val sexp_of_intern_variable_status : intern_variable_status -> Sexp.t
+
 type glob_sign = Genintern.glob_sign
 
 val glob_sign_of_sexp : Sexp.t -> glob_sign

@@ -40,3 +40,10 @@ type option_state = Goptions.option_state
 
 val option_state_of_sexp : Sexp.t -> option_state
 val sexp_of_option_state : option_state -> Sexp.t
+
+type table_value = Goptions.table_value
+
+val table_value_of_sexp : Sexp.t -> table_value
+val sexp_of_table_value : table_value -> Sexp.t
+val table_value_of_yojson : Yojson.Safe.t -> (table_value, string) Result.result
+val table_value_to_yojson : table_value -> Yojson.Safe.t

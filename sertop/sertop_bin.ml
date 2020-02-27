@@ -28,27 +28,29 @@ let sertop printer print0 debug disallow_sprop indices_matter lheader coq_path m
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-  let loadpath = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @
-                   ml_path @ lp1 @ lp2 in
+  let dft_ml_path, vo_path =
+    Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path in
+  let ml_path = dft_ml_path @ ml_path in
+  let vo_path = vo_path @ lp1 @ lp2 in
   let allow_sprop = not disallow_sprop in
 
   ser_loop
-    {  in_chan  = stdin;
-       out_chan = stdout;
+    { in_chan  = stdin
+    ; out_chan = stdout
 
-       debug;
-       allow_sprop;
-       indices_matter;
-       printer;
-       print0;
-       lheader;
+    ; debug
+    ; allow_sprop
+    ; indices_matter
+    ; printer
+    ; print0
+    ; lheader
 
-       no_init;
-       no_prelude;
-       topfile;
-       loadpath;
-
-       async =
+    ; no_init
+    ; no_prelude
+    ; topfile
+    ; ml_path
+    ; vo_path
+    ; async =
          { enable_async = async
          ; deep_edits
          ; async_workers

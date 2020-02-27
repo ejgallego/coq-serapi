@@ -400,7 +400,9 @@ type add_opts = {
 type newdoc_opts =
   { top_name     : Stm.interactive_top
   (** name of the top-level module of the new document *)
-  ; iload_path   : Loadpath.coq_path list option [@sexp.option]
+  ; ml_load_path   : string list option [@sexp.option]
+  (** Initial ML loadpath  *)
+  ; vo_load_path   : Loadpath.vo_path list option [@sexp.option]
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
   ; require_libs : (string * string option * bool option) list option [@sexp.option]
   (** Libraries to load in the initial document state *)

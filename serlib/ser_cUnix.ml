@@ -8,23 +8,13 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2020 MINES ParisTech / INRIA                          *)
+(* Copyright 2016-2020 MINES ParisTech / Inria                          *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type definition_object_kind =
-  [%import: Decls.definition_object_kind]
-  [@@deriving sexp,yojson]
+open Sexplib.Std
 
-type theorem_kind =
-  [%import: Decls.theorem_kind]
-  [@@deriving sexp,yojson]
-
-type assumption_object_kind =
-  [%import: Decls.assumption_object_kind]
-  [@@deriving sexp,yojson]
-
-type logical_kind =
-  [%import: Decls.logical_kind]
+type physical_path =
+  [%import: CUnix.physical_path]
   [@@deriving sexp,yojson]

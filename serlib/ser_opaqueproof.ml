@@ -21,26 +21,20 @@ module Univ   = Ser_univ
 module Constr = Ser_constr
 module Mod_subst = Ser_mod_subst
 
-type _work_list =
-  (Univ.Instance.t * Names.Id.t array) Names.Cmap.t * (Univ.Instance.t * Names.Id.t array) Names.Mindmap.t
-  (* Problem with map modules *)
-  (* [%import: Opaqueproof.work_list] *)
+type proofterm = (Constr.constr * Univ.ContextSet.t) Future.computation
   [@@deriving sexp]
 
-type work_list = Opaqueproof.work_list
-let work_list_of_sexp x = Obj.magic (_work_list_of_sexp x)
-let sexp_of_work_list x = sexp_of__work_list (Obj.magic x)
+type work_list =
+  [%import: Opaqueproof.work_list]
+  [@@deriving sexp]
 
 type cooking_info =
   [%import: Opaqueproof.cooking_info]
   [@@deriving sexp]
 
-type proofterm = (Constr.constr * Univ.ContextSet.t) Future.computation
-  [@@deriving sexp]
-
 type _opaque =
-  | Indirect of Mod_subst.substitution list * Names.DirPath.t * int (* subst, lib, index *)
-  | Direct of cooking_info list * proofterm
+  | Indirect of Mod_subst.substitution list * cooking_info list * Names.DirPath.t * int
+  (* subst, discharge, lib, index *)
   [@@deriving sexp]
 
 type opaque = [%import: Opaqueproof.opaque]
@@ -50,7 +44,7 @@ let opaque_of_sexp x = Obj.magic (_opaque_of_sexp x)
 
 module Map = Ser_cMap.Make(Int.Map)(Ser_int)
 type _opaquetab = {
-  opaque_val : (cooking_info list * proofterm) Map.t;
+  opaque_val : proofterm Map.t;
   (** Actual proof terms *)
   opaque_len : int;
   (** Size of the above map *)

@@ -45,7 +45,7 @@ type coq_opts = {
 let coq_init opts =
 
   if opts.debug then begin
-    Backtrace.record_backtrace true;
+    Printexc.record_backtrace true;
     Flags.debug := true;
   end;
 
@@ -58,7 +58,6 @@ let coq_init opts =
   let ser_mltop : Mltop.toplevel = let open Mltop in
     { load_obj
     (* We ignore all the other operations for now. *)
-    ; use_file = (fun _ -> ())
     ; add_dir
     ; ml_loop  = (fun _ -> ())
     } in
@@ -74,6 +73,8 @@ let coq_init opts =
   (* --allow-sprop in agreement with coq v8.11  *)
   Global.set_allow_sprop opts.allow_sprop;
 
+  (* XXX fixme *)
+  Flags.set_native_compiler false;
 
   (**************************************************************************)
   (* Feedback setup                                                         *)

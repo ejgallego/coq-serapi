@@ -18,6 +18,8 @@ open Sexplib.Std
 module Loc           = Ser_loc
 module Notation_term = Ser_notation_term
 module Notation_gram = Ser_notation_gram
+module Constrexpr    = Ser_constrexpr
+module Extend        = Ser_extend
 
 type ppbox =
   [%import: Ppextend.ppbox]

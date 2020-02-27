@@ -31,7 +31,6 @@ let jstop : Mltop.toplevel =
   {
     load_obj = Jslibmng.coq_cma_link;
     (* We ignore all the other operations for now *)
-    use_file = (fun _ -> ());
     add_dir  = (fun _ -> ());
     ml_loop  = (fun _ -> ());
   }
@@ -103,22 +102,21 @@ let _ =
       let pkgs      = ["init"] (*"peacoq"]*)                    in
 
       let pkg_to_bb cp = Loadpath.{
-          recursive = false;
-          path_spec = VoPath {
-              coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string cp.pkg_id);
-              unix_path = Jslib.to_dir cp;
-              has_ml    = if length cp.cma_files > 0 then AddRecML else AddNoML;
-              implicit  = false;
-            }
+          coq_path  = Names.(DirPath.make @@ List.rev @@ List.map Id.of_string cp.pkg_id)
+        ; unix_path = Jslib.to_dir cp
+        ; has_ml    = if length cp.cma_files > 0 then true else false
+        ; implicit  = false
+        ; recursive = false
         } in
 
       Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
-      let iload_path  = List.map pkg_to_bb all_pkgs                      in
-      let require_libs= ["Coq.Init.Prelude", None, Some true]            in
+      let ml_load_path = []                                              in
+      let vo_load_path = List.map pkg_to_bb all_pkgs                     in
+      let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some true)] in
       let debug       = false                                            in
       let allow_sprop = true                                             in
-      ignore (sertop_init ~fb_out:post_message ~iload_path ~require_libs ~debug ~allow_sprop);
+      ignore (sertop_init ~fb_out:post_message ~ml_load_path ~vo_load_path ~injections ~debug ~allow_sprop);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit

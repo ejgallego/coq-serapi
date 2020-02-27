@@ -38,7 +38,8 @@ type ser_opts =
 ; topfile  : string option       (** Top name is derived from topfile name    *)
 
 (* Coq options *)
-; loadpath : Loadpath.coq_path list (** From -R and -Q options usually           *)
+; ml_path : string list
+; vo_path : Loadpath.vo_path list (** From -R and -Q options usually           *)
 ; async    : Sertop_init.async_flags
                                  (** Async flags                              *)
 }

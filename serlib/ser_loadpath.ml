@@ -22,18 +22,6 @@ type library_location =
   [%import: Loadpath.library_location]
   [@@deriving sexp]
 
-type add_ml =
-  [%import: Loadpath.add_ml]
-  [@@deriving sexp]
-
-type vo_path_spec =
-  [%import: Loadpath.vo_path_spec]
-  [@@deriving sexp]
-
-type coq_path_spec =
-  [%import: Loadpath.coq_path_spec]
-  [@@deriving sexp]
-
-type coq_path =
-  [%import: Loadpath.coq_path]
+type vo_path =
+  [%import: Loadpath.vo_path]
   [@@deriving sexp]

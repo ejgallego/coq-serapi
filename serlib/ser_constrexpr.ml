@@ -27,7 +27,6 @@ module Evar_kinds = Ser_evar_kinds
 module Genarg     = Ser_genarg
 module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
-module Notation   = Ser_notation
 module NumTok     = Ser_numTok
 
 type 'a or_by_notation_r =
@@ -50,12 +49,20 @@ type name_decl =
   [%import: Constrexpr.name_decl]
   [@@deriving sexp,yojson]
 
-type notation_entry_level =
-  [%import: Constrexpr.notation_entry_level]
-  [@@deriving sexp,yojson]
-
 type notation_entry =
   [%import: Constrexpr.notation_entry]
+  [@@deriving sexp,yojson]
+
+type entry_level =
+  [%import: Constrexpr.entry_level]
+  [@@deriving sexp,yojson]
+
+type entry_relative_level =
+  [%import: Constrexpr.entry_relative_level]
+  [@@deriving sexp,yojson]
+
+type notation_entry_level =
+  [%import: Constrexpr.notation_entry_level]
   [@@deriving sexp,yojson]
 
 type notation_key =
@@ -77,16 +84,20 @@ type abstraction_kind = [%import: Constrexpr.abstraction_kind]
 type proj_flag = [%import: Constrexpr.proj_flag]
   [@@deriving sexp,yojson]
 
-type raw_numeral = [%import: Constrexpr.raw_numeral]
-  [@@deriving sexp,yojson]
+(* type raw_numeral = [%import: Constrexpr.raw_numeral]
+ *   [@@deriving sexp,yojson] *)
 
-type sign = [%import: Constrexpr.sign]
-  [@@deriving sexp,yojson]
+(* type sign = [%import: Constrexpr.sign]
+ *   [@@deriving sexp,yojson] *)
 
 type prim_token = [%import: Constrexpr.prim_token]
   [@@deriving sexp,yojson]
 
 type instance_expr = [%import: Constrexpr.instance_expr]
+  [@@deriving sexp,yojson]
+
+type notation_with_optional_scope =
+  [%import: Constrexpr.notation_with_optional_scope]
   [@@deriving sexp,yojson]
 
 type cases_pattern_expr_r = [%import: Constrexpr.cases_pattern_expr_r]

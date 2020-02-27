@@ -109,13 +109,14 @@ and _types = _constr
 
 let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
+  let crl = List.map _constr_put  in
   let cra = Array.map _constr_put in
   let module C = Constr           in
   match C.kind c with
   | C.Rel i               -> Rel(i)
   | C.Var v               -> Var(v)
   | C.Meta(mv)            -> Meta mv
-  | C.Evar(ek, csa)       -> Evar (ek, cra csa)
+  | C.Evar(ek, csa)       -> Evar (ek, crl csa)
   | C.Sort(st)            -> Sort (st)
   | C.Cast(cs,k,ty)       -> Cast(cr cs, k, cr ty)
   | C.Prod(n,tya,tyr)     -> Prod(n, cr tya, cr tyr)
@@ -135,13 +136,14 @@ let rec _constr_put (c : constr) : _constr =
 
 let rec _constr_get (c : _constr) : constr =
   let cr  = _constr_get           in
+  let crl = List.map _constr_get  in
   let cra = Array.map _constr_get in
   let module C = Constr           in
   match c with
   | Rel i               -> C.mkRel i
   | Var v               -> C.mkVar v
   | Meta(mv)            -> C.mkMeta mv
-  | Evar(ek, csa)       -> C.mkEvar (ek, cra csa)
+  | Evar(ek, csa)       -> C.mkEvar (ek, crl csa)
   | Sort(st)            -> C.mkSort (st)
   | Cast(cs,k,ty)       -> C.mkCast(cr cs, k, cr ty)
   | Prod(n,tya,tyr)     -> C.mkProd(n, cr tya, cr tyr)

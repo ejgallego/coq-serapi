@@ -25,10 +25,9 @@ type ppcut = Ppextend.ppcut
 val ppcut_of_sexp : Sexp.t -> ppcut
 val sexp_of_ppcut : ppcut -> Sexp.t
 
-type unparsing = Ppextend.unparsing
-
-val unparsing_of_sexp : Sexp.t -> unparsing
-val sexp_of_unparsing : unparsing -> Sexp.t
+(* type unparsing = Ppextend.unparsing
+ * val unparsing_of_sexp : Sexp.t -> unparsing
+ * val sexp_of_unparsing : unparsing -> Sexp.t *)
 
 type unparsing_rule = Ppextend.unparsing_rule
 val unparsing_rule_of_sexp : Sexp.t -> unparsing_rule

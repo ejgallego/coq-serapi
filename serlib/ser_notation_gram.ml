@@ -20,25 +20,22 @@ module Constrexpr    = Ser_constrexpr
 module Tok           = Ser_tok
 module Extend        = Ser_extend
 module Gramlib       = Ser_gramlib
+module Notation      = Ser_notation
 
-type precedence =
-  [%import: Notation_gram.precedence]
-  [@@deriving sexp]
+(* type precedence =
+ *   [%import: Notation_gram.precedence]
+ *   [@@deriving sexp] *)
 
-type parenRelation =
-  [%import: Notation_gram.parenRelation]
-  [@@deriving sexp]
+(* type parenRelation =
+ *   [%import: Notation_gram.parenRelation]
+ *   [@@deriving sexp] *)
 
-type tolerability =
-  [%import: Notation_gram.tolerability]
-  [@@deriving sexp]
+(* type tolerability =
+ *   [%import: Notation_gram.tolerability]
+ *   [@@deriving sexp] *)
 
 type grammar_constr_prod_item =
   [%import: Notation_gram.grammar_constr_prod_item]
-  [@@deriving sexp]
-
-type level =
-  [%import: Notation_gram.level]
   [@@deriving sexp]
 
 type one_notation_grammar =

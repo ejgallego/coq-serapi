@@ -27,6 +27,24 @@ val sexp_of_notation_entry : notation_entry -> Sexp.t
 val notation_entry_of_yojson : Yojson.Safe.t -> (notation_entry, string) Result.result
 val notation_entry_to_yojson : notation_entry -> Yojson.Safe.t
 
+type entry_level = Constrexpr.entry_level
+val entry_level_of_sexp : Sexp.t -> entry_level
+val sexp_of_entry_level : entry_level -> Sexp.t
+val entry_level_of_yojson : Yojson.Safe.t -> (entry_level, string) Result.result
+val entry_level_to_yojson : entry_level -> Yojson.Safe.t
+
+type notation_entry_level = Constrexpr.notation_entry_level
+val notation_entry_level_of_sexp : Sexp.t -> notation_entry_level
+val sexp_of_notation_entry_level : notation_entry_level -> Sexp.t
+val notation_entry_level_of_yojson : Yojson.Safe.t -> (notation_entry_level, string) Result.result
+val notation_entry_level_to_yojson : notation_entry_level -> Yojson.Safe.t
+
+type entry_relative_level = Constrexpr.entry_relative_level
+val entry_relative_level_of_sexp : Sexp.t -> entry_relative_level
+val sexp_of_entry_relative_level : entry_relative_level -> Sexp.t
+val entry_relative_level_of_yojson : Yojson.Safe.t -> (entry_relative_level, string) Result.result
+val entry_relative_level_to_yojson : entry_relative_level -> Yojson.Safe.t
+
 type universe_decl_expr = Constrexpr.universe_decl_expr
 val universe_decl_expr_of_sexp : Sexp.t -> universe_decl_expr
 val sexp_of_universe_decl_expr : universe_decl_expr -> Sexp.t

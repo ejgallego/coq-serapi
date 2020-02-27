@@ -13,4 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib
 
+type level = Notation.level
+val level_of_sexp : Sexp.t -> level
+val sexp_of_level : level -> Sexp.t

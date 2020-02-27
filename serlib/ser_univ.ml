@@ -51,11 +51,11 @@ module Level = struct
 
   let of_yojson json  =
     Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
-  let to_yojson level = _t_to_yojson Obj.(magic level)
+  let to_yojson level = _t_to_yojson (Obj.magic level)
 
 end
 
-module LSet = Ser_cSet.Make(Univ.LSet)(Level)
+module LSet = Ser_cSet.MakeJ(Univ.LSet)(Level)
 
 (* XXX: Think what to do with this  *)
 module Universe = struct
@@ -69,7 +69,7 @@ module Universe = struct
 
   let of_yojson json  =
     Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
-  let to_yojson level = _t_to_yojson Obj.(magic level)
+  let to_yojson level = _t_to_yojson (Obj.magic level)
 end
 
 (*************************************************************************)
@@ -119,7 +119,7 @@ module Constraint = Ser_cSet.MakeJ(Univ.Constraint)(struct
 
 type 'a constrained =
   [%import: 'a Univ.constrained]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 module UContext = struct
 
@@ -145,7 +145,7 @@ end
 module ContextSet = struct
   type t =
     [%import: Univ.ContextSet.t]
-    [@@deriving sexp]
+    [@@deriving sexp, yojson]
 end
 
 type 'a in_universe_context =

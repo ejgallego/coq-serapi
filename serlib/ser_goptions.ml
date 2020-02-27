@@ -17,6 +17,8 @@
 
 open Sexplib.Std
 
+module Libnames = Ser_libnames
+
 type option_locality =
   [%import: Goptions.option_locality]
   [@@deriving sexp,yojson]
@@ -32,3 +34,8 @@ type option_value =
 type option_state =
   [%import: Goptions.option_state]
   [@@deriving sexp]
+
+type table_value =
+  [%import: Goptions.table_value]
+  [@@deriving sexp,yojson]
+

@@ -111,6 +111,10 @@ type record_info =
   [%import: Declarations.record_info]
   [@@deriving sexp]
 
+type template_universes =
+  [%import: Declarations.template_universes]
+  [@@deriving sexp,yojson]
+
 type mutual_inductive_body =
   [%import: Declarations.mutual_inductive_body
   [@with Context.section_context := Context.Named.t;]]

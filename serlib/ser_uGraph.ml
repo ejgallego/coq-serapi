@@ -13,6 +13,11 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
+module Bound = struct
+  type t = [%import: UGraph.Bound.t]
+  [@@deriving sexp]
+end
+
 type t = [%import: UGraph.t]
 
 let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"UGraph.t"

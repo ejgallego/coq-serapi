@@ -92,6 +92,10 @@ type ssrterm =
   [%import: Wrap_ssrast.ssrterm]
   [@@deriving sexp]
 
+type ast_glob_env =
+  [%import: Wrap_ssrast.ast_glob_env]
+  [@@deriving sexp]
+
 type ast_closure_term =
   [%import: Wrap_ssrast.ast_closure_term]
   [@@deriving sexp]

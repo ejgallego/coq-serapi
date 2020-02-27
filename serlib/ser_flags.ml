@@ -12,6 +12,3 @@
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
-
-type compat_version = [%import: Flags.compat_version]
-  [@@deriving sexp,yojson]

@@ -20,13 +20,6 @@ type argument_position = Impargs.argument_position
 val argument_position_of_sexp : Sexp.t -> argument_position
 val sexp_of_argument_position : argument_position -> Sexp.t
 
-type implicit_kind = Impargs.implicit_kind
-
-val implicit_kind_of_sexp : Sexp.t -> implicit_kind
-val sexp_of_implicit_kind : implicit_kind -> Sexp.t
-val implicit_kind_of_yojson : Yojson.Safe.t -> (implicit_kind, string) Result.result
-val implicit_kind_to_yojson : implicit_kind -> Yojson.Safe.t
-
 type implicit_explanation = Impargs.implicit_explanation
 
 val implicit_explanation_of_sexp : Sexp.t -> implicit_explanation

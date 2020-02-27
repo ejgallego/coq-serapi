@@ -1,3 +1,10 @@
+## Version 0.12.0:
+
+ * [general] (!) support Coq 8.12, main changes upstream related to
+             the representation of numerals and notations.
+             The rest of the interface does remain relative stable.
+             (@ejgallego).
+
 ## Version 0.11.1:
 
  * [general] Require dune >= 2.0 (@ejgallego, ??)

@@ -34,9 +34,9 @@ val printer         : Sertop_ser.ser_printer Term.t
 val debug           : bool Term.t
 val print0          : bool Term.t
 val length          : bool Term.t
-val rload_path      : Loadpath.coq_path list Term.t
-val load_path       : Loadpath.coq_path list Term.t
-val ml_include_path : Loadpath.coq_path list Term.t
+val rload_path      : Loadpath.vo_path list Term.t
+val load_path       : Loadpath.vo_path list Term.t
+val ml_include_path : string list Term.t
 val no_init         : bool Term.t
 val topfile         : string option Term.t
 val no_prelude      : bool Term.t

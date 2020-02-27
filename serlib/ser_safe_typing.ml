@@ -25,10 +25,16 @@ module Constr  = Ser_constr
 module Declarations = Ser_declarations
 module Entries = Ser_entries
 module Cooking = Ser_cooking
+module Univ = Ser_univ
 
 (* Side_effects *)
+type certificate = {
+  certif_struc : Declarations.structure_body;
+  certif_univs : Univ.ContextSet.t;
+} [@@deriving sexp]
+
 type side_effect = {
-  from_env : Declarations.structure_body CEphemeron.key;
+  from_env : certificate CEphemeron.key;
   seff_constant : Names.Constant.t;
   seff_body : Constr.t Declarations.constant_body;
 } [@@deriving sexp]
