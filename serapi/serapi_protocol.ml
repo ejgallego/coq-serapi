@@ -379,8 +379,8 @@ let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
 
 type query_opt =
-  { preds : query_pred sexp_list;
-    limit : int sexp_option;
+  { preds : query_pred list [@sexp.list];
+    limit : int option [@sexp.option];
     sid   : Stateid.t [@default Stm.get_current_state()];
     pp    : format_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (* Legacy/Deprecated *)
@@ -659,12 +659,12 @@ let coq_protect e =
     (* Richpp.richpp_of_pp msg *)
 
 type parse_opt =
-  { ontop  : Stateid.t sexp_option }
+  { ontop  : Stateid.t option [@sexp.option] }
 
 type add_opts = {
-  lim    : int       sexp_option;
-  ontop  : Stateid.t sexp_option;
-  newtip : Stateid.t sexp_option;
+  lim    : int       option [@sexp.option];
+  ontop  : Stateid.t option [@sexp.option];
+  newtip : Stateid.t option [@sexp.option];
   verb   : bool      [@default false];
 }
 
@@ -774,9 +774,9 @@ type newdoc_opts =
   (* name of the top-level module *)
   { top_name     : Stm.interactive_top
   (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
-  ; iload_path   : Loadpath.coq_path list sexp_option
+  ; iload_path   : Loadpath.coq_path list option [@sexp.option]
   (* Libs to require in STM init *)
-  ; require_libs : (string * string option * bool option) list sexp_option
+  ; require_libs : (string * string option * bool option) list option [@sexp.option]
   }
 
 (******************************************************************************)
