@@ -21,7 +21,6 @@
 (************************************************************************)
 
 open Ltac_plugin
-open Sexplib.Conv
 
 (** The SerAPI Protocol *)
 
@@ -288,9 +287,9 @@ type query_pred =
 (** Query options, note the default values that help interactive use, however in mechanized use we
     do not recommend skipping any field *)
 type query_opt =
-  { preds : query_pred sexp_list;
+  { preds : query_pred list [@sexp.list];
     (** List of predicates on queries, mostly a placeholder, will allow to add filtering conditions in the future *)
-    limit : int sexp_option;
+    limit : int option [@sexp.option];
     (** Limit the number of results, should evolve into an API with resume functionality, maybe we adopt LSP conventions here *)
     sid   : Stateid.t [@default Stm.get_current_state ~doc:Stm.(get_doc 0)];
     (** [sid] denotes the {e sentence id} we are querying over, essential information as goals for example will vary. *)
@@ -357,7 +356,7 @@ type query_cmd =
 (** {4 Adding a new sentence } *)
 
 type parse_opt =
-  { ontop  : Stateid.t sexp_option
+  { ontop  : Stateid.t option [@sexp.option]
   (** parse [ontop] of the given sentence *)
   }
 
@@ -365,11 +364,11 @@ type parse_opt =
 (** [Add] will take a string and parse all the sentences on it, until an error of the end is found.
     Options for [Add] are: *)
 type add_opts = {
-  lim    : int       sexp_option;
+  lim    : int       option [@sexp.option];
   (** Parse [lim] sentences at most ([None] == no limit) *)
-  ontop  : Stateid.t sexp_option;
+  ontop  : Stateid.t option [@sexp.option];
   (** parse [ontop] of the given sentence *)
-  newtip : Stateid.t sexp_option;
+  newtip : Stateid.t option [@sexp.option];
   (** Make [newtip] the new sentence id, very useful to avoid synchronous operations *)
   verb   : bool      [@default false];
   (** [verb] internal Coq parameter, be verbose on parsing *)
@@ -385,9 +384,9 @@ type add_opts = {
 type newdoc_opts =
   { top_name     : Stm.interactive_top
   (** name of the top-level module of the new document *)
-  ; iload_path   : Loadpath.coq_path list sexp_option
+  ; iload_path   : Loadpath.coq_path list option [@sexp.option]
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
-  ; require_libs : (string * string option * bool option) list sexp_option
+  ; require_libs : (string * string option * bool option) list option [@sexp.option]
   (** Libraries to load in the initial document state *)
   }
 

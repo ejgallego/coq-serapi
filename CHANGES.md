@@ -1,3 +1,8 @@
+## Version 0.11.1:
+
+ * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
+             (#???, @ejgallego)
+
 ## Version 0.11.0:
 
  * [general] (!) support Coq 8.11, a few datatypes have changed, in
