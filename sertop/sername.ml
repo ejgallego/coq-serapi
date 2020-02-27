@@ -22,7 +22,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~require_lib ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
+let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -65,11 +65,12 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~iload_path ~debug ~
     | None -> prelude
   in
   *)
-  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+  let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
-             ; require_libs
-             ; iload_path
+             ; injections
+             ; ml_load_path
+             ; vo_load_path
              ; stm_options
              } in
 
@@ -185,8 +186,13 @@ let driver debug printer disallow_sprop async async_workers error_recovery quick
     ; async_workers
     ; error_recovery
     } in
-  let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~require_lib ~in_file:"file.v" ~stm_flags ~allow_sprop ~quick ~iload_path ~debug in
+
+  let dft_ml_path, vo_path =
+    Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path in
+  let ml_load_path = dft_ml_path @ ml_path in
+  let vo_load_path = vo_path @ load_path @ rload_path in
+
+  let doc, sid = create_document ~require_lib ~in_file:"file.v" ~stm_flags ~allow_sprop ~quick ~ml_load_path ~vo_load_path ~debug in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -217,7 +223,7 @@ let main () =
     | `Error _ -> exit 1
     | _        -> exit 0
   with exn ->
-    let (e, info) = CErrors.push exn in
+    let (e, info) = Exninfo.capture exn in
     fatal_exn e info
 
 let _ = main ()

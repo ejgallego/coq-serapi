@@ -32,7 +32,7 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
       `Error (Conv.sexp_of_exn exn)
 
 (* Initialize Coq. *)
-let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug ~allow_sprop =
+let sertop_init ~(fb_out : Sexp.t -> unit) ~ml_load_path ~vo_load_path ~injections ~debug ~allow_sprop =
   let open! Sertop.Sertop_init in
 
   let fb_handler fb = Sertop.Sertop_ser.sexp_of_answer (Feedback (Sertop.Sertop_util.feedback_tr fb)) |> fb_out in
@@ -53,9 +53,11 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug ~all
 
   let open Stm in
   let doc_type = Interactive (TopLogical Names.(DirPath.make [Id.of_string "SerTopJS"])) in
+
   let ndoc = { doc_type
-             ; require_libs
-             ; iload_path
+             ; injections
+             ; ml_load_path
+             ; vo_load_path
              ; stm_options
              } in
   new_doc ndoc

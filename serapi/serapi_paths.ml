@@ -23,21 +23,25 @@
 let coq_loadpath_default ~implicit ~coq_path =
   let open Loadpath in
   let mk_path prefix = coq_path ^ "/" ^ prefix in
-  let mk_lp ~ml ~root ~dir ~implicit =
-    { recursive = true;
-      path_spec = VoPath {
-          unix_path = mk_path dir;
-          coq_path  = root;
-          has_ml    = ml;
-          implicit;
-        };
-    } in
+  (* let mk_ml = () in *)
+  let mk_vo ~has_ml ~coq_path ~dir ~implicit =
+    { unix_path = mk_path dir
+    ; coq_path
+    ; has_ml
+    ; recursive = true
+    ; implicit
+    }
+  in
   (* in 8.8 we can use Libnames.default_* *)
   let coq_root     = Names.DirPath.make [Libnames.coq_root] in
   let default_root = Libnames.default_root_prefix in
-  [mk_lp ~ml:AddRecML ~root:coq_root     ~implicit       ~dir:"plugins";
-   mk_lp ~ml:AddNoML  ~root:coq_root     ~implicit       ~dir:"theories";
-   mk_lp ~ml:AddRecML ~root:default_root ~implicit:false ~dir:"user-contrib";
+  let ml_paths =
+    let plugins_dirs = System.all_subdirs ~unix_path:(mk_path "plugins") in
+    List.map fst plugins_dirs
+  in
+  ml_paths ,
+  [ mk_vo ~has_ml:false ~coq_path:coq_root     ~implicit       ~dir:"theories"
+  ; mk_vo ~has_ml:true  ~coq_path:default_root ~implicit:false ~dir:"user-contrib";
   ]
 
 (******************************************************************************)

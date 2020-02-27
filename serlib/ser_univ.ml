@@ -55,7 +55,7 @@ module Level = struct
 
 end
 
-module LSet = Ser_cSet.Make(Univ.LSet)(Level)
+module LSet = Ser_cSet.MakeJ(Univ.LSet)(Level)
 
 (* XXX: Think what to do with this  *)
 module Universe = struct
@@ -119,7 +119,7 @@ module Constraint = Ser_cSet.MakeJ(Univ.Constraint)(struct
 
 type 'a constrained =
   [%import: 'a Univ.constrained]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 module UContext = struct
 
@@ -145,7 +145,7 @@ end
 module ContextSet = struct
   type t =
     [%import: Univ.ContextSet.t]
-    [@@deriving sexp]
+    [@@deriving sexp, yojson]
 end
 
 type 'a in_universe_context =

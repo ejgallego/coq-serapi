@@ -8,13 +8,14 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2016-2020 MINES ParisTech / Inria                          *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
 open Sexplib.Conv
 
+module CUnix       = Ser_cUnix
 module Loc         = Ser_loc
 module CAst        = Ser_cAst
 module Names       = Ser_names
@@ -33,7 +34,6 @@ module Extend      = Ser_extend
 module Stateid     = Ser_stateid
 module Glob_term     = Ser_glob_term
 module Goal_select   = Ser_goal_select
-module Proof_global  = Ser_proof_global
 module Proof_bullet  = Ser_proof_bullet
 module Constrexpr    = Ser_constrexpr
 module Notation_term = Ser_notation_term
@@ -44,6 +44,7 @@ module Universes     = Ser_universes
 module Attributes    = Ser_attributes
 module Gramlib       = Ser_gramlib
 module Impargs       = Ser_impargs
+module Typeclasses   = Ser_typeclasses
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
   [@@deriving sexp,yojson]
@@ -62,12 +63,20 @@ type printable =
   [%import: Vernacexpr.printable]
   [@@deriving sexp,yojson]
 
-type vernac_cumulative =
-  [%import: Vernacexpr.vernac_cumulative]
+(* type vernac_cumulative =
+ *   [%import: Vernacexpr.vernac_cumulative]
+ *   [@@deriving sexp,yojson] *)
+
+type glob_search_where =
+  [%import: Vernacexpr.glob_search_where]
   [@@deriving sexp,yojson]
 
-type search_about_item =
-  [%import: Vernacexpr.search_about_item]
+type search_item =
+  [%import: Vernacexpr.search_item]
+  [@@deriving sexp,yojson]
+
+type search_request =
+  [%import: Vernacexpr.search_request]
   [@@deriving sexp,yojson]
 
 type searchable =
@@ -87,10 +96,10 @@ type comment =
 type search_restriction =  [%import: Vernacexpr.search_restriction]
   [@@deriving sexp,yojson]
 
-type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving sexp,yojson]
+(* type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving sexp,yojson] *)
 type verbose_flag      = [%import: Vernacexpr.verbose_flag      ] [@@deriving sexp,yojson]
 type coercion_flag     = [%import: Vernacexpr.coercion_flag     ] [@@deriving sexp,yojson]
-type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp,yojson]
+(* type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp,yojson] *)
 type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving sexp,yojson]
 type export_flag       = [%import: Vernacexpr.export_flag       ] [@@deriving sexp,yojson]
 type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp,yojson]
@@ -101,9 +110,9 @@ type option_setting =
   [%import: Vernacexpr.option_setting]
   [@@deriving sexp,yojson]
 
-type option_ref_value =
-  [%import: Vernacexpr.option_ref_value]
-  [@@deriving sexp,yojson]
+(* type option_ref_value =
+ *   [%import: Vernacexpr.option_ref_value]
+ *   [@@deriving sexp,yojson] *)
 
 (* type plident =
  *   [%import: Vernacexpr.plident ]
@@ -177,6 +186,10 @@ type constructor_list_or_record_decl_expr =
   [%import: Vernacexpr.constructor_list_or_record_decl_expr]
   [@@deriving sexp,yojson]
 
+type inductive_params_expr =
+  [%import: Vernacexpr.inductive_params_expr]
+  [@@deriving sexp,yojson]
+
 type inductive_expr =
   [%import: Vernacexpr.inductive_expr]
   [@@deriving sexp,yojson]
@@ -193,8 +206,20 @@ type syntax_modifier =
   [%import: Vernacexpr.syntax_modifier]
   [@@deriving sexp,yojson]
 
+type opacity_flag =
+  [%import: Vernacexpr.opacity_flag]
+  [@@deriving sexp,yojson]
+
 type proof_end =
   [%import: Vernacexpr.proof_end]
+  [@@deriving sexp,yojson]
+
+type one_import_filter_name =
+  [%import: Vernacexpr.one_import_filter_name]
+  [@@deriving sexp,yojson]
+
+type import_filter_expr =
+  [%import: Vernacexpr.import_filter_expr]
   [@@deriving sexp,yojson]
 
 type scheme =
@@ -239,6 +264,18 @@ type vernac_one_argument_status =
 
 type vernac_argument_status =
   [%import: Vernacexpr.vernac_argument_status]
+  [@@deriving sexp,yojson]
+
+type hint_info_expr =
+  [%import: Vernacexpr.hint_info_expr]
+  [@@deriving sexp,yojson]
+
+type reference_or_constr =
+  [%import: Vernacexpr.reference_or_constr]
+  [@@deriving sexp,yojson]
+
+type hints_expr =
+  [%import: Vernacexpr.hints_expr]
   [@@deriving sexp,yojson]
 
 type vernac_expr =

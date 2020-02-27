@@ -174,7 +174,8 @@ let pp_opt n s =
 
 let pp_implicit = function
   | None               -> Pp.str "!"
-  | Some (iname, _, _) -> Names.Id.print iname
+  | Some (_, _, _) -> Pp.str "fixme"
+  (* | Some (iname, _, _) -> Names.Id.print iname *)
 
 (*
 let pp_richpp xml =
@@ -209,7 +210,8 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
     begin match generic_raw_print ga with
       | PrinterBasic pp -> pp env sigma
       (* XXX: Fixme, the level here is random *)
-      | PrinterNeedsLevel pp -> pp.printer env sigma (99,Notation_gram.Any)
+      | PrinterNeedsLevel pp ->
+        pp.printer env sigma (Constrexpr.LevelLe 99)
     end
 
   (* Fixme *)
@@ -418,7 +420,8 @@ module QueryUtil = struct
 
   let _query_names prefix =
     let acc = ref [] in
-    Search.generic_search None (fun gr _env _typ ->
+    let env = Global.env () in
+    Search.generic_search env (fun gr _kind _env _typ ->
         (* Not happy with this at ALL:
 
            String of qualid is OK, but shortest_qualid_of_global is an
@@ -464,14 +467,14 @@ module QueryUtil = struct
     (* in *)
     (* List.map  map entries [] *)
 
-  let query_unparsing (nt : Constrexpr.notation) :
-    Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar =
-    Ppextend.(find_notation_printing_rule nt,
-              find_notation_extra_printing_rules nt,
-              find_notation_parsing_rules nt)
-
-  let query_pnotations () =
-    Ppextend.get_defined_notations ()
+  (* let query_unparsing (nt : Constrexpr.notation) :
+   *   Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar =
+   *   Ppextend.(find_notation_printing_rule nt,
+   *             find_notation_extra_printing_rules nt,
+   *             find_notation_parsing_rules nt)
+   * 
+   * let query_pnotations () =
+   *   Ppextend.get_defined_notations () *)
 
   let locate id =
     let open Names     in
@@ -555,7 +558,7 @@ module QueryUtil = struct
   (* This should be moved Coq upstream *)
   let _comments = ref []
   let add_comments pa =
-    let comments = Pcoq.Parsable.comment_state pa |> List.rev in
+    let comments = Pcoq.Parsable.comments pa |> List.rev in
     _comments := comments :: !_comments
 
 end
@@ -578,14 +581,15 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
                           Proof.data (Proof_global.get_proof pstate) in
                         [CoqProof (goals,stack,shelf,given_up)])
                       [] pstate
-  | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
+  | Unparsing _ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.
                        *)
-                      begin try let up, upe, gr = QueryUtil.query_unparsing (Constrexpr.InConstrEntrySomeLevel,ntn) in
-                                [CoqUnparsing(up,upe,gr)]
-                      with _exn -> []
-                      end
-  | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
+                      (* begin try let up, upe, gr = QueryUtil.query_unparsing (Constrexpr.InConstrEntrySomeLevel,ntn) in
+                       *           [CoqUnparsing(up,upe,gr)]
+                       * with _exn -> [] *)
+                      (* end *)
+    []
+  | PNotations     -> [] (* List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations () *)
   | Definition id  -> fst (QueryUtil.info_of_id env id)
   | TypeOf id      -> snd (QueryUtil.info_of_id env id)
   | Search         -> [CoqString "Not Implemented"]
@@ -652,7 +656,7 @@ let exec_query opt cmd =
 (* coq_exn info *)
 let coq_exn_info exn =
   let backtrace = Printexc.get_raw_backtrace () in
-  let exn, info = CErrors.push exn in
+  let exn, info = Exninfo.capture exn in
   let pp = CErrors.iprint (exn, info) in
   CoqExn
     { loc = Loc.get_loc info
@@ -790,12 +794,14 @@ end
 (* Init / new document                                                        *)
 (******************************************************************************)
 type newdoc_opts =
-  (* name of the top-level module *)
   { top_name     : Stm.interactive_top
-  (* Initial LoadPath. [XXX: Use the coq_pkg record?] *)
-  ; iload_path   : Loadpath.coq_path list option [@sexp.option]
-  (* Libs to require in STM init *)
+  (** name of the top-level module of the new document *)
+  ; ml_load_path   : string list option [@sexp.option]
+  (** Initial ML loadpath  *)
+  ; vo_load_path   : Loadpath.vo_path list option [@sexp.option]
+  (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
   ; require_libs : (string * string option * bool option) list option [@sexp.option]
+  (** Libraries to load in the initial document state *)
   }
 
 (******************************************************************************)
@@ -847,12 +853,15 @@ let exec_cmd (cmd : cmd) =
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
     let require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
-    let iload_path = Option.default
-        Serapi_paths.(coq_loadpath_default ~implicit:true ~coq_path:Coq_config.coqlib)
-        opts.iload_path in
+    let dft_ml, dft_vo =
+      Serapi_paths.(coq_loadpath_default ~implicit:true ~coq_path:Coq_config.coqlib)
+    in
+    let ml_load_path = Option.default dft_ml opts.ml_load_path in
+    let vo_load_path = Option.default dft_vo opts.vo_load_path in
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
-               ; require_libs
-               ; iload_path
+               ; injections = List.map (fun x -> Stm.RequireInjection x) require_libs
+               ; ml_load_path
+               ; vo_load_path
                ; stm_options
                } in
     (* doc_id := fst Stm.(get_doc @@ new_doc ndoc); [] *)
@@ -888,15 +897,15 @@ let exec_cmd (cmd : cmd) =
       with _ -> close_in inc; []
     )
   | Tokenize input ->
-    let st = CLexer.get_lexer_state () in
+    let st = CLexer.Lexer.State.get () in
     begin try
         let istr = Stream.of_string input in
         let lex = CLexer.Lexer.tok_func istr in
-        CLexer.set_lexer_state st;
+        CLexer.Lexer.State.set st;
         let objs = Extra.stream_tok 0 [] lex in
         [ObjList [CoqTok objs]]
       with exn ->
-        CLexer.set_lexer_state st;
+        CLexer.Lexer.State.set st;
         raise exn
     end
   | Help           -> serproto_help (); []

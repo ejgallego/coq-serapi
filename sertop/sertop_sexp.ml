@@ -40,7 +40,8 @@ type ser_opts =
 ; no_init  : bool                (* Whether to create the initial document     *)
 ; no_prelude : bool              (* Whether to load stdlib's prelude           *)
 ; topfile  : string option       (* Top name is derived from topfile name      *)
-; loadpath : Loadpath.coq_path list (* From -R and -Q options usually *)
+; ml_path : string list
+; vo_path : Loadpath.vo_path list (** From -R and -Q options usually           *)
 ; async    : Sertop_init.async_flags
 }
 
@@ -141,17 +142,18 @@ let ser_loop ser_opts =
    *)
   Sys.catch_break true;
 
-  let require_libs =
+  let injections =
     if ser_opts.no_prelude then []
-    else ["Coq.Init.Prelude", None, Some false] in
+    else [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
-  let iload_path = ser_opts.loadpath in
+  let ml_load_path, vo_load_path = ser_opts.ml_path, ser_opts.vo_path in
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
 
   if not ser_opts.no_init then begin
     let ndoc = { Stm.doc_type = doc_type ser_opts.topfile
-               ; require_libs
-               ; iload_path
+               ; injections
+               ; ml_load_path
+               ; vo_load_path
                ; stm_options
                } in
     let _ = Stm.new_doc ndoc in

@@ -38,7 +38,7 @@ module UContext : SerType.S with type t = Univ.UContext.t
 
 module AUContext : SerType.S with type t = Univ.AUContext.t
 
-module ContextSet : SerType.S with type t = Univ.ContextSet.t
+module ContextSet : SerType.SJ with type t = Univ.ContextSet.t
 
 (** A value in a universe context (resp. context set). *)
 type 'a in_universe_context = 'a Univ.in_universe_context

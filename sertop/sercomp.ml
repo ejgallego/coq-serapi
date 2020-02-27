@@ -23,7 +23,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
+let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -52,11 +52,12 @@ let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
     else stm_options
   in
 
-  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+  let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
-             ; require_libs
-             ; iload_path
+             ; injections
+             ; ml_load_path
+             ; vo_load_path
              ; stm_options
              } in
 
@@ -190,7 +191,11 @@ let driver input mode debug disallow_sprop printer async async_workers error_rec
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-  let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+  let dft_ml_path, vo_path =
+    Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path in
+  let ml_load_path = dft_ml_path @ ml_path in
+  let vo_load_path = vo_path @ load_path @ rload_path in
+
   let allow_sprop = not disallow_sprop in
   let stm_flags =
     { Sertop.Sertop_init.enable_async = async
@@ -198,7 +203,7 @@ let driver input mode debug disallow_sprop printer async async_workers error_rec
     ; async_workers
     ; error_recovery
     } in
-  let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop in
+  let doc, sid = create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -229,7 +234,7 @@ let main () =
     | `Error _ -> exit 1
     | _        -> exit 0
   with exn ->
-    let (e, info) = CErrors.push exn in
+    let (e, info) = Exninfo.capture exn in
     fatal_exn e info
 
 let _ = main ()

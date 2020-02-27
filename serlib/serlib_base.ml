@@ -16,9 +16,10 @@
 exception Ser_error of string
 
 let _ = CErrors.register_handler (function
-    | Ser_error msg -> Pp.(seq [str "Serlib Error: "; str msg])
+    | Ser_error msg ->
+      Some Pp.(seq [str "Serlib Error: "; str msg])
     | _ ->
-      raise CErrors.Unhandled)
+      None)
 
 let opaque_of_sexp ~typ _obj =
   raise (Ser_error ("["^typ^": ABSTRACT / cannot deserialize]"))

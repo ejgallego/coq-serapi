@@ -8,11 +8,8 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016-2020 MINES ParisTech / Inria                          *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type opacity_flag =
-  [%import: Proof_global.opacity_flag]
-  [@@deriving sexp,yojson]

@@ -37,22 +37,28 @@ type hints_path =
   [%import: Hints.hints_path]
   [@@deriving sexp,yojson]
 
+(*
 type reference_or_constr =
   [%import: Hints.reference_or_constr]
   [@@deriving sexp,yojson]
+*)
 
 type hint_mode =
   [%import: Hints.hint_mode]
   [@@deriving sexp,yojson]
 
+(*
 type hint_info_expr =
   [%import: Hints.hint_info_expr]
   [@@deriving sexp,yojson]
+*)
 
 type 'a hints_transparency_target =
   [%import: 'a Hints.hints_transparency_target]
   [@@deriving sexp,yojson]
 
+(*
 type hints_expr =
   [%import: Hints.hints_expr]
   [@@deriving sexp,yojson]
+*)

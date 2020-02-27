@@ -17,14 +17,11 @@ open Sexplib
 open Sexplib.Std
 
 module Names = Ser_names
+module Constrexpr = Ser_constrexpr
 
 type argument_position =
   [%import: Impargs.argument_position]
   [@@deriving sexp]
-
-type implicit_kind =
-  [%import: Impargs.implicit_kind]
-  [@@deriving sexp,yojson]
 
 type implicit_explanation =
   [%import: Impargs.implicit_explanation]

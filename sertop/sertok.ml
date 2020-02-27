@@ -30,7 +30,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
+let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -59,11 +59,12 @@ let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
     else stm_options
   in
 
-  let require_libs = ["Coq.Init.Prelude", None, Some false] in
+  let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
-             ; require_libs
-             ; iload_path
+             ; injections
+             ; ml_load_path
+             ; vo_load_path
              ; stm_options
              } in
 
@@ -100,7 +101,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
   let in_bytes = load_file in_file in
   try while true do
-      let l_pre_st = CLexer.get_lexer_state () in
+      let l_pre_st = CLexer.Lexer.State.get () in
       let doc, sid = !stt in
       let ast =
         match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
@@ -113,19 +114,19 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
       let istr =
 	Bytes.sub_string in_bytes begin_char (end_char - begin_char)
       in
-      let l_post_st = CLexer.get_lexer_state () in
+      let l_post_st = CLexer.Lexer.State.get () in
       let sstr = Stream.of_string istr in
       try
-	CLexer.set_lexer_state l_pre_st;
+	CLexer.Lexer.State.set l_pre_st;
         let lex = CLexer.Lexer.tok_func sstr in
         let sen = Sertop.Sertop_ser.Sentence (stream_tok 0 [] lex source begin_line begin_char) in
-        CLexer.set_lexer_state l_post_st;
+        CLexer.Lexer.State.set l_post_st;
         printf "@[%a@]@\n%!" pp (Sertop.Sertop_ser.sexp_of_sentence sen);
         let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
         if tip <> `NewTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
         stt := doc, n_st
       with exn -> begin
-        CLexer.set_lexer_state l_post_st;
+        CLexer.Lexer.State.set l_post_st;
         raise exn
       end
     done;
@@ -172,7 +173,11 @@ let driver debug disallow_sprop printer async async_workers error_recovery quick
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-  let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+  let dft_ml_path, vo_path =
+    Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path in
+  let ml_load_path = dft_ml_path @ ml_path in
+  let vo_load_path = vo_path @ load_path @ rload_path in
+
   let allow_sprop = not disallow_sprop in
   let stm_flags =
     { Sertop.Sertop_init.enable_async  = async
@@ -181,7 +186,7 @@ let driver debug disallow_sprop printer async async_workers error_recovery quick
     ; error_recovery
     } in
 
-  let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop in
+  let doc, sid = create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -212,7 +217,7 @@ let main () =
     | `Error _ -> exit 1
     | _        -> exit 0
   with exn ->
-    let (e, info) = CErrors.push exn in
+    let (e, info) = Exninfo.capture exn in
     fatal_exn e info
 
 let _ = main ()

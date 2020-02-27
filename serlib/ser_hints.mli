@@ -35,22 +35,34 @@ type hints_path = Hints.hints_path
 val sexp_of_hints_path : hints_path -> Sexp.t
 val hints_path_of_sexp : Sexp.t -> hints_path
 
-type reference_or_constr = Hints.reference_or_constr
-val reference_or_constr_of_sexp : Sexp.t -> reference_or_constr
-val sexp_of_reference_or_constr : reference_or_constr -> Sexp.t
+type 'a hints_transparency_target = 'a Hints.hints_transparency_target
+val hints_transparency_target_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_transparency_target
+val sexp_of_hints_transparency_target : ('a -> Sexp.t) -> 'a hints_transparency_target -> Sexp.t
+val hints_transparency_target_of_yojson :
+  (Yojson.Safe.t -> ('a, string) Result.result) ->
+  Yojson.Safe.t -> ('a hints_transparency_target, string) Result.result
+val hints_transparency_target_to_yojson :
+  ('a -> Yojson.Safe.t) ->
+  'a hints_transparency_target -> Yojson.Safe.t
 
+(*
 type hint_info_expr = Hints.hint_info_expr
 val hint_info_expr_of_sexp : Sexp.t -> hint_info_expr
 val sexp_of_hint_info_expr : hint_info_expr -> Sexp.t
 val hint_info_expr_of_yojson : Yojson.Safe.t -> (hint_info_expr, string) Result.result
 val hint_info_expr_to_yojson : hint_info_expr -> Yojson.Safe.t
+*)
 
 type hint_mode = Hints.hint_mode
 val hint_mode_of_sexp : Sexp.t -> hint_mode
 val sexp_of_hint_mode : hint_mode -> Sexp.t
+val hint_mode_of_yojson : Yojson.Safe.t -> (hint_mode, string) Result.result
+val hint_mode_to_yojson : hint_mode -> Yojson.Safe.t
 
+(*
 type hints_expr = Hints.hints_expr
 val hints_expr_of_sexp : Sexp.t -> hints_expr
 val sexp_of_hints_expr : hints_expr -> Sexp.t
 val hints_expr_of_yojson : Yojson.Safe.t -> (hints_expr, string) Result.result
 val hints_expr_to_yojson : hints_expr -> Yojson.Safe.t
+*)

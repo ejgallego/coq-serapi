@@ -21,17 +21,17 @@ module Tok           = Ser_tok
 module Extend        = Ser_extend
 module Gramlib       = Ser_gramlib
 
-type precedence =
-  [%import: Notation_gram.precedence]
-  [@@deriving sexp]
+(* type precedence =
+ *   [%import: Notation_gram.precedence]
+ *   [@@deriving sexp] *)
 
-type parenRelation =
-  [%import: Notation_gram.parenRelation]
-  [@@deriving sexp]
+(* type parenRelation =
+ *   [%import: Notation_gram.parenRelation]
+ *   [@@deriving sexp] *)
 
-type tolerability =
-  [%import: Notation_gram.tolerability]
-  [@@deriving sexp]
+(* type tolerability =
+ *   [%import: Notation_gram.tolerability]
+ *   [@@deriving sexp] *)
 
 type grammar_constr_prod_item =
   [%import: Notation_gram.grammar_constr_prod_item]

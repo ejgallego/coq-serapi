@@ -31,7 +31,7 @@ type 'c _p =
   | PPATTERNIDENT of string option
   | PIDENT of string option
   | PFIELD of string option
-  | PNUMERAL of NumTok.t option
+  | PNUMERAL of NumTok.Unsigned.t option
   | PSTRING of string option
   | PLEFTQMARK
   | PBULLET of string option

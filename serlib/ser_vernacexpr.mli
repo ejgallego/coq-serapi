@@ -35,9 +35,9 @@ type printable = Vernacexpr.printable
 val printable_of_sexp : Sexp.t -> printable
 val sexp_of_printable : printable -> Sexp.t
 
-type search_about_item = Vernacexpr.search_about_item
-val search_about_item_of_sexp : Sexp.t -> search_about_item
-val sexp_of_search_about_item : search_about_item -> Sexp.t
+type search_item = Vernacexpr.search_item
+val search_item_of_sexp : Sexp.t -> search_item
+val sexp_of_search_item : search_item -> Sexp.t
 
 type searchable = Vernacexpr.searchable
 val searchable_of_sexp : Sexp.t -> searchable
@@ -59,9 +59,9 @@ type search_restriction = Vernacexpr.search_restriction
 val search_restriction_of_sexp : Sexp.t -> search_restriction
 val sexp_of_search_restriction : search_restriction -> Sexp.t
 
-type rec_flag = Vernacexpr.rec_flag
-val rec_flag_of_sexp : Sexp.t -> rec_flag
-val sexp_of_rec_flag : rec_flag -> Sexp.t
+(* type rec_flag = Vernacexpr.rec_flag
+ * val rec_flag_of_sexp : Sexp.t -> rec_flag
+ * val sexp_of_rec_flag : rec_flag -> Sexp.t *)
 
 type verbose_flag = Vernacexpr.verbose_flag
 val verbose_flag_of_sexp : Sexp.t -> verbose_flag
@@ -71,9 +71,9 @@ type coercion_flag = Vernacexpr.coercion_flag
 val coercion_flag_of_sexp : Sexp.t -> coercion_flag
 val sexp_of_coercion_flag : coercion_flag -> Sexp.t
 
-type inductive_flag = Vernacexpr.inductive_flag
-val inductive_flag_of_sexp : Sexp.t -> inductive_flag
-val sexp_of_inductive_flag : inductive_flag -> Sexp.t
+(* type inductive_flag = Vernacexpr.inductive_flag
+ * val inductive_flag_of_sexp : Sexp.t -> inductive_flag
+ * val sexp_of_inductive_flag : inductive_flag -> Sexp.t *)
 
 type instance_flag = Vernacexpr.instance_flag
 val instance_flag_of_sexp : Sexp.t -> instance_flag
@@ -99,9 +99,9 @@ val sexp_of_locality_flag : locality_flag -> Sexp.t
  * val option_value_of_sexp : Sexp.t -> option_value
  * val sexp_of_option_value : option_value -> Sexp.t *)
 
-type option_ref_value = Vernacexpr.option_ref_value
-val option_ref_value_of_sexp : Sexp.t -> option_ref_value
-val sexp_of_option_ref_value : option_ref_value -> Sexp.t
+(* type option_ref_value = Vernacexpr.option_ref_value
+ * val option_ref_value_of_sexp : Sexp.t -> option_ref_value
+ * val sexp_of_option_ref_value : option_ref_value -> Sexp.t *)
 
 (* type plident = Vernacexpr.plident
  * val plident_of_sexp : Sexp.t -> plident

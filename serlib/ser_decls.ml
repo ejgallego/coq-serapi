@@ -24,3 +24,7 @@ type theorem_kind =
 type assumption_object_kind =
   [%import: Decls.assumption_object_kind]
   [@@deriving sexp,yojson]
+
+type logical_kind =
+  [%import: Decls.logical_kind]
+  [@@deriving sexp,yojson]
