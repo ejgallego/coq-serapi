@@ -2,6 +2,7 @@
 
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
              (#???, @ejgallego)
+ * [general] SerAPI is now tested with OCaml 4.08 and 4.09
 
 ## Version 0.11.0:
 
