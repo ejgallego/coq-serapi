@@ -1,3 +1,8 @@
+## Version 0.7.2:
+
+ * [sertop]  Added option `--topfile` to sertop to set top name from
+             a filename
+
 ## Version 0.7.1:
 
  * [sertop ] Add `sername` program for batch serialization elaborated terms

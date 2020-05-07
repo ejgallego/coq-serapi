@@ -33,6 +33,7 @@ type ser_opts =
 
 ; no_init  : bool                (** Whether to create the initial document   *)
 ; no_prelude : bool              (** Whether to load stdlib's prelude         *)
+; topfile  : string option       (** Top name is derived from topfile name    *)
 
 (* Coq options *)
 ; loadpath : Mltop.coq_path list (** From -R and -Q options usually           *)

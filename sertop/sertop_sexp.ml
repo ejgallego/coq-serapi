@@ -39,6 +39,7 @@ type ser_opts =
 ; no_init  : bool                (* Whether to create the initial document     *)
 ; no_prelude : bool              (* Whether to load stdlib's prelude           *)
 
+; topfile  : string option       (* Top name is derived from topfile name      *)
 ; loadpath : Mltop.coq_path list (* From -R and -Q options usually *)
 ; async    : Sertop_init.async_flags
 }
@@ -97,6 +98,16 @@ let out_answer opts =
   let pp_sexp = out_sexp opts in
   fun fmt a -> pp_sexp fmt (Sertop_ser.sexp_of_answer a)
 
+(** Set the topname from optional topfile string or default if None **)
+let doc_type topfile =
+  match topfile with
+  | None ->
+     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
+     Stm.Interactive (TopLogical sertop_dp)
+  | Some filename ->
+     Stm.VoDoc filename
+
+
 let ser_loop ser_opts =
 
   let open List   in
@@ -138,8 +149,7 @@ let ser_loop ser_opts =
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
 
   if not ser_opts.no_init then begin
-    let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
-    let ndoc = { Stm.doc_type = Stm.Interactive (TopLogical sertop_dp)
+    let ndoc = { Stm.doc_type = doc_type ser_opts.topfile
                ; require_libs
                ; iload_path
                ; stm_options
