@@ -1,5 +1,7 @@
 ## Version 0.11.1:
 
+ * [sertop]  Added option `--topfile` to sertop to set top name from
+             a filename
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
              (#???, @ejgallego)
  * [general] SerAPI is now tested with OCaml 4.08 and 4.09
