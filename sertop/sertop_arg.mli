@@ -33,6 +33,7 @@ val rload_path      : Loadpath.coq_path list Term.t
 val load_path       : Loadpath.coq_path list Term.t
 val ml_include_path : Loadpath.coq_path list Term.t
 val no_init         : bool Term.t
+val topfile         : string option Term.t
 val no_prelude      : bool Term.t
 
 (* sertop options *)
