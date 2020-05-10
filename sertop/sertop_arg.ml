@@ -82,6 +82,12 @@ let no_init =
              and set there the proper loadpath, requires, ..." in
   Arg.(value & flag & info ["no_init"] ~doc)
 
+let topfile =
+  let doc = "Set the toplevel name as though compiling $(docv)" in
+  Arg.(value & opt (some string) None & info ["topfile"] ~doc ~docv:"TOPFILE")
+
+
+
 let no_prelude =
   let doc = "Omits requiring any module on start, thus `Prelude`, ltac, etc... won't be available" in
   Arg.(value & flag & info ["no_prelude"] ~doc)
