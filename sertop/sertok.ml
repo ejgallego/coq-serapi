@@ -30,7 +30,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
+let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -39,6 +39,7 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug =
     { fb_handler = (fun _ -> ())  (* XXXX *)
     ; ml_load    = None
     ; debug
+    ; allow_sprop
     };
 
   (* document initialization *)
@@ -166,7 +167,7 @@ let sertok_doc = "sertok Coq tokenizer"
 
 open Cmdliner
 
-let driver debug printer async async_workers quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
+let driver debug disallow_sprop printer async async_workers quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
@@ -176,7 +177,8 @@ let driver debug printer async async_workers quick coq_path ml_path load_path rl
   Serlib.Serlib_init.init ~options;
 
   let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
+  let allow_sprop = not disallow_sprop in
+  let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~allow_sprop in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -197,7 +199,7 @@ let main () =
   let sertok_cmd =
     let open Sertop.Sertop_arg in
     Term.(const driver
-          $ debug $ printer $ async $ async_workers $ quick $ prelude
+          $ debug $ disallow_sprop $ printer $ async $ async_workers $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info "sertok" ~version:sertok_version ~doc:sertok_doc ~man:sertok_man

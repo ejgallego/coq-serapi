@@ -33,6 +33,8 @@ type coq_opts = {
   (* Enable Coq Debug mode *)
   debug        : bool;
 
+  (* Allow SProp *)
+  allow_sprop  : bool;
 }
 
 (**************************************************************************)
@@ -66,6 +68,10 @@ let coq_init opts =
   (* This should be configurable somehow. *)
   Global.set_engagement Declarations.PredicativeSet;
   Global.set_indices_matter false;
+
+  (* --allow-sprop in agreement with coq v8.11  *)
+  Global.set_allow_sprop opts.allow_sprop;
+
 
   (**************************************************************************)
   (* Feedback setup                                                         *)

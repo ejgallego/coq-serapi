@@ -28,6 +28,7 @@ type ser_opts =
                                  (** Printer type                             *)
 
 ; debug    : bool                (** Enable Coq debug mode                    *)
+; allow_sprop: bool              (** Allow using the proof irrelevant SProp sort *)
 ; print0   : bool                (** End every answer with [\0]               *)
 ; lheader  : bool                (** Print lenght header (deprecated)         *)
 
