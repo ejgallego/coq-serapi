@@ -32,7 +32,7 @@ let read_cmd cmd_sexp : [`Error of Sexp.t | `Ok of string * cmd ] =
       `Error (Conv.sexp_of_exn exn)
 
 (* Initialize Coq. *)
-let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug =
+let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug ~allow_sprop =
   let open! Sertop.Sertop_init in
 
   let fb_handler fb = Sertop.Sertop_ser.sexp_of_answer (Feedback (Sertop.Sertop_util.feedback_tr fb)) |> fb_out in
@@ -41,6 +41,7 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug =
     fb_handler;
     ml_load = None;
     debug;
+    allow_sprop;
   };
 
   let stm_options = process_stm_flags
