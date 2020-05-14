@@ -35,6 +35,10 @@ let de_bruijn =
   let doc = "Print constrs with de Bruijn indices." in
   Arg.(value & flag & info ["de-bruijn"] ~doc)
 
+let body =
+  let doc = "Print bodies of constrs." in
+  Arg.(value & flag & info ["body"] ~doc)
+
 let async =
   let doc = "Enable async support using Coq binary $(docv) (experimental)." in
   Arg.(value & opt (some string) None & info ["async"] ~doc ~docv:"COQTOP")

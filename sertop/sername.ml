@@ -115,12 +115,12 @@ let context_of_st m = match m with
 let str_pp_obj env sigma fmt (obj : Serapi_protocol.coq_object) : unit =
   Format.fprintf fmt "%a" Pp.pp_with (Serapi_protocol.gen_pp_obj env sigma obj)
 
-let process_line ~pp ~str_pp ~de_bruijn ~doc ~sid line =
+let process_line ~pp ~str_pp ~de_bruijn ~body ~doc ~sid line =
   let open Serapi_protocol in
   let st = Stm.state_of_id ~doc sid in
   let sigma, env = context_of_st st in
   let info = QueryUtil.info_of_id env line in
-  let def = snd info in
+  let def = if body then fst info else snd info in
   match def with
   | [CoqConstr def_term] ->
      let evd = Evd.from_env env in
@@ -154,8 +154,8 @@ let sername_man =
     `S "DESCRIPTION";
     `P "Experimental Coq name serializer.";
     `S "USAGE";
-    `P "To serialize names listed in `n.txt` in module `Funs.mod`:";
-    `Pre "sername -Q fs,Funs --require-lib=Funs.mod n.txt";
+    `P "To serialize names listed in `names.txt` in module `Funs.mod`:";
+    `Pre "sername -Q fs,Funs --require-lib=Funs.mod names.txt";
     `P "See the documentation on the project's webpage for more information."
   ]
 
@@ -163,11 +163,11 @@ let sername_doc = "sername Coq tool"
 
 open Cmdliner
 
-let driver debug printer async async_workers quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn in_file omit_loc omit_att exn_on_opaque =
+let driver debug printer async async_workers quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop_ser.select_printer printer in
-  let process = process_line ~pp ~str_pp ~de_bruijn in
+  let process = process_line ~pp ~str_pp ~de_bruijn ~body in
 
   (* initialization *)
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
@@ -196,7 +196,7 @@ let main () =
     let open Sertop_arg in
     Term.(const driver
           $ debug $ printer $ async $ async_workers $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ input_file $ omit_loc $ omit_att $ exn_on_opaque
+          $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man
   in
