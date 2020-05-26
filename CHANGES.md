@@ -1,5 +1,7 @@
 ## Version 0.11.1:
 
+ * [serapi]  New query `Comments` to return all comments in a document
+             (@ejgallego, #20? , (partially) fixes #191 , #200 )
  * [general] Coq's error recovery is now disabled by default
              (@ejgallego , fixes #201)
  * [general] New option `--error-recovery` to enable error recovery
