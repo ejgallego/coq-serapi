@@ -26,7 +26,7 @@ type async_flags =
 type coq_opts = {
 
   (* callback to handle async feedback *)
-  fb_handler   : Feedback.feedback -> unit;
+  fb_handler   : Format.formatter -> Feedback.feedback -> unit;
 
   (* callback to load cma/cmo files *)
   ml_load      : (string -> unit) option;
@@ -42,7 +42,11 @@ type coq_opts = {
 (**************************************************************************)
 (* Low-level, internal Coq initialization                                 *)
 (**************************************************************************)
-let coq_init opts =
+
+(* Reference to feedback_handler *)
+let fb = ref 0
+
+let coq_init opts out_fmt =
 
   if opts.debug then begin
     Printexc.record_backtrace true;
@@ -81,7 +85,7 @@ let coq_init opts =
   (**************************************************************************)
 
   (* Initialize logging. *)
-  ignore (Feedback.add_feeder opts.fb_handler);
+  fb := Feedback.add_feeder (opts.fb_handler out_fmt);
 
   (**************************************************************************)
   (* Start the STM!!                                                        *)
@@ -90,6 +94,10 @@ let coq_init opts =
 
   (* End of initialization *)
   ()
+
+let update_fb_handler ~pp_feed out_fmt =
+  Feedback.del_feeder !fb;
+  fb := Feedback.add_feeder (pp_feed out_fmt)
 
 (******************************************************************************)
 (* Async setup                                                                *)

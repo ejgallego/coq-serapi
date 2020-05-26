@@ -55,6 +55,7 @@ val sexp_of_query_cmd : query_cmd -> Sexp.t
 val cmd_of_sexp : Sexp.t -> cmd
 val sexp_of_cmd : cmd -> Sexp.t
 
+type nonrec tagged_cmd = tagged_cmd
 val tagged_cmd_of_sexp : Sexp.t -> tagged_cmd
 val sexp_of_tagged_cmd : tagged_cmd -> Sexp.t
 
