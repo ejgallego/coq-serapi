@@ -16,11 +16,12 @@
 (************************************************************************)
 
 (* Init options for coq *)
-type async_flags = {
-  enable_async  : string option;
-  deep_edits    : bool;
-  async_workers : int;
-}
+type async_flags =
+  { enable_async  : string option
+  ; deep_edits    : bool
+  ; async_workers : int
+  ; error_recovery : bool
+  }
 
 type coq_opts = {
 
@@ -93,20 +94,36 @@ let coq_init opts =
 (******************************************************************************)
 
 (* Set async flags; IMPORTANT, this has to happen before STM.init () ! *)
-let process_stm_flags opts = Option.cata (fun coqtop ->
+let process_stm_flags opts =
+  let stm_opts = Stm.AsyncOpts.default_opts in
+  (* Process error resilience *)
+  let async_proofs_tac_error_resilience, async_proofs_cmd_error_resilience =
+    if opts.error_recovery
+    then `All, true
+    else `None, false
+  in
+  let stm_opts =
+    { stm_opts with
+      async_proofs_tac_error_resilience
+    ; async_proofs_cmd_error_resilience }
+  in
+  (* Enable async mode if requested *)
+  Option.cata (fun coqtop ->
 
     (* Whether to forward Glob output to the IDE. *)
     let dump_opt = "-no-glob" in
 
     let open Stm.AsyncOpts in
     let opts =
-      { default_opts with
-        async_proofs_mode = APon;
-        (* Imitate CoqIDE *)
-        async_proofs_never_reopen_branch = not opts.deep_edits;
-        async_proofs_n_workers    = opts.async_workers;
-        async_proofs_n_tacworkers = opts.async_workers;
-      } in
+      { stm_opts with
+        async_proofs_mode = APon
+      (* Imitate CoqIDE *)
+      ; async_proofs_never_reopen_branch = not opts.deep_edits
+      ; async_proofs_n_workers    = opts.async_workers
+      ; async_proofs_n_tacworkers = opts.async_workers
+      }
+    in
+
     (* async_proofs_worker_priority); *)
     AsyncTaskQueue.async_proofs_flags_for_workers := [dump_opt];
     CoqworkmgrApi.(init High);
@@ -116,4 +133,4 @@ let process_stm_flags opts = Option.cata (fun coqtop ->
     done;
     Array.set Sys.argv 0 coqtop;
     opts
-  ) Stm.AsyncOpts.default_opts opts.enable_async
+  ) stm_opts opts.enable_async

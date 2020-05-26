@@ -1,11 +1,19 @@
 ## Version 0.11.1:
 
+ * [general] Coq's error recovery is now disabled by default
+             (@ejgallego , fixes #201)
+ * [general] New option `--error-recovery` to enable error recovery
+             (@ejgallego , #203)
  * [general] Bump sexplib dependency to v0.13 (@ejgallego , #204)
              Fixes incorrect change in #194.
  * [sertop]  Set default value of allow-sprop to be true in agreement with upstream coq v8.11
              and added option '--disallow-sprop' to optionally switch it off
 			 (--disallow-sprop forbids using the proof irrelevant SProp sort)
              (#199, @pestun)
+ * [sertop]  Set default value of allow-sprop to be true in agreement with upstream coq v8.11
+             and added option '--disallow-sprop' to optionally switch it off
+			 (--disallow-sprop forbids using the proof irrelevant SProp sort)
+             (@pestun , #199)
  * [sertop]  Added option `--topfile` to sertop to set top name from
              a filename (#197, @pestun)
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings

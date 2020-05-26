@@ -23,7 +23,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~allow_sprop =
+let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -37,11 +37,7 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~al
 
   (* document initialization *)
 
-  let stm_options = process_stm_flags
-      { enable_async  = async
-      ; deep_edits    = false
-      ; async_workers = async_workers
-      } in
+  let stm_options = process_stm_flags stm_flags in
 
   (* Disable due to https://github.com/ejgallego/coq-serapi/pull/94 *)
   let stm_options =
@@ -66,7 +62,7 @@ let create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~al
 
   (* Workaround, see
      https://github.com/ejgallego/coq-serapi/pull/101 *)
-  if quick || async <> None
+  if quick || stm_flags.enable_async <> None
   then Safe_typing.allow_delayed_constants := true;
 
   Stm.new_doc ndoc
@@ -183,7 +179,8 @@ let sercomp_doc = "sercomp Coq Compiler"
 
 open Cmdliner
 
-let driver input mode debug disallow_sprop printer async async_workers quick coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
+let driver input mode debug disallow_sprop printer async async_workers error_recovery quick
+    coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
@@ -195,7 +192,13 @@ let driver input mode debug disallow_sprop printer async async_workers quick coq
 
   let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
   let allow_sprop = not disallow_sprop in
-  let doc, sid = create_document ~in_file ~async ~async_workers ~quick ~iload_path ~debug ~allow_sprop in
+  let stm_flags =
+    { Sertop.Sertop_init.enable_async = async
+    ; deep_edits = false
+    ; async_workers
+    ; error_recovery
+    } in
+  let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -216,7 +219,7 @@ let main () =
   let sercomp_cmd =
     let open Sertop.Sertop_arg in
     Term.(const driver
-          $ comp_input $ comp_mode $ debug $ disallow_sprop $ printer $ async $ async_workers $ quick $ prelude
+          $ comp_input $ comp_mode $ debug $ disallow_sprop $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info "sercomp" ~version:sercomp_version ~doc:sercomp_doc ~man:sercomp_man
