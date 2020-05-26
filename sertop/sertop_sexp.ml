@@ -104,8 +104,7 @@ let doc_type topfile =
   | None ->
      let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
      Stm.Interactive (TopLogical sertop_dp)
-  | Some filename ->
-     Stm.VoDoc filename
+  | Some filename -> Stm.Interactive (Stm.TopPhysical filename)
 
 
 let ser_loop ser_opts =
