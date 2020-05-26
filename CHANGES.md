@@ -1,14 +1,16 @@
 ## Version 0.11.1:
+
+ * [general] Bump sexplib dependency to v0.13 (@ejgallego , #204)
+             Fixes incorrect change in #194.
  * [sertop]  Set default value of allow-sprop to be true in agreement with upstream coq v8.11
              and added option '--disallow-sprop' to optionally switch it off
 			 (--disallow-sprop forbids using the proof irrelevant SProp sort)
-             (@pestun , #199)
-
+             (#199, @pestun)
  * [sertop]  Added option `--topfile` to sertop to set top name from
-             a filename
+             a filename (#197, @pestun)
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
-             (#???, @ejgallego)
- * [general] SerAPI is now tested with OCaml 4.08 and 4.09
+             (#194, @ejgallego)
+ * [general] SerAPI is now tested with OCaml 4.08 and 4.09 (#195 , @ejgallego)
 
 ## Version 0.11.0:
 
