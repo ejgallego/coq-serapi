@@ -2,6 +2,7 @@
  * [sertop]  Set default value of allow-sprop to be true in agreement with upstream coq v8.11
              and added option '--disallow-sprop' to optionally switch it off
 			 (--disallow-sprop forbids using the proof irrelevant SProp sort)
+             (@pestun , #199)
 
  * [sertop]  Added option `--topfile` to sertop to set top name from
              a filename
