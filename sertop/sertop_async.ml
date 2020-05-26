@@ -45,9 +45,10 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~iload_path ~require_libs ~debug ~all
   };
 
   let stm_options = process_stm_flags
-    { enable_async  = None;
-      deep_edits    = false;
-      async_workers = 0;
+    { enable_async  = None
+    ; deep_edits    = false
+    ; async_workers = 0
+    ; error_recovery = false
     } in
 
   let open Stm in

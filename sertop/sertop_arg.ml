@@ -43,6 +43,10 @@ let async_workers =
   let doc = "Maximum number of async workers." in
   Arg.(value & opt int 3 & info ["async-workers"] ~doc)
 
+let error_recovery =
+  let doc = "Enable Coq's error recovery inside tactics and commands." in
+  Arg.(value & flag & info ["error-recovery"] ~doc)
+
 let implicit_stdlib =
   let doc = "No-op (used to allow loading unqualified stdlib libraries, which is now the default)." in
   Arg.(value & flag & info ["implicit"] ~doc)

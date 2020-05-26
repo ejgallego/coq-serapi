@@ -20,6 +20,7 @@ type async_flags =
   { enable_async  : string option
   ; deep_edits    : bool
   ; async_workers : int
+  ; error_recovery : bool
   }
 (** SerAPI flags for asynchronous processing *)
 

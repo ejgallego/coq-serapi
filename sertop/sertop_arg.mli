@@ -24,6 +24,7 @@ val quick           : bool Term.t
 val async_full      : bool Term.t
 val deep_edits      : bool Term.t
 val async_workers   : int Term.t
+val error_recovery  : bool Term.t
 val implicit_stdlib : bool Term.t
 val printer         : Sertop_ser.ser_printer Term.t
 val debug           : bool Term.t
