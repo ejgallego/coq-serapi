@@ -27,6 +27,7 @@ val async_workers   : int Term.t
 val implicit_stdlib : bool Term.t
 val printer         : Sertop_ser.ser_printer Term.t
 val debug           : bool Term.t
+val disallow_sprop  : bool Term.t
 val print0          : bool Term.t
 val length          : bool Term.t
 val rload_path      : Loadpath.coq_path list Term.t

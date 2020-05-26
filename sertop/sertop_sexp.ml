@@ -32,6 +32,7 @@ type ser_opts =
 ; printer  : Sertop_ser.ser_printer
 
 ; debug    : bool
+; allow_sprop: bool
 ; print0   : bool
 ; lheader  : bool                (* Print lenght header (deprecated)           *)
 
@@ -131,6 +132,7 @@ let ser_loop ser_opts =
         { fb_handler   = pp_feed
         ; ml_load      = None
         ; debug        = ser_opts.debug
+        ; allow_sprop  = ser_opts.allow_sprop
         })
   in
 

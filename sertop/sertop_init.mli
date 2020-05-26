@@ -35,6 +35,9 @@ type coq_opts =
 
   ; debug        : bool
   (** Enable Coq Debug mode             *)
+
+  ; allow_sprop  : bool
+  (** allow using the proof irrelevant SProp sort (default=true) *)
 }
 
 val coq_init : coq_opts -> unit

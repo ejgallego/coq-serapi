@@ -117,7 +117,8 @@ let _ =
       let iload_path  = List.map pkg_to_bb all_pkgs                      in
       let require_libs= ["Coq.Init.Prelude", None, Some true]            in
       let debug       = false                                            in
-      ignore (sertop_init ~fb_out:post_message ~iload_path ~require_libs ~debug);
+      let allow_sprop = true                                             in
+      ignore (sertop_init ~fb_out:post_message ~iload_path ~require_libs ~debug ~allow_sprop);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit

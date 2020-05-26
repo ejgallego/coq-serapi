@@ -22,6 +22,7 @@ val sertop_init :
   iload_path:Loadpath.coq_path list ->
   require_libs:(string * string option * bool option) list ->
   debug:bool ->
+  allow_sprop:bool ->
   Stm.doc * Stateid.t
 
 (** [sertop_callback out input] Execute command [input] and send
