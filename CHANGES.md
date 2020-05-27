@@ -14,7 +14,7 @@
              and added option '--disallow-sprop' to optionally switch it off
 			 (--disallow-sprop forbids using the proof irrelevant SProp sort)
              (@pestun , #199)
- * [sertop]  Added option `--topfile` to sertop to set top name from
+ * [sertop]  Added option `--topfile` to `sertop` to set top name from
              a filename (#197, @pestun)
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
              (#194, @ejgallego)
