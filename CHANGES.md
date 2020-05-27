@@ -1,5 +1,7 @@
 ## Version 0.11.1:
 
+ * [serapi]  New query `Comments` to return all comments in a document
+             (@ejgallego, #20? , (partially) fixes #191 , #200 )
  * [general] Coq's error recovery is now disabled by default
              (@ejgallego , fixes #201)
  * [general] New option `--error-recovery` to enable error recovery
@@ -14,7 +16,7 @@
              and added option '--disallow-sprop' to optionally switch it off
 			 (--disallow-sprop forbids using the proof irrelevant SProp sort)
              (@pestun , #199)
- * [sertop]  Added option `--topfile` to sertop to set top name from
+ * [sertop]  Added option `--topfile` to `sertop` to set top name from
              a filename (#197, @pestun)
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
              (#194, @ejgallego)

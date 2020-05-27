@@ -229,6 +229,14 @@ type coq_object =
   (** Proof object: really low-level and likely to be deprecated. *)
   | CoqAssumptions of Serapi_assumptions.t
   (** Structured representation of the assumptions of a constant. *)
+  | CoqComments of ((int * int) * string) list list
+  (** List of comments in a document, the list will have one element
+     for each call to [Add]; note that with the current model, it is
+     hard to do better, as a call to [Add] can map to several
+     sentences so comments are really mapped to each of those.
+
+     See https://github.com/coq/coq/issues/12413 for updates on
+     improved support *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -346,6 +354,8 @@ type query_cmd =
   (** Return the assumptions of a given global *)
   | Complete of string
   (** Naïve but efficient prefix-based completion of identifiers *)
+  | Comments
+  (** Get all comments of a document *)
 
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)

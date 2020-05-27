@@ -138,6 +138,7 @@ type coq_object =
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
   | CoqAssumptions of Serapi_assumptions.t
+  | CoqComments of ((int * int) * string) list list
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -223,13 +224,14 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
      | Globnames.TrueGlobal gr -> Printer.pr_global gr
      | Globnames.SynDef kn -> Names.KerName.print kn
     )
-  | CoqImplicit(_,l)-> Pp.pr_sequence pp_implicit l
-  | CoqNotation ntn -> Pp.str (snd ntn)
-  | CoqUnparsing _  -> Pp.str "FIXME Unparsing"
-  | CoqAssumptions a-> Serapi_assumptions.print env sigma a
+  | CoqImplicit(_,l) -> Pp.pr_sequence pp_implicit l
+  | CoqNotation ntn  -> Pp.str (snd ntn)
+  | CoqUnparsing _   -> Pp.str "FIXME Unparsing"
+  | CoqAssumptions a -> Serapi_assumptions.print env sigma a
   (* | CoqPhyLoc(_,_,s)-> pr (Pp.str s) *)
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
+  | CoqComments _ -> Pp.str "FIXME comments"
 
 let str_pp_obj env sigma fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj env sigma obj)
@@ -374,6 +376,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqExtGoal _    -> true
   | CoqProof _      -> true
   | CoqAssumptions _-> true
+  | CoqComments _   -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -408,6 +411,8 @@ type query_cmd =
   | Env                            (* Return the current global enviroment *)
   | Assumptions of string          (* Return the assumptions of given identifier *)
   | Complete of string
+  | Comments
+  (** Get all comments of a document *)
 
 module QueryUtil = struct
 
@@ -547,6 +552,12 @@ module QueryUtil = struct
       Assumptions.assumptions st ~add_opaque:true ~add_transparent:true gr cstr in
     Serapi_assumptions.build env nassums
 
+  (* This should be moved Coq upstream *)
+  let _comments = ref []
+  let add_comments pa =
+    let comments = Pcoq.Parsable.comment_state pa |> List.rev in
+    _comments := comments :: !_comments
+
 end
 
 let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object list =
@@ -587,6 +598,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
     [CoqAssumptions QueryUtil.(assumptions env id)]
   | Complete prefix ->
     List.map (fun x -> CoqGlobRefExt x) (Nametab.completion_canditates (Libnames.qualid_of_string prefix))
+  | Comments -> [CoqComments (List.rev !QueryUtil._comments)]
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
@@ -703,10 +715,15 @@ module ControlUtil = struct
         if not (List.mem !stt !cur_doc) then
           raise (NoSuchState !stt);
         let east      =
-          match Stm.parse_sentence ~doc:!doc !stt ~entry:Pvernac.main_entry pa with
+          (* Flags.beautify is needed so comments are stored by the lexer... *)
+          let parse_res =
+            Flags.with_option Flags.beautify
+              (Stm.parse_sentence ~doc:!doc !stt ~entry:Pvernac.main_entry) pa in
+          match parse_res with
           | Some ast -> ast
           | None -> raise End_of_input
         in
+        Flags.beautify := false;
         (* XXX: Must like refine the API *)
         let eloc      = Option.get (east.CAst.loc) in
         let n_doc, n_st, foc = Stm.add ~doc:!doc ?newtip:opts.newtip ~ontop:!stt opts.verb east in
@@ -716,10 +733,12 @@ module ControlUtil = struct
         stt := n_st;
         incr i
       done;
-      !doc, List.rev !acc
+      !doc, pa, List.rev !acc
     with
-    | End_of_input -> !doc, List.rev !acc
-    | exn              -> !doc, List.rev (coq_exn_info exn :: !acc)
+    | End_of_input ->
+      !doc, pa, List.rev !acc
+    | exn          ->
+      !doc, pa, List.rev (coq_exn_info exn :: !acc)
 
   (* We follow a suggestion by Clément to report sentence invalidation
      in a more modular way: When we issue the cancel command, we will
@@ -839,7 +858,10 @@ let exec_cmd (cmd : cmd) =
     (* doc_id := fst Stm.(get_doc @@ new_doc ndoc); [] *)
     let _ = Stm.new_doc ndoc in
     doc_id := 0; []
-  | Add (opt, s) -> snd @@ ControlUtil.add_sentences ~doc opt s
+  | Add (opt, s) ->
+    let _doc, pa, res = ControlUtil.add_sentences ~doc opt s in
+    QueryUtil.add_comments pa;
+    res
   | Cancel st    -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) st
   | Exec st      -> ignore(Stm.observe ~doc st); []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
@@ -860,7 +882,9 @@ let exec_cmd (cmd : cmd) =
         let faddopts = { lim = None; ontop = None; newtip = None; verb = false; } in
         let fsize    = in_channel_length inc         in
         let fcontent = really_input_string inc fsize in
-        snd @@ ControlUtil.add_sentences ~doc faddopts fcontent
+        let _doc, pa, res = ControlUtil.add_sentences ~doc faddopts fcontent in
+        QueryUtil.add_comments pa;
+        res
       with _ -> close_in inc; []
     )
   | Tokenize input ->
