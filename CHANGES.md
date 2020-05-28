@@ -22,6 +22,8 @@
              (#194, @ejgallego)
  * [general] SerAPI is now tested with OCaml 4.08 and 4.09 (#195 , @ejgallego)
 
+ * [sertop ] Forward port sername from 0.7.1 (@ejgallego)
+
 ## Version 0.11.0:
 
  * [general] (!) support Coq 8.11, a few datatypes have changed, in
@@ -30,6 +32,14 @@
  * [general] (!) Now the `sertop` and `serapi` OCaml libraries are
              built packed, we've also bumped their compat version number
              (#192 @ejgallego)
+
+## Version 0.7.1:
+
+ * [sertop ] Add `sername` program for batch serialization elaborated terms
+             (@palmskog, with help from @ejgallego)
+ * [serlib ] Expose `QueryUtil.info_of_id` and `gen_pp_obj` in `serapi_protocol.mli` to enable
+             using them in `sername` to retrieve serialized body-type pairs (@palmskog)
+ * [serlib ] Only use `ssreflect` from Coq in tests (@ejgallego)
 
 ## Version 0.7.0:
 
