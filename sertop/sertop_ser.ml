@@ -185,6 +185,7 @@ type query_opt =
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
+  [@@ocaml.warning "-3"]
 
 type query_cmd =
   [%import: Serapi_protocol.query_cmd]
@@ -257,6 +258,7 @@ type add_opts =
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
+  [@@ocaml.warning "-3"]
 
 type newdoc_opts =
   [%import: Serapi_protocol.newdoc_opts
@@ -266,6 +268,7 @@ type newdoc_opts =
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
+  [@@ocaml.warning "-3"]
 
 type parse_opt =
   [%import: Serapi_protocol.parse_opt
@@ -273,6 +276,7 @@ type parse_opt =
      Sexplib.Conv.sexp_option := sexp_option;
   ]]
   [@@deriving sexp]
+  [@@ocaml.warning "-3"]
 
 type cmd =
   [%import: Serapi_protocol.cmd]
