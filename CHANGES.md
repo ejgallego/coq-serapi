@@ -41,6 +41,7 @@
              (#207, @palmskog, with help from @ejgallego)
  * [serlib ] Expose `QueryUtil.info_of_id` and `gen_pp_obj` in `serapi_protocol.mli` to enable
              using them in `sername` to retrieve serialized body-type pairs (@palmskog)
+ * [general] Improved compat with Jane Street v0.13 toolchain
  * [serlib ] Only use `ssreflect` from Coq in tests (@ejgallego)
 
 ## Version 0.7.0:
