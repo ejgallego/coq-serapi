@@ -23,6 +23,22 @@ let prelude =
   let doc = "Load Coq.Init.Prelude from $(docv); plugins/ and theories/ should live there." in
   Arg.(value & opt string Coq_config.coqlib & info ["coqlib"] ~docv:"COQPATH" ~doc)
 
+let require_lib =
+  let doc = "Coq module to require." in
+  Arg.(value & opt (some string) None & info ["require-lib"] ~doc)
+
+let str_pp =
+  let doc = "Pretty-print constr strings." in
+  Arg.(value & flag & info ["str-pp"] ~doc)
+
+let de_bruijn =
+  let doc = "Print constrs with de Bruijn indices." in
+  Arg.(value & flag & info ["de-bruijn"] ~doc)
+
+let body =
+  let doc = "Print bodies of constrs." in
+  Arg.(value & flag & info ["body"] ~doc)
+
 let async =
   let doc = "Enable async support using Coq binary $(docv) (experimental)." in
   Arg.(value & opt (some string) None & info ["async"] ~doc ~docv:"COQTOP")

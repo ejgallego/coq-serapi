@@ -1,3 +1,13 @@
+## Version 0.7.1:
+
+ * [sertop ] Add `sername` program for batch serialization elaborated terms
+             Note that this utility will be deprecated in future versions,
+             to be subsumed by `Query`.
+             (#207, @palmskog, with help from @ejgallego)
+ * [serlib ] Expose `QueryUtil.info_of_id` and `gen_pp_obj` in `serapi_protocol.mli` to enable
+             using them in `sername` to retrieve serialized body-type pairs (@palmskog)
+ * [serlib ] Only use `ssreflect` from Coq in tests (@ejgallego)
+
 ## Version 0.7.0:
 
  * [general] (!) support Coq 8.10,

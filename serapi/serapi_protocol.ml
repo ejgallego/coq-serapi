@@ -385,7 +385,7 @@ type query_opt =
     pp    : format_opt [@default { pp_format = PpSer; pp_depth = 0; pp_elide = "..."; pp_margin = 72 } ];
     (* Legacy/Deprecated *)
     route : Feedback.route_id [@default 0];
-  }
+  } [@@ocaml.warning "-3"]
 
 (** XXX: This should be in sync with the object tag!  *)
 type query_cmd =
@@ -656,14 +656,14 @@ let coq_protect e =
     (* Richpp.richpp_of_pp msg *)
 
 type parse_opt =
-  { ontop  : Stateid.t sexp_option }
+  { ontop  : Stateid.t sexp_option } [@@ocaml.warning "-3"]
 
 type add_opts = {
   lim    : int       sexp_option;
   ontop  : Stateid.t sexp_option;
   newtip : Stateid.t sexp_option;
   verb   : bool      [@default false];
-}
+} [@@ocaml.warning "-3"]
 
 module ControlUtil = struct
 
@@ -773,7 +773,7 @@ type newdoc_opts =
   ; iload_path   : Mltop.coq_path list sexp_option
   (* Libs to require in STM init *)
   ; require_libs : (string * string option * bool option) list sexp_option
-  }
+  } [@@ocaml.warning "-3"]
 
 (******************************************************************************)
 (* Help                                                                       *)

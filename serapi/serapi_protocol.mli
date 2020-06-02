@@ -268,6 +268,8 @@ type print_opt =
     (** Printing format of the query, this can be used to select the type of the answer, as for example to show goals in human-form. *)
   }
 
+val gen_pp_obj : Environ.env -> Evd.evar_map -> coq_object -> Pp.t
+
 (******************************************************************************)
 (* Parsing Sub-Protocol                                                       *)
 (******************************************************************************)
@@ -298,7 +300,7 @@ type query_opt =
     (** Printing format of the query, this can be used to select the type of the answer, as for example to show goals in human-form. *)
     route : Feedback.route_id [@default 0];
     (** Legacy/Deprecated STM query method *)
-  }
+  } [@@ocaml.warning "-3"]
 
 (** Query commands are mostly a tag and some arguments determining the result type.
 
@@ -348,6 +350,10 @@ type query_cmd =
   | Complete of string
   (** Naïve but efficient prefix-based completion of identifiers *)
 
+module QueryUtil : sig
+  val info_of_id : Environ.env -> string -> coq_object list * coq_object list
+end
+
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
 (******************************************************************************)
@@ -359,8 +365,7 @@ type query_cmd =
 type parse_opt =
   { ontop  : Stateid.t sexp_option
   (** parse [ontop] of the given sentence *)
-  }
-
+  } [@@ocaml.warning "-3"]
 
 (** [Add] will take a string and parse all the sentences on it, until an error of the end is found.
     Options for [Add] are: *)
@@ -373,7 +378,7 @@ type add_opts = {
   (** Make [newtip] the new sentence id, very useful to avoid synchronous operations *)
   verb   : bool      [@default false];
   (** [verb] internal Coq parameter, be verbose on parsing *)
-}
+} [@@ocaml.warning "-3"]
 
 (******************************************************************************)
 (* Init / new document                                                        *)
@@ -389,7 +394,7 @@ type newdoc_opts =
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
   ; require_libs : (string * string option * bool option) list sexp_option
   (** Libraries to load in the initial document state *)
-  }
+  } [@@ocaml.warning "-3"]
 
 (******************************************************************************)
 (* Help                                                                       *)
