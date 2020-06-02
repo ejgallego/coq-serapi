@@ -42,7 +42,7 @@ env:
   - TEST_TARGET="test"    COMPILER="4.07.1"
   - TEST_TARGET="test"    COMPILER="4.08.1"
   - TEST_TARGET="test"    COMPILER="4.09.0"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq js_of_ocaml js_of_ocaml-lwt"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq.8.11.1 js_of_ocaml js_of_ocaml-lwt"
 
 install:
 - sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.6/opam-2.0.6-x86_64-linux -o /usr/bin/opam

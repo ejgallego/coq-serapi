@@ -19,6 +19,10 @@
 open Cmdliner
 
 val prelude         : string Term.t
+val require_lib     : string option Term.t
+val str_pp          : bool Term.t
+val de_bruijn       : bool Term.t
+val body            : bool Term.t
 val async           : string option Term.t
 val quick           : bool Term.t
 val async_full      : bool Term.t
