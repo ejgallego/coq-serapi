@@ -116,10 +116,11 @@ pointers here, feel free to add your own!
 - [jsCoq](https://github.com/ejgallego/jscoq) allows you to run Coq in
   your browser. jsCoq is the predecessor of SerAPI and will shortly be
   fully based on it.
-- [mCoq](http://cozy.ece.utexas.edu/mcoq/) is a tool for mutation analysis
+- [mCoq](https://github.com/EngineeringSoftware/mcoq) is a tool for mutation analysis
   of Coq projects, based on serializing and deserializing Coq code via SerAPI.
-  See the accompanying [paper](https://users.ece.utexas.edu/~gligoric/papers/CelikETAL19mCoq.pdf)
-  for more details and an evaluation of the tool on several large projects.
+  See the accompanying [tool paper](https://users.ece.utexas.edu/~gligoric/papers/JainETAL20mCoqTool.pdf),
+  and the [research paper](https://users.ece.utexas.edu/~gligoric/papers/CelikETAL19mCoq.pdf)
+  which describes and evaluates the technique.
 - [elcoq](https://github.com/cpitclaudel/elcoq), an emacs technology
   demo based on SerAPI by [Clément Pit-Claudel](https://github.com/cpitclaudel). `elcoq` is not fully
   functional but illustrates some noteworthy features of SerAPI.
@@ -146,9 +147,16 @@ pointers here, feel free to add your own!
 - [Proverbot9001](https://github.com/UCSD-PL/proverbot9001) is a proof search system based on machine
   learning techniques, and uses SerAPI to interface with Coq.
   See also the [paper](https://arxiv.org/abs/1907.07794) describing the system.
+- [Roosterize](https://github.com/EngineeringSoftware/roosterize) is a tool for
+  suggesting lemma names in Coq projects based on machine learning.
+  See the [paper](https://arxiv.org/abs/2004.07761) describing the technique and tool.
+- [MathComp corpus](https://github.com/EngineeringSoftware/math-comp-corpus) is a machine learning
+  dataset based on the [Mathematical Components](https://math-comp.github.io/) family of Coq projects,
+  and includes several machine-readable representations of Coq code generated via SerAPI.
+  The dataset was used to train and evaluate the Roosterize tool.
 - SerAPI is being used to improve the Coq regression proof
-  selection tool [iCoq](http://cozy.ece.utexas.edu/icoq/),
-  see the [paper](http://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
+  selection tool [iCoq](https://cozy.ece.utexas.edu/icoq/),
+  see the [paper](https://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
 - SerAPI is being used in additional software testing and machine learning projects; we will
   update this list as papers get out of embargo.
 
