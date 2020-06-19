@@ -5,4 +5,4 @@
 
 (rule
  (alias runtest)
- (action (diff nat_add.log nat_add.out)))
+ (action (diff nat_add.out nat_add.log)))

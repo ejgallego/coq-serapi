@@ -1,0 +1,18 @@
+; Segfault in envs; thanks to Clément Pit-Claudel
+(rule
+ (action
+  (with-stdout-to full_env.log
+   (with-stdin-from full_env.in (run sertop)))))
+
+(rule
+  (targets full_env.out)
+  (mode promote)
+  (action (run gunzip %{dep:full_env.out.gz})))
+
+; Disabled as it is not reliable on different machines, moreover the
+; test size is huge, we should find a better way to test univ.ml
+
+(rule
+ (alias runtest-fragile)
+ (action (diff full_env.out full_env.log)))
+

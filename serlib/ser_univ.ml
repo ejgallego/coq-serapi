@@ -132,11 +132,13 @@ end
 
 module AUContext = struct
 
+  type _t = Names.Name.t array constrained
+  [@@deriving sexp]
   type t = Univ.AUContext.t
 
   (* XXX: Opaque, so check they are the same *)
-  let t_of_sexp x = Obj.magic (UContext.t_of_sexp x)
-  let sexp_of_t c = UContext.sexp_of_t (Obj.magic c)
+  let t_of_sexp x = Obj.magic (_t_of_sexp x)
+  let sexp_of_t c = sexp_of__t (Obj.magic c)
 
 end
 
