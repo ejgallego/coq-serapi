@@ -22,8 +22,8 @@
  * [deps]    Require sexplib >= 0.12 , fixed deprecation warnings
              (#194, @ejgallego)
  * [general] SerAPI is now tested with OCaml 4.08 and 4.09 (#195 , @ejgallego)
-
  * [sertop ] Forward port sername from 0.7.1 (@ejgallego)
+ * [serlib ] Fix #212 "Segfault on universes" (@ejgallego, reported by @cpitclaudel , #214)
 
 ## Version 0.11.0:
 
