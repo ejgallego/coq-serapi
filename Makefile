@@ -16,7 +16,7 @@ sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
 build:
-	dune build
+	dune build @install
 
 build-install:
 	dune build coq-serapi.install
@@ -31,7 +31,7 @@ browser:
 	google-chrome _build/default/_doc/_html/index.html
 
 sertop:
-	dune build
+	dune build @install
 	dune exec -- rlwrap sertop
 
 #####################################################

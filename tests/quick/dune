@@ -1,23 +1,23 @@
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input ab.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input assoc.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input ordered.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input reserved.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))

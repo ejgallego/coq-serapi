@@ -16,7 +16,7 @@
 (executable
  (name sertop_js)
  (modules sertop_async sertop_js)
- (modes byte)
+ (modes js)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (js_of_ocaml
   (javascript_files

@@ -3,6 +3,6 @@
   (with-stdout-to nat_add.log
    (run sername --de-bruijn --str-pp %{dep:nat_add.sername}))))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (action (diff nat_add.log nat_add.out)))

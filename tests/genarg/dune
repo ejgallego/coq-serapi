@@ -11,142 +11,142 @@
    ; test cases if the binary has been modified.
    (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input abstract.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input add_field.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input auto.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input case.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input clear.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input eauto.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input elim.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input exact.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input exists.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input firstorder.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input fix.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input functional_induction.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input functional_scheme.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input hint_rewrite.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input instantiate.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input intropattern.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input intros.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input libTactics.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input mbid.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input move.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input rename.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input replace.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input revert.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input setoid_rewrite.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input specialize.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input subst.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input symmetry.v))
  (action (run ./test_roundtrip %{input})))
 
-(alias
- (name runtest)
+(rule
+ (alias runtest)
  (deps (:input tactic_notation.v))
  (action (run ./test_roundtrip %{input})))
