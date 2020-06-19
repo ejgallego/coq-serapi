@@ -1,4 +1,4 @@
-(lang dune 1.4)
-(using fmt 1.0)
+(lang dune 2.0)
+(formatting (enabled_for ocaml))
 (name coq-serapi)
 

@@ -1,5 +1,6 @@
 ## Version 0.11.1:
 
+ * [general] Require dune >= 2.0 (@ejgallego, ??)
  * [serapi]  New query `Comments` to return all comments in a document
              (@ejgallego, #20? , (partially) fixes #191 , #200 )
  * [general] Coq's error recovery is now disabled by default
