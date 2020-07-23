@@ -126,6 +126,10 @@ type definition_expr =
   [%import: Vernacexpr.definition_expr]
   [@@deriving sexp,yojson]
 
+type syntax_modifier =
+  [%import: Vernacexpr.syntax_modifier]
+  [@@deriving sexp,yojson]
+
 type decl_notation =
   [%import: Vernacexpr.decl_notation]
   [@@deriving sexp,yojson]
@@ -200,10 +204,6 @@ type one_inductive_expr =
 
 type proof_expr =
   [%import: Vernacexpr.proof_expr]
-  [@@deriving sexp,yojson]
-
-type syntax_modifier =
-  [%import: Vernacexpr.syntax_modifier]
   [@@deriving sexp,yojson]
 
 type opacity_flag =

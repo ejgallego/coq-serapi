@@ -37,9 +37,11 @@ type grammar_constr_prod_item =
   [%import: Notation_gram.grammar_constr_prod_item]
   [@@deriving sexp]
 
-type level =
-  [%import: Notation_gram.level]
-  [@@deriving sexp]
+module Notation = struct
+  type level =
+    [%import: Notation.level]
+    [@@deriving sexp]
+end
 
 type one_notation_grammar =
   [%import: Notation_gram.one_notation_grammar]
