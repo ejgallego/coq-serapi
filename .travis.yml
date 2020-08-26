@@ -27,11 +27,11 @@ env:
   - OPAMYES="true"
   - NJOBS="2"
   - COQ_REPOS="https://github.com/coq/coq.git"
-  - COQ_VERSION="v8.11"
-  - COQ_BRANCH="v8.11"
+  - COQ_VERSION="v8.12"
+  - COQ_BRANCH="v8.12"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.07.1"
-  - EXTRA_OPAM="coq.8.11.2 coq-mathcomp-ssreflect"
+  - EXTRA_OPAM="coq.8.12.0 coq-mathcomp-ssreflect"
   # - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
   # Main test suites
   matrix:
@@ -41,11 +41,13 @@ env:
   # Don't test opam in 8.11 [yet]
   - TEST_TARGET="test"    COMPILER="4.07.1"
   - TEST_TARGET="test"    COMPILER="4.08.1"
-  - TEST_TARGET="test"    COMPILER="4.09.0"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq.8.11.2 js_of_ocaml js_of_ocaml-lwt"
+  - TEST_TARGET="test"    COMPILER="4.09.1"
+  - TEST_TARGET="test"    COMPILER="4.10.1"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq.8.12.0 js_of_ocaml js_of_ocaml-lwt"
+  - TEST_TARGET="test"    COMPILER="4.10.1" EXTRA_OPAM="dune" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
 
 install:
-- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.6/opam-2.0.6-x86_64-linux -o /usr/bin/opam
+- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.7/opam-2.0.7-x86_64-linux -o /usr/bin/opam
 - sudo chmod 755 /usr/bin/opam
 - opam init -c "$COMPILER" --disable-sandboxing
 - opam switch set "$COMPILER"
@@ -61,7 +63,7 @@ install:
   if [[ -v SERAPI_COQ_HOME ]]; then
     git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_VERSION" &&
     pushd "$HOME/coq-$COQ_VERSION"        &&
-    make -f Makefile.dune coq             &&
+    make -f Makefile.dune world           &&
     popd;
     PATH="$HOME/coq-$COQ_VERSION/_build/install/default/bin":$PATH &&
     git clone --depth=3 -b master https://github.com/math-comp/math-comp.git &&
@@ -69,7 +71,7 @@ install:
     make && make install &&
     popd;
   fi
-- if [[ -v EXTRA_OPAM ]]; then opam install --ignore-constraints-on=coq $EXTRA_OPAM; fi
+- if [[ -v EXTRA_OPAM ]]; then travis_wait opam install --ignore-constraints-on=coq $EXTRA_OPAM; fi
 
 script:
 - set -e
