@@ -40,6 +40,7 @@ let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
     ; ml_load    = None
     ; debug
     ; allow_sprop
+    ; indices_matter = false
     };
 
   (* document initialization *)

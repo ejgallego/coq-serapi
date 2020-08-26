@@ -38,7 +38,9 @@ let coq_loadpath_default ~implicit ~coq_path =
   [mk_lp ~ml:AddRecML ~root:coq_root     ~implicit       ~dir:"plugins";
    mk_lp ~ml:AddNoML  ~root:coq_root     ~implicit       ~dir:"theories";
    mk_lp ~ml:AddRecML ~root:default_root ~implicit:false ~dir:"user-contrib";
-  ]
+  ] @
+  List.map (fun dir -> mk_lp ~ml:AddRecML ~root:default_root ~implicit:false ~dir)
+    Envars.coqpath
 
 (******************************************************************************)
 (* Generate a module name given a file                                        *)
