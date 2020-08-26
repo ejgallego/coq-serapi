@@ -32,7 +32,6 @@ val error_recovery  : bool Term.t
 val implicit_stdlib : bool Term.t
 val printer         : Sertop_ser.ser_printer Term.t
 val debug           : bool Term.t
-val disallow_sprop  : bool Term.t
 val print0          : bool Term.t
 val length          : bool Term.t
 val rload_path      : Loadpath.coq_path list Term.t
@@ -41,6 +40,10 @@ val ml_include_path : Loadpath.coq_path list Term.t
 val no_init         : bool Term.t
 val topfile         : string option Term.t
 val no_prelude      : bool Term.t
+
+(* Kernel checking options *)
+val disallow_sprop  : bool Term.t
+val indices_matter  : bool Term.t
 
 (* sertop options *)
 type comp_mode = | C_parse | C_stats | C_print | C_sexp | C_check | C_vo | C_env

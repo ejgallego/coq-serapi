@@ -36,6 +36,7 @@ type coq_opts = {
 
   (* Allow SProp *)
   allow_sprop  : bool;
+  indices_matter : bool;
 }
 
 (**************************************************************************)
@@ -68,7 +69,7 @@ let coq_init opts =
 
   (* This should be configurable somehow. *)
   Global.set_engagement Declarations.PredicativeSet;
-  Global.set_indices_matter false;
+  Global.set_indices_matter opts.indices_matter;
 
   (* --allow-sprop in agreement with coq v8.11  *)
   Global.set_allow_sprop opts.allow_sprop;

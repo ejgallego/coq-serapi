@@ -39,6 +39,9 @@ type coq_opts =
 
   ; allow_sprop  : bool
   (** allow using the proof irrelevant SProp sort (default=true) *)
+
+  ; indices_matter : bool
+  (** Levels of indices (and nonuniform parameters) contribute to the level of inductives *)
 }
 
 val coq_init : coq_opts -> unit

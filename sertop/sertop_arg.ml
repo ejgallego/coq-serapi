@@ -90,6 +90,10 @@ let disallow_sprop =
   let doc = "Forbid using the proof irrelevant SProp sort (allowed by default)" in
   Arg.(value & flag & info ["disallow-sprop"] ~doc)
 
+let indices_matter =
+  let doc = "Levels of indices (and nonuniform parameters) contribute to the level of inductives (disabled by default)" in
+  Arg.(value & flag & info ["indices-matter"] ~doc)
+
 let print0 =
   let doc = "End responses with a \\\\0 char." in
   Arg.(value & flag & info ["print0"] ~doc)
