@@ -23,7 +23,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
+let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter =
 
   let open Sertop.Sertop_init in
 
@@ -33,6 +33,7 @@ let create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop =
     ; ml_load    = None
     ; debug
     ; allow_sprop
+    ; indices_matter
     };
 
   (* document initialization *)
@@ -179,7 +180,7 @@ let sercomp_doc = "sercomp Coq Compiler"
 
 open Cmdliner
 
-let driver input mode debug disallow_sprop printer async async_workers error_recovery quick
+let driver input mode debug disallow_sprop indices_matter printer async async_workers error_recovery quick
     coq_path ml_path load_path rload_path in_file omit_loc omit_att exn_on_opaque =
 
   (* closures *)
@@ -198,7 +199,7 @@ let driver input mode debug disallow_sprop printer async async_workers error_rec
     ; async_workers
     ; error_recovery
     } in
-  let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop in
+  let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -219,7 +220,7 @@ let main () =
   let sercomp_cmd =
     let open Sertop.Sertop_arg in
     Term.(const driver
-          $ comp_input $ comp_mode $ debug $ disallow_sprop $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
+          $ comp_input $ comp_mode $ debug $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ exn_on_opaque
          ),
     Term.info "sercomp" ~version:sercomp_version ~doc:sercomp_doc ~man:sercomp_man

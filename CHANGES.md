@@ -25,6 +25,7 @@
  * [sertop ] Forward port sername from 0.7.1 (@ejgallego)
  * [serlib ] Fix #212 "Segfault on universes" (@ejgallego, reported by @cpitclaudel , #214)
  * [serapi ] Fix #221 "Support COQPATH" (@ejgallego, reported by @cpitclaudel , #224)
+ * [sertop ] Fix #222 "Support --indices-matter" (@ejgallego, reported by @cpitclaudel , #223)
 
 ## Version 0.11.0:
 
