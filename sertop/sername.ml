@@ -32,6 +32,7 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~iload_path ~debug ~
     ; ml_load    = None
     ; debug
     ; allow_sprop
+    ; indices_matter = false
     };
 
   (* document initialization *)
