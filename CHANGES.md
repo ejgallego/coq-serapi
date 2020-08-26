@@ -24,6 +24,7 @@
  * [general] SerAPI is now tested with OCaml 4.08 and 4.09 (#195 , @ejgallego)
  * [sertop ] Forward port sername from 0.7.1 (@ejgallego)
  * [serlib ] Fix #212 "Segfault on universes" (@ejgallego, reported by @cpitclaudel , #214)
+ * [sertop ] Fix "Stack overflow in main loop" (@pestun , #216)
 
 ## Version 0.11.0:
 

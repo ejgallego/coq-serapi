@@ -74,8 +74,9 @@ let read_cmd cmd_id in_channel pp_error =
       end
     with
     | End_of_file   -> "EOF", SP.Quit
-    | exn           -> pp_error (sexp_of_exn exn);
-                       read_loop ()
+    | exn           ->
+      pp_error (sexp_of_exn exn);
+      (read_loop [@ocaml.tailcall]) ()
   in read_loop ()
 
 let out_sexp opts =
@@ -168,6 +169,6 @@ let ser_loop ser_opts =
         is_cmd_quit cmd
       with
         Sys.Break -> false
-    in if not quit then loop (1+cmd_id) else ()
+    in if not quit then (loop [@ocaml.tailcall]) (1+cmd_id) else ()
   in loop 0
 
