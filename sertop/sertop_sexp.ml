@@ -75,8 +75,9 @@ let read_cmd cmd_id in_channel pp_error =
       end
     with
     | End_of_file   -> "EOF", SP.Quit
-    | exn           -> pp_error (sexp_of_exn exn);
-                       read_loop ()
+    | exn           ->
+      pp_error (sexp_of_exn exn);
+      (read_loop [@ocaml.tailcall]) ()
   in read_loop ()
 
 let out_sexp opts =
@@ -162,10 +163,14 @@ let ser_loop ser_opts =
 
   (* Main loop *)
   let rec loop cmd_id =
-    try
-      let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_err          in
-      pp_ack cmd_tag;
-      iter pp_answer @@ map (fun a -> SP.Answer (cmd_tag, a)) (SP.exec_cmd cmd);
-      if not (is_cmd_quit cmd) then loop (1+cmd_id)
-    with Sys.Break -> loop (1+cmd_id)
+    let quit =
+      try
+        let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_err          in
+        pp_ack cmd_tag;
+        iter pp_answer @@ map (fun a -> SP.Answer (cmd_tag, a)) (SP.exec_cmd cmd);
+        is_cmd_quit cmd
+      with
+        Sys.Break -> false
+    in if not quit then (loop [@ocaml.tailcall]) (1+cmd_id) else ()
   in loop 0
+
