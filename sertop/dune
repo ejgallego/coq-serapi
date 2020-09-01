@@ -1,6 +1,6 @@
 (library
  (name sertop)
- (public_name coq-serapi.sertop_v8_11)
+ (public_name coq-serapi.sertop_v8_12)
  (modules :standard \ sertop_bin sercomp sertok sername sertop_js sertop_async)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (libraries findlib.dynload cmdliner serapi serlib serlib_ltac))
