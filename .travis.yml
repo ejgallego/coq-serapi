@@ -33,12 +33,9 @@ env:
   - COMPILER="4.07.1"
   - EXTRA_OPAM="coq.8.12.0 coq-mathcomp-ssreflect"
   # - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
-  # Main test suites
+  # Main test suites; SERAPI_COQ_HOME controls if opam is used or a
+  # git branch is installed.
   matrix:
-  # - TEST_TARGET="build"   COMPILER="4.07.1"       EXTRA_OPAM="coq"
-  # - TEST_TARGET="test"    COMPILER="4.07.1"       EXTRA_OPAM="coq coq-mathcomp-ssreflect"
-  # - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq js_of_ocaml js_of_ocaml-lwt"
-  # Don't test opam in 8.11 [yet]
   - TEST_TARGET="test"    COMPILER="4.07.1"
   - TEST_TARGET="test"    COMPILER="4.08.1"
   - TEST_TARGET="test"    COMPILER="4.09.1"
