@@ -1,3 +1,8 @@
+## Version 0.12.1:
+
+ - [opam]    Bump upper bound on ppx_sexp_conv to 0.15, allowing SerAPI
+             to work with the 0.14 set of Jane Street packages.
+
 ## Version 0.12.0:
 
  * [general] (!) support Coq 8.12, main changes upstream related to
