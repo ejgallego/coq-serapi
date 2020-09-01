@@ -1,6 +1,6 @@
 ## SerAPI: Machine-Friendly, Data-Centric Serialization for Coq
 
-[![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=v8.11)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
+[![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=v8.12)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
 ```
 $ opam install coq-serapi
@@ -103,7 +103,7 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 
 ### Roadmap:
 
-SerAPI 0.11.x is based on Coq 8.11. These days, most work related to
+SerAPI 0.12.x is based on Coq 8.12. These days, most work related to
 SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
 itself. The main objective is to improve the proof-document model; building
 a rich query language will be next.

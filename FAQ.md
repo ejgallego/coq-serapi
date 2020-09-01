@@ -13,8 +13,8 @@ changelog with `(!)`.
 
 ## Which Coq versions does SerAPI support?
 
-At the moment, Coq 8.11 is the current supported version for the
-current protocol. Older versions (8.6---8.10) work, however the
+At the moment, Coq 8.12 is the current supported version for the
+current protocol. Older versions (8.6---8.11) work, however the
 protocol and feature sets do differ.
 
 ## How can I install SerAPI?
