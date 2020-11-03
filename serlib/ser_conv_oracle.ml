@@ -14,16 +14,18 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 type level =
   [%import: Conv_oracle.level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (* XXX: Fixme *)
 type oracle =
   [%import: Conv_oracle.oracle]
 
-let sexp_of_oracle _ =
-  Sexplib.Sexp.(Atom "[Conv_oracle.oracle: Abstract]")
-
+let sexp_of_oracle = Serlib_base.sexp_of_opaque ~typ:"Conv_oracle.oracle"
 let oracle_of_sexp _ = Conv_oracle.empty
+
+let python_of_oracle = Serlib_base.python_of_opaque ~typ:"Conv_oracle.oracle"
+let oracle_of_python _ = Conv_oracle.empty

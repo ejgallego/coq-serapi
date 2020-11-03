@@ -32,3 +32,13 @@ let sexp_of_opaque ~typ _exp =
     raise (Ser_error msg)
   else
     Sexplib.Sexp.Atom ("["^typ^": ABSTRACT]")
+
+let opaque_of_python ~typ _obj =
+  raise (Ser_error ("["^typ^": ABSTRACT / cannot deserialize]"))
+
+let python_of_opaque ~typ _obj =
+  let msg = "["^typ^": ABSTRACT]" in
+  if !exn_on_opaque then
+    raise (Ser_error msg)
+  else
+    Py.String.of_string ("["^typ^": ABSTRACT]")

@@ -26,7 +26,11 @@ val cooking_info_of_sexp : Sexp.t -> cooking_info
 type opaque = Opaqueproof.opaque
 val sexp_of_opaque : opaque -> Sexp.t
 val opaque_of_sexp : Sexp.t -> opaque
+val python_of_opaque : opaque -> Py.Object.t
+val opaque_of_python : Py.Object.t -> opaque
 
 type opaquetab = Opaqueproof.opaquetab
 val sexp_of_opaquetab : opaquetab -> Sexp.t
 val opaquetab_of_sexp : Sexp.t -> opaquetab
+val python_of_opaquetab : opaquetab -> Py.Object.t
+val opaquetab_of_python : Py.Object.t -> opaquetab

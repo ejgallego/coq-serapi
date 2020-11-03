@@ -46,6 +46,8 @@ val case_style_of_sexp : Sexp.t -> case_style
 val sexp_of_case_style : case_style -> Sexp.t
 val case_style_of_yojson : Yojson.Safe.t -> (case_style, string) Result.result
 val case_style_to_yojson : case_style -> Yojson.Safe.t
+val case_style_of_python : Py.Object.t -> case_style
+val python_of_case_style : case_style -> Py.Object.t
 
 type case_printing = Constr.case_printing
 
@@ -114,6 +116,9 @@ val sexp_of_t : t -> Sexp.t
 val of_yojson : Yojson.Safe.t -> (t, string) Result.result
 val to_yojson : t -> Yojson.Safe.t
 
+val t_of_python : Py.Object.t -> t
+val python_of_t : t -> Py.Object.t
+
 type constr = t
 
 val constr_of_sexp : Sexp.t -> constr
@@ -122,12 +127,18 @@ val sexp_of_constr : constr -> Sexp.t
 val constr_of_yojson : Yojson.Safe.t -> (constr, string) Result.result
 val constr_to_yojson : constr -> Yojson.Safe.t
 
+val constr_of_python : Py.Object.t -> constr
+val python_of_constr : constr -> Py.Object.t
+
 type types  = constr
 val types_of_sexp : Sexp.t -> types
 val sexp_of_types : types -> Sexp.t
 
 val types_of_yojson : Yojson.Safe.t -> (types, string) Result.result
 val types_to_yojson : types -> Yojson.Safe.t
+
+val types_of_python : Py.Object.t -> types
+val python_of_types : types -> Py.Object.t
 
 type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential
@@ -140,15 +151,23 @@ val sexp_of_sorts_family : sorts_family -> Sexp.t
 type named_declaration = Constr.named_declaration
 val named_declaration_of_sexp : Sexp.t -> named_declaration
 val sexp_of_named_declaration : named_declaration -> Sexp.t
+val named_declaration_of_python : Py.Object.t -> named_declaration
+val python_of_named_declaration : named_declaration -> Py.Object.t
 
 type named_context = Constr.named_context
 val named_context_of_sexp : Sexp.t -> named_context
 val sexp_of_named_context : named_context -> Sexp.t
+val named_context_of_python : Py.Object.t -> named_context
+val python_of_named_context : named_context -> Py.Object.t
 
 type rel_declaration = Constr.rel_declaration
 val rel_declaration_of_sexp : Sexp.t -> rel_declaration
 val sexp_of_rel_declaration : rel_declaration -> Sexp.t
+val rel_declaration_of_python : Py.Object.t -> rel_declaration
+val python_of_rel_declaration : rel_declaration -> Py.Object.t
 
 type rel_context = Constr.rel_context
 val rel_context_of_sexp : Sexp.t -> rel_context
 val sexp_of_rel_context : rel_context -> Sexp.t
+val rel_context_of_python : Py.Object.t -> rel_context
+val python_of_rel_context : rel_context -> Py.Object.t

@@ -14,9 +14,21 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Serlib.Ppx_python_runtime_serapi
 
-(* XXX: Move to ser_cmap *)
-type 'a cstring_map = 'a CString.Map.t
+module StringSPJ = struct
+  let t_of_sexp = string_of_sexp
+  let sexp_of_t = sexp_of_string
+  let of_yojson s = Ok (Yojson.Safe.Util.to_string s)
+  let to_yojson s = `String s
+  let t_of_python = Py.String.to_string
+  let python_of_t = Py.String.of_string
+end
+
+module SM = Serlib.Ser_cMap.MakeJP(CString.Map)(StringSPJ)
+
+type 'a cstring_map = 'a SM.t
+  [@@deriving sexp,python]
 
 let from_bindings bl =
   let open CString.Map in
@@ -37,4 +49,4 @@ type treenode =
   [@with CString.Map.t   := cstring_map;
          CString.Map.key := string
   ]]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

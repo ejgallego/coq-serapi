@@ -15,14 +15,19 @@
 
 open Sexplib
 
+(* Use utils PJ *)
 module Bound : sig
   type t = UGraph.Bound.t
 
   val sexp_of_t : t -> Sexp.t
   val t_of_sexp : Sexp.t -> t
+  val python_of_t : t -> Py.Object.t
+  val t_of_python : Py.Object.t -> t
 end
 
 type t = UGraph.t
 
 val sexp_of_t : t -> Sexp.t
 val t_of_sexp : Sexp.t -> t
+val python_of_t : t -> Py.Object.t
+val t_of_python : Py.Object.t -> t

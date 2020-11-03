@@ -24,8 +24,10 @@ type env = Environ.env
 
 val env_of_sexp : Sexp.t -> env val sexp_of_env : env -> Sexp.t
 
-type ('constr, 'types) punsafe_judgment = ('constr, 'types)
-   Environ.punsafe_judgment
+val env_of_python : Py.Object.t -> env
+val python_of_env : env -> Py.Object.t
+
+type ('constr, 'types) punsafe_judgment = ('constr, 'types) Environ.punsafe_judgment
 
 val punsafe_judgment_of_sexp : (Sexp.t -> 'constr) -> (Sexp.t ->
    'types) -> Sexp.t -> ('constr, 'types) punsafe_judgment val

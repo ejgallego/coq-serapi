@@ -20,18 +20,24 @@ val or_by_notation_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a or_by_notation
 val sexp_of_or_by_notation : ('a -> Sexp.t) -> 'a or_by_notation -> Sexp.t
 val or_by_notation_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a or_by_notation, string) Result.result
 val or_by_notation_to_yojson : ('a -> Yojson.Safe.t) -> 'a or_by_notation -> Yojson.Safe.t
+val or_by_notation_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a or_by_notation
+val python_of_or_by_notation : ('a -> Py.Object.t) -> 'a or_by_notation -> Py.Object.t
 
 type notation_entry = Constrexpr.notation_entry
 val notation_entry_of_sexp : Sexp.t -> notation_entry
 val sexp_of_notation_entry : notation_entry -> Sexp.t
 val notation_entry_of_yojson : Yojson.Safe.t -> (notation_entry, string) Result.result
 val notation_entry_to_yojson : notation_entry -> Yojson.Safe.t
+val notation_entry_of_python : Py.Object.t -> notation_entry
+val python_of_notation_entry : notation_entry -> Py.Object.t
 
 type entry_level = Constrexpr.entry_level
 val entry_level_of_sexp : Sexp.t -> entry_level
 val sexp_of_entry_level : entry_level -> Sexp.t
 val entry_level_of_yojson : Yojson.Safe.t -> (entry_level, string) Result.result
 val entry_level_to_yojson : entry_level -> Yojson.Safe.t
+val entry_level_of_python : Py.Object.t -> entry_level
+val python_of_entry_level : entry_level -> Py.Object.t
 
 type notation_entry_level = Constrexpr.notation_entry_level
 val notation_entry_level_of_sexp : Sexp.t -> notation_entry_level
@@ -44,46 +50,63 @@ val entry_relative_level_of_sexp : Sexp.t -> entry_relative_level
 val sexp_of_entry_relative_level : entry_relative_level -> Sexp.t
 val entry_relative_level_of_yojson : Yojson.Safe.t -> (entry_relative_level, string) Result.result
 val entry_relative_level_to_yojson : entry_relative_level -> Yojson.Safe.t
+val entry_relative_level_of_python : Py.Object.t -> entry_relative_level
+val python_of_entry_relative_level : entry_relative_level -> Py.Object.t
 
 type universe_decl_expr = Constrexpr.universe_decl_expr
 val universe_decl_expr_of_sexp : Sexp.t -> universe_decl_expr
 val sexp_of_universe_decl_expr : universe_decl_expr -> Sexp.t
 val universe_decl_expr_of_yojson : Yojson.Safe.t -> (universe_decl_expr, string) Result.result
 val universe_decl_expr_to_yojson : universe_decl_expr -> Yojson.Safe.t
+val universe_decl_expr_of_python : Py.Object.t -> universe_decl_expr
+val python_of_universe_decl_expr : universe_decl_expr -> Py.Object.t
 
 type ident_decl = Constrexpr.ident_decl
 val ident_decl_of_sexp : Sexp.t -> ident_decl
 val sexp_of_ident_decl : ident_decl -> Sexp.t
 val ident_decl_of_yojson : Yojson.Safe.t -> (ident_decl, string) Result.result
 val ident_decl_to_yojson : ident_decl -> Yojson.Safe.t
+val ident_decl_of_python : Py.Object.t -> ident_decl
+val python_of_ident_decl : ident_decl -> Py.Object.t
 
 type cumul_ident_decl = Constrexpr.cumul_ident_decl
 val cumul_ident_decl_of_sexp : Sexp.t -> cumul_ident_decl
 val sexp_of_cumul_ident_decl : cumul_ident_decl -> Sexp.t
 val cumul_ident_decl_of_yojson : Yojson.Safe.t -> (cumul_ident_decl, string) Result.result
 val cumul_ident_decl_to_yojson : cumul_ident_decl -> Yojson.Safe.t
+val cumul_ident_decl_of_python : Py.Object.t -> cumul_ident_decl
+val python_of_cumul_ident_decl : cumul_ident_decl -> Py.Object.t
 
 type univ_constraint_expr = Constrexpr.univ_constraint_expr
 val univ_constraint_expr_of_sexp : Sexp.t -> univ_constraint_expr
 val sexp_of_univ_constraint_expr : univ_constraint_expr -> Sexp.t
 val univ_constraint_expr_of_yojson : Yojson.Safe.t -> (univ_constraint_expr, string) Result.result
 val univ_constraint_expr_to_yojson : univ_constraint_expr -> Yojson.Safe.t
+val univ_constraint_expr_of_python : Py.Object.t -> univ_constraint_expr
+val python_of_univ_constraint_expr : univ_constraint_expr -> Py.Object.t
 
 type name_decl = Constrexpr.name_decl
 val name_decl_of_sexp : Sexp.t -> name_decl
 val sexp_of_name_decl : name_decl -> Sexp.t
 val name_decl_of_yojson : Yojson.Safe.t -> (name_decl, string) Result.result
 val name_decl_to_yojson : name_decl -> Yojson.Safe.t
+val name_decl_of_python : Py.Object.t -> name_decl
+val python_of_name_decl : name_decl -> Py.Object.t
 
 type notation = Constrexpr.notation
 
 val notation_of_sexp : Sexp.t -> notation
 val sexp_of_notation : notation -> Sexp.t
+val notation_of_python : Py.Object.t -> notation
+val python_of_notation : notation -> Py.Object.t
 
 type explicitation = Constrexpr.explicitation
 
 val explicitation_of_sexp : Sexp.t -> explicitation
 val sexp_of_explicitation : explicitation -> Sexp.t
+
+val explicitation_of_python : Py.Object.t -> explicitation
+val python_of_explicitation : explicitation -> Py.Object.t
 
 type binder_kind = Constrexpr.binder_kind
 
@@ -130,6 +153,8 @@ and local_binder_expr    = Constrexpr.local_binder_expr
 and constr_notation_substitution = Constrexpr.constr_notation_substitution
 
 val constr_expr_of_sexp : Sexp.t -> constr_expr
+val constr_expr_of_python : Py.Object.t -> constr_expr
+
 val case_expr_of_sexp : Sexp.t -> case_expr
 val branch_expr_of_sexp : Sexp.t -> branch_expr
 (* val binder_expr_of_sexp : Sexp.t -> binder_expr *)
@@ -138,6 +163,8 @@ val cofix_expr_of_sexp : Sexp.t -> cofix_expr
 val constr_notation_substitution_of_sexp : Sexp.t -> constr_notation_substitution
 
 val sexp_of_constr_expr : constr_expr -> Sexp.t
+val python_of_constr_expr : constr_expr -> Py.Object.t
+
 val sexp_of_case_expr : case_expr -> Sexp.t
 val sexp_of_branch_expr : branch_expr -> Sexp.t
 (* val sexp_of_binder_expr : binder_expr -> Sexp.t *)
@@ -149,11 +176,15 @@ val recursion_order_expr_of_sexp : Sexp.t -> recursion_order_expr
 val sexp_of_recursion_order_expr : recursion_order_expr -> Sexp.t
 val recursion_order_expr_of_yojson : Yojson.Safe.t -> (recursion_order_expr, string) Result.result
 val recursion_order_expr_to_yojson : recursion_order_expr -> Yojson.Safe.t
+val recursion_order_expr_of_python : Py.Object.t -> recursion_order_expr
+val python_of_recursion_order_expr : recursion_order_expr -> Py.Object.t
 
 val sexp_of_local_binder_expr : local_binder_expr -> Sexp.t
 val local_binder_expr_of_sexp : Sexp.t -> local_binder_expr
 val local_binder_expr_of_yojson : Yojson.Safe.t -> (local_binder_expr, string) Result.result
 val local_binder_expr_to_yojson : local_binder_expr -> Yojson.Safe.t
+val python_of_local_binder_expr : local_binder_expr -> Py.Object.t
+val local_binder_expr_of_python : Py.Object.t -> local_binder_expr
 
 val constr_expr_of_yojson : Yojson.Safe.t -> (constr_expr, string) Result.result
 val constr_expr_to_yojson : constr_expr -> Yojson.Safe.t
@@ -163,6 +194,8 @@ val constr_pattern_expr_of_sexp : Sexp.t -> constr_pattern_expr
 val sexp_of_constr_pattern_expr : constr_pattern_expr -> Sexp.t
 val constr_pattern_expr_of_yojson : Yojson.Safe.t -> (constr_pattern_expr, string) Result.result
 val constr_pattern_expr_to_yojson : constr_pattern_expr -> Yojson.Safe.t
+val constr_pattern_expr_of_python : Py.Object.t -> constr_pattern_expr
+val python_of_constr_pattern_expr : constr_pattern_expr -> Py.Object.t
 
 type with_declaration_ast = Constrexpr.with_declaration_ast
 
@@ -177,3 +210,5 @@ val module_ast_of_sexp : Sexp.t -> module_ast
 val sexp_of_module_ast : module_ast -> Sexp.t
 val module_ast_of_yojson : Yojson.Safe.t -> (module_ast, string) Result.result
 val module_ast_to_yojson : module_ast -> Yojson.Safe.t
+val module_ast_of_python : Py.Object.t -> module_ast
+val python_of_module_ast : module_ast -> Py.Object.t

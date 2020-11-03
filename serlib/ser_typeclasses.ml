@@ -16,7 +16,8 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 type 'a hint_info_gen =
   [%import: 'a Typeclasses.hint_info_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

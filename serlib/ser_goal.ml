@@ -17,4 +17,4 @@ module Evar = Ser_evar
 
 type goal =
   [%import: Goal.goal]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

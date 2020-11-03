@@ -16,10 +16,11 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 type vernac_flag_type =
   [%import: Attributes.vernac_flag_type]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type vernac_flag =
   [%import: Attributes.vernac_flag]
@@ -27,4 +28,4 @@ and vernac_flag_value =
   [%import: Attributes.vernac_flag_value]
 and vernac_flags =
   [%import: Attributes.vernac_flags]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

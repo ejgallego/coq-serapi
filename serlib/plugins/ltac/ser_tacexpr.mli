@@ -270,6 +270,8 @@ val sexp_of_glob_atomic_tactic_expr : glob_atomic_tactic_expr -> Sexp.t
 type raw_tactic_expr = Tacexpr.raw_tactic_expr
 val raw_tactic_expr_of_sexp : Sexp.t -> raw_tactic_expr
 val sexp_of_raw_tactic_expr : raw_tactic_expr -> Sexp.t
+val raw_tactic_expr_of_python : Py.Object.t -> raw_tactic_expr
+val python_of_raw_tactic_expr : raw_tactic_expr -> Py.Object.t
 
 type raw_atomic_tactic_expr = Tacexpr.raw_atomic_tactic_expr
 val raw_atomic_tactic_expr_of_sexp : Sexp.t -> raw_atomic_tactic_expr

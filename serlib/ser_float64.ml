@@ -19,7 +19,9 @@
 type t = Float64.t
 
 open Sexplib.Std
-type _t = float [@@deriving sexp, yojson]
+open Ppx_python_runtime
+
+type _t = float [@@deriving sexp, yojson, python]
 
 let _t_get = Obj.magic
 let _t_put = Obj.magic
@@ -29,3 +31,6 @@ let sexp_of_t t = sexp_of__t (_t_get t)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
+
+let t_of_python t = _t_put (_t_of_python t)
+let python_of_t t = python_of__t (_t_get t)

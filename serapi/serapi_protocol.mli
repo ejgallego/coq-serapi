@@ -501,12 +501,14 @@ module ExnInfo : sig
     }
 end
 
+type focus_info = NewTip | Unfocus of Stateid.t
+
 type answer_kind =
   | Ack
   (** The command was received, Coq is processing it. *)
   | Completed
   (** The command was completed. *)
-  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | Added     of Stateid.t * Loc.t * focus_info
   (** A sentence was added, with corresponding sentence id and location. *)
   | Canceled  of Stateid.t list
   (** A set of sentences are not valid anymore. *)

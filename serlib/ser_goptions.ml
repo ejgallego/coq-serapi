@@ -16,26 +16,27 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Libnames = Ser_libnames
 
 type option_locality =
   [%import: Goptions.option_locality]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type option_name =
   [%import: Goptions.option_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type option_value =
   [%import: Goptions.option_value]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type option_state =
   [%import: Goptions.option_state]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type table_value =
   [%import: Goptions.table_value]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 

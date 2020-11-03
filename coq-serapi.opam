@@ -34,6 +34,8 @@ depends: [
   "ppx_sexp_conv"       {           >= "v0.13.0" & < "v0.15" }
   "yojson"              {           >= "1.7.0"               }
   "ppx_deriving_yojson" {           >= "3.4"                 }
+# Disabled due to ppx_python >= 0.15 and ppx_import < 2.0 not getting along
+# "ppx_python"          {           >= "v0.15.0"             }
 ]
 
 build: [ "dune" "build" "-p" name "-j" jobs ]

@@ -14,9 +14,10 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 module Names       = Ser_names
 
 type univ_name_list =
   [%import: UnivNames.univ_name_list]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

@@ -15,29 +15,30 @@
 
 open Sexplib
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Names = Ser_names
 module Constrexpr = Ser_constrexpr
 
 type argument_position =
   [%import: Impargs.argument_position]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type implicit_explanation =
   [%import: Impargs.implicit_explanation]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type maximal_insertion =
   [%import: Impargs.maximal_insertion]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type force_inference =
   [%import: Impargs.force_inference]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 (* XXX: Careful here, we break abstraction, so this must be kept in sync with Coq. *)
 type _implicit_side_condition = DefaultImpArgs | LessArgsThan of int
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type implicit_side_condition = Impargs.implicit_side_condition
 
@@ -47,14 +48,16 @@ let implicit_side_condition_of_sexp (sexp : Sexp.t) : implicit_side_condition =
 let sexp_of_implicit_side_condition (isc : implicit_side_condition) : Sexp.t =
   sexp_of__implicit_side_condition (Obj.magic isc)
 
+let implicit_side_condition_of_python (python : Py.Object.t) : implicit_side_condition =
+  Obj.magic (_implicit_side_condition_of_python python)
+
+let python_of_implicit_side_condition (isc : implicit_side_condition) : Py.Object.t =
+  python_of__implicit_side_condition (Obj.magic isc)
+
 type implicit_status =
   [%import: Impargs.implicit_status]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type implicits_list =
   [%import: Impargs.implicits_list]
-  [@@deriving sexp]
-
-
-
-
+  [@@deriving sexp,python]

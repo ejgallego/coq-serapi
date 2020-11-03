@@ -20,12 +20,16 @@ val binding_kind_of_sexp : Sexp.t -> Glob_term.binding_kind
 val sexp_of_binding_kind : Glob_term.binding_kind -> Sexp.t
 val binding_kind_of_yojson : Yojson.Safe.t -> (binding_kind,string) result
 val binding_kind_to_yojson : Glob_term.binding_kind -> Yojson.Safe.t
+val binding_kind_of_python : Py.Object.t -> Glob_term.binding_kind
+val python_of_binding_kind : Glob_term.binding_kind -> Py.Object.t
 
 type 'a glob_sort_gen = 'a Glob_term.glob_sort_gen
 val glob_sort_gen_of_sexp : (Sexp.t -> 'a) ->Sexp.t -> 'a Glob_term.glob_sort_gen
 val sexp_of_glob_sort_gen : ('a -> Sexp.t) -> 'a Glob_term.glob_sort_gen -> Sexp.t
 val glob_sort_gen_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a glob_sort_gen, string) result
 val glob_sort_gen_to_yojson : ('a -> Yojson.Safe.t) -> 'a Glob_term.glob_sort_gen -> Yojson.Safe.t
+val glob_sort_gen_of_python : (Py.Object.t -> 'a) ->Py.Object.t -> 'a Glob_term.glob_sort_gen
+val python_of_glob_sort_gen : ('a -> Py.Object.t) -> 'a Glob_term.glob_sort_gen -> Py.Object.t
 
 type glob_level = Glob_term.glob_level
 val glob_level_of_sexp : Sexp.t -> Glob_term.glob_level
@@ -45,12 +49,16 @@ val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Glob_term.cast_type
 val sexp_of_cast_type : ('a -> Sexp.t) -> 'a Glob_term.cast_type -> Sexp.t
 val cast_type_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a cast_type, string) Result.result
 val cast_type_to_yojson : ('a -> Yojson.Safe.t) -> 'a cast_type -> Yojson.Safe.t
+val cast_type_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a Glob_term.cast_type
+val python_of_cast_type : ('a -> Py.Object.t) -> 'a Glob_term.cast_type -> Py.Object.t
 
 type glob_constraint = Glob_term.glob_constraint
 val glob_constraint_of_sexp : Sexp.t -> Glob_term.glob_constraint
 val sexp_of_glob_constraint : Glob_term.glob_constraint -> Sexp.t
 val glob_constraint_of_yojson : Yojson.Safe.t -> (glob_constraint, string) Result.result
 val glob_constraint_to_yojson : glob_constraint -> Yojson.Safe.t
+val glob_constraint_of_python : Py.Object.t -> Glob_term.glob_constraint
+val python_of_glob_constraint : Glob_term.glob_constraint -> Py.Object.t
 
 type existential_name = Glob_term.existential_name
 
@@ -68,6 +76,8 @@ val existential_name_of_sexp : Sexp.t -> Glob_term.existential_name
 val sexp_of_existential_name : Glob_term.existential_name -> Sexp.t
 val existential_name_of_yojson : Yojson.Safe.t -> (existential_name, string) Result.result
 val existential_name_to_yojson : existential_name -> Yojson.Safe.t
+val existential_name_of_python : Py.Object.t -> Glob_term.existential_name
+val python_of_existential_name : Glob_term.existential_name -> Py.Object.t
 
 val cases_pattern_of_sexp : Sexp.t -> cases_pattern
 val sexp_of_cases_pattern : cases_pattern -> Sexp.t

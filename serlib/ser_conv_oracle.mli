@@ -20,7 +20,12 @@ val level_of_sexp : Sexp.t -> level
 val sexp_of_level : level -> Sexp.t
 val level_of_yojson : Yojson.Safe.t -> (level, string) Result.result
 val level_to_yojson : level -> Yojson.Safe.t
+val level_of_python : Py.Object.t -> level
+val python_of_level : level -> Py.Object.t
 
 type oracle = Conv_oracle.oracle
 val oracle_of_sexp : Sexp.t -> oracle
 val sexp_of_oracle : oracle -> Sexp.t
+val oracle_of_python : Py.Object.t -> oracle
+val python_of_oracle : oracle -> Py.Object.t
+

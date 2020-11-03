@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 module Names         = Ser_names
 module Constrexpr    = Ser_constrexpr
@@ -36,12 +37,12 @@ module Notation      = Ser_notation
 
 type grammar_constr_prod_item =
   [%import: Notation_gram.grammar_constr_prod_item]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type one_notation_grammar =
   [%import: Notation_gram.one_notation_grammar]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type notation_grammar =
   [%import: Notation_gram.notation_grammar]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

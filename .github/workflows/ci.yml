@@ -72,6 +72,7 @@ jobs:
           opam pin add -y -n --kind=path coq-serapi .
           opam install -y --deps-only -j $NJOBS coq-serapi
           opam pin remove coq-serapi
+          opam pin add -y ppx_python https://github.com/ejgallego/ppx_python.git#fixup
       - run: opam list
       - name: Install Coq via git
         if: ${{ matrix.coq-from-git }}
@@ -91,7 +92,9 @@ jobs:
           make install
           popd
       - name: Install extra opam
-        run: opam install --ignore-constraints-on=coq $EXTRA_OPAM
+        run: |
+          opam install --ignore-constraints-on=coq $EXTRA_OPAM
+          opam pin add -y ppx_python https://github.com/ejgallego/ppx_python.git#fixup
       - name: Build SerAPI
         run: |
           set -e

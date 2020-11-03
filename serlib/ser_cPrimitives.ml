@@ -18,11 +18,11 @@ open Sexplib.Std
 
 type t =
   [%import: CPrimitives.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type const =
   [%import: CPrimitives.const]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (* XXX: GADTs ... *)
 type 'a prim_type = [%import: 'a CPrimitives.prim_type]
@@ -58,3 +58,6 @@ let op_or_type_of_sexp (x : Sexp.t) : op_or_type =
 (* XXX *)
 let op_or_type_to_yojson = Obj.magic
 let op_or_type_of_yojson = Obj.magic
+
+let python_of_op_or_type = Obj.magic
+let op_or_type_of_python = Obj.magic

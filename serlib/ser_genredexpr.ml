@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Loc   = Ser_loc
 module Names = Ser_names
@@ -28,7 +29,7 @@ type 'a red_atom =
 
 type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type ('a,'b,'c,'d) red_expr_gen0 =
   [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen0]
@@ -36,7 +37,7 @@ type ('a,'b,'c,'d) red_expr_gen0 =
 
 type ('a,'b,'c) red_expr_gen =
   [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type ('a,'b,'c) may_eval =
   [%import: ('a,'b,'c) Genredexpr.may_eval]
@@ -45,19 +46,19 @@ type ('a,'b,'c) may_eval =
 (* Helpers for raw_red_expr *)
 type r_trm =
   [%import: Genredexpr.r_trm]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type r_cst =
   [%import: Genredexpr.r_cst]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type r_pat =
   [%import: Genredexpr.r_pat]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type raw_red_expr =
   [%import: Genredexpr.raw_red_expr]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'a and_short_name =
   [%import: 'a Genredexpr.and_short_name]

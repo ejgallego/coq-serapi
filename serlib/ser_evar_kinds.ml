@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Names     = Ser_names
 module Evar      = Ser_evar
@@ -25,25 +26,25 @@ module Constr    = Ser_constr
 
 type matching_var_kind =
   [%import: Evar_kinds.matching_var_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type obligation_definition_status =
   [%import: Evar_kinds.obligation_definition_status]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type record_field =
   [%import: Evar_kinds.record_field]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type question_mark =
   [%import: Evar_kinds.question_mark]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type subevar_kind =
   [%import: Evar_kinds.subevar_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type t =
   [%import: Evar_kinds.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 

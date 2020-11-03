@@ -14,6 +14,7 @@
 (************************************************************************)
 
 (* open Sexplib.Conv *)
+open Ppx_python_runtime_serapi
 
 module Stateid = Ser_stateid
 module Names   = Ser_names
@@ -24,7 +25,7 @@ module Names   = Ser_names
 
 type focus =
  [%import: Stm.focus]
- [@@deriving sexp]
+ [@@deriving sexp,python]
 
  (* { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 

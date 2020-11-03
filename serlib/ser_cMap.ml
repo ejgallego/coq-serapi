@@ -42,3 +42,69 @@ module Make (M : CSig.MapS) (S : SerType.S with type t := M.key) = struct
       (list_of_sexp (pair_of_sexp S.t_of_sexp f) sexp)
 
 end
+
+module type ExtSJ = sig
+
+  include CSig.MapS
+
+  include SerType.SJ1 with type 'a t := 'a t
+
+end
+
+module MakeJ (M : CSig.MapS) (S : SerType.SJ with type t := M.key) = struct
+
+  include Make(M)(S)
+
+  let tuple_to_yojson f1 f2 (e1, e2) =
+    `List [f1 e1; f2 e2]
+
+  let tuple_of_yojson f1 f2 json =
+    let tlist = Yojson.Safe.Util.to_list json in
+    match tlist with
+    | [e1; e2] ->
+      let open Ppx_deriving_yojson_runtime in
+      f1 e1 >>= (fun r1 ->
+      f2 e2 >>= (fun r2 ->
+      Ok (r1, r2)))
+    | _ ->
+      Error "tuple_of_yojson: incorrect number of tuple elements"
+
+  let to_yojson f cst : Yojson.Safe.t =
+    `List (List.map (tuple_to_yojson S.to_yojson f) (M.bindings cst))
+
+  let of_yojson f json =
+    let open Ppx_deriving_yojson_runtime in
+    Yojson.Safe.Util.to_list json |>
+    List.fold_left
+      (fun e p ->
+         e                               >>= (fun e ->
+         tuple_of_yojson S.of_yojson f p >|= (fun (k,s) ->
+         M.add k s e))) (Ok M.empty)
+
+end
+
+module type ExtSJP = sig
+
+  include CSig.MapS
+
+  include SerType.SJP1 with type 'a t := 'a t
+
+end
+
+module MakeJP (M : CSig.MapS) (S : SerType.SJP with type t := M.key) = struct
+
+  include MakeJ(M)(S)
+
+  let python_of_t f cst =
+    Py.List.of_list_map
+      (fun (key, binding) ->
+         Py.Tuple.of_pair (S.python_of_t key, f binding))
+      (M.bindings cst)
+
+  let t_of_python f py =
+    List.fold_left (fun e (k,s) -> M.add k s e) M.empty
+      (Py.List.to_list_map (fun p ->
+           let key, binding = Py.Tuple.to_pair p in
+           S.t_of_python key, f binding) py)
+
+end

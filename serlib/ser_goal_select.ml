@@ -20,9 +20,10 @@
  * val sexp_of_goal_selector : goal_selector -> Sexp.t *)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 module Names       = Ser_names
 
 type t =
   [%import: Goal_select.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

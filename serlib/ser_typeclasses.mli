@@ -23,3 +23,5 @@ val sexp_of_hint_info_gen : ('a -> Sexp.t) -> 'a hint_info_gen -> Sexp.t
 val hint_info_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hint_info_gen
 val hint_info_gen_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a hint_info_gen, string) Result.result
 val hint_info_gen_to_yojson : ('a -> Yojson.Safe.t) -> 'a hint_info_gen -> Yojson.Safe.t
+val python_of_hint_info_gen : ('a -> Py.Object.t) -> 'a hint_info_gen -> Py.Object.t
+val hint_info_gen_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a hint_info_gen

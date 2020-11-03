@@ -23,19 +23,29 @@ val sexp_of_binder_annot : ('a -> Sexp.t) -> 'a binder_annot -> Sexp.t
 val binder_annot_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a binder_annot, string) Result.result
 val binder_annot_to_yojson : ('a -> Yojson.Safe.t) -> 'a binder_annot -> Yojson.Safe.t
 
+val binder_annot_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a binder_annot
+val python_of_binder_annot : ('a -> Py.Object.t) -> 'a binder_annot -> Py.Object.t
 
 module Rel : sig
   module Declaration : sig
 
     type ('c,'t) pt = ('c,'t) Context.Rel.Declaration.pt
+
     val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
     val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+
+    val pt_of_python : (Py.Object.t -> 'c) -> (Py.Object.t -> 't) -> Py.Object.t -> ('c,'t) pt
+    val python_of_pt : ('c -> Py.Object.t) -> ('t -> Py.Object.t) -> ('c,'t) pt -> Py.Object.t
 
   end
 
   type ('c, 't) pt = ('c,'t) Context.Rel.pt
+
   val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
   val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+
+  val pt_of_python : (Py.Object.t -> 'c) -> (Py.Object.t -> 't) -> Py.Object.t -> ('c,'t) pt
+  val python_of_pt : ('c -> Py.Object.t) -> ('t -> Py.Object.t) -> ('c,'t) pt -> Py.Object.t
 
 end
 
@@ -44,14 +54,22 @@ module Named : sig
   module Declaration : sig
 
     type ('c, 't) pt = ('c, 't) Context.Named.Declaration.pt
+
     val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
     val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+
+    val pt_of_python : (Py.Object.t -> 'c) -> (Py.Object.t -> 't) -> Py.Object.t -> ('c,'t) pt
+    val python_of_pt : ('c -> Py.Object.t) -> ('t -> Py.Object.t) -> ('c,'t) pt -> Py.Object.t
 
   end
 
   type ('c, 't) pt = ('c, 't) Context.Named.pt
+
   val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
   val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+
+  val pt_of_python : (Py.Object.t -> 'c) -> (Py.Object.t -> 't) -> Py.Object.t -> ('c,'t) pt
+  val python_of_pt : ('c -> Py.Object.t) -> ('t -> Py.Object.t) -> ('c,'t) pt -> Py.Object.t
 
 end
 

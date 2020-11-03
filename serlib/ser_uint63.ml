@@ -15,8 +15,9 @@
 (************************************************************************)
 
 open Sexplib
+open Ppx_python_runtime
 
-type _t = string [@@deriving yojson]
+type _t = string [@@deriving yojson,python]
 let _t_put = Uint63.to_string
 let _t_get x = Uint63.of_int64 (Int64.of_string x)
 
@@ -27,3 +28,6 @@ let sexp_of_t (x : Uint63.t) : Sexp.t = Conv.sexp_of_string (_t_put x)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
+
+let t_of_python (x : Py.Object.t) : Uint63.t = _t_get (_t_of_python x)
+let python_of_t (x : Uint63.t) : Py.Object.t = python_of__t (_t_put x)

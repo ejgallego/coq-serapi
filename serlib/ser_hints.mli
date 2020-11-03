@@ -44,6 +44,8 @@ val hints_transparency_target_of_yojson :
 val hints_transparency_target_to_yojson :
   ('a -> Yojson.Safe.t) ->
   'a hints_transparency_target -> Yojson.Safe.t
+val hints_transparency_target_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a hints_transparency_target
+val python_of_hints_transparency_target : ('a -> Py.Object.t) -> 'a hints_transparency_target -> Py.Object.t
 
 (*
 type hint_info_expr = Hints.hint_info_expr
@@ -58,6 +60,8 @@ val hint_mode_of_sexp : Sexp.t -> hint_mode
 val sexp_of_hint_mode : hint_mode -> Sexp.t
 val hint_mode_of_yojson : Yojson.Safe.t -> (hint_mode, string) Result.result
 val hint_mode_to_yojson : hint_mode -> Yojson.Safe.t
+val hint_mode_of_python : Py.Object.t -> hint_mode
+val python_of_hint_mode : hint_mode -> Py.Object.t
 
 (*
 type hints_expr = Hints.hints_expr

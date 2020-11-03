@@ -20,3 +20,7 @@ type t = Int.t
 
 val t_of_sexp : Sexp.t -> t
 val sexp_of_t : t -> Sexp.t
+val of_yojson : Yojson.Safe.t -> (t, string) Result.result
+val to_yojson : t -> Yojson.Safe.t
+val t_of_python : Py.Object.t -> t
+val python_of_t : t -> Py.Object.t

@@ -14,14 +14,15 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 type pp_tag =
   [%import: Pp.pp_tag]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type block_type =
   [%import: Pp.block_type]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 module P = struct
   type _t =
@@ -34,7 +35,7 @@ module P = struct
   | Pp_print_break of int * int
   | Pp_force_newline
   | Pp_comment of string list
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
   open Pp
 
@@ -67,6 +68,9 @@ let sexp_of_t d = P.(sexp_of__t (from_t d))
 let of_yojson json = Ppx_deriving_yojson_runtime.(P.(_t_of_yojson json >|= to_t))
 let to_yojson level = P.(_t_to_yojson (from_t level))
 
+let t_of_python s = P.(to_t (_t_of_python s))
+let python_of_t d = P.(python_of__t (from_t d))
+
 type doc_view =
   [%import: Pp.doc_view]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]

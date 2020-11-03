@@ -21,3 +21,6 @@ type treenode = Profile_ltac.treenode
 
 val treenode_of_sexp : Sexp.t -> treenode
 val sexp_of_treenode : treenode -> Sexp.t
+
+val treenode_of_python : Py.Object.t -> treenode
+val python_of_treenode : treenode -> Py.Object.t

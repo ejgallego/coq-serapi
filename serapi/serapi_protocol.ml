@@ -333,10 +333,12 @@ module ExnInfo = struct
     }
 end
 
+type focus_info = NewTip | Unfocus of Stateid.t
+
 type answer_kind =
     Ack
   | Completed
-  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | Added     of Stateid.t * Loc.t * focus_info
   | Canceled  of Stateid.t list
   | ObjList   of coq_object list
   | CoqExn    of ExnInfo.t
@@ -696,6 +698,10 @@ module ControlUtil = struct
   type doc    = Stateid.t list
   let cur_doc : doc ref = ref [Stateid.of_int 1]
 
+  let convert_foc = function
+    | `NewTip -> NewTip
+    | `Unfocus sid -> Unfocus sid
+
   let pp_doc fmt l =
     let open Serapi_pp in
     Format.fprintf fmt "@[%a@]" (pp_list ~sep:" " pp_stateid) l
@@ -740,6 +746,7 @@ module ControlUtil = struct
         let n_doc, n_st, foc = Stm.add ~doc:!doc ?newtip:opts.newtip ~ontop:!stt opts.verb east in
         doc := n_doc;
         cur_doc := n_st :: !cur_doc;
+        let foc = convert_foc foc in
         acc := (Added (n_st, eloc, foc)) :: !acc;
         stt := n_st;
         incr i

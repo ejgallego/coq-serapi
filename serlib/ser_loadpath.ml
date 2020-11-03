@@ -16,12 +16,14 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
+
 module Names = Ser_names
 
 type library_location =
   [%import: Loadpath.library_location]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type vo_path =
   [%import: Loadpath.vo_path]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

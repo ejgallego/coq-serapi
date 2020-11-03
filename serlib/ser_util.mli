@@ -21,3 +21,5 @@ val union_of_sexp : (Sexp.t -> 'a) -> (Sexp.t -> 'b) -> Sexp.t -> ('a, 'b) union
 val sexp_of_union : ('a -> Sexp.t) -> ('b -> Sexp.t) -> ('a, 'b) union -> Sexp.t
 val union_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> (Yojson.Safe.t -> ('b, string) Result.result) -> Yojson.Safe.t -> (('a, 'b) union, string) Result.result
 val union_to_yojson : ('a -> Yojson.Safe.t) -> ('b -> Yojson.Safe.t) -> ('a,'b) union -> Yojson.Safe.t
+val union_of_python : (Py.Object.t -> 'a) -> (Py.Object.t -> 'b) -> Py.Object.t -> ('a, 'b) union
+val python_of_union : ('a -> Py.Object.t) -> ('b -> Py.Object.t) -> ('a, 'b) union -> Py.Object.t

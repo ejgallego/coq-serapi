@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 module Names       = Ser_names
 module Libnames    = Ser_libnames
@@ -45,7 +46,7 @@ type reference_or_constr =
 
 type hint_mode =
   [%import: Hints.hint_mode]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (*
 type hint_info_expr =
@@ -55,7 +56,7 @@ type hint_info_expr =
 
 type 'a hints_transparency_target =
   [%import: 'a Hints.hints_transparency_target]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (*
 type hints_expr =

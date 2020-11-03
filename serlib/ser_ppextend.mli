@@ -32,7 +32,11 @@ val sexp_of_ppcut : ppcut -> Sexp.t
 type unparsing_rule = Ppextend.unparsing_rule
 val unparsing_rule_of_sexp : Sexp.t -> unparsing_rule
 val sexp_of_unparsing_rule : unparsing_rule -> Sexp.t
+val unparsing_rule_of_python : Py.Object.t -> unparsing_rule
+val python_of_unparsing_rule : unparsing_rule -> Py.Object.t
 
 type extra_unparsing_rules = Ppextend.extra_unparsing_rules
 val extra_unparsing_rules_of_sexp : Sexp.t -> extra_unparsing_rules
 val sexp_of_extra_unparsing_rules : extra_unparsing_rules -> Sexp.t
+val extra_unparsing_rules_of_python : Py.Object.t -> extra_unparsing_rules
+val python_of_extra_unparsing_rules : extra_unparsing_rules -> Py.Object.t

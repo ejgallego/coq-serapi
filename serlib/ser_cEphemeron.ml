@@ -17,3 +17,6 @@ type 'a key = 'a CEphemeron.key
 
 let key_of_sexp f x = CEphemeron.create (f x)
 let sexp_of_key f v = f CEphemeron.(get v)
+
+let key_of_python f x = CEphemeron.create (f x)
+let python_of_key f v = f CEphemeron.(get v)

@@ -21,6 +21,8 @@
    need to recurse throu the constr to build the clone.
 *)
 
+open Ppx_python_runtime_serapi
+
 open Sexplib
 open Sexplib.Std
 
@@ -34,58 +36,58 @@ module Float64 = Ser_float64
 
 type metavariable =
   [%import: Constr.metavariable]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type pconstant =
   [%import: Constr.pconstant]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type pinductive =
   [%import: Constr.pinductive]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type pconstructor =
   [%import: Constr.pconstructor]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type cast_kind =
   [%import: Constr.cast_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type case_style =
   [%import: Constr.case_style]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type case_printing =
   [%import: Constr.case_printing]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type case_info =
   [%import: Constr.case_info]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'constr pexistential =
   [%import: 'constr Constr.pexistential]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type ('constr, 'types) prec_declaration =
   [%import: ('constr, 'types) Constr.prec_declaration]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type ('constr, 'types) pfixpoint =
   [%import: ('constr, 'types) Constr.pfixpoint]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type ('constr, 'types) pcofixpoint =
   [%import: ('constr, 'types) Constr.pcofixpoint]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type constr = Constr.constr
 type types  = Constr.constr
 
 type 'constr pcase_invert =
   [%import: 'constr Constr.pcase_invert]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 let map_pcase_invert f = function
   | NoInvert -> NoInvert
@@ -110,10 +112,10 @@ type _constr =
   | Meta      of int
   | Evar      of _constr pexistential
   | Sort      of Sorts.t
-  | Cast      of _constr * cast_kind * _types
-  | Prod      of Names.Name.t Context.binder_annot * _types * _types
-  | Lambda    of Names.Name.t Context.binder_annot * _types * _constr
-  | LetIn     of Names.Name.t Context.binder_annot * _constr * _types * _constr
+  | Cast      of _constr * cast_kind * _constr
+  | Prod      of Names.Name.t Context.binder_annot * _constr * _constr
+  | Lambda    of Names.Name.t Context.binder_annot * _constr * _constr
+  | LetIn     of Names.Name.t Context.binder_annot * _constr * _constr * _constr
   | App       of _constr * _constr array
   | Const     of pconstant
   | Ind       of pinductive
@@ -125,9 +127,8 @@ type _constr =
   | Int       of Uint63.t
   | Float     of Float64.t
   | Array     of Univ.Instance.t * _constr array * _constr * _types
-[@@deriving sexp,yojson]
 and _types = _constr
-[@@deriving sexp,yojson]
+[@@deriving sexp,yojson,python]
 
 let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
@@ -200,11 +201,20 @@ let sexp_of_constr (c : constr) : Sexp.t =
 let constr_of_yojson json = Ppx_deriving_yojson_runtime.(_constr_of_yojson json >|= _constr_get)
 let constr_to_yojson level = _constr_to_yojson (_constr_put level)
 
+let constr_of_python (c : Py.Object.t) : constr =
+  _constr_get (_constr_of_python c)
+
+let python_of_constr (c : constr) : Py.Object.t =
+  python_of__constr (_constr_put c)
+
 let types_of_sexp = constr_of_sexp
 let sexp_of_types = sexp_of_constr
 
 let types_of_yojson = constr_of_yojson
 let types_to_yojson = constr_to_yojson
+
+let types_of_python = constr_of_python
+let python_of_types = python_of_constr
 
 type t = constr
 
@@ -213,6 +223,9 @@ let sexp_of_t = sexp_of_constr
 
 let of_yojson = constr_of_yojson
 let to_yojson = constr_to_yojson
+
+let t_of_python = constr_of_python
+let python_of_t = python_of_constr
 
 type case_invert =
   [%import: Constr.case_invert]
@@ -240,16 +253,16 @@ let sexp_of_sorts_family = Sorts.sexp_of_family
 
 type named_declaration =
   [%import: Constr.named_declaration]
-  [@@deriving sexp]
+  [@@deriving sexp, python]
 
 type named_context =
   [%import: Constr.named_context]
-  [@@deriving sexp]
+  [@@deriving sexp, python]
 
 type rel_declaration =
   [%import: Constr.rel_declaration]
-  [@@deriving sexp]
+  [@@deriving sexp, python]
 
 type rel_context =
   [%import: Constr.rel_context]
-  [@@deriving sexp]
+  [@@deriving sexp, python]

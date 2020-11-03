@@ -23,7 +23,7 @@ module Names = Ser_names
 
 type _t =
     Ser_Qualid of Names.DirPath.t * Names.Id.t
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 let _t_put qid =
   let (dp, id) = Libnames.repr_qualid (cmake qid) in
@@ -40,10 +40,13 @@ let sexp_of_qualid_r qid  = sexp_of__t (_t_put qid)
 let qualid_r_of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let qualid_r_to_yojson level = _t_to_yojson (_t_put level)
 
+let qualid_r_of_python python = _t_get (_t_of_python python)
+let python_of_qualid_r qid  = python_of__t (_t_put qid)
+
 (* qualid: private *)
 type qualid =
   [%import: Libnames.qualid]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 module FP = struct
   type _t =

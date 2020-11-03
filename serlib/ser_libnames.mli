@@ -21,6 +21,8 @@ val qualid_of_sexp : Sexp.t -> Libnames.qualid
 val sexp_of_qualid : Libnames.qualid -> Sexp.t
 val qualid_of_yojson : Yojson.Safe.t -> (qualid, string) Result.result
 val qualid_to_yojson : qualid -> Yojson.Safe.t
+val qualid_of_python : Py.Object.t -> Libnames.qualid
+val python_of_qualid : Libnames.qualid -> Py.Object.t
 
 type full_path = Libnames.full_path
 

@@ -26,4 +26,7 @@ val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t
 val of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a t, string) Result.result
 val to_yojson : ('a -> Yojson.Safe.t) -> 'a t -> Yojson.Safe.t
 
+val t_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a t
+val python_of_t : ('a -> Py.Object.t) -> 'a t -> Py.Object.t
+
 val omit_att : bool ref

@@ -31,6 +31,14 @@ type tlevel =
   [%import: Genarg.tlevel]
   [@@deriving sexp,yojson]
 
+(* XXX: fix ppx_python *)
+let python_of_rlevel _ = Py.String.of_string "rlevel"
+let rlevel_of_python _ = `rlevel
+let python_of_glevel _ = Py.String.of_string "glevel"
+let glevel_of_python _ = `glevel
+let python_of_tlevel _ = Py.String.of_string "tlevel"
+let tlevel_of_python _ = `tlevel
+
 open Sexp
 
 let rec sexp_of_genarg_type : type a b c. (a, b, c) genarg_type -> t = fun gt ->
@@ -193,22 +201,29 @@ let generic_argument_of_sexp _lvl sexp : 'a Genarg.generic_argument =
   let (RG ga) = gen_abstype_of_sexp sexp in
   Obj.magic ga
 
-let generic_argument_of_yojson _lvl _json = Error "not supported generic_argument_of_yojson"
-let generic_argument_to_yojson _lvl _g = `String "foo"
+let generic_argument_of_yojson _lvl _json =
+  Error "not supported generic_argument_of_yojson"
+let generic_argument_to_yojson _lvl _g =
+  `String "foo"
+
+let generic_argument_of_python _ =
+  Serlib_base.opaque_of_python ~typ:"generic_argument"
+let python_of_generic_argument _ =
+  Serlib_base.python_of_opaque ~typ:"generic_argument"
 
 type 'a generic_argument = 'a Genarg.generic_argument
 
 type glob_generic_argument =
   [%import: Genarg.glob_generic_argument]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type raw_generic_argument =
   [%import: Genarg.raw_generic_argument]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type typed_generic_argument =
   [%import: Genarg.typed_generic_argument]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 let mk_uniform pin pout = {
     raw_ser = pin;

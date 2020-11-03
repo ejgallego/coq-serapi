@@ -42,3 +42,16 @@ module MakeJ (M : CSig.SetS) (S : SerType.SJ with type t := M.elt)
     with type t = M.t
      and type elt = M.elt
 
+module type ExtSJP = sig
+
+  include CSig.SetS
+
+  include SerType.SJP with type t := t
+
+end
+
+module MakeJP (M : CSig.SetS) (S : SerType.SJP with type t := M.elt)
+  : ExtSJP
+    with type t = M.t
+     and type elt = M.elt
+

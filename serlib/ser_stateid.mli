@@ -13,6 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Self : SerType.SJ with type t = Stateid.t
-
-include module type of Self
+include SerType.SJP with type t = Stateid.t

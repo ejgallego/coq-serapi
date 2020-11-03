@@ -15,11 +15,11 @@
 
 open Sexplib
 
-module Level : SerType.SJ with type t = Univ.Level.t
-module Universe : SerType.SJ with type t = Univ.Universe.t
+module Level : SerType.SJP with type t = Univ.Level.t
+module Universe : SerType.SJP with type t = Univ.Universe.t
 
-module Variance : SerType.SJ with type t = Univ.Variance.t
-module Instance : SerType.SJ with type t = Univ.Instance.t
+module Variance : SerType.SJP with type t = Univ.Variance.t
+module Instance : SerType.SJP with type t = Univ.Instance.t
 
 type constraint_type = Univ.constraint_type
 
@@ -27,6 +27,8 @@ val constraint_type_of_sexp : Sexp.t -> constraint_type
 val sexp_of_constraint_type : constraint_type -> Sexp.t
 val constraint_type_of_yojson : Yojson.Safe.t -> (constraint_type, string) Result.result
 val constraint_type_to_yojson : constraint_type -> Yojson.Safe.t
+val constraint_type_of_python : Py.Object.t -> constraint_type
+val python_of_constraint_type : constraint_type -> Py.Object.t
 
 type univ_constraint = Univ.univ_constraint
 
@@ -35,10 +37,8 @@ val sexp_of_univ_constraint : univ_constraint -> Sexp.t
 
 module Constraint : SerType.SJ with type t = Univ.Constraint.t
 module UContext : SerType.S with type t = Univ.UContext.t
-
-module AUContext : SerType.S with type t = Univ.AUContext.t
-
-module ContextSet : SerType.SJ with type t = Univ.ContextSet.t
+module AUContext : SerType.SJP with type t = Univ.AUContext.t
+module ContextSet : SerType.SJP with type t = Univ.ContextSet.t
 
 (** A value in a universe context (resp. context set). *)
 type 'a in_universe_context = 'a Univ.in_universe_context
@@ -56,6 +56,9 @@ val sexp_of_puniverses : ('a -> Sexp.t) -> 'a puniverses -> Sexp.t
 
 val puniverses_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a puniverses, string) Result.result
 val puniverses_to_yojson : ('a -> Yojson.Safe.t) -> 'a puniverses -> Yojson.Safe.t
+
+val puniverses_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a puniverses
+val python_of_puniverses : ('a -> Py.Object.t) -> 'a puniverses -> Py.Object.t
 
 type explanation = Univ.explanation
 

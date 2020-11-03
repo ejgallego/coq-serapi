@@ -19,4 +19,4 @@ module Names      = Ser_names
 
 type intro_pattern_naming_expr =
   [%import: Namegen.intro_pattern_naming_expr]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

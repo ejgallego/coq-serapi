@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Loc = Ser_loc
 
@@ -23,15 +24,15 @@ module Stateid      = Ser_stateid
 
 type level =
   [%import: Feedback.level]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type route_id =
   [%import: Feedback.route_id]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type doc_id =
   [%import: Feedback.doc_id]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, python]
 
 type feedback_content =
   [%import: Feedback.feedback_content]

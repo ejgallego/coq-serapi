@@ -15,4 +15,4 @@
 
 type ('a,'b) union =
   [%import: ('a,'b) Util.union]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

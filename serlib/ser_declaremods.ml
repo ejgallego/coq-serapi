@@ -16,11 +16,12 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 type 'a module_signature =
   [%import: 'a Declaremods.module_signature]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type inline =
   [%import: Declaremods.inline]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

@@ -36,6 +36,8 @@ val with_occurrences_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a with_occurrences
 val sexp_of_with_occurrences : ('a -> Sexp.t) -> 'a with_occurrences -> Sexp.t
 val with_occurrences_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a with_occurrences, string) Result.result
 val with_occurrences_to_yojson : ('a -> Yojson.Safe.t) -> 'a with_occurrences -> Yojson.Safe.t
+val with_occurrences_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a with_occurrences
+val python_of_with_occurrences : ('a -> Py.Object.t) -> 'a with_occurrences -> Py.Object.t
 
 type occurrences = Locus.occurrences
 val occurrences_of_sexp : Sexp.t -> occurrences

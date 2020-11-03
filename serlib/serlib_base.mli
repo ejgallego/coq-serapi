@@ -21,3 +21,6 @@ val exn_on_opaque : bool ref
 
 val sexp_of_opaque : typ:string -> 'a -> Sexp.t
 val opaque_of_sexp : typ:string -> Sexp.t -> 'a
+
+val python_of_opaque : typ:string -> 'a -> Py.Object.t
+val opaque_of_python : typ:string -> Py.Object.t -> 'a

@@ -14,8 +14,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Self : SerType.SJ with type t = Evar.t
-
-include module type of Self
+include SerType.SJP with type t = Evar.t
 
 module Set : SerType.S with type t = Evar.Set.t

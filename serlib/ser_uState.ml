@@ -14,7 +14,8 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 type ('a,'b) gen_universe_decl =
   [%import: ('a,'b) UState.gen_universe_decl]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

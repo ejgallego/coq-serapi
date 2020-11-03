@@ -14,24 +14,25 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Names     = Ser_names
 
 type 'a or_var =
   [%import: 'a Locus.or_var]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'a occurrences_gen =
   [%import: 'a Locus.occurrences_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type occurrences_expr =
   [%import: Locus.occurrences_expr]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'a with_occurrences =
   [%import: 'a Locus.with_occurrences]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type occurrences =
   [%import: Locus.occurrences]

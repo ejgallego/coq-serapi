@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 module Stdlib = Ser_stdlib
 module CEphemeron = Ser_cEphemeron
@@ -29,34 +30,35 @@ module Declarations   = Ser_declarations
 
 type lazy_val = [%import: Environ.lazy_val]
 let sexp_of_lazy_val = Serlib_base.sexp_of_opaque ~typ:"Environ.lazy_val"
+let python_of_lazy_val = Serlib_base.python_of_opaque ~typ:"Environ.lazy_val"
 
 type stratification =
   [%import: Environ.stratification]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of,python_of]
 
 type rel_context_val =
   [%import: Environ.rel_context_val]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of,python_of]
 
 type named_context_val =
   [%import: Environ.named_context_val]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of,python_of]
 
 type link_info =
   [%import: Environ.link_info]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type key =
   [%import: Environ.key]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type constant_key =
   [%import: Environ.constant_key]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type mind_key =
   [%import: Environ.mind_key]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 module Globals = struct
 
@@ -64,17 +66,20 @@ module Globals = struct
 
   type _t =
     [%import: Environ.Globals.view]
-    [@@deriving sexp]
+    [@@deriving sexp,python]
 
   let sexp_of_t g = sexp_of__t (Obj.magic g)
   let _t_of_sexp s = Obj.magic (_t_of_sexp s)
+  let python_of_t g = python_of__t (Obj.magic g)
+  let _t_of_python s = Obj.magic (_t_of_python s)
 end
 
 type env =
   [%import: Environ.env]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of, python_of]
 
 let env_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Environ.env"
+let env_of_python = Serlib_base.opaque_of_python ~typ:"Environ.env"
 
 let abstract_env = ref false
 let sexp_of_env env =

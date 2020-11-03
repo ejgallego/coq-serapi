@@ -18,11 +18,17 @@ open Sexplib
 type delta_resolver = Mod_subst.delta_resolver
 val sexp_of_delta_resolver : delta_resolver -> Sexp.t
 val delta_resolver_of_sexp : Sexp.t -> delta_resolver
+val python_of_delta_resolver : delta_resolver -> Py.Object.t
+val delta_resolver_of_python : Py.Object.t -> delta_resolver
 
 type substitution = Mod_subst.substitution
 val sexp_of_substitution : substitution -> Sexp.t
 val substitution_of_sexp : Sexp.t -> substitution
+val python_of_substitution : substitution -> Py.Object.t
+val substitution_of_python : Py.Object.t -> substitution
 
 (* type 'a substituted = 'a Mod_subst.substituted
  * val sexp_of_substituted : ('a -> Sexp.t) -> 'a substituted -> Sexp.t
  * val substituted_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a substituted *)
+(* val python_of_substituted : ('a -> Py.Object.t) -> 'a substituted -> Py.Object.t
+ * val substituted_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a substituted *)

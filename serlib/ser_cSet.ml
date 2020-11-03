@@ -61,3 +61,23 @@ module MakeJ (M : CSig.SetS) (S : SerType.SJ with type t := M.elt) = struct
     map_bind S.of_yojson [] json >|= from_list
 
 end
+
+module type ExtSJP = sig
+
+  include CSig.SetS
+
+  include SerType.SJP with type t := t
+
+end
+
+module MakeJP (M : CSig.SetS) (S : SerType.SJP with type t := M.elt) = struct
+
+  include MakeJ(M)(S)
+
+  let python_of_t cst =
+    Py.List.of_list_map S.python_of_t (M.elements cst)
+
+  let t_of_python py =
+    Py.List.to_list_map S.t_of_python py |> from_list
+
+end

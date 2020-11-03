@@ -16,6 +16,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Names  = Ser_names
 module Evar   = Ser_evar
@@ -29,15 +30,15 @@ type t =
 
 type tag =
   [%import: Nativevalues.tag]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type arity =
   [%import: Nativevalues.arity]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type reloc_table =
   [%import: Nativevalues.reloc_table]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type annot_sw =
   [%import: Nativevalues.annot_sw]

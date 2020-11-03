@@ -15,8 +15,9 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 
 type t =
   [%import: Int.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,python]
 

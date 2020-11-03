@@ -19,3 +19,5 @@ type goal = Goal.goal
 
 val goal_of_sexp : Sexp.t -> goal
 val sexp_of_goal : goal -> Sexp.t
+val goal_of_python : Py.Object.t -> goal
+val python_of_goal : goal -> Py.Object.t

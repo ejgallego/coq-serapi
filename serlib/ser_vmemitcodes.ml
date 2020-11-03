@@ -74,4 +74,3 @@ type body_code =
  * let to_patch_substituted_of_sexp _ =
  *   Obj.magic PBCconstant
  *   (\* Serlib_base.opaque_of_sexp ~typ:"Cemitcodes.to_patch_substituted" *\) *)
-

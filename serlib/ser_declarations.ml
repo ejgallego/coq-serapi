@@ -15,6 +15,8 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
+
 open Declarations
 
 module Rtree   = Ser_rtree
@@ -33,64 +35,64 @@ module Retroknowledge = Ser_retroknowledge
 
 type template_arity =
   [%import: Declarations.template_arity]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type ('a, 'b) declaration_arity =
   [%import: ('a, 'b) Declarations.declaration_arity]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type nested_type =
   [%import: Declarations.nested_type]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type recarg =
   [%import: Declarations.recarg]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type wf_paths =
   [%import: Declarations.wf_paths]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type regular_inductive_arity =
   [%import: Declarations.regular_inductive_arity
   [@with Term.sorts := Sorts.t;]]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type inductive_arity =
   [%import: Declarations.inductive_arity]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type one_inductive_body =
   [%import: Declarations.one_inductive_body]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type set_predicativity =
   [%import: Declarations.set_predicativity]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type engagement =
   [%import: Declarations.engagement]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type inline =
   [%import: Declarations.inline]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type universes =
   [%import: Declarations.universes]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type ('a, 'b) constant_def =
   [%import: ('a, 'b) Declarations.constant_def]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type typing_flags =
   [%import: Declarations.typing_flags]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type 'a constant_body =
   [%import: 'a Declarations.constant_body]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 let sexp_of_constant_body f e =
   (* We cannot handle VM values *)
@@ -103,67 +105,77 @@ let sexp_of_module_retroknowledge _ =
 let module_retroknowledge_of_sexp _ =
   Serlib_base.opaque_of_sexp ~typ:"Declarations.module_retroknowledge"
 
+let _python_of_module_retroknowledge _ =
+  Serlib_base.python_of_opaque ~typ:"Declarations.module_retroknowledge"
+
+let _module_retroknowledge_of_python _ =
+  Serlib_base.opaque_of_python ~typ:"Declarations.module_retroknowledge"
+
 (* type abstract_inductive_universes =
  *   [%import: Declarations.abstract_inductive_universes]
  *   [@@deriving sexp] *)
 
 type recursivity_kind =
   [%import: Declarations.recursivity_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type record_info =
   [%import: Declarations.record_info]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type template_universes =
   [%import: Declarations.template_universes]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type mutual_inductive_body =
   [%import: Declarations.mutual_inductive_body
   [@with Context.section_context := Context.Named.t;]]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type ('ty,'a) functorize =
   [%import: ('ty, 'a) Declarations.functorize]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type with_declaration =
   [%import: Declarations.with_declaration]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type module_alg_expr =
   [%import: Declarations.module_alg_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type structure_field_body =
   [%import: Declarations.structure_field_body]
-  [@@deriving sexp]
 
 and structure_body =
   [%import: Declarations.structure_body]
-  [@@deriving sexp]
 
 and module_signature =
   [%import: Declarations.module_signature]
-  [@@deriving sexp]
 
 and module_expression =
   [%import: Declarations.module_expression]
-  [@@deriving sexp]
 
 and module_implementation =
   [%import: Declarations.module_implementation]
-  [@@deriving sexp]
 
 and 'a generic_module_body =
   [%import: 'a Declarations.generic_module_body]
-  [@@deriving sexp]
 
 and module_body =
   [%import: Declarations.module_body]
-  [@@deriving sexp]
 
 and module_type_body =
   [%import: Declarations.module_type_body]
   [@@deriving sexp]
+(* Strange error, need to recheck what is going on *)
+(* [@@deriving sexp,python] *)
+
+let python_of_module_body =
+  Serlib_base.python_of_opaque ~typ:"module_body"
+let module_body_of_python =
+  Serlib_base.opaque_of_python ~typ:"module_body"
+let python_of_module_type_body =
+  Serlib_base.python_of_opaque ~typ:"module_type_body"
+let module_type_body_of_python =
+  Serlib_base.opaque_of_python ~typ:"module_type_body"

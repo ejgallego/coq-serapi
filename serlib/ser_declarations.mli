@@ -55,14 +55,20 @@ val sexp_of_one_inductive_body : one_inductive_body -> Sexp.t
 type set_predicativity = Declarations.set_predicativity
 val set_predicativity_of_sexp : Sexp.t -> set_predicativity
 val sexp_of_set_predicativity : set_predicativity -> Sexp.t
+val set_predicativity_of_python : Py.Object.t -> set_predicativity
+val python_of_set_predicativity : set_predicativity -> Py.Object.t
 
 type engagement = Declarations.engagement
 val engagement_of_sexp : Sexp.t -> engagement
 val sexp_of_engagement : engagement -> Sexp.t
+val engagement_of_python : Py.Object.t -> engagement
+val python_of_engagement : engagement -> Py.Object.t
 
 type typing_flags = Declarations.typing_flags
 val typing_flags_of_sexp : Sexp.t -> typing_flags
 val sexp_of_typing_flags : typing_flags -> Sexp.t
+val typing_flags_of_python : Py.Object.t -> typing_flags
+val python_of_typing_flags : typing_flags -> Py.Object.t
 
 type inline = Declarations.inline
 val sexp_of_inline : inline -> Sexp.t
@@ -71,6 +77,8 @@ val inline_of_sexp : Sexp.t -> inline
 type 'opaque constant_body = 'opaque Declarations.constant_body
 val sexp_of_constant_body : ('opaque -> Sexp.t) -> 'opaque constant_body -> Sexp.t
 val constant_body_of_sexp : (Sexp.t -> 'opaque) -> Sexp.t -> 'opaque constant_body
+val python_of_constant_body : ('opaque -> Py.Object.t) -> 'opaque constant_body -> Py.Object.t
+val constant_body_of_python : (Py.Object.t -> 'opaque) -> Py.Object.t -> 'opaque constant_body
 
 (* type record_body = Declarations.record_body
  * val record_body_of_sexp : Sexp.t -> record_body
@@ -85,6 +93,8 @@ val recursivity_kind_to_yojson : recursivity_kind -> Yojson.Safe.t
 type mutual_inductive_body = Declarations.mutual_inductive_body
 val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body
 val sexp_of_mutual_inductive_body : mutual_inductive_body -> Sexp.t
+val mutual_inductive_body_of_python : Py.Object.t -> mutual_inductive_body
+val python_of_mutual_inductive_body : mutual_inductive_body -> Py.Object.t
 
 type module_alg_expr = Declarations.module_alg_expr
 val sexp_of_module_alg_expr : module_alg_expr -> Sexp.t
@@ -97,7 +107,11 @@ val structure_body_of_sexp : Sexp.t -> structure_body
 type module_body = Declarations.module_body
 val sexp_of_module_body : module_body -> Sexp.t
 val module_body_of_sexp : Sexp.t -> module_body
+val python_of_module_body : module_body -> Py.Object.t
+val module_body_of_python : Py.Object.t -> module_body
 
 type module_type_body = Declarations.module_type_body
 val sexp_of_module_type_body : module_type_body -> Sexp.t
 val module_type_body_of_sexp : Sexp.t -> module_type_body
+val python_of_module_type_body : module_type_body -> Py.Object.t
+val module_type_body_of_python : Py.Object.t -> module_type_body

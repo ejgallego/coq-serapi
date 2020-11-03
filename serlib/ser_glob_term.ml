@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Loc        = Ser_loc
 module CAst       = Ser_cAst
@@ -34,7 +35,7 @@ module Namegen    = Ser_namegen
 
 type binding_kind =
   [%import: Glob_term.binding_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (* type 'a universe_kind =
  *   [%import: 'a Glob_term.universe_kind]
@@ -46,11 +47,11 @@ type binding_kind =
 
 type glob_sort_name =
   [%import: Glob_term.glob_sort_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'a glob_sort_gen =
   [%import: 'a Glob_term.glob_sort_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (* type 'a glob_sort_expr =
  *   [%import: 'a Glob_term.glob_sort_expr]
@@ -62,7 +63,7 @@ type glob_level =
 
 type glob_constraint =
   [%import: Glob_term.glob_constraint]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 (* type sort_info =
  *   [%import: Glob_term.sort_info]
@@ -74,11 +75,11 @@ type glob_sort =
 
 type 'a cast_type =
   [%import: 'a Glob_term.cast_type]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type existential_name =
   [%import: Glob_term.existential_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'a cases_pattern_r = [%import: 'a Glob_term.cases_pattern_r]
 and 'a cases_pattern_g  = [%import: 'a Glob_term.cases_pattern_g]

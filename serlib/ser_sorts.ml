@@ -17,22 +17,23 @@ module Univ = Ser_univ
 
 type family =
   [%import: Sorts.family]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type _t =
   | SProp
   | Prop
   | Set
   | Type of Univ.Universe.t
-  [@@deriving of_sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type t =
   [%import: Sorts.t]
-  [@@deriving sexp_of,to_yojson]
+  [@@deriving sexp_of,to_yojson,python_of]
 
 let t_of_sexp x = Obj.magic (_t_of_sexp x)
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
+let t_of_python x = Obj.magic (_t_of_python x)
 
 type relevance =
   [%import: Sorts.relevance]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

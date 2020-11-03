@@ -20,6 +20,11 @@ type nonrec 'a ref = 'a ref
 let ref_of_sexp = ref_of_sexp
 let sexp_of_ref = sexp_of_ref
 
+let python_of_ref f (x : 'a ref) =
+  match x with | { contents } -> f contents
+
+let ref_of_python f x = ref (f x)
+
 module Lazy = struct
   type 'a t = 'a lazy_t
   [@@deriving sexp]

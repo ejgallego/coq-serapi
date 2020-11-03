@@ -43,7 +43,7 @@ type subscopes =
 
 type constr_as_binder_kind =
   [%import: Notation_term.constr_as_binder_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]

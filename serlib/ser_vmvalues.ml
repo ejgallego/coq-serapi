@@ -15,6 +15,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime
 
 module Sorts = Ser_sorts
 module Names = Ser_names
@@ -24,7 +25,7 @@ module Float64 = Ser_float64
 
 type tag =
   [%import: Vmvalues.tag]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type structured_values = Vmvalues.structured_values
 
@@ -37,7 +38,7 @@ type structured_constant =
 
 type reloc_table =
   [%import: Vmvalues.reloc_table]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type annot_switch =
   [%import: Vmvalues.annot_switch]

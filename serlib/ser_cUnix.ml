@@ -14,7 +14,8 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 type physical_path =
   [%import: CUnix.physical_path]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

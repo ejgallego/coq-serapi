@@ -37,4 +37,6 @@ val sexp_of_grammar_constr_prod_item : grammar_constr_prod_item -> Sexp.t
 type notation_grammar = Notation_gram.notation_grammar
 val notation_grammar_of_sexp : Sexp.t -> notation_grammar
 val sexp_of_notation_grammar : notation_grammar -> Sexp.t
+val notation_grammar_of_python : Py.Object.t -> notation_grammar
+val python_of_notation_grammar : notation_grammar -> Py.Object.t
 

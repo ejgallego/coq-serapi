@@ -234,3 +234,5 @@ val vernac_control_of_sexp : Sexp.t -> vernac_control
 val sexp_of_vernac_control : vernac_control -> Sexp.t
 val vernac_control_of_yojson : Yojson.Safe.t -> (vernac_control, string) Result.result
 val vernac_control_to_yojson : vernac_control -> Yojson.Safe.t
+val vernac_control_of_python : Py.Object.t -> vernac_control
+val python_of_vernac_control : vernac_control -> Py.Object.t

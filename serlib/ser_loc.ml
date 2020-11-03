@@ -17,15 +17,16 @@
 (* Loc.mli                                                            *)
 (**********************************************************************)
 
-open Sexplib.Std
+open! Base
+open Ppx_python_runtime
 
 type source =
   [%import: Loc.source]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type t =
   [%import: Loc.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 let omit_loc = ref false
 let sexp_of_t x =
@@ -34,4 +35,4 @@ let sexp_of_t x =
 (* located: public *)
 type 'a located =
   [%import: 'a Loc.located]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

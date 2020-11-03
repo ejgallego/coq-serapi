@@ -21,6 +21,8 @@ val patvar_of_sexp : Sexp.t -> patvar
 val sexp_of_patvar : patvar -> Sexp.t
 val patvar_of_yojson : Yojson.Safe.t -> (patvar, string) Result.result
 val patvar_to_yojson : patvar -> Yojson.Safe.t
+val patvar_of_python : Py.Object.t -> patvar
+val python_of_patvar : patvar -> Py.Object.t
 
 type case_info_pattern = Pattern.case_info_pattern
 

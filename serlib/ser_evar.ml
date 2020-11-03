@@ -15,12 +15,13 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 (* Private *)
 module Self = struct
 type t = [%import: Evar.t]
 
-type _t                    = Ser_Evar of int [@@deriving sexp,yojson]
+type _t                    = Ser_Evar of int [@@deriving sexp,yojson,python]
 let _t_put  evar           = Ser_Evar (Evar.repr evar)
 let _t_get (Ser_Evar evar) = Evar.unsafe_of_int evar
 
@@ -29,6 +30,9 @@ let sexp_of_t evar = sexp_of__t (_t_put evar)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
+
+let t_of_python python = _t_get (_t_of_python python)
+let python_of_t evar = python_of__t (_t_put evar)
 
 end
 

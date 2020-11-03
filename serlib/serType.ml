@@ -16,6 +16,13 @@ module type SJ = sig
   val to_yojson : t -> Yojson.Safe.t
 end
 
+module type SJP = sig
+
+  include SJ
+  val t_of_python : Py.Object.t -> t
+  val python_of_t : t -> Py.Object.t
+end
+
 module type S1 = sig
 
   type 'a t
@@ -31,5 +38,14 @@ module type SJ1 = sig
 
   val of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a t, string) Result.result
   val to_yojson : ('a -> Yojson.Safe.t) -> 'a t -> Yojson.Safe.t
+
+end
+
+module type SJP1 = sig
+
+  include SJ1
+
+  val t_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a t
+  val python_of_t : ('a -> Py.Object.t) -> 'a t -> Py.Object.t
 
 end

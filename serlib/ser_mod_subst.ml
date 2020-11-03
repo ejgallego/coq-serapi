@@ -14,6 +14,7 @@
 (************************************************************************)
 
 (* open Sexplib.Std *)
+(* open Ppx_python_runtime_serapi *)
 
 module Names = Ser_names
 
@@ -26,6 +27,12 @@ let sexp_of_delta_resolver =
 let delta_resolver_of_sexp =
   Serlib_base.opaque_of_sexp ~typ:"Mod_subst.delta_resolver"
 
+let python_of_delta_resolver =
+  Serlib_base.python_of_opaque ~typ:"Mod_subst.delta_resolver"
+
+let delta_resolver_of_python =
+  Serlib_base.opaque_of_python ~typ:"Mod_subst.delta_resolver"
+
 (* type substitution = (Names.ModPath.t * delta_resolver) Names.Umap.t
  *   [@@deriving sexp] *)
 
@@ -34,6 +41,9 @@ type substitution =
 
 let sexp_of_substitution = Serlib_base.sexp_of_opaque ~typ:"Mod_subst.substitution"
 let substitution_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Mod_subst.substitution"
+
+let python_of_substitution = Serlib_base.python_of_opaque ~typ:"Mod_subst.substitution"
+let substitution_of_python = Serlib_base.opaque_of_python ~typ:"Mod_subst.substitution"
 
 (* type 'a _substituted = {
  *   mutable subst_value : 'a;
@@ -45,3 +55,6 @@ let substitution_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Mod_subst.substituti
  * 
  * let sexp_of_substituted f x = sexp_of__substituted f (Obj.magic x)
  * let substituted_of_sexp f x = Obj.magic (_substituted_of_sexp f x) *)
+
+(* let python_of_substituted f x = python_of__substituted f (Obj.magic x)
+ * let substituted_of_python f x = Obj.magic (_substituted_of_python f x) *)

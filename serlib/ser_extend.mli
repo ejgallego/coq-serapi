@@ -18,6 +18,8 @@ open Sexplib
 type side = Extend.side
 val side_of_sexp : Sexp.t -> side
 val sexp_of_side : side -> Sexp.t
+val side_of_python : Py.Object.t -> side
+val python_of_side : side -> Py.Object.t
 
 type production_position = Extend.production_position
 val production_position_of_sexp : Sexp.t -> production_position
@@ -28,6 +30,8 @@ val production_level_of_sexp : Sexp.t -> production_level
 val sexp_of_production_level : production_level -> Sexp.t
 val production_level_of_yojson : Yojson.Safe.t -> (production_level, string) Result.result
 val production_level_to_yojson : production_level -> Yojson.Safe.t
+val production_level_of_python : Py.Object.t -> production_level
+val python_of_production_level : production_level -> Py.Object.t
 
 type binder_entry_kind = Extend.binder_entry_kind
 val binder_entry_kind_of_sexp : Sexp.t -> binder_entry_kind
@@ -42,10 +46,14 @@ val sexp_of_constr_entry_key_gen : ('lev -> Sexp.t) ->
 type constr_entry_key = Extend.constr_entry_key
 val constr_entry_key_of_sexp : Sexp.t -> constr_entry_key
 val sexp_of_constr_entry_key : constr_entry_key -> Sexp.t
+val constr_entry_key_of_python : Py.Object.t -> constr_entry_key
+val python_of_constr_entry_key : constr_entry_key -> Py.Object.t
 
 type constr_prod_entry_key = Extend.constr_prod_entry_key
 val constr_prod_entry_key_of_sexp : Sexp.t -> constr_prod_entry_key
 val sexp_of_constr_prod_entry_key : constr_prod_entry_key -> Sexp.t
+val constr_prod_entry_key_of_python : Py.Object.t -> constr_prod_entry_key
+val python_of_constr_prod_entry_key : constr_prod_entry_key -> Py.Object.t
 
 type simple_constr_prod_entry_key = Extend.simple_constr_prod_entry_key
 
@@ -53,4 +61,6 @@ val simple_constr_prod_entry_key_of_sexp : Sexp.t -> simple_constr_prod_entry_ke
 val sexp_of_simple_constr_prod_entry_key : simple_constr_prod_entry_key -> Sexp.t
 val simple_constr_prod_entry_key_of_yojson : Yojson.Safe.t -> (simple_constr_prod_entry_key, string) Result.result
 val simple_constr_prod_entry_key_to_yojson : simple_constr_prod_entry_key -> Yojson.Safe.t
+val simple_constr_prod_entry_key_of_python : Py.Object.t -> simple_constr_prod_entry_key
+val python_of_simple_constr_prod_entry_key : simple_constr_prod_entry_key -> Py.Object.t
 

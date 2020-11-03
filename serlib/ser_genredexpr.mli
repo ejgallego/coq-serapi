@@ -53,6 +53,8 @@ val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
 val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
 val raw_red_expr_of_yojson : Yojson.Safe.t -> (raw_red_expr, string) Result.result
 val raw_red_expr_to_yojson : raw_red_expr -> Yojson.Safe.t
+val raw_red_expr_of_python : Py.Object.t -> raw_red_expr
+val python_of_raw_red_expr : raw_red_expr -> Py.Object.t
 
 type r_cst = Genredexpr.r_cst
 val r_cst_of_sexp : Sexp.t -> r_cst
