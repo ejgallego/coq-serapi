@@ -15,8 +15,9 @@
 (************************************************************************)
 
 open Sexplib
+open Ppx_python_runtime
 
-type _t = string [@@deriving yojson]
+type _t = string [@@deriving yojson,python]
 let _t_put = Uint63.to_string
 let _t_get x = Uint63.of_int64 (Int64.of_string x)
 
@@ -33,3 +34,6 @@ let hash_fold_t st i =
 
 let compare i1 i2 =
   Ppx_compare_lib.Builtin.compare_int64 (Uint63.to_int64 i1) (Uint63.to_int64 i2)
+
+let t_of_python (x : Py.Object.t) : Uint63.t = _t_get (_t_of_python x)
+let python_of_t (x : Uint63.t) : Py.Object.t = python_of__t (_t_put x)

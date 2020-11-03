@@ -18,12 +18,14 @@ open Sexplib
 type side = Extend.side
 val side_of_sexp : Sexp.t -> side
 val sexp_of_side : side -> Sexp.t
+val side_of_python : Py.Object.t -> side
+val python_of_side : side -> Py.Object.t
 
 type production_position = Extend.production_position
 val production_position_of_sexp : Sexp.t -> production_position
 val sexp_of_production_position : production_position -> Sexp.t
 
-type production_level = Extend.production_level [@@deriving sexp,yojson,hash,compare]
+type production_level = Extend.production_level [@@deriving sexp,yojson,python,hash,compare]
 
 type binder_entry_kind = Extend.binder_entry_kind
 val binder_entry_kind_of_sexp : Sexp.t -> binder_entry_kind
@@ -38,9 +40,13 @@ val sexp_of_constr_entry_key_gen : ('lev -> Sexp.t) ->
 type constr_entry_key = Extend.constr_entry_key
 val constr_entry_key_of_sexp : Sexp.t -> constr_entry_key
 val sexp_of_constr_entry_key : constr_entry_key -> Sexp.t
+val constr_entry_key_of_python : Py.Object.t -> constr_entry_key
+val python_of_constr_entry_key : constr_entry_key -> Py.Object.t
 
 type constr_prod_entry_key = Extend.constr_prod_entry_key
 val constr_prod_entry_key_of_sexp : Sexp.t -> constr_prod_entry_key
 val sexp_of_constr_prod_entry_key : constr_prod_entry_key -> Sexp.t
+val constr_prod_entry_key_of_python : Py.Object.t -> constr_prod_entry_key
+val python_of_constr_prod_entry_key : constr_prod_entry_key -> Py.Object.t
 
-type simple_constr_prod_entry_key = Extend.simple_constr_prod_entry_key [@@deriving sexp,yojson,hash,compare]
+type simple_constr_prod_entry_key = Extend.simple_constr_prod_entry_key [@@deriving sexp,yojson,python,hash,compare]

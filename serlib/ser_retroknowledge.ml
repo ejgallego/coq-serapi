@@ -18,9 +18,8 @@ type retroknowledge =
 
 let sexp_of_retroknowledge = Serlib_base.sexp_of_opaque ~typ:"Retroknowledge.retroknowledge"
 let retroknowledge_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Retroknowledge.retroknowledge"
-
-(* type entry = 
- *   [%import: Retroknowledge.entry] *)
+let python_of_retroknowledge = Serlib_base.python_of_opaque ~typ:"Retroknowledge.retroknowledge"
+let retroknowledge_of_python = Serlib_base.opaque_of_python ~typ:"Retroknowledge.retroknowledge"
 
 type action = 
   [%import: Retroknowledge.action]

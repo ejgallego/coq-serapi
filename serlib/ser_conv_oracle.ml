@@ -13,13 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 type level =
   [%import: Conv_oracle.level]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module OpaqueOracle = struct
   type t = Conv_oracle.oracle
@@ -31,6 +32,8 @@ module B = SerType.Opaque(OpaqueOracle)
 type oracle = B.t
 let sexp_of_oracle = B.sexp_of_t
 let oracle_of_sexp = B.t_of_sexp
+let python_of_oracle = B.python_of_t
+let oracle_of_python = B.t_of_python
 let oracle_of_yojson = B.of_yojson
 let oracle_to_yojson = B.to_yojson
 let hash_oracle = B.hash

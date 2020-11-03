@@ -13,7 +13,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-include SerType.SJHC with type t = Sorts.t
+include SerType.SJPHC with type t = Sorts.t
 
-type family = Sorts.family [@@deriving sexp,yojson,hash,compare]
-type relevance = Sorts.relevance [@@deriving sexp,yojson,hash,compare]
+type family = Sorts.family [@@deriving sexp,yojson,python,hash,compare]
+type relevance = Sorts.relevance [@@deriving sexp,yojson,python,hash,compare]

@@ -17,7 +17,7 @@ module Univ = Ser_univ
 
 type family =
   [%import: Sorts.family]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module PierceSpec = struct
   type t = Sorts.t
@@ -26,11 +26,11 @@ module PierceSpec = struct
     | Prop
     | Set
     | Type of Univ.Universe.t
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 end
 
 include SerType.Pierce(PierceSpec)
 
 type relevance =
   [%import: Sorts.relevance]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

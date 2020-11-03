@@ -17,10 +17,10 @@
 
 open Sexplib
 
-module Store : SerType.SJHC with type t = Genintern.Store.t
+module Store : SerType.SJPHC with type t = Genintern.Store.t
 
 type intern_variable_status = Genintern.intern_variable_status
-  [@@deriving sexp, yojson, hash, compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_sign = Genintern.glob_sign
 
@@ -28,7 +28,7 @@ val glob_sign_of_sexp : Sexp.t -> glob_sign
 val sexp_of_glob_sign : glob_sign -> Sexp.t
 
 type glob_constr_and_expr = Genintern.glob_constr_and_expr
-  [@@deriving sexp, yojson, hash, compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_constr_pattern_and_expr = Genintern.glob_constr_pattern_and_expr
-  [@@deriving sexp, yojson, hash, compare]
+  [@@deriving sexp,yojson,python,hash,compare]

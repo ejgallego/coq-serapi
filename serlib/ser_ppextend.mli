@@ -25,18 +25,14 @@ type ppcut = Ppextend.ppcut
 val ppcut_of_sexp : Sexp.t -> ppcut
 val sexp_of_ppcut : ppcut -> Sexp.t
 
-(* type unparsing = Ppextend.unparsing
- * val unparsing_of_sexp : Sexp.t -> unparsing
- * val sexp_of_unparsing : unparsing -> Sexp.t *)
-
 type unparsing_rule = Ppextend.unparsing_rule
 val unparsing_rule_of_sexp : Sexp.t -> unparsing_rule
 val sexp_of_unparsing_rule : unparsing_rule -> Sexp.t
+val unparsing_rule_of_python : Py.Object.t -> unparsing_rule
+val python_of_unparsing_rule : unparsing_rule -> Py.Object.t
 
 type extra_unparsing_rules = Ppextend.extra_unparsing_rules
-val extra_unparsing_rules_of_sexp : Sexp.t -> extra_unparsing_rules
-val sexp_of_extra_unparsing_rules : extra_unparsing_rules -> Sexp.t
+  [@@deriving sexp,python]
 
 type notation_printing_rules = Ppextend.notation_printing_rules
-val notation_printing_rules_of_sexp : Sexp.t -> notation_printing_rules
-val sexp_of_notation_printing_rules : notation_printing_rules -> Sexp.t
+  [@@deriving sexp,python]

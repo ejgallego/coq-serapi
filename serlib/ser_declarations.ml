@@ -15,8 +15,13 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
+
+(* let python_of_unit _ = Py.Int.of_int 0
+ * let unit_of_python _ = () *)
+
 let hash_fold_array = hash_fold_array_frozen
 
 module Rtree   = Ser_rtree
@@ -35,36 +40,36 @@ module Retroknowledge = Ser_retroknowledge
 
 type template_arity =
   [%import: Declarations.template_arity]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('a, 'b) declaration_arity =
   [%import: ('a, 'b) Declarations.declaration_arity]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type nested_type =
   [%import: Declarations.nested_type]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type recarg =
   [%import: Declarations.recarg]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type wf_paths =
   [%import: Declarations.wf_paths]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type regular_inductive_arity =
   [%import: Declarations.regular_inductive_arity
   [@with Term.sorts := Sorts.t;]]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type inductive_arity =
   [%import: Declarations.inductive_arity]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type one_inductive_body =
   [%import: Declarations.one_inductive_body]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 (* type set_predicativity =
  *   [%import: Declarations.set_predicativity]
@@ -76,19 +81,19 @@ type one_inductive_body =
 
 type inline =
   [%import: Declarations.inline]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type universes =
   [%import: Declarations.universes]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('a, 'b) constant_def =
   [%import: ('a, 'b) Declarations.constant_def]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type typing_flags =
   [%import: Declarations.typing_flags]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 (* type work_list =
  *   [%import: Declarations.work_list]
@@ -104,11 +109,11 @@ type typing_flags =
 
 type 'a pconstant_body =
   [%import: 'a Declarations.pconstant_body]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type constant_body =
   [%import: Declarations.constant_body]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 let sexp_of_constant_body e =
   (* We cannot handle VM values *)
@@ -124,6 +129,8 @@ module B_ = SerType.Opaque1(MRK)
 type 'a module_retroknowledge = 'a B_.t
 let sexp_of_module_retroknowledge = B_.sexp_of_t
 let module_retroknowledge_of_sexp = B_.t_of_sexp
+let _python_of_module_retroknowledge = B_.python_of_t
+let _module_retroknowledge_of_python = B_.t_of_python
 let module_retroknowledge_of_yojson = B_.of_yojson
 let module_retroknowledge_to_yojson = B_.to_yojson
 let hash_fold_module_retroknowledge = B_.hash_fold_t
@@ -131,32 +138,32 @@ let compare_module_retroknowledge = B_.compare
 
 type recursivity_kind =
   [%import: Declarations.recursivity_kind]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type record_info =
   [%import: Declarations.record_info]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type template_universes =
   [%import: Declarations.template_universes]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type mutual_inductive_body =
   [%import: Declarations.mutual_inductive_body
   [@with Context.section_context := Context.Named.t;]]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('ty,'a) functorize =
   [%import: ('ty, 'a) Declarations.functorize]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a with_declaration =
   [%import: 'a Declarations.with_declaration]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a module_alg_expr =
   [%import: 'a Declarations.module_alg_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type structure_field_body =
   [%import: Declarations.structure_field_body]
@@ -189,3 +196,10 @@ and module_body =
 and module_type_body =
   [%import: Declarations.module_type_body]
   [@@deriving sexp,yojson,hash,compare]
+
+let structure_body_of_python = Obj.magic 0
+let python_of_structure_body = Obj.magic 0
+let module_body_of_python = Obj.magic 0
+let python_of_module_body = Obj.magic 0
+let module_type_body_of_python = Obj.magic 0
+let python_of_module_type_body = Obj.magic 0

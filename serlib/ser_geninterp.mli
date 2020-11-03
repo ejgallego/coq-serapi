@@ -16,9 +16,9 @@
 module Val : sig
 
   type t = Geninterp.Val.t
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 end
 
 type interp_sign = Geninterp.interp_sign
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

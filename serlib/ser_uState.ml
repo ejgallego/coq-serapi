@@ -13,10 +13,11 @@
 (* Status: Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 type ('a,'b) gen_universe_decl =
   [%import: ('a,'b) UState.gen_universe_decl]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

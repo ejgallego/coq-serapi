@@ -15,16 +15,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* type goal_selector = Vernacexpr.goal_selector
- * val goal_selector_of_sexp : Sexp.t -> goal_selector
- * val sexp_of_goal_selector : goal_selector -> Sexp.t *)
-
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Conv
 
 module Names       = Ser_names
 
 type t =
   [%import: Goal_select.t]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

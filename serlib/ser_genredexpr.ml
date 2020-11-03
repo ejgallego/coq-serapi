@@ -13,9 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module Loc   = Ser_loc
 module Names = Ser_names
@@ -30,40 +31,40 @@ type 'a red_atom =
 
 type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('a,'b,'c,'d) red_expr_gen0 =
   [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen0]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('a,'b,'c) red_expr_gen =
   [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('a,'b,'c) may_eval =
   [%import: ('a,'b,'c) Genredexpr.may_eval]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 (* Helpers for raw_red_expr *)
 type r_trm =
   [%import: Genredexpr.r_trm]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type r_cst =
   [%import: Genredexpr.r_cst]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type r_pat =
   [%import: Genredexpr.r_pat]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type raw_red_expr =
   [%import: Genredexpr.raw_red_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a and_short_name =
   [%import: 'a Genredexpr.and_short_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module A = struct
 
@@ -71,7 +72,7 @@ module A = struct
     (Ser_constrexpr.constr_expr,
      Ser_libnames.qualid Ser_constrexpr.or_by_notation,
      Ser_constrexpr.constr_expr) red_expr_gen
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
   type glb =
     (Ser_genintern.glob_constr_and_expr,

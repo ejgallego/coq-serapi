@@ -13,21 +13,22 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 type sign =
   [%import: NumTok.sign]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type num_class =
   [%import: NumTok.num_class]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type 'a exp =
   [%import: 'a NumTok.exp]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 module Unsigned = struct
 
@@ -37,7 +38,7 @@ module Unsigned = struct
       int : string;
       frac : string;
       exp : string
-    } [@@deriving sexp,yojson,hash,compare]
+    } [@@deriving sexp,yojson,python,hash,compare]
   end
 
   include SerType.Pierce(PierceSpec)
@@ -47,6 +48,6 @@ module Signed = struct
 
   type t =
     [%import: NumTok.Signed.t]
-    [@@deriving sexp,yojson,hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
 
 end

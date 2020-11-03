@@ -21,6 +21,8 @@ val doc_id_of_sexp : Sexp.t -> doc_id
 val sexp_of_doc_id : doc_id -> Sexp.t
 val doc_id_of_yojson : Yojson.Safe.t -> (doc_id, string) Result.result
 val doc_id_to_yojson : doc_id -> Yojson.Safe.t
+val doc_id_of_python : Py.Object.t -> doc_id
+val python_of_doc_id : doc_id -> Py.Object.t
 
 type level = Feedback.level
 
@@ -28,12 +30,16 @@ val level_of_sexp : Sexp.t -> level
 val sexp_of_level : level -> Sexp.t
 val level_of_yojson : Yojson.Safe.t -> (level, string) Result.result
 val level_to_yojson : level -> Yojson.Safe.t
+val level_of_python : Py.Object.t -> level
+val python_of_level : level -> Py.Object.t
 
 type route_id = Feedback.route_id
 val route_id_of_sexp : Sexp.t -> route_id
 val sexp_of_route_id : route_id -> Sexp.t
 val route_id_of_yojson : Yojson.Safe.t -> (route_id, string) Result.result
 val route_id_to_yojson : route_id -> Yojson.Safe.t
+val route_id_of_python : Py.Object.t -> route_id
+val python_of_route_id : route_id -> Py.Object.t
 
 type feedback_content = Feedback.feedback_content
 

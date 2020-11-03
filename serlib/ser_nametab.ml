@@ -13,8 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_python_runtime
+
 module Names = Ser_names
 
 type object_prefix =
   [%import: Nametab.object_prefix]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

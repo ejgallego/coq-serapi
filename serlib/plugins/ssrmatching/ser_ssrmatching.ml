@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -24,22 +25,22 @@ module Geninterp = Ser_geninterp
 
 type ssrtermkind =
   [%import: Ssrmatching_plugin.Ssrmatching.ssrtermkind]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type cpattern =
   [%import: Ssrmatching_plugin.Ssrmatching.cpattern]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type ('a, 'b) ssrpattern =
   [%import: ('a, 'b) Ssrmatching_plugin.Ssrmatching.ssrpattern]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module PierceRPattern = struct
 
   type t = Ssrmatching_plugin.Ssrmatching.rpattern
 
   type _t = (cpattern, cpattern) ssrpattern
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module B_ = SerType.Pierce(PierceRPattern)

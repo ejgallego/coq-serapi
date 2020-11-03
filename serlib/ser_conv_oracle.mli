@@ -13,5 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type level = Conv_oracle.level [@@deriving sexp,yojson,hash,compare]
-type oracle = Conv_oracle.oracle [@@deriving sexp,yojson,hash,compare]
+type level = Conv_oracle.level [@@deriving sexp,yojson,python,hash,compare]
+type oracle = Conv_oracle.oracle [@@deriving sexp,yojson,python,hash,compare]

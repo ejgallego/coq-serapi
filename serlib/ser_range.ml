@@ -16,3 +16,5 @@
 type 'a t = 'a Range.t
 let sexp_of_t _ = Serlib_base.sexp_of_opaque ~typ:"Range.t"
 let t_of_sexp _ = Serlib_base.opaque_of_sexp ~typ:"Range.t"
+let python_of_t _ = Serlib_base.python_of_opaque ~typ:"Range.t"
+let t_of_python _ = Serlib_base.opaque_of_python ~typ:"Range.t"

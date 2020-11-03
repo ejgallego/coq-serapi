@@ -13,9 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Conv
 
 module Names       = Ser_names
 module Libnames    = Ser_libnames
@@ -25,24 +26,24 @@ module Genarg      = Ser_genarg
 
 type hint_db_name =
   [%import: Hints.hint_db_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a hints_path_atom_gen =
   [%import: 'a Hints.hints_path_atom_gen]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a hints_path_gen =
   [%import: 'a Hints.hints_path_gen]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type hints_path =
   [%import: Hints.hints_path]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type hint_mode =
   [%import: Hints.hint_mode]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a hints_transparency_target =
   [%import: 'a Hints.hints_transparency_target]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

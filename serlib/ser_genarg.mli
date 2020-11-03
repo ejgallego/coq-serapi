@@ -30,13 +30,13 @@ type tlevel = Genarg.tlevel
   [@@deriving sexp,yojson,hash,compare]
 
 type 'a generic_argument = 'a Genarg.generic_argument
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_generic_argument = Genarg.glob_generic_argument
-[@@deriving sexp,yojson,hash,compare]
+[@@deriving sexp,yojson,python,hash,compare]
 
 type raw_generic_argument = Genarg.raw_generic_argument
-[@@deriving sexp,yojson,hash,compare]
+[@@deriving sexp,yojson,python,hash,compare]
 
 type typed_generic_argument = Genarg.typed_generic_argument
 val typed_generic_argument_of_sexp : Sexp.t -> Genarg.typed_generic_argument

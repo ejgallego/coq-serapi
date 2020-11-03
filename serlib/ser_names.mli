@@ -20,30 +20,30 @@ open Names
 open Sexplib
 
 module Id : sig
-  include SerType.SJHC with type t = Id.t
+  include SerType.SJPHC with type t = Id.t
 
-  module Set : SerType.SJHC with type t = Id.Set.t
-  module Map : SerType.SJHC1 with type 'a t = 'a Id.Map.t
+  module Set : SerType.SJPHC with type t = Id.Set.t
+  module Map : SerType.SJPHC1 with type 'a t = 'a Id.Map.t
 end
 
-module Name    : SerType.SJHC with type t = Name.t
-module DirPath : SerType.SJHC with type t = DirPath.t
+module Name    : SerType.SJPHC with type t = Name.t
+module DirPath : SerType.SJPHC with type t = DirPath.t
 module DPmap   : Ser_cMap.ExtS with type key = DirPath.t and type 'a t = 'a DPmap.t
 
-module Label   : SerType.SJHC with type t = Label.t
-module MBId    : SerType.SJHC with type t = MBId.t
-module ModPath : SerType.SJHC with type t = ModPath.t
+module Label   : SerType.SJPHC with type t = Label.t
+module MBId    : SerType.SJPHC with type t = MBId.t
+module ModPath : SerType.SJPHC with type t = ModPath.t
 module MPmap   : Ser_cMap.ExtS with type key = ModPath.t and type 'a t = 'a MPmap.t
 
-module KerName  : SerType.SJHC with type t = KerName.t
-module Constant : SerType.SJHC with type t = Constant.t
+module KerName  : SerType.SJPHC with type t = KerName.t
+module Constant : SerType.SJPHC with type t = Constant.t
 
 module Cset_env : Ser_cSet.ExtS with type elt = Constant.t and type t = Cset_env.t
 
 module Cmap : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap_env.t
 
-module MutInd : SerType.S with type t = MutInd.t
+module MutInd : SerType.SJP with type t = MutInd.t
 
 module Mindmap : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap.t
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap_env.t
@@ -55,13 +55,15 @@ type 'a tableKey = 'a Names.tableKey
 val tableKey_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a tableKey
 val sexp_of_tableKey : ('a -> Sexp.t) -> 'a tableKey -> Sexp.t
 
-type variable    = Names.variable [@@deriving sexp, yojson, hash, compare]
-type inductive   = Names.inductive [@@deriving sexp, yojson, hash, compare]
-type constructor = Names.constructor [@@deriving sexp, yojson, hash, compare]
+type variable    = Names.variable [@@deriving sexp,yojson,python,hash,compare]
+type inductive   = Names.inductive [@@deriving sexp,yojson,python,hash,compare]
+type constructor = Names.constructor [@@deriving sexp,yojson,python,hash,compare]
+
+(* -- end modularize -- *)
 
 module Projection : sig
 
-  include SerType.SJHC with type t = Projection.t
+  include SerType.SJPHC with type t = Projection.t
 
   module Repr : sig
     include SerType.S with type t = Projection.Repr.t
@@ -69,8 +71,8 @@ module Projection : sig
 
 end
 
-module GlobRef : SerType.SJHC with type t = Names.GlobRef.t
+module GlobRef : SerType.SJPHC with type t = Names.GlobRef.t
 
-type lident = Names.lident [@@deriving sexp,yojson,hash,compare]
-type lname = Names.lname [@@deriving sexp,yojson,hash,compare]
-type lstring = Names.lstring [@@deriving sexp,yojson,hash,compare]
+type lident = Names.lident [@@deriving sexp,yojson,python,hash,compare]
+type lname = Names.lname [@@deriving sexp,yojson,python,hash,compare]
+type lstring = Names.lstring [@@deriving sexp,yojson,python,hash,compare]

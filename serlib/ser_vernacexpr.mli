@@ -291,4 +291,4 @@ type vernac_control_r =
 
 type vernac_control =
   [%import: Vernacexpr.vernac_control]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

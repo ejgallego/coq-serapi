@@ -36,6 +36,7 @@ depends: [
   "ppx_hash"            {           >= "v0.13.0" & < "v0.16" }
   "yojson"              {           >= "1.7.0"               }
   "ppx_deriving_yojson" {           >= "3.4"                 }
+  "ppx_python"          {           >= "v0.15.0"             }
 ]
 
 build: [ "dune" "build" "-p" name "-j" jobs ]

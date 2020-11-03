@@ -13,5 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type object_prefix = Nametab.object_prefix [@@deriving sexp]
-
+type object_prefix = Nametab.object_prefix [@@deriving sexp,python]

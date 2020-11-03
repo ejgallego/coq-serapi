@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -31,50 +32,48 @@ module Declarations   = Ser_declarations
 
 type lazy_val = [%import: Environ.lazy_val]
 let sexp_of_lazy_val = Serlib_base.sexp_of_opaque ~typ:"Environ.lazy_val"
-
-(* type stratification =
- *   [%import: Environ.stratification]
- *   [@@deriving sexp_of] *)
+let python_of_lazy_val = Serlib_base.python_of_opaque ~typ:"Environ.lazy_val"
 
 type rel_context_val =
   [%import: Environ.rel_context_val]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of,python_of]
 
 type named_context_val =
   [%import: Environ.named_context_val]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of,python_of]
 
 type link_info =
   [%import: Environ.link_info]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type key =
   [%import: Environ.key]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type constant_key =
   [%import: Environ.constant_key]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type mind_key =
   [%import: Environ.mind_key]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module Globals = struct
 
   module PierceSpec = struct
     type t = Environ.Globals.t
     type _t = [%import: Environ.Globals.view]
-    [@@deriving sexp,yojson,hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
   end
   include SerType.Pierce(PierceSpec)
 end
 
 type env =
   [%import: Environ.env]
-  [@@deriving sexp_of]
+  [@@deriving sexp_of, python_of]
 
 let env_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Environ.env"
+let env_of_python = Serlib_base.opaque_of_python ~typ:"Environ.env"
 
 let abstract_env = ref false
 let sexp_of_env env =

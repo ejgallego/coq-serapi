@@ -33,7 +33,7 @@ type ('a, 'b, 'c) red_expr_gen =  ('a, 'b, 'c) Genredexpr.red_expr_gen
 type ('a, 'b, 'c) may_eval =  ('a, 'b, 'c) Genredexpr.may_eval
   [@@deriving sexp,yojson,hash,compare]
 
-type raw_red_expr = Genredexpr.raw_red_expr [@@deriving sexp,yojson,hash,compare]
+type raw_red_expr = Genredexpr.raw_red_expr [@@deriving sexp,yojson,python,hash,compare]
 
 type r_cst = Genredexpr.r_cst
   [@@deriving sexp,yojson,hash,compare]

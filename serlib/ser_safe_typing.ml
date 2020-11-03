@@ -16,9 +16,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module ONames = Names
 module CEphemeron = Ser_cEphemeron
@@ -33,17 +34,17 @@ module Univ = Ser_univ
 type certificate = {
   certif_struc : Declarations.structure_body;
   certif_univs : Univ.ContextSet.t;
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 
 type side_effect = {
   from_env : certificate CEphemeron.key;
   seff_constant : Names.Constant.t;
   seff_body : Declarations.constant_body;
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 
 module SeffOrd = struct
   type t = side_effect
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module SeffSet = Set.Make(SeffOrd)
@@ -53,7 +54,7 @@ module PC = struct
   (* t  private_constants *)
   type t = Safe_typing.private_constants
   type _t = { seff : side_effect list; elts : SerSeffSet.t }
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module B_ = SerType.Pierce(PC)

@@ -16,6 +16,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -26,8 +27,8 @@ let hash_fold_array = hash_fold_array_frozen
 
 type fv_elem =
   [%import: Vmbytecodes.fv_elem]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type fv =
   [%import: Vmbytecodes.fv]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

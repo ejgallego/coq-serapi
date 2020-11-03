@@ -21,13 +21,16 @@ module Univ = Ser_univ
 
 module Bound = struct
   type t = [%import: UGraph.Bound.t]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 end
 
 type t = [%import: UGraph.t]
 
 let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"UGraph.t"
 let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"UGraph.t"
+
+let python_of_t = Serlib_base.python_of_opaque ~typ:"UGraph.t"
+let t_of_python = Serlib_base.opaque_of_python ~typ:"UGraph.t"
 
 type univ_inconsistency =
   [%import: UGraph.univ_inconsistency]

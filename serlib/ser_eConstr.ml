@@ -24,7 +24,7 @@ module ECtoC = struct
 
   type t = EConstr.t
   type _t = Constr.t
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
   let to_t = EConstr.of_constr
   let of_t = EConstr.Unsafe.to_constr

@@ -15,4 +15,4 @@
 (************************************************************************)
 
 type t = Int.t
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

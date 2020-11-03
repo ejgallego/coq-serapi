@@ -15,10 +15,11 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Conv
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Conv
 
 type 'a hint_info_gen =
   [%import: 'a Typeclasses.hint_info_gen]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

@@ -18,16 +18,17 @@
 (**********************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
 type source =
   [%import: Loc.source]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type t =
   [%import: Loc.t]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 let omit_loc = ref false
 let sexp_of_t x =
@@ -35,4 +36,4 @@ let sexp_of_t x =
 
 (* located: public *)
 type 'a located = (t option [@ignore]) * 'a
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

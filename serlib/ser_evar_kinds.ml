@@ -13,9 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module Names     = Ser_names
 module Evar      = Ser_evar
@@ -27,25 +28,24 @@ module Constr    = Ser_constr
 
 type matching_var_kind =
   [%import: Evar_kinds.matching_var_kind]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type obligation_definition_status =
   [%import: Evar_kinds.obligation_definition_status]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type record_field =
   [%import: Evar_kinds.record_field]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type question_mark =
   [%import: Evar_kinds.question_mark]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type subevar_kind =
   [%import: Evar_kinds.subevar_kind]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type t =
   [%import: Evar_kinds.t]
-  [@@deriving sexp,yojson,hash,compare]
-
+  [@@deriving sexp,yojson,python,hash,compare]

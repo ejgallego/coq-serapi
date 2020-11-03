@@ -13,27 +13,28 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module Names     = Ser_names
 
 type 'a or_var =
   [%import: 'a Locus.or_var]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a occurrences_gen =
   [%import: 'a Locus.occurrences_gen]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type occurrences_expr =
   [%import: Locus.occurrences_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a with_occurrences =
   [%import: 'a Locus.with_occurrences]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type occurrences =
   [%import: Locus.occurrences]
@@ -41,15 +42,15 @@ type occurrences =
 
 type hyp_location_flag =
   [%import: Locus.hyp_location_flag]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a hyp_location_expr =
   [%import: 'a Locus.hyp_location_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'id clause_expr =
   [%import: 'id Locus.clause_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type clause =
   [%import: Locus.clause]
@@ -65,7 +66,7 @@ type concrete_clause =
 
 type hyp_location =
   [%import: Locus.hyp_location]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type goal_location =
   [%import: Locus.goal_location]

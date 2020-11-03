@@ -14,9 +14,25 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
-(* XXX: Move to ser_cmap *)
-type 'a cstring_map = 'a CString.Map.t
+module String = struct
+  type t = string
+  let t_of_sexp = string_of_sexp
+  let sexp_of_t = sexp_of_string
+  let of_yojson s = Ok (Yojson.Safe.Util.to_string s)
+  let to_yojson s = `String s
+  let t_of_python = Py.String.to_string
+  let python_of_t = Py.String.of_string
+  let hash = Ppx_hash_lib.Std.Hash.Builtin.hash_string
+  let hash_fold_t = Ppx_hash_lib.Std.Hash.Builtin.hash_fold_string
+  let compare = String.compare
+end
+
+module SM = Serlib.Ser_cMap.Make(CString.Map)(String)
+
+type 'a cstring_map = 'a SM.t
+  [@@deriving sexp,python]
 
 let from_bindings bl =
   let open CString.Map in
@@ -37,4 +53,4 @@ type treenode =
   [@with CString.Map.t   := cstring_map;
          CString.Map.key := string
   ]]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

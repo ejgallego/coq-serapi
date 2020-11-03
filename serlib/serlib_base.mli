@@ -25,6 +25,9 @@ val opaque_of_sexp : typ:string -> Sexp.t -> 'a
 val opaque_of_yojson : typ:string -> Yojson.Safe.t -> ('a, string) Result.t
 val opaque_to_yojson : typ:string -> 'a -> Yojson.Safe.t
 
+val python_of_opaque : typ:string -> 'a -> Py.Object.t
+val opaque_of_python : typ:string -> Py.Object.t -> 'a
+
 val hash_opaque : typ:string -> 'a -> Ppx_hash_lib.Std.Hash.hash_value
 val hash_fold_opaque : typ:string -> Ppx_hash_lib.Std.Hash.state -> 'a -> Ppx_hash_lib.Std.Hash.state
 

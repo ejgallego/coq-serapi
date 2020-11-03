@@ -678,6 +678,12 @@ and raw_atomic_tactic_expr_of_sexp tac =
     raw_tactic_expr_of_sexp
     Genarg.rlevel_of_sexp
 
+let python_of_raw_tactic_expr =
+  Serlib_base.python_of_opaque ~typ:"raw_tactic_expr"
+
+let raw_tactic_expr_of_python =
+  Serlib_base.opaque_of_python ~typ:"raw_tactic_expr"
+
 let rec sexp_of_raw_tactic_expr (tac : raw_tactic_expr) =
   sexp_of_gen_tactic_expr
     Constrexpr.sexp_of_constr_expr

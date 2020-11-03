@@ -18,4 +18,7 @@ type 'a t = 'a CAst.t = private {
   loc : Loc.t option;
 } [@@deriving sexp,yojson,hash,compare]
 
+val t_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a t
+val python_of_t : ('a -> Py.Object.t) -> 'a t -> Py.Object.t
+
 val omit_att : bool ref

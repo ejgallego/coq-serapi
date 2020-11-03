@@ -47,3 +47,6 @@ type implicits_list = Impargs.implicits_list
 
 val implicits_list_of_sexp : Sexp.t -> implicits_list
 val sexp_of_implicits_list : implicits_list -> Sexp.t
+
+val implicits_list_of_python : Py.Object.t -> implicits_list
+val python_of_implicits_list : implicits_list -> Py.Object.t

@@ -13,9 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module Tok           = Ser_tok
 module Notation_term = Ser_notation_term
@@ -24,33 +25,33 @@ module Gramlib       = Ser_gramlib
 
 type side =
   [%import: Extend.side]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type production_position =
   [%import: Extend.production_position]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type production_level =
   [%import: Extend.production_level]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type binder_entry_kind =
   [%import: Extend.binder_entry_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type 'lev constr_entry_key_gen =
   [%import: 'lev Extend.constr_entry_key_gen]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type constr_entry_key =
   [%import: Extend.constr_entry_key]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type constr_prod_entry_key =
   [%import: Extend.constr_prod_entry_key]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type simple_constr_prod_entry_key =
   [%import: Extend.simple_constr_prod_entry_key]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 

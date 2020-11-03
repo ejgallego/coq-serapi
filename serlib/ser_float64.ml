@@ -17,12 +17,13 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
 module PierceSpec = struct
   type t = Float64.t
-  type _t = float [@@deriving sexp,yojson,hash,compare]
+  type _t = float [@@deriving sexp,yojson,python,hash,compare]
 end
 
 include SerType.Pierce(PierceSpec)

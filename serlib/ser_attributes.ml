@@ -15,15 +15,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module CAst = Ser_cAst
 
 type vernac_flag_type =
   [%import: Attributes.vernac_flag_type]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type vernac_flag =
   [%import: Attributes.vernac_flag]
@@ -31,4 +32,4 @@ and vernac_flag_value =
   [%import: Attributes.vernac_flag_value]
 and vernac_flags =
   [%import: Attributes.vernac_flags]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

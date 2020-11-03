@@ -52,40 +52,18 @@ type one_inductive_body = Declarations.one_inductive_body
 val one_inductive_body_of_sexp : Sexp.t -> one_inductive_body
 val sexp_of_one_inductive_body : one_inductive_body -> Sexp.t
 
-(* type set_predicativity = Declarations.set_predicativity
- * val set_predicativity_of_sexp : Sexp.t -> set_predicativity
- * val sexp_of_set_predicativity : set_predicativity -> Sexp.t *)
-
-(* type engagement = Declarations.engagement
- * val engagement_of_sexp : Sexp.t -> engagement
- * val sexp_of_engagement : engagement -> Sexp.t *)
-
 type typing_flags = Declarations.typing_flags
 val typing_flags_of_sexp : Sexp.t -> typing_flags
 val sexp_of_typing_flags : typing_flags -> Sexp.t
+val typing_flags_of_python : Py.Object.t -> typing_flags
+val python_of_typing_flags : typing_flags -> Py.Object.t
 
 type inline = Declarations.inline
 val sexp_of_inline : inline -> Sexp.t
 val inline_of_sexp : Sexp.t -> inline
 
-(* type work_list = Declarations.work_list *)
-
-(* type abstr_info = Declarations.abstr_info = {
- *   abstr_ctx : Constr.named_context;
- *   abstr_subst : Univ.Instance.t;
- *   abstr_uctx : Univ.AbstractContext.t;
- * }
- * 
- * type cooking_info = Declarations.cooking_info
- * val sexp_of_cooking_info : cooking_info -> Sexp.t
- * val cooking_info_of_sexp : Sexp.t -> cooking_info *)
-
 type constant_body = Declarations.constant_body
-  [@@deriving sexp,yojson,hash,compare]
-
-(* type record_body = Declarations.record_body
- * val record_body_of_sexp : Sexp.t -> record_body
- * val sexp_of_record_body : record_body -> Sexp.t *)
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type recursivity_kind = Declarations.recursivity_kind
 val recursivity_kind_of_sexp : Sexp.t -> recursivity_kind
@@ -94,17 +72,17 @@ val recursivity_kind_of_yojson : Yojson.Safe.t -> (recursivity_kind, string) Res
 val recursivity_kind_to_yojson : recursivity_kind -> Yojson.Safe.t
 
 type mutual_inductive_body = Declarations.mutual_inductive_body
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a module_alg_expr = 'a Declarations.module_alg_expr
 val sexp_of_module_alg_expr : ('a -> Sexp.t) -> 'a module_alg_expr -> Sexp.t
 val module_alg_expr_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a module_alg_expr
 
 type structure_body = Declarations.structure_body
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type module_body = Declarations.module_body
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type module_type_body = Declarations.module_type_body
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

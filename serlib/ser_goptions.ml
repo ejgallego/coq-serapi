@@ -15,29 +15,30 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 module Libnames = Ser_libnames
 
 type option_locality =
   [%import: Goptions.option_locality]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type option_name =
   [%import: Goptions.option_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type option_value =
   [%import: Goptions.option_value]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type option_state =
   [%import: Goptions.option_state]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type table_value =
   [%import: Goptions.table_value]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 

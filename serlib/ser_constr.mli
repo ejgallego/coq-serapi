@@ -36,8 +36,8 @@ type pconstructor = Constr.pconstructor
 val pconstructor_of_sexp : Sexp.t -> pconstructor
 val sexp_of_pconstructor : pconstructor -> Sexp.t
 
-type cast_kind = Constr.cast_kind [@@deriving sexp, yojson, hash,compare]
-type case_style = Constr.case_style [@@deriving sexp, yojson, hash,compare]
+type cast_kind = Constr.cast_kind [@@deriving sexp,yojson,python,hash,compare]
+type case_style = Constr.case_style [@@deriving sexp,yojson,python,hash,compare]
 
 type case_printing = Constr.case_printing
 
@@ -65,7 +65,7 @@ val cofixpoint_of_sexp : Sexp.t -> cofixpoint
 val sexp_of_cofixpoint : cofixpoint -> Sexp.t
 
 type 'constr pexistential = 'constr Constr.pexistential
-  [@@deriving sexp, yojson, hash, compare]
+  [@@deriving sexp, yojson, python, hash, compare]
 
 type ('constr, 'types) prec_declaration = ('constr, 'types) Constr.prec_declaration
 
@@ -99,11 +99,20 @@ val sexp_of_pcofixpoint :
 type t = Constr.t
   [@@deriving sexp,yojson,hash,compare]
 
+val t_of_python : Py.Object.t -> t
+val python_of_t : t -> Py.Object.t
+
 type constr = t
   [@@deriving sexp,yojson,hash,compare]
 
+val constr_of_python : Py.Object.t -> constr
+val python_of_constr : constr -> Py.Object.t
+
 type types  = constr
   [@@deriving sexp,yojson,hash,compare]
+
+val types_of_python : Py.Object.t -> types
+val python_of_types : types -> Py.Object.t
 
 type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential
@@ -116,13 +125,17 @@ val sexp_of_sorts_family : sorts_family -> Sexp.t
 type named_declaration = Constr.named_declaration
 val named_declaration_of_sexp : Sexp.t -> named_declaration
 val sexp_of_named_declaration : named_declaration -> Sexp.t
+val named_declaration_of_python : Py.Object.t -> named_declaration
+val python_of_named_declaration : named_declaration -> Py.Object.t
 
 type named_context = Constr.named_context
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type rel_declaration = Constr.rel_declaration
 val rel_declaration_of_sexp : Sexp.t -> rel_declaration
 val sexp_of_rel_declaration : rel_declaration -> Sexp.t
+val rel_declaration_of_python : Py.Object.t -> rel_declaration
+val python_of_rel_declaration : rel_declaration -> Py.Object.t
 
 type rel_context = Constr.rel_context
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

@@ -8,9 +8,10 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Names = Ser_names
 
 type top =
   [%import: Coqargs.top]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]

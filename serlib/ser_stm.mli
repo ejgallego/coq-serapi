@@ -16,16 +16,15 @@
 open Sexplib
 
 (* type interactive_top = Stm.interactive_top
- * 
+ *
  * val sexp_of_interactive_top : Stm.interactive_top -> Sexp.t
- * val interactive_top_of_sexp : Sexp.t -> Stm.interactive_top *)
+ * val interactive_top_of_sexp : Sexp.t -> Stm.interactive_top
+ * val python_of_interactive_top : Stm.interactive_top -> Py.Object.t
+ * val interactive_top_of_python : Py.Object.t -> Stm.interactive_top *)
 
 type focus = Stm.focus
 
 val sexp_of_focus : Stm.focus -> Sexp.t
 val focus_of_sexp : Sexp.t -> Stm.focus
 
-type add_focus = Stm.add_focus
-
-val sexp_of_add_focus : Stm.add_focus -> Sexp.t
-val add_focus_of_sexp : Sexp.t -> Stm.add_focus
+type add_focus = Stm.add_focus [@@deriving sexp,python]

@@ -14,14 +14,12 @@
 (************************************************************************)
 
 open Sexplib.Std
-
-(* module Ppextend = Ser_ppextend
- * module Notation_term = Ser_notation_term *)
+open Ppx_python_runtime
 
 module Constrexpr = Ser_constrexpr
 
 type level =
   [%import: Notation.level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 

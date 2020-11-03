@@ -17,6 +17,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -28,21 +29,21 @@ type abstr_info = {
   abstr_ctx : Constr.named_context;
   abstr_auctx : Univ.AbstractContext.t;
   abstr_ausubst : Univ.Instance.t;
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 
 type abstr_inst_info = {
   abstr_rev_inst : Names.Id.t list;
   abstr_uinst : Univ.Instance.t;
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 
-type 'a entry_map = 'a Names.Cmap.t * 'a Names.Mindmap.t [@@deriving sexp,yojson,hash,compare]
-type expand_info = abstr_inst_info entry_map [@@deriving sexp,yojson,hash,compare]
+type 'a entry_map = 'a Names.Cmap.t * 'a Names.Mindmap.t [@@deriving sexp,yojson,python,hash,compare]
+type expand_info = abstr_inst_info entry_map [@@deriving sexp,yojson,python,hash,compare]
 
 module CIP = struct
 type _t = {
   expand_info : expand_info;
   abstr_info : abstr_info;
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 
 type t =
   [%import: Cooking.cooking_info]
@@ -53,6 +54,8 @@ module B_ = SerType.Pierce(CIP)
 type cooking_info = B_.t
 let sexp_of_cooking_info = B_.sexp_of_t
 let cooking_info_of_sexp = B_.t_of_sexp
+let python_of_cooking_info = B_.python_of_t
+let cooking_info_of_python = B_.t_of_python
 let cooking_info_of_yojson = B_.of_yojson
 let cooking_info_to_yojson = B_.to_yojson
 let hash_cooking_info = B_.hash

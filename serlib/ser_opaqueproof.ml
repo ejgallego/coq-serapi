@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_compare_lib.Builtin
 open Ppx_hash_lib.Std.Hash.Builtin
 
@@ -28,7 +29,7 @@ module OP = struct
 type t = [%import: Opaqueproof.opaque]
 type _t =
   | Indirect of Mod_subst.substitution list * Cooking.cooking_info list * Names.DirPath.t * int (* subst, discharge, lib, index *)
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module B_ = SerType.Pierce(OP)
@@ -36,6 +37,8 @@ module B_ = SerType.Pierce(OP)
 type opaque = Opaqueproof.opaque
 let sexp_of_opaque = B_.sexp_of_t
 let opaque_of_sexp = B_.t_of_sexp
+let python_of_opaque = B_.python_of_t
+let opaque_of_python = B_.t_of_python
 let opaque_of_yojson = B_.of_yojson
 let opaque_to_yojson = B_.to_yojson
 let hash_opaque = B_.hash
@@ -49,7 +52,7 @@ module OTSpec = struct
   type _t = {
     opaque_len : int;
     opaque_dir : Names.DirPath.t;
-  } [@@deriving sexp,yojson,hash,compare]
+  } [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module C_ = SerType.Pierce(OTSpec)
@@ -57,6 +60,8 @@ module C_ = SerType.Pierce(OTSpec)
 type opaquetab = C_.t
 let sexp_of_opaquetab = C_.sexp_of_t
 let opaquetab_of_sexp = C_.t_of_sexp
+let python_of_opaquetab = C_.python_of_t
+let opaquetab_of_python = C_.t_of_python
 let opaquetab_of_yojson = C_.of_yojson
 let opaquetab_to_yojson = C_.to_yojson
 let hash_opaquetab = C_.hash

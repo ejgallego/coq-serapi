@@ -17,15 +17,10 @@ open Sexplib
 
 module Bound : sig
   type t = UGraph.Bound.t
-
-  val sexp_of_t : t -> Sexp.t
-  val t_of_sexp : Sexp.t -> t
+  [@@deriving sexp,python]
 end
 
-type t = UGraph.t
-
-val sexp_of_t : t -> Sexp.t
-val t_of_sexp : Sexp.t -> t
+type t = UGraph.t [@@deriving sexp,python]
 
 type univ_inconsistency = UGraph.univ_inconsistency
 

@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Loc           = Ser_loc
 module Notation_term = Ser_notation_term
@@ -23,28 +24,28 @@ module Extend        = Ser_extend
 
 type ppbox =
   [%import: Ppextend.ppbox]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,python]
 
 type ppcut =
   [%import: Ppextend.ppcut]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,python]
 
 type pattern_quote_style =
   [%import: Ppextend.pattern_quote_style]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,python]
 
 type unparsing =
   [%import: Ppextend.unparsing]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type unparsing_rule =
   [%import: Ppextend.unparsing_rule]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type extra_unparsing_rules =
   [%import: Ppextend.extra_unparsing_rules]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type notation_printing_rules =
   [%import: Ppextend.notation_printing_rules]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

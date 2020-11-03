@@ -17,8 +17,8 @@ module Names = Ser_names
 
 type abbreviation =
   [%import: Globnames.abbreviation]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type extended_global_reference =
   [%import: Globnames.extended_global_reference]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

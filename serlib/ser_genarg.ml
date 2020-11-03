@@ -28,13 +28,13 @@ open Genarg
 
 type rlevel =
   [%import: Genarg.rlevel]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 type glevel =
   [%import: Genarg.glevel]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 type tlevel =
   [%import: Genarg.tlevel]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 let rec sexp_of_genarg_type : type a b c. (a, b, c) genarg_type -> Sexp.t = fun gt ->
   match gt with
@@ -286,22 +286,29 @@ let generic_argument_of_sexp _lvl sexp : 'a Genarg.generic_argument =
   let (RG ga) = gen_abstype_of_sexp sexp in
   Obj.magic ga
 
-let generic_argument_of_yojson _lvl _json = Error "not supported generic_argument_of_yojson"
-let generic_argument_to_yojson _lvl _g = `String "foo"
+let generic_argument_of_yojson _lvl _json =
+  Error "not supported generic_argument_of_yojson"
+let generic_argument_to_yojson _lvl _g =
+  `String "foo"
+
+let generic_argument_of_python _ =
+  Serlib_base.opaque_of_python ~typ:"generic_argument"
+let python_of_generic_argument _ =
+  Serlib_base.python_of_opaque ~typ:"generic_argument"
 
 type 'a generic_argument = 'a Genarg.generic_argument
 
 type glob_generic_argument =
   [%import: Genarg.glob_generic_argument]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type raw_generic_argument =
   [%import: Genarg.raw_generic_argument]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type typed_generic_argument =
   [%import: Genarg.typed_generic_argument]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 let mk_uniform pin pout phash pcompare =
   { raw_ser = pin

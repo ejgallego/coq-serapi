@@ -32,3 +32,8 @@ type ltac_entry =
   [%import: Ltac_plugin.Tacenv.ltac_entry]
   [@@deriving sexp]
 
+let ltac_entry_of_python =
+  Serlib_base.opaque_of_python ~typ:"ltac_entry"
+
+let python_of_ltac_entry =
+  Serlib_base.python_of_opaque ~typ:"ltac_entry"
