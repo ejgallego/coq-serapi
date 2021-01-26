@@ -31,12 +31,13 @@ new use cases.
 
 ### Documentation and Help:
 
-- [Protocol Documentation](http://ejgallego.github.io/coq-serapi/coq-serapi/Serapi/Serapi_protocol/)
+- [Protocol Documentation](http://ejgallego.github.io/coq-serapi/coq-serapi/Serapi_protocol/)
 - [interface file](serapi/serapi_protocol.mli)
 - [SerAPI's FAQ](FAQ.md)
 - [technical report](https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408)
 - [issue tracker](https://github.com/ejgallego/coq-serapi/issues)
-- [Gitter chat](https://gitter.im/coq-serapi/Lobby) channel
+- [Zulip chat](https://coq.zulipchat.com/#narrow/stream/256331-SerAPI)
+- [Gitter chat](https://gitter.im/coq-serapi/Lobby) channel (legacy)
 - [mailing list](https://x80.org/cgi-bin/mailman/listinfo/jscoq)
 
 **API WARNING:** _The protocol is experimental and may change often_.
