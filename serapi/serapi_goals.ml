@@ -55,7 +55,7 @@ let get_hyp (ppx : Constr.t -> 'pc)
 let get_goal_type (ppx : Constr.t -> 'pc)
     (sigma : Evd.evar_map)
     (g : Goal.goal) =
-  ppx @@ EConstr.to_constr sigma (Goal.V82.concl sigma g)
+  ppx @@ EConstr.to_constr ~abort_on_undefined_evars:false sigma (Goal.V82.concl sigma g)
 
 let build_info sigma g =
   { evar = g
