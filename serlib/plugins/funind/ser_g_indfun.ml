@@ -75,11 +75,11 @@ let ser_wit_fun_scheme_arg :
 module Loc = Ser_loc
 module Vernacexpr = Ser_vernacexpr
 
-type function_rec_definition_loc_argtype = Vernacexpr.fixpoint_expr Loc.located
+type function_fix_definition_loc_argtype = Vernacexpr.fixpoint_expr Loc.located
   [@@deriving sexp]
 
-let ser_wit_function_rec_definition_loc =
-  Ser_genarg.mk_uniform sexp_of_function_rec_definition_loc_argtype function_rec_definition_loc_argtype_of_sexp
+let ser_wit_function_fix_definition =
+  Ser_genarg.mk_uniform sexp_of_function_fix_definition_loc_argtype function_fix_definition_loc_argtype_of_sexp
 
 let ser_wit_auto_using' =
   Ser_genarg.{
@@ -99,7 +99,7 @@ let register () =
   Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_with_names ser_wit_with_names;
   Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
   Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_function_rec_definition_loc ser_wit_function_rec_definition_loc;
+  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_function_fix_definition ser_wit_function_fix_definition;
   ()
 
 let _ = register ()

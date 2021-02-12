@@ -31,7 +31,7 @@ let map_serlib ml_mod =
     (* Supported *)
     | "ground_plugin"           (* firstorder *)
     | "recdef_plugin"           (* funind *)
-    | "newring_plugin"          (* setoid_ring *)
+    | "ring_plugin"             (* setoid_ring *)
     | "extraction_plugin"       (* setoid_ring *)
     | "ssrmatching_plugin"      (* ssrmatching *)
     | "ssreflect_plugin"        (* ssr *)

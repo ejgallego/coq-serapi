@@ -28,3 +28,7 @@ type ('a,'b) strategy_ast = ('a,'b) Rewrite.strategy_ast
 
 val strategy_ast_of_sexp : (Sexp.t -> 'a) -> (Sexp.t -> 'b) -> Sexp.t -> ('a,'b) strategy_ast
 val sexp_of_strategy_ast : ('a -> Sexp.t) -> ('b -> Sexp.t) -> ('a,'b) strategy_ast -> Sexp.t
+
+type strategy = Rewrite.strategy
+val strategy_of_sexp : Sexp.t -> strategy
+val sexp_of_strategy : strategy -> Sexp.t

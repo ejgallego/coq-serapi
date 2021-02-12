@@ -222,8 +222,6 @@ type coq_object =
   (** Goals, with types and terms in user-level, AST representation *)
   | CoqProof     of Goal.goal list
                     * (Goal.goal list * Goal.goal list) list
-                    * Goal.goal list
-                    * Goal.goal list
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
   (** Proof object: really low-level and likely to be deprecated. *)

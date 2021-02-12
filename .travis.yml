@@ -9,6 +9,7 @@ branches:
   - v8.10
   - v8.11
   - v8.12
+  - v8.13
 
 cache:
   apt: true
@@ -19,6 +20,7 @@ addons:
   apt:
     packages:
     - gcc-multilib
+    - libgmp-dev:i386
 
 env:
   global:
@@ -27,11 +29,11 @@ env:
   - OPAMYES="true"
   - NJOBS="2"
   - COQ_REPOS="https://github.com/coq/coq.git"
-  - COQ_VERSION="v8.12"
-  - COQ_BRANCH="v8.12"
+  - COQ_VERSION="v8.13"
+  - COQ_BRANCH="v8.13"
   - COQ_CONF="-local -native-compiler no -coqide no"
   - COMPILER="4.07.1"
-  - EXTRA_OPAM="coq.8.12.0 coq-mathcomp-ssreflect"
+  - EXTRA_OPAM="coq.8.13.0 coq-mathcomp-ssreflect"
   # - SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
   # Main test suites; SERAPI_COQ_HOME controls if opam is used or a
   # git branch is installed.
@@ -40,8 +42,9 @@ env:
   - TEST_TARGET="test"    COMPILER="4.08.1"
   - TEST_TARGET="test"    COMPILER="4.09.1"
   - TEST_TARGET="test"    COMPILER="4.10.1"
-  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq.8.12.0 js_of_ocaml js_of_ocaml-lwt"
-  - TEST_TARGET="test"    COMPILER="4.10.1" EXTRA_OPAM="dune" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
+  - TEST_TARGET="test"    COMPILER="4.11.1"
+  - TEST_TARGET="js-dune" COMPILER="4.07.1+32bit" EXTRA_OPAM="coq.8.13.0 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js"
+  - TEST_TARGET="test"    COMPILER="4.11.1" EXTRA_OPAM="dune" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
 
 install:
 - sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.8/opam-2.0.8-x86_64-linux -o /usr/bin/opam
@@ -58,6 +61,7 @@ install:
 - opam list
 - >
   if [[ -v SERAPI_COQ_HOME ]]; then
+    opam install -y zarith &&
     git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_VERSION" &&
     pushd "$HOME/coq-$COQ_VERSION"        &&
     make -f Makefile.dune world           &&

@@ -24,6 +24,26 @@ let ser_wit_int    = Ser_genarg.mk_uniform sexp_of_int int_of_sexp
 let ser_wit_string = Ser_genarg.mk_uniform sexp_of_string string_of_sexp
 let ser_wit_pre_ident = Ser_genarg.mk_uniform sexp_of_string string_of_sexp
 
+let ser_wit_hyp : (Ser_names.lident, Ser_names.lident, Ser_names.Id.t) Ser_genarg.gen_ser = Ser_genarg.
+  { raw_ser = Ser_names.sexp_of_lident
+  ; glb_ser = Ser_names.sexp_of_lident
+  ; top_ser = Ser_names.Id.sexp_of_t
+
+  ; raw_des = Ser_names.lident_of_sexp
+  ; glb_des = Ser_names.lident_of_sexp
+  ; top_des = Ser_names.Id.t_of_sexp
+  }
+
+let ser_wit_nat_or_var = Ser_genarg.{
+    raw_ser = Ser_locus.sexp_of_or_var sexp_of_int;
+    glb_ser = Ser_locus.sexp_of_or_var sexp_of_int;
+    top_ser = sexp_of_int;
+
+    raw_des = Ser_locus.or_var_of_sexp int_of_sexp;
+    glb_des = Ser_locus.or_var_of_sexp int_of_sexp;
+    top_des = int_of_sexp;
+  }
+
 let ser_wit_int_or_var = Ser_genarg.{
     raw_ser = Ser_locus.sexp_of_or_var sexp_of_int;
     glb_ser = Ser_locus.sexp_of_or_var sexp_of_int;
@@ -35,16 +55,6 @@ let ser_wit_int_or_var = Ser_genarg.{
   }
 
 let ser_wit_ident  = Ser_genarg.mk_uniform Ser_names.Id.sexp_of_t Ser_names.Id.t_of_sexp
-
-let ser_wit_var = Ser_genarg.{
-    raw_ser = Ser_names.sexp_of_lident;
-    glb_ser = Ser_names.sexp_of_lident;
-    top_ser = Ser_names.Id.sexp_of_t;
-
-    raw_des = Ser_names.lident_of_sexp;
-    glb_des = Ser_names.lident_of_sexp;
-    top_des = Ser_names.Id.t_of_sexp;
-  }
 
 let ser_wit_ref = Ser_genarg.{
     raw_ser = Ser_libnames.sexp_of_qualid;
@@ -103,22 +113,18 @@ let register () =
   Ser_genarg.register_genser Stdarg.wit_bool ser_wit_bool;
   Ser_genarg.register_genser Stdarg.wit_clause_dft_concl ser_wit_clause_dft_concl;
   Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
-  (* Ser_genarg.register_genser Stdarg.wit_global ser_wit_ref; *)
   Ser_genarg.register_genser Stdarg.wit_ident ser_wit_ident;
+  Ser_genarg.register_genser Stdarg.wit_hyp ser_wit_hyp;
   Ser_genarg.register_genser Stdarg.wit_int ser_wit_int;
   Ser_genarg.register_genser Stdarg.wit_int_or_var ser_wit_int_or_var;
-  (* Ser_genarg.register_genser Stdarg.wit_integer ser_wit_int; *)
+  Ser_genarg.register_genser Stdarg.wit_nat_or_var ser_wit_nat_or_var;
   Ser_genarg.register_genser Stdarg.wit_open_constr ser_wit_constr;
   Ser_genarg.register_genser Stdarg.wit_pre_ident ser_wit_pre_ident;
-  (* Ser_genarg.register_genser Stdarg.wit_preident ser_wit_pre_ident; *)
-  (* Ser_genarg.register_genser Stdarg.wit_redexpr ser_wit_red_expr; *)
   Ser_genarg.register_genser Stdarg.wit_ref ser_wit_ref;
-  (* Ser_genarg.register_genser Stdarg.wit_reference ser_wit_ref; *)
   Ser_genarg.register_genser Stdarg.wit_sort_family ser_wit_sort_family;
   Ser_genarg.register_genser Stdarg.wit_string ser_wit_string;
   Ser_genarg.register_genser Stdarg.wit_uconstr ser_wit_uconstr;
   Ser_genarg.register_genser Stdarg.wit_unit ser_wit_unit;
-  Ser_genarg.register_genser Stdarg.wit_var ser_wit_var;
 
   ()
 

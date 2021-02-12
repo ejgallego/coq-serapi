@@ -23,11 +23,15 @@ module Extend        = Ser_extend
 
 type ppbox =
   [%import: Ppextend.ppbox]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
 
 type ppcut =
   [%import: Ppextend.ppcut]
-  [@@deriving sexp]
+  [@@deriving sexp, yojson]
+
+type pattern_quote_style =
+  [%import: Ppextend.pattern_quote_style]
+  [@@deriving sexp, yojson]
 
 type unparsing =
   [%import: Ppextend.unparsing]

@@ -18,8 +18,8 @@ open Sexplib
 module Level : SerType.SJ with type t = Univ.Level.t
 module Universe : SerType.SJ with type t = Univ.Universe.t
 
-module Variance : SerType.S with type t = Univ.Variance.t
-module Instance : SerType.S with type t = Univ.Instance.t
+module Variance : SerType.SJ with type t = Univ.Variance.t
+module Instance : SerType.SJ with type t = Univ.Instance.t
 
 type constraint_type = Univ.constraint_type
 

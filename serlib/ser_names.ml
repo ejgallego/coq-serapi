@@ -197,10 +197,22 @@ type variable =
   [@@deriving sexp,yojson]
 
 (* Inductive and constructor = public *)
+module Ind = struct
+  type t =
+  [%import: Names.Ind.t]
+  [@@deriving sexp, yojson]
+end
+
 type inductive =
   [%import: Names.inductive]
   [@@deriving sexp,yojson]
 
+module Construct = struct
+  type t =
+  [%import: Names.Construct.t]
+  [@@deriving sexp, yojson]
+
+end
 type constructor =
   [%import: Names.constructor]
   [@@deriving sexp, yojson]

@@ -1,5 +1,5 @@
 (library
  (name serapi)
- (public_name coq-serapi.serapi_v8_12)
+ (public_name coq-serapi.serapi_v8_13)
  (synopsis "Serialization Protocol for Coq")
  (libraries coq.stm coq.plugins.ltac sexplib))

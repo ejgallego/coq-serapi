@@ -133,8 +133,6 @@ type coq_object =
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqProof     of Goal.goal list
                     * (Goal.goal list * Goal.goal list) list
-                    * Goal.goal list
-                    * Goal.goal list
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
   | CoqAssumptions of Serapi_assumptions.t
@@ -580,9 +578,9 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
   | Proof          -> Option.cata (fun pstate ->
-                        let Proof.{goals; stack; shelf; given_up; _} =
-                          Proof.data (Proof_global.get_proof pstate) in
-                        [CoqProof (goals,stack,shelf,given_up)])
+                        let Proof.{goals; stack; _} =
+                          Proof.data (Declare.Proof.get pstate) in
+                        [CoqProof (goals,stack)])
                       [] pstate
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.
@@ -626,13 +624,13 @@ let doc_id = ref 0
 (* XXX: Needs to take into account possibly local proof state *)
 let pstate_of_st m = match m with
   | `Valid (Some { Vernacstate.lemmas; _ } ) ->
-    Option.map (Vernacstate.LemmaStack.with_top_pstate ~f:(fun p -> p)) lemmas
+    Option.map (Vernacstate.LemmaStack.with_top ~f:(fun p -> p)) lemmas
   | _ -> None
 
 let context_of_st m = match m with
   | `Valid (Some { Vernacstate.lemmas = Some lemma; _ } ) ->
-    Vernacstate.LemmaStack.with_top_pstate lemma
-      ~f:(fun p -> Pfedit.get_current_context p)
+    Vernacstate.LemmaStack.with_top lemma
+      ~f:(fun p -> Declare.Proof.get_current_context p)
     (* let pstate = st.Vernacstate.proof in *)
     (* let summary = States.summary_of_state st.Vernacstate.system in
      * Safe_typing.env_of_safe_env Summary.(project_from_summary summary Global.global_env_summary_tag) *)

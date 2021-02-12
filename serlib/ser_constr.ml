@@ -83,6 +83,15 @@ type ('constr, 'types) pcofixpoint =
 type constr = Constr.constr
 type types  = Constr.constr
 
+type ('constr, 'univs) case_invert =
+  [%import: ('constr, 'univs) Constr.case_invert]
+  [@@deriving sexp,yojson]
+
+let map_case_invert f = function
+  | NoInvert -> NoInvert
+  | CaseInvert { univs; args } ->
+    CaseInvert { univs; args = Array.map f args }
+
 type _constr =
   | Rel       of int
   | Var       of Names.Id.t
@@ -97,12 +106,13 @@ type _constr =
   | Const     of pconstant
   | Ind       of pinductive
   | Construct of pconstructor
-  | Case      of case_info * _constr * _constr * _constr array
+  | Case      of case_info * _constr * (_constr, Univ.Instance.t) case_invert *  _constr * _constr array
   | Fix       of (_constr, _types) pfixpoint
   | CoFix     of (_constr, _types) pcofixpoint
   | Proj      of Names.Projection.t * _constr
   | Int       of Uint63.t
   | Float     of Float64.t
+  | Array     of Univ.Instance.t * _constr array * _constr * _types
 [@@deriving sexp,yojson]
 and _types = _constr
 [@@deriving sexp,yojson]
@@ -111,6 +121,7 @@ let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
   let crl = List.map _constr_put  in
   let cra = Array.map _constr_put in
+  let cru = map_case_invert _constr_put in
   let module C = Constr           in
   match C.kind c with
   | C.Rel i               -> Rel(i)
@@ -126,18 +137,20 @@ let rec _constr_put (c : constr) : _constr =
   | C.Const p             -> Const p
   | C.Ind(p,q)            -> Ind (p,q)
   | C.Construct(p)        -> Construct (p)
-  | C.Case(ci, d, c, ca)  -> Case(ci, cr d, cr c, cra ca)
+  | C.Case(ci, d, u, c, ca) -> Case(ci, cr d, cru u, cr c, cra ca)
   (* (int array * int) * (Name.t array * 'types array * 'constr array)) *)
   | C.Fix(p,(na,u1,u2))   -> Fix(p, (na, cra u1, cra u2))
   | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
   | C.Proj(p,c)           -> Proj(p, cr c)
   | C.Int i               -> Int i
   | C.Float i             -> Float i
+  | C.Array (u,a,e,t)     -> Array(u, cra a, cr e, cr t)
 
 let rec _constr_get (c : _constr) : constr =
   let cr  = _constr_get           in
   let crl = List.map _constr_get  in
   let cra = Array.map _constr_get in
+  let cru = map_case_invert _constr_get in
   let module C = Constr           in
   match c with
   | Rel i               -> C.mkRel i
@@ -153,12 +166,13 @@ let rec _constr_get (c : _constr) : constr =
   | Const p             -> C.mkConstU(p)
   | Ind(p,q)            -> C.mkIndU(p, q)
   | Construct(p)        -> C.mkConstructU(p)
-  | Case(ci, d, c, ca)  -> C.mkCase(ci, cr d, cr c, cra ca)
+  | Case(ci, d, u, c, ca)  -> C.mkCase(ci, cr d, cru u, cr c, cra ca)
   | Fix (p,(na,u1,u2))  -> C.mkFix(p, (na, cra u1, cra u2))
   | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
   | Proj(p,c)           -> C.mkProj(p, cr c)
   | Int i               -> C.mkInt i
   | Float f             -> C.mkFloat f
+  | Array (u,a,e,t)     -> C.mkArray(u, cra a, cr e, cr t)
 
 let constr_of_sexp (c : Sexp.t) : constr =
   _constr_get (_constr_of_sexp c)

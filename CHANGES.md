@@ -1,3 +1,9 @@
+## Version 0.13.0:
+
+ - [serapi] (!) support for Coq 8.13, see upstream changes; in
+            particular there are changes in the kernel representation
+            of terms [pattern matching, new caseinvert, primitive arrays]
+
 ## Version 0.12.1:
 
  * [serapi]  (!) Bump public library versioning [breaking change]

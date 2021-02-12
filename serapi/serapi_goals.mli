@@ -32,9 +32,9 @@ type 'a reified_goal =
 type 'a ser_goals =
   { goals : 'a list
   ; stack : ('a list * 'a list) list
+  ; bullet : Pp.t option
   ; shelf : 'a list
   ; given_up : 'a list
-  ; bullet : Pp.t option
   }
 
 (* Ready to make into a GADT *)

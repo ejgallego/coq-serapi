@@ -28,7 +28,7 @@ module Vmvalues    = Ser_vmvalues
 module Conv_oracle = Ser_conv_oracle
 module Mod_subst   = Ser_mod_subst
 module Opaqueproof = Ser_opaqueproof
-module Cemitcodes  = Ser_cemitcodes
+module Vmemitcodes = Ser_vmemitcodes
 module Retroknowledge = Ser_retroknowledge
 
 type template_arity =
@@ -37,6 +37,10 @@ type template_arity =
 
 type ('a, 'b) declaration_arity =
   [%import: ('a, 'b) Declarations.declaration_arity]
+  [@@deriving sexp]
+
+type nested_type =
+  [%import: Declarations.nested_type]
   [@@deriving sexp]
 
 type recarg =

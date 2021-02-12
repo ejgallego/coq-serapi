@@ -66,6 +66,12 @@ val sexp_of_r_trm : r_trm -> Sexp.t
 val r_trm_of_yojson : Yojson.Safe.t -> (r_trm, string) Result.result
 val r_trm_to_yojson : r_trm -> Yojson.Safe.t
 
+type r_pat = Genredexpr.r_pat
+val r_pat_of_sexp : Sexp.t -> r_pat
+val sexp_of_r_pat : r_pat -> Sexp.t
+val r_pat_of_yojson : Yojson.Safe.t -> (r_pat, string) Result.result
+val r_pat_to_yojson : r_pat -> Yojson.Safe.t
+
 type 'a and_short_name = 'a Genredexpr.and_short_name
 val and_short_name_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a and_short_name
 val sexp_of_and_short_name : ('a -> Sexp.t) -> 'a and_short_name -> Sexp.t

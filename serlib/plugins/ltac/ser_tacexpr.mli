@@ -286,3 +286,11 @@ val sexp_of_tacdef_body : tacdef_body -> Sexp.t
 type intro_pattern = Tacexpr.intro_pattern
 val intro_pattern_of_sexp : Sexp.t -> intro_pattern
 val sexp_of_intro_pattern : intro_pattern -> Sexp.t
+
+type raw_red_expr = Tacexpr.raw_red_expr
+val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
+val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
+
+type glob_red_expr = Tacexpr.glob_red_expr
+val glob_red_expr_of_sexp : Sexp.t -> glob_red_expr
+val sexp_of_glob_red_expr : glob_red_expr -> Sexp.t

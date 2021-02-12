@@ -141,7 +141,7 @@ module ITac = struct
 type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_expr =
   | TacIntroPattern of evars_flag * 'dtrm Tactypes.intro_pattern_expr CAst.t list
   | TacApply of advanced_flag * evars_flag * 'trm with_bindings_arg list *
-      ('nam * 'dtrm Tactypes.intro_pattern_expr CAst.t option) option
+      ('nam * 'dtrm Tactypes.intro_pattern_expr CAst.t option) list
   | TacElim of evars_flag * 'trm with_bindings_arg * 'trm Tactypes.with_bindings option
   | TacCase of evars_flag * 'trm with_bindings_arg
   | TacMutualFix of Names.Id.t * int * (Names.Id.t * int * 'trm) list
@@ -162,7 +162,7 @@ type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_exp
   | TacInversion of ('trm,'dtrm,'nam) inversion_strength * Tactypes.quantified_hypothesis
 
 and ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_tactic_arg =
-  | TacGeneric     of 'lev Genarg.generic_argument
+  | TacGeneric     of string option * 'lev Genarg.generic_argument
   | ConstrMayEval  of ('trm,'cst,'pat) Genredexpr.may_eval
   | Reference      of 'ref
   | TacCall        of ('ref *
@@ -218,7 +218,7 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr * Names.Id.t option
   | TacId of 'n message_token list
   | TacFail of global_flag * int Locus.or_var * 'n message_token list
-  | TacInfo of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
+  (* | TacInfo of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr *)
   | TacLetIn of rec_flag *
       (Names.lname * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg) list *
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
@@ -257,7 +257,7 @@ let rec _gen_atom_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_atomic_tactic_
   | Ltac_plugin.Tacexpr.TacInversion (a,b)           -> ITac.TacInversion (a,b)
 and _gen_tactic_arg_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_arg) :
   ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_arg = match t with
-  | Ltac_plugin.Tacexpr.TacGeneric a      -> ITac.TacGeneric a
+  | Ltac_plugin.Tacexpr.TacGeneric (a,b)  -> ITac.TacGeneric (a,b)
   | Ltac_plugin.Tacexpr.ConstrMayEval a   -> ITac.ConstrMayEval a
   | Ltac_plugin.Tacexpr.Reference a       -> ITac.Reference a
   | Ltac_plugin.Tacexpr.TacCall l         -> ITac.TacCall C.(map (fun (b,c) -> (b, List.map _gen_tactic_arg_put c)) l)
@@ -295,7 +295,7 @@ and _gen_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr) :
   | Ltac_plugin.Tacexpr.TacAbstract (a,b)        -> ITac.TacAbstract (u a,b)
   | Ltac_plugin.Tacexpr.TacId a                  -> ITac.TacId a
   | Ltac_plugin.Tacexpr.TacFail (a,b,c)          -> ITac.TacFail (a,b,c)
-  | Ltac_plugin.Tacexpr.TacInfo a                -> ITac.TacInfo (u a)
+  (* | Ltac_plugin.Tacexpr.TacInfo a                -> ITac.TacInfo (u a) *)
   (* | TacLetIn of rec_flag * *)
   (*     (Names.Id.t located * 'a gen_tactic_arg) list * *)
   (*     'a gen_tactic_expr *)
@@ -348,7 +348,7 @@ let rec _gen_atom_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l)
   | ITac.TacInversion (a,b)           -> Ltac_plugin.Tacexpr.TacInversion (a,b)
 and _gen_tactic_arg_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_arg) :
   'a Ltac_plugin.Tacexpr.gen_tactic_arg = match t with
-  | ITac.TacGeneric a      -> Ltac_plugin.Tacexpr.TacGeneric a
+  | ITac.TacGeneric(a,b)   -> Ltac_plugin.Tacexpr.TacGeneric (a,b)
   | ITac.ConstrMayEval a   -> Ltac_plugin.Tacexpr.ConstrMayEval a
   | ITac.Reference a       -> Ltac_plugin.Tacexpr.Reference a
   | ITac.TacCall l         -> Ltac_plugin.Tacexpr.TacCall C.(map (fun (b,c) -> (b, List.map _gen_tactic_arg_get c)) l)
@@ -386,7 +386,7 @@ and _gen_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen
   | ITac.TacAbstract (a,b)        -> Ltac_plugin.Tacexpr.TacAbstract (u a,b)
   | ITac.TacId a                  -> Ltac_plugin.Tacexpr.TacId a
   | ITac.TacFail (a,b,c)          -> Ltac_plugin.Tacexpr.TacFail (a,b,c)
-  | ITac.TacInfo a                -> Ltac_plugin.Tacexpr.TacInfo (u a)
+  (* | ITac.TacInfo a                -> Ltac_plugin.Tacexpr.TacInfo (u a) *)
   | ITac.TacLetIn (a, l, t)       ->
     let _pt = List.map (fun (a,t) -> (a,_gen_tactic_arg_get t)) in
     Ltac_plugin.Tacexpr.TacLetIn (a, _pt l, _gen_tactic_expr_get t)
@@ -587,3 +587,22 @@ type intro_pattern =
   [%import: Ltac_plugin.Tacexpr.intro_pattern]
   [@@deriving sexp]
 
+type raw_red_expr =
+  [%import: Ltac_plugin.Tacexpr.raw_red_expr]
+  [@@deriving sexp]
+
+type g_trm =
+  [%import: Ltac_plugin.Tacexpr.g_trm]
+  [@@deriving sexp]
+
+type g_cst =
+  [%import: Ltac_plugin.Tacexpr.g_cst]
+  [@@deriving sexp]
+
+type g_pat =
+  [%import: Ltac_plugin.Tacexpr.g_pat]
+  [@@deriving sexp]
+
+type glob_red_expr =
+  [%import: Ltac_plugin.Tacexpr.glob_red_expr]
+  [@@deriving sexp]

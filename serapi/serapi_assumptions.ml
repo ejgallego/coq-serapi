@@ -75,6 +75,8 @@ let print env sigma { predicative; type_in_type; vars; axioms; opaque; trans } =
         Pp.(seq [Printer.pr_global gr; str "is positive."])
       | TypeInType gr ->
         Pp.(seq [Printer.pr_global gr; spc (); strbrk "relies on an unsafe hierarchy."])
+      | UIP m ->
+        Pp.(seq [Printer.pr_inductive env (m,0); spc (); strbrk "relies on UIP."])
     in
     Pp.(seq [
         pr_ax env sigma typ ax
