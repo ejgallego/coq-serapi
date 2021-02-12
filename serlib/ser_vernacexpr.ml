@@ -118,9 +118,9 @@ type option_setting =
  *   [%import: Vernacexpr.plident ]
  *   [@@deriving sexp] *)
 
-type sort_expr =
-  [%import: Vernacexpr.sort_expr]
-  [@@deriving sexp,yojson]
+(* type sort_expr =
+ *   [%import: Vernacexpr.sort_expr]
+ *   [@@deriving sexp,yojson] *)
 
 type definition_expr =
   [%import: Vernacexpr.definition_expr]

@@ -46,6 +46,10 @@ type one_inductive_entry =
   [%import: Entries.one_inductive_entry]
   [@@deriving sexp]
 
+type variance_entry =
+  [%import: Entries.variance_entry]
+  [@@deriving sexp]
+
 type mutual_inductive_entry =
   [%import: Entries.mutual_inductive_entry]
   [@@deriving sexp]

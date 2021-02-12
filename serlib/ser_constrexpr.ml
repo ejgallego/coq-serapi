@@ -15,7 +15,6 @@
 
 open Sexplib.Std
 
-module Bigint     = Ser_bigint
 module Loc        = Ser_loc
 module CAst       = Ser_cAst
 module Names      = Ser_names
@@ -28,6 +27,27 @@ module Genarg     = Ser_genarg
 module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
 module NumTok     = Ser_numTok
+module Univ       = Ser_univ
+
+type sort_name_expr =
+  [%import: Constrexpr.sort_name_expr]
+  [@@deriving sexp,yojson]
+
+type univ_level_expr =
+  [%import: Constrexpr.univ_level_expr]
+  [@@deriving sexp,yojson]
+
+type sort_expr =
+  [%import: Constrexpr.sort_expr]
+  [@@deriving sexp,yojson]
+
+type univ_constraint_expr =
+  [%import: Constrexpr.univ_constraint_expr]
+  [@@deriving sexp,yojson]
+
+type instance_expr =
+   [%import: Constrexpr.instance_expr]
+  [@@deriving sexp,yojson]
 
 type 'a or_by_notation_r =
   [%import: 'a Constrexpr.or_by_notation_r]
@@ -43,6 +63,14 @@ type universe_decl_expr =
 
 type ident_decl =
   [%import: Constrexpr.ident_decl]
+  [@@deriving sexp,yojson]
+
+type cumul_univ_decl_expr =
+  [%import: Constrexpr.cumul_univ_decl_expr]
+  [@@deriving sexp,yojson]
+
+type cumul_ident_decl =
+  [%import: Constrexpr.cumul_ident_decl]
   [@@deriving sexp,yojson]
 
 type name_decl =
@@ -93,15 +121,13 @@ type proj_flag = [%import: Constrexpr.proj_flag]
 type prim_token = [%import: Constrexpr.prim_token]
   [@@deriving sexp,yojson]
 
-type instance_expr = [%import: Constrexpr.instance_expr]
-  [@@deriving sexp,yojson]
-
 type notation_with_optional_scope =
   [%import: Constrexpr.notation_with_optional_scope]
   [@@deriving sexp,yojson]
 
 type cases_pattern_expr_r = [%import: Constrexpr.cases_pattern_expr_r]
 and cases_pattern_expr = [%import: Constrexpr.cases_pattern_expr]
+and kinded_cases_pattern_expr = [%import: Constrexpr.kinded_cases_pattern_expr]
 and cases_pattern_notation_substitution = [%import: Constrexpr.cases_pattern_notation_substitution]
 and constr_expr_r = [%import: Constrexpr.constr_expr_r]
 and constr_expr = [%import: Constrexpr.constr_expr]

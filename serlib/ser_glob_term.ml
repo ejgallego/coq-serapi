@@ -48,9 +48,13 @@ type glob_sort_name =
   [%import: Glob_term.glob_sort_name]
   [@@deriving sexp,yojson]
 
-type 'a glob_sort_expr =
-  [%import: 'a Glob_term.glob_sort_expr]
+type 'a glob_sort_gen =
+  [%import: 'a Glob_term.glob_sort_gen]
   [@@deriving sexp,yojson]
+
+(* type 'a glob_sort_expr =
+ *   [%import: 'a Glob_term.glob_sort_expr]
+ *   [@@deriving sexp,yojson] *)
 
 type glob_level =
   [%import: Glob_term.glob_level]

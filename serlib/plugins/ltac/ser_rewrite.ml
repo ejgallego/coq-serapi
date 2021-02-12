@@ -26,3 +26,8 @@ type binary_strategy =
 type ('a,'b) strategy_ast =
   [%import: ('a,'b) Ltac_plugin.Rewrite.strategy_ast]
   [@@deriving sexp]
+
+type strategy = Ltac_plugin.Rewrite.strategy
+
+let strategy_of_sexp = Serlib.Serlib_base.opaque_of_sexp ~typ:"rewrite/strategy"
+let sexp_of_strategy = Serlib.Serlib_base.sexp_of_opaque ~typ:"rewrite/strategy"

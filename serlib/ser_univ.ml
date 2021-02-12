@@ -78,7 +78,7 @@ module Variance = struct
 
   type t =
     [%import: Univ.Variance.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson]
 
 end
 

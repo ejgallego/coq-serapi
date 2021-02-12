@@ -24,10 +24,9 @@
     ../jscoq/coq-libjs/unix.js
     ../jscoq/coq-libjs/str.js
     ../jscoq/coq-libjs/coq_vm.js)
-  (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js))
-; (flags :standard --dynlink +nat.js +dynlink.js +toplevel.js --pretty --noinline --disable shortvar --debug-info)
+  (flags :standard --dynlink +dynlink.js +toplevel.js))
  (link_flags -linkall -noautolink -no-check-prims)
- (libraries sertop ppx_deriving_yojson.runtime jscoq_lib))
+ (libraries sertop ppx_deriving_yojson.runtime zarith_stubs_js jscoq_lib))
 
 (rule
  (targets ser_version.ml)

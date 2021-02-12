@@ -21,6 +21,12 @@ val sexp_of_binding_kind : Glob_term.binding_kind -> Sexp.t
 val binding_kind_of_yojson : Yojson.Safe.t -> (binding_kind,string) result
 val binding_kind_to_yojson : Glob_term.binding_kind -> Yojson.Safe.t
 
+type 'a glob_sort_gen = 'a Glob_term.glob_sort_gen
+val glob_sort_gen_of_sexp : (Sexp.t -> 'a) ->Sexp.t -> 'a Glob_term.glob_sort_gen
+val sexp_of_glob_sort_gen : ('a -> Sexp.t) -> 'a Glob_term.glob_sort_gen -> Sexp.t
+val glob_sort_gen_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a glob_sort_gen, string) result
+val glob_sort_gen_to_yojson : ('a -> Yojson.Safe.t) -> 'a Glob_term.glob_sort_gen -> Yojson.Safe.t
+
 type glob_level = Glob_term.glob_level
 val glob_level_of_sexp : Sexp.t -> Glob_term.glob_level
 val sexp_of_glob_level : Glob_term.glob_level -> Sexp.t

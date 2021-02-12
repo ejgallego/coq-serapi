@@ -107,9 +107,9 @@ val sexp_of_locality_flag : locality_flag -> Sexp.t
  * val plident_of_sexp : Sexp.t -> plident
  * val sexp_of_plident : plident -> Sexp.t *)
 
-type sort_expr = Vernacexpr.sort_expr
-val sort_expr_of_sexp : Sexp.t -> sort_expr
-val sexp_of_sort_expr : sort_expr -> Sexp.t
+(* type sort_expr = Vernacexpr.sort_expr
+ * val sort_expr_of_sexp : Sexp.t -> sort_expr
+ * val sexp_of_sort_expr : sort_expr -> Sexp.t *)
 
 type definition_expr = Vernacexpr.definition_expr
 val definition_expr_of_sexp : Sexp.t -> definition_expr

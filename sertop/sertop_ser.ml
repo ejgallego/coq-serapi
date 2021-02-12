@@ -52,8 +52,8 @@ let _ =
         let hdr = Option.default "" hdr in
         List [Atom "CErrors.UserError"; List [Atom hdr; sexp_of_std_ppcmds msg]]
       | _ -> assert false);
-  Conv.Exn_converter.add [%extension_constructor Declare.AlreadyDeclared] (function
-      | Declare.AlreadyDeclared (msg, id) ->
+  Conv.Exn_converter.add [%extension_constructor DeclareUniv.AlreadyDeclared] (function
+      | DeclareUniv.AlreadyDeclared (msg, id) ->
         List [Atom "Declare.AlreadyDeclared"; List [sexp_of_option sexp_of_string msg; Ser_names.Id.sexp_of_t id]]
       | _ -> assert false);
   Conv.Exn_converter.add [%extension_constructor Pretype_errors.PretypeError] (function

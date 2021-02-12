@@ -18,12 +18,12 @@ open Sexplib
 
 type _t = string [@@deriving yojson]
 let _t_put = Uint63.to_string
-let _t_get = Uint63.of_string
+let _t_get x = Uint63.of_int64 (Int64.of_string x)
 
 type t = Uint63.t
 
-let t_of_sexp (x : Sexp.t) : Uint63.t = Uint63.of_string (Conv.string_of_sexp x)
-let sexp_of_t (x : Uint63.t) : Sexp.t = Conv.sexp_of_string (Uint63.to_string x)
+let t_of_sexp (x : Sexp.t) : Uint63.t = _t_get (Conv.string_of_sexp x)
+let sexp_of_t (x : Uint63.t) : Sexp.t = Conv.sexp_of_string (_t_put x)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)

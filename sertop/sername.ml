@@ -113,8 +113,8 @@ let input_doc ~in_chan ~process ~doc ~sid =
 
 let context_of_st m = match m with
   | `Valid (Some { Vernacstate.lemmas = Some pstate; _ } ) ->
-    Vernacstate.LemmaStack.with_top_pstate pstate
-      ~f:Pfedit.get_current_context
+    Vernacstate.LemmaStack.with_top pstate
+      ~f:Declare.Proof.get_current_context
   | _ ->
     let env = Global.env () in Evd.from_env env, env
 

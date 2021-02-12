@@ -19,8 +19,16 @@ open Ltac_plugin
 module CAst         = Ser_cAst
 module Constrexpr   = Ser_constrexpr
 module Tactypes     = Ser_tactypes
-module Tacexpr      = Ser_tacexpr
 module Genintern    = Ser_genintern
+
+module Ltac_plugin = struct
+  module G_rewrite    = G_rewrite
+  module Rewrite      = Ser_rewrite
+  module Tacexpr      = Ser_tacexpr
+end
+
+(* Needed for compat with -pack build method used in Coq's make *)
+open Ltac_plugin
 
 (* Tacarg *)
 module A1 = struct
@@ -28,7 +36,7 @@ module A1 = struct
   [@@deriving sexp]
   type h2 = Genintern.glob_constr_and_expr Tactypes.intro_pattern_expr CAst.t
   [@@deriving sexp]
-  type h3 = Tacexpr.intro_pattern
+  type h3 = Ltac_plugin.Tacexpr.intro_pattern
   [@@deriving sexp]
 end
 
@@ -246,11 +254,19 @@ let ser_wit_opthints =
 
 (* G_rewrite *)
 
-let ser_wit_binders =
-  let open Sexplib.Conv in
-  Ser_genarg.mk_uniform
-    (sexp_of_list Ser_constrexpr.sexp_of_local_binder_expr)
-    (list_of_sexp Ser_constrexpr.local_binder_expr_of_sexp)
+module G_rewrite = struct
+
+open Sexplib.Conv
+
+let wit_binders = Ltac_plugin.G_rewrite.wit_binders
+
+type binders_argtype =
+  [%import: Ltac_plugin.G_rewrite.binders_argtype]
+  [@@deriving sexp]
+
+let ser_wit_binders = Ser_genarg.mk_uniform sexp_of_binders_argtype binders_argtype_of_sexp
+
+let wit_glob_constr_with_bindings = Ltac_plugin.G_rewrite.wit_glob_constr_with_bindings
 
 let ser_wit_glob_constr_with_bindings =
   let open Sexplib.Conv in
@@ -268,18 +284,30 @@ let ser_wit_glob_constr_with_bindings =
     top_des = pair_of_sexp _interp_sign_of_sexp Ser_tactypes.(with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp)
   }
 
+let wit_rewstrategy = Ltac_plugin.G_rewrite.wit_rewstrategy
+
+type raw_strategy =
+  [%import: Ltac_plugin.G_rewrite.raw_strategy]
+  [@@deriving sexp]
+
+type glob_strategy =
+  [%import: Ltac_plugin.G_rewrite.glob_strategy]
+  [@@deriving sexp]
+
+(* (G_rewrite.raw_strategy, G_rewrite.glob_strategy, Rewrite.strategy) *)
+
 let ser_wit_rewstrategy =
+  Ser_genarg.
+    { raw_ser = sexp_of_raw_strategy
+    ; glb_ser = sexp_of_glob_strategy
+    ; top_ser = Ltac_plugin.Rewrite.sexp_of_strategy
 
-  Ser_genarg.{
-    raw_ser = Ser_rewrite.sexp_of_strategy_ast Ser_constrexpr.sexp_of_constr_expr Ser_genredexpr.sexp_of_raw_red_expr;
-    glb_ser = Ser_rewrite.sexp_of_strategy_ast Ser_genintern.sexp_of_glob_constr_and_expr Ser_genredexpr.sexp_of_raw_red_expr;
-    top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_rewstrategy/top";
+    ; raw_des = raw_strategy_of_sexp
+    ; glb_des = glob_strategy_of_sexp
+    ; top_des = Ltac_plugin.Rewrite.strategy_of_sexp
+    }
 
-    raw_des = Ser_rewrite.strategy_ast_of_sexp Ser_constrexpr.constr_expr_of_sexp Ser_genredexpr.raw_red_expr_of_sexp;
-    glb_des = Ser_rewrite.strategy_ast_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp Ser_genredexpr.raw_red_expr_of_sexp;
-    top_des = Serlib_base.opaque_of_sexp ~typ:"wit_rewstrategy/top";
-
-  }
+end
 
 let ser_wit_debug =
   let open Sexplib.Conv in
@@ -303,9 +331,6 @@ open Sexplib.Conv
 
 module Names = Ser_names
 module Locus = Ser_locus
-module Ltac_plugin = struct
-  module Tacexpr = Ser_tacexpr
-end
 
 type 'a gen_place =
   [%import: 'a Ltac_plugin.Extraargs.gen_place]
@@ -444,9 +469,9 @@ let register () =
   Ser_genarg.register_genser G_auto.wit_hints_path_atom ser_wit_hintbases_path_atom;
   Ser_genarg.register_genser G_auto.wit_opthints ser_wit_opthints;
 
-  Ser_genarg.register_genser G_rewrite.wit_binders ser_wit_binders;
-  Ser_genarg.register_genser G_rewrite.wit_glob_constr_with_bindings ser_wit_glob_constr_with_bindings;
-  Ser_genarg.register_genser G_rewrite.wit_rewstrategy ser_wit_rewstrategy;
+  Ser_genarg.register_genser G_rewrite.wit_binders G_rewrite.ser_wit_binders;
+  Ser_genarg.register_genser G_rewrite.wit_glob_constr_with_bindings G_rewrite.ser_wit_glob_constr_with_bindings;
+  Ser_genarg.register_genser G_rewrite.wit_rewstrategy G_rewrite.ser_wit_rewstrategy;
 
   Ser_genarg.register_genser G_class.wit_debug ser_wit_debug;
   Ser_genarg.register_genser G_class.wit_eauto_search_strategy ser_wit_eauto_search_strategy;

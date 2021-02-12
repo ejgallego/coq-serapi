@@ -57,6 +57,18 @@ val sexp_of_ident_decl : ident_decl -> Sexp.t
 val ident_decl_of_yojson : Yojson.Safe.t -> (ident_decl, string) Result.result
 val ident_decl_to_yojson : ident_decl -> Yojson.Safe.t
 
+type cumul_ident_decl = Constrexpr.cumul_ident_decl
+val cumul_ident_decl_of_sexp : Sexp.t -> cumul_ident_decl
+val sexp_of_cumul_ident_decl : cumul_ident_decl -> Sexp.t
+val cumul_ident_decl_of_yojson : Yojson.Safe.t -> (cumul_ident_decl, string) Result.result
+val cumul_ident_decl_to_yojson : cumul_ident_decl -> Yojson.Safe.t
+
+type univ_constraint_expr = Constrexpr.univ_constraint_expr
+val univ_constraint_expr_of_sexp : Sexp.t -> univ_constraint_expr
+val sexp_of_univ_constraint_expr : univ_constraint_expr -> Sexp.t
+val univ_constraint_expr_of_yojson : Yojson.Safe.t -> (univ_constraint_expr, string) Result.result
+val univ_constraint_expr_to_yojson : univ_constraint_expr -> Yojson.Safe.t
+
 type name_decl = Constrexpr.name_decl
 val name_decl_of_sexp : Sexp.t -> name_decl
 val sexp_of_name_decl : name_decl -> Sexp.t

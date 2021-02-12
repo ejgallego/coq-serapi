@@ -17,6 +17,10 @@
 
 open Sexplib.Std
 
+type vernac_flag_type =
+  [%import: Attributes.vernac_flag_type]
+  [@@deriving sexp,yojson]
+
 type vernac_flag =
   [%import: Attributes.vernac_flag]
 and vernac_flag_value =
