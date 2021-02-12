@@ -104,7 +104,7 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 
 ### Roadmap:
 
-SerAPI 0.12.x is based on Coq 8.12. These days, most work related to
+SerAPI 0.13.x is based on Coq 8.13. These days, most work related to
 SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
 itself. The main objective is to improve the proof-document model; building
 a rich query language will be next.
