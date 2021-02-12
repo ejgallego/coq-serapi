@@ -44,7 +44,7 @@ env:
   - TEST_TARGET="test"    COMPILER="4.10.1" EXTRA_OPAM="dune" SERAPI_COQ_HOME="$HOME/coq-$COQ_VERSION/_build/install/default/lib/"
 
 install:
-- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.7/opam-2.0.7-x86_64-linux -o /usr/bin/opam
+- sudo curl -sL https://github.com/ocaml/opam/releases/download/2.0.8/opam-2.0.8-x86_64-linux -o /usr/bin/opam
 - sudo chmod 755 /usr/bin/opam
 - opam init -c "$COMPILER" --disable-sandboxing
 - opam switch set "$COMPILER"
