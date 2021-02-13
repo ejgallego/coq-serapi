@@ -28,12 +28,12 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_lo
 
   (* coq initialization *)
   coq_init
-    { fb_handler = (fun _ -> ())  (* XXXX *)
+    { fb_handler = (fun _ _ -> ())  (* XXXX *)
     ; ml_load    = None
     ; debug
     ; allow_sprop
     ; indices_matter = false
-    };
+    } Format.std_formatter;
 
   (* document initialization *)
 

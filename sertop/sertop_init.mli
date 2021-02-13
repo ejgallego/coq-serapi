@@ -28,7 +28,7 @@ val process_stm_flags : async_flags -> Stm.AsyncOpts.stm_opt
 (** [process_stm_flags flags] transforms SerAPI flags into Coq flags *)
 
 type coq_opts =
-  { fb_handler   : Feedback.feedback -> unit
+  { fb_handler   : Format.formatter -> Feedback.feedback -> unit
   (** callback to handle async feedback *)
 
   ; ml_load      : (string -> unit) option
@@ -44,5 +44,7 @@ type coq_opts =
   (** Levels of indices (and nonuniform parameters) contribute to the level of inductives *)
 }
 
-val coq_init : coq_opts -> unit
+val coq_init : coq_opts -> Format.formatter -> unit
 (** [coq_init opts] Initialize Coq. This doesn't create a Proof Document. *)
+
+val update_fb_handler : pp_feed:(Format.formatter -> Feedback.feedback -> unit) -> Format.formatter -> unit

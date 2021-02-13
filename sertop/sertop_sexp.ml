@@ -58,26 +58,58 @@ type ser_opts =
 (*                                                                            *)
 (******************************************************************************)
 
+type sertop_cmd =
+  | SerApi of Sertop_ser.tagged_cmd
+  (** Regular   *)
+  | Fork of { fifo_in : string; fifo_out : string }
+  (** Fork SerAPI to a new process, useful for people doing search
+     [but heavy], the forked process will create and use the provided
+     FIFO's for input / output *)
+  | Quit
+  (** Exit sertop *)
+  [@@deriving sexp]
+
 let is_cmd_quit cmd = match cmd with
-  | SP.Quit -> true
+  | Quit -> true
   | _    -> false
 
+(* Loop state *)
+module Ctx = struct
+
+  type t =
+    { in_chan : Stdlib.in_channel
+    ; out_chan : Stdlib.out_channel
+    ; out_fmt : Format.formatter
+    ; cmd_id : int
+    }
+
+  let make ~cmd_id ~in_chan ~out_chan =
+    let out_fmt = Format.formatter_of_out_channel out_chan in
+    { out_chan; out_fmt; in_chan; cmd_id }
+
+end
+
 (* XXX: Improve by using manual tag parsing. *)
-let read_cmd cmd_id in_channel pp_error =
+let read_cmd ~(ctx : Ctx.t) ~pp_err =
   let rec read_loop () =
     try
-      let cmd_sexp = Sexp.input_sexp in_channel in
+      let cmd_sexp = Sexp.input_sexp ctx.in_chan in
       begin
-        try Sertop_ser.tagged_cmd_of_sexp cmd_sexp
+        try sertop_cmd_of_sexp cmd_sexp
         with
-        | End_of_file   -> "EOF", SP.Quit
         | _exn ->
-          (string_of_int cmd_id), Sertop_ser.cmd_of_sexp cmd_sexp
+          begin
+            try SerApi (Sertop_ser.tagged_cmd_of_sexp cmd_sexp)
+            with
+            | _exn ->
+              SerApi (string_of_int ctx.cmd_id, Sertop_ser.cmd_of_sexp cmd_sexp)
+          end
       end
     with
-    | End_of_file   -> "EOF", SP.Quit
+    | End_of_file   ->
+      Quit
     | exn           ->
-      pp_error (sexp_of_exn exn);
+      pp_err ctx.out_fmt (sexp_of_exn exn);
       (read_loop [@ocaml.tailcall]) ()
   in read_loop ()
 
@@ -105,15 +137,55 @@ let out_answer opts =
 let doc_type topfile =
   match topfile with
   | None ->
-     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
-     Stm.Interactive (TopLogical sertop_dp)
+    let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
+    Stm.Interactive (TopLogical sertop_dp)
   | Some filename -> Stm.Interactive (Stm.TopPhysical filename)
 
+let process_serloop_cmd ~(ctx : Ctx.t) ~pp_ack ~pp_answer ~pp_err ~pp_feed (cmd : sertop_cmd) : Ctx.t =
+  let out = ctx.out_fmt in
+  (* Collect terminated children *)
+  let () =
+    try
+      let _pid, _status = Unix.waitpid [Unix.WNOHANG] (-1) in
+      ()
+    with
+      Unix.Unix_error(Unix.ECHILD, _, _) ->
+      (* No children for now *)
+      ()
+  in
+  match cmd with
+  | SerApi (cmd_tag, cmd) ->
+    pp_ack out cmd_tag;
+    List.iter (pp_answer out) @@ List.map (fun a -> SP.Answer (cmd_tag, a)) (SP.exec_cmd cmd);
+    ctx
+  | Fork { fifo_in ; fifo_out } ->
+    let pid = Unix.fork () in
+    if pid = 0 then begin
+      (* Children: close previous channels *)
+      Stdlib.close_in ctx.in_chan;
+      Format.pp_print_flush ctx.out_fmt ();
+      Stdlib.close_out ctx.out_chan;
+      (* Create new ones *)
+      let () = Unix.mkfifo fifo_in 0o640 in
+      let in_chan = Stdlib.open_in fifo_in in
+      let () = Unix.mkfifo fifo_out 0o640 in
+      let out_chan = Stdlib.open_out fifo_out in
+      let out_fmt = Format.formatter_of_out_channel out_chan in
+      Sertop_init.update_fb_handler ~pp_feed out_fmt;
+      { ctx with in_chan; out_chan; out_fmt }
+    end
+    else
+      (* Parent *)
+      let () = pp_err out Sexp.(List [Atom "Forked"; Atom (string_of_int pid)]) in
+      ctx
+  | Quit ->
+    ctx
 
 let ser_loop ser_opts =
 
-  let open List   in
-  let open Format in
+  (* Create closures for printers given initial options *)
+  let pp_answer = out_answer ser_opts in
+  let pp_err    = out_sexp ser_opts   in
 
   (* XXX EG: I don't understand this well, why is this lock needed ??
      Review fork code in CoqworkmgrApi *)
@@ -121,12 +193,17 @@ let ser_loop ser_opts =
   let ser_lock f x = Mutex.lock   pr_mutex;
                      f x;
                      Mutex.unlock pr_mutex                             in
-  let out_fmt      = formatter_of_out_channel ser_opts.out_chan        in
-  let pp_answer    = ser_lock (out_answer ser_opts out_fmt)            in
-  let pp_err       = ser_lock (out_sexp ser_opts out_fmt)              in
-  let pp_ack cid   = pp_answer (SP.Answer (cid, SP.Ack))               in
-  let pp_opt  fb   = Sertop_util.feedback_opt_filter fb                in
-  let pp_feed fb   = Option.iter (fun fb -> pp_answer (SP.Feedback (Sertop_util.feedback_tr fb))) (pp_opt fb) in
+
+  (* Wrap printers  *)
+  let pp_answer out  = ser_lock (pp_answer out) in
+  let pp_err    out  = ser_lock (pp_err out)    in
+  let pp_ack out cid = pp_answer out (SP.Answer (cid, SP.Ack)) in
+  let pp_opt fb = Sertop_util.feedback_opt_filter fb           in
+  let pp_feed out fb =
+    Option.iter (fun fb -> pp_answer out (SP.Feedback (Sertop_util.feedback_tr fb))) (pp_opt fb) in
+
+  let ctx = Ctx.make
+      ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan  in
 
   (* Init Coq *)
   let () = Sertop_init.(
@@ -136,7 +213,7 @@ let ser_loop ser_opts =
         ; debug        = ser_opts.debug
         ; allow_sprop  = ser_opts.allow_sprop
         ; indices_matter = ser_opts.indices_matter
-        })
+        }) ctx.out_fmt
   in
 
   (* Follow the same approach than coqtop for now: allow Coq to be
@@ -163,16 +240,17 @@ let ser_loop ser_opts =
     ()
   end;
 
-  (* Main loop *)
-  let rec loop cmd_id =
-    let quit =
-      try
-        let cmd_tag, cmd = read_cmd cmd_id ser_opts.in_chan pp_err          in
-        pp_ack cmd_tag;
-        iter pp_answer @@ map (fun a -> SP.Answer (cmd_tag, a)) (SP.exec_cmd cmd);
-        is_cmd_quit cmd
-      with
-        Sys.Break -> false
-    in if not quit then (loop [@ocaml.tailcall]) (1+cmd_id) else ()
-  in loop 0
+  let incr_cmdid (ctx : Ctx.t) =
+    { ctx with cmd_id = ctx.cmd_id + 1 } in
 
+  (* Main loop *)
+  let rec loop ctx =
+    let quit, ctx =
+      try
+        let scmd = read_cmd ~ctx ~pp_err in
+        ( is_cmd_quit scmd
+        , process_serloop_cmd ~ctx ~pp_ack ~pp_answer ~pp_err ~pp_feed scmd)
+      with Sys.Break -> false, ctx
+    in
+    if quit then () else (loop [@ocaml.tailcall]) (incr_cmdid ctx)
+  in loop ctx

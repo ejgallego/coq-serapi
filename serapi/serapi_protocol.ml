@@ -331,7 +331,6 @@ module ExnInfo = struct
     }
 end
 
-(* XXX: Fixme: adapt to 4.03 matching? *)
 type answer_kind =
     Ack
   | Completed
@@ -847,7 +846,6 @@ type cmd =
   (* Administrativia                                                 *)
   | Noop
   | Help
-  | Quit
   (*******************************************************************)
 
 let exec_cmd (cmd : cmd) =
@@ -913,7 +911,6 @@ let exec_cmd (cmd : cmd) =
     end
   | Help           -> serproto_help (); []
   | Noop           -> []
-  | Quit           -> []
 
 type cmd_tag    = string
 type tagged_cmd = cmd_tag * cmd

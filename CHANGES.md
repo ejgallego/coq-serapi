@@ -1,9 +1,15 @@
 ## Version 0.12.1:
 
- - [serapi]  (!) Bump public library versioning [breaking change]
- - [opam]    Bump upper bound on ppx_sexp_conv to 0.15, allowing SerAPI
+ * [serapi]  (!) Bump public library versioning [breaking change]
+ * [opam]    Bump upper bound on ppx_sexp_conv to 0.15, allowing SerAPI
              to work with the 0.14 set of Jane Street packages.
- - [serapi]  Fix goal printing anomaly (#230, fixes #228 @corwin-of-amber)
+ * [serapi]  Fix goal printing anomaly (#230, fixes #228 @corwin-of-amber)
+ * [sertop ] New `(Fork (fifo_in file) (fifo_out file))` command, that
+             will (hard) fork a new SerAPI process and redirect the
+             input / output towards the given Unix FIFOs. This API is
+             experimental but should allow quite a few advantages to
+             some users willing to perform speculative execution.
+             (#210 , improves #202 , @ejgallego)
 
 ## Version 0.12.0:
 
