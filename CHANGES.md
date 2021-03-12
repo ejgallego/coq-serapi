@@ -3,6 +3,7 @@
  - [serapi] (!) support for Coq 8.13, see upstream changes; in
             particular there are changes in the kernel representation
             of terms [pattern matching, new caseinvert, primitive arrays]
+            (#232, fixes #227, @ejgallego)
 
 ## Version 0.12.1:
 
@@ -16,6 +17,7 @@
              experimental but should allow quite a few advantages to
              some users willing to perform speculative execution.
              (#210 , improves #202 , @ejgallego)
+ - [serapi]  Fix missing newline to separate goals (#235, fixes #231, @ejgallego)
 
 ## Version 0.12.0:
 

@@ -146,7 +146,7 @@ type coq_object =
  * Coq's printing. Coq bug if that is not the case.
  *)
 let pp_goal_gen pr_c { Serapi_goals.ty ; hyp ; _ } =
-  let open Pp      in
+  let open Pp in
   let pr_idl idl = prlist_with_sep (fun () -> str ", ") Names.Id.print idl in
   let pr_lconstr_opt c = str " := " ++ pr_c c in
   let pr_hdef  = Option.cata pr_lconstr_opt (mt ())  in
@@ -217,8 +217,8 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
     end
 
   (* Fixme *)
-  | CoqGoal    g    -> Pp.pr_sequence (pp_goal_gen Printer.(pr_lconstr_env env sigma)) g.Serapi_goals.goals
-  | CoqExtGoal g    -> Pp.pr_sequence (pp_goal_gen Ppconstr.(pr_lconstr_expr env sigma)) g.Serapi_goals.goals
+  | CoqGoal    g    -> Pp.prlist_with_sep Pp.fnl (pp_goal_gen Printer.(pr_lconstr_env env sigma)) g.Serapi_goals.goals
+  | CoqExtGoal g    -> Pp.prlist_with_sep Pp.fnl (pp_goal_gen Ppconstr.(pr_lconstr_expr env sigma)) g.Serapi_goals.goals
   | CoqProof  _     -> Pp.str "FIXME UPSTREAM, provide pr_proof"
   | CoqProfData _pf -> Pp.str "FIXME UPSTREAM, provide pr_prof_results"
   | CoqQualId qid   -> Pp.str (Libnames.string_of_qualid qid)
