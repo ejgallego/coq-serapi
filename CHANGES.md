@@ -10,7 +10,7 @@
              experimental but should allow quite a few advantages to
              some users willing to perform speculative execution.
              (#210 , improves #202 , @ejgallego)
- - [serapi]  Fix missing newline to separate goals (#, fixes #231, @ejgallego)
+ - [serapi]  Fix missing newline to separate goals (#235, fixes #231, @ejgallego)
 
 ## Version 0.12.0:
 
