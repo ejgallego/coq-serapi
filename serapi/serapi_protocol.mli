@@ -183,6 +183,8 @@ type coq_object =
   (** A Coq Location object, used for positions inside the document. *)
   | CoqTok       of Tok.t CAst.t list
   (** Coq Tokens, as produced by the lexer  *)
+  | CoqDP        of Names.DirPath.t
+  (** Coq "Logical" Paths, used for module and section names *)
   | CoqAst       of Vernacexpr.vernac_control
   (** Coq Abstract Syntax tress, as produced by the parser *)
   | CoqOption    of Goptions.option_name * Goptions.option_state
@@ -340,6 +342,8 @@ type query_cmd =
   (** Return internal information for a given notation *)
   | Definition of string
   (** Return the definition for a given global *)
+  | LogicalPath of string
+  (** Returns Coq's "logical path" for a given file *)
   | PNotations                     (* XXX  *)
   (** Return a list of notations *)
   | ProfileData
