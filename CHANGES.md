@@ -4,6 +4,10 @@
             return the logical path for a particular `.v` file
             (@ejgallego, see also
             https://github.com/cpitclaudel/alectryon/pull/25)
+ - [serapi] new `(SaveDoc opts)` command supporting saving of .vo
+            files even when from interactive mode; note that using
+            `--topfile` is required (fixes #238, @ejgallego, reported
+            by Jason Gross)
 
 ## Version 0.13.0:
 

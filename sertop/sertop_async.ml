@@ -65,15 +65,20 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~ml_load_path ~vo_load_path ~injectio
 
 let async_mut = Mutex.create ()
 
+let st_ref = ref (State.make ())
+
 (* Callback for a command. Trying to make it thread-safe. *)
 let sertop_callback (out_fn : Sexp.t -> unit) sexp =
   Mutex.lock async_mut;
   let out_answer a = out_fn (Sertop.Sertop_ser.sexp_of_answer a) in
   let out_error  a = out_fn a                             in
   begin match read_cmd sexp with
-  | `Error err         -> out_error  err
-  | `Ok (cmd_tag, cmd) -> out_answer (Answer (cmd_tag, Ack));
-                          List.(iter out_answer @@ map (fun a -> Answer (cmd_tag, a))
-                                     (exec_cmd cmd))
+  | `Error err         ->
+    out_error  err
+  | `Ok (cmd_tag, cmd) ->
+    out_answer (Answer (cmd_tag, Ack));
+    let ans, st = exec_cmd !st_ref cmd in
+    List.(iter out_answer @@ map (fun a -> Answer (cmd_tag, a)) ans);
+    st_ref := st
   end;
   Mutex.unlock async_mut

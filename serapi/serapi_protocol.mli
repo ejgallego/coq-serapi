@@ -410,6 +410,16 @@ type newdoc_opts =
   (** Libraries to load in the initial document state *)
   }
 
+(** Save options, Coq must save a module `Foo` to a concrete module
+   path determined by -R / -Q options , so we don't have a lot of
+   choice here. *)
+type save_opts =
+  { prefix_output_dir : string option [@sexp.option]
+  (** prefix a directory to the saved vo file. *)
+  ; sid : Stateid.t [@default Stm.get_current_state ~doc:Stm.(get_doc 0)]
+  (** sid of the point to save the document *)
+  }
+
 (******************************************************************************)
 (* Help                                                                       *)
 (******************************************************************************)
@@ -439,6 +449,9 @@ type newdoc_opts =
 type cmd =
   | NewDoc     of newdoc_opts
   (** Create a new document, experimental, only usable when [--no_init] was used. *)
+  | SaveDoc    of save_opts
+  (** Save the .vo file corresponding to the current document, note
+     that proofs must be closed etc... in order for this to succeed. *)
   | Add        of add_opts  * string
   (** Add a set of sentences to the current document *)
   | Cancel     of Stateid.t list
@@ -469,7 +482,12 @@ type cmd =
 (* Answer Types                                                               *)
 (******************************************************************************)
 
+(** raised when referring to a [Stateid.t] unknown to SerAPI *)
 exception NoSuchState of Stateid.t
+
+(** raised when trying to save a module without a corresponding
+   [--topfile] *)
+exception CannotSaveVo
 
 module ExnInfo : sig
   type t =
@@ -496,10 +514,21 @@ type answer_kind =
   | CoqExn    of ExnInfo.t
   (** The command produced an error, optionally at a document location *)
 
+(** {3 State of the evaluator}  *)
+
+module State : sig
+
+  type t
+
+  (** Create a state and possibly initialize Coq with an input_file *)
+  val make : ?in_file:string -> ?ldir:Names.DirPath.t -> unit -> t
+
+end
+
 (** {3 Entry points to the DSL evaluator} *)
 
 (** [exec_cmd cmd] execute SerAPI command *)
-val exec_cmd : cmd -> answer_kind list
+val exec_cmd : State.t -> cmd -> answer_kind list * State.t
 
 (** Each command and answer are tagged by a user-provided identifier *)
 type cmd_tag = string

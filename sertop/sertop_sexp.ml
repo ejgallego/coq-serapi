@@ -81,11 +81,13 @@ module Ctx = struct
     ; out_chan : Stdlib.out_channel
     ; out_fmt : Format.formatter
     ; cmd_id : int
+    ; st : SP.State.t
     }
 
-  let make ~cmd_id ~in_chan ~out_chan =
+  let make ?in_file ?ldir ~cmd_id ~in_chan ~out_chan =
     let out_fmt = Format.formatter_of_out_channel out_chan in
-    { out_chan; out_fmt; in_chan; cmd_id }
+    let st = SP.State.make ?in_file ?ldir () in
+    { out_chan; out_fmt; in_chan; cmd_id; st }
 
 end
 
@@ -156,8 +158,9 @@ let process_serloop_cmd ~(ctx : Ctx.t) ~pp_ack ~pp_answer ~pp_err ~pp_feed (cmd 
   match cmd with
   | SerApi (cmd_tag, cmd) ->
     pp_ack out cmd_tag;
-    List.iter (pp_answer out) @@ List.map (fun a -> SP.Answer (cmd_tag, a)) (SP.exec_cmd cmd);
-    ctx
+    let ans, st = SP.exec_cmd ctx.st cmd in
+    List.iter (pp_answer out) @@ List.map (fun a -> SP.Answer (cmd_tag, a)) ans;
+    { ctx with st }
   | Fork { fifo_in ; fifo_out } ->
     let pid = Unix.fork () in
     if pid = 0 then begin
@@ -202,8 +205,9 @@ let ser_loop ser_opts =
   let pp_feed out fb =
     Option.iter (fun fb -> pp_answer out (SP.Feedback (Sertop_util.feedback_tr fb))) (pp_opt fb) in
 
+  let ldir = Option.map Serapi.Serapi_paths.dirpath_of_file ser_opts.topfile in
   let ctx = Ctx.make
-      ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan  in
+      ?in_file:ser_opts.topfile ?ldir ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan  in
 
   (* Init Coq *)
   let () = Sertop_init.(
