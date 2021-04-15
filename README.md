@@ -1,6 +1,6 @@
 ## SerAPI: Machine-Friendly, Data-Centric Serialization for Coq
 
-[![Build Status](https://travis-ci.org/ejgallego/coq-serapi.svg?branch=v8.12)](https://travis-ci.org/ejgallego/coq-serapi) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
+[![Build Status](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.13)](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.13) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
 ```
 $ opam install coq-serapi
