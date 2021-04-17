@@ -82,6 +82,7 @@ end
 (******************************************************************************)
 
 exception NoSuchState of Stateid.t
+exception CannotSaveVo
 
 (******************************************************************************)
 (* Auxiliary Definitions                                                      *)
@@ -673,9 +674,9 @@ let coq_exn_info exn =
     }
 
 (* Simple protection for Coq-generated exceptions *)
-let coq_protect e =
-  try  e () @ [Completed]
-  with exn -> [coq_exn_info exn; Completed]
+let coq_protect st e =
+  try  e () @ [Completed], st
+  with exn -> [coq_exn_info exn; Completed], st
     (* let msg = str msg ++ fnl () ++ CErrors.print ~info e in *)
     (* Richpp.richpp_of_pp msg *)
 
@@ -809,6 +810,16 @@ type newdoc_opts =
   (** Libraries to load in the initial document state *)
   }
 
+(** Save options, Coq must save a module `Foo` to a concrete module
+   path determined by -R / -Q options , so we don't have a lot of
+   choice here. *)
+type save_opts =
+  { prefix_output_dir : string option [@sexp.option]
+  (** prefix a directory to the saved vo file. *)
+  ; sid : Stateid.t
+  (** sid of the point to save the document *)
+  }
+
 (******************************************************************************)
 (* Help                                                                       *)
 (******************************************************************************)
@@ -827,11 +838,27 @@ let serproto_help () =
      "\nSee sertop_protocol.mli for more details.\n\n")
 
 (******************************************************************************)
+(* State                                                                      *)
+(******************************************************************************)
+
+module State = struct
+
+  type t =
+    { in_file : string option
+    ; ldir : Names.DirPath.t option
+    }
+
+  let make ?in_file ?ldir () = { in_file; ldir }
+
+end
+
+(******************************************************************************)
 (* Top-Level Commands                                                         *)
 (******************************************************************************)
 
 type cmd =
   | NewDoc     of newdoc_opts
+  | SaveDoc    of save_opts
   | Add        of add_opts  * string
   | Cancel     of Stateid.t list
   | Exec       of Stateid.t
@@ -851,9 +878,9 @@ type cmd =
   | Help
   (*******************************************************************)
 
-let exec_cmd (cmd : cmd) =
+let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   let doc = Stm.get_doc !doc_id in
-  coq_protect @@ fun () -> match cmd with
+  coq_protect st @@ fun () -> match cmd with
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
     let require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
@@ -871,11 +898,23 @@ let exec_cmd (cmd : cmd) =
     (* doc_id := fst Stm.(get_doc @@ new_doc ndoc); [] *)
     let _ = Stm.new_doc ndoc in
     doc_id := 0; []
+  | SaveDoc opts ->
+    begin match st.in_file with
+      | None -> raise CannotSaveVo
+      | Some in_file ->
+        let in_file = Option.cata
+            (fun prefix -> Filename.concat prefix in_file) in_file opts.prefix_output_dir
+        in
+        let _doc = Stm.observe ~doc opts.sid in
+        let pst = Stm.state_of_id ~doc opts.sid in
+        let pstate = pstate_of_st pst in
+        Serapi_doc.save_vo ~doc ~pstate ~in_file ?ldir:st.ldir; []
+    end
   | Add (opt, s) ->
     let _doc, pa, res = ControlUtil.add_sentences ~doc opt s in
     QueryUtil.add_comments pa;
     res
-  | Cancel st    -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) st
+  | Cancel stms  -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) stms
   | Exec st      -> ignore(Stm.observe ~doc st); []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print(opts, obj)  ->

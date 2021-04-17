@@ -265,6 +265,10 @@ type newdoc_opts =
   ]]
   [@@deriving sexp]
 
+type save_opts =
+  [%import: Serapi.Serapi_protocol.save_opts]
+  [@@deriving sexp]
+
 type parse_opt =
   [%import: Serapi.Serapi_protocol.parse_opt
   [@with
