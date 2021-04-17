@@ -113,6 +113,7 @@ type coq_object =
   (* | CoqRichpp    of Richpp.richpp *)
   | CoqLoc       of Loc.t
   | CoqTok       of Tok.t CAst.t list
+  | CoqDP        of Names.DirPath.t
   | CoqAst       of Vernacexpr.vernac_control
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
@@ -199,6 +200,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   (* | CoqRichpp  s    -> Pp.str (pp_richpp s) *)
   | CoqLoc    _loc  -> Pp.mt ()
   | CoqTok    toks  -> Pp.pr_sequence (fun {CAst.v = tok;_} -> Pp.str (Tok.(extract_string false tok))) toks
+  | CoqDP dp        -> Names.DirPath.print dp
   | CoqAst v        -> Ppvernac.pr_vernac v
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body env m mind None
   | CoqOption (n,s) -> pp_opt n s
@@ -359,6 +361,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqPp      _    -> true
   (* | CoqRichpp  _    -> true *)
   | CoqAst     _    -> true
+  | CoqDP     _     -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true
   | CoqExpr _       -> true
@@ -407,6 +410,7 @@ type query_cmd =
   | Implicits  of string           (* XXX Print LTAC signatures (with prefix) *)
   | Unparsing  of string           (* XXX  *)
   | Definition of string
+  | LogicalPath of string
   | PNotations                     (* XXX  *)
   | ProfileData
   | Proof                          (* Return the proof object *)
@@ -589,6 +593,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
                                 [CoqUnparsing(up,upe,gr)]
                       with _exn -> []
                       end
+  | LogicalPath f  -> [CoqDP (Serapi_paths.dirpath_of_file f)]
   | PNotations     -> List.map (fun s -> CoqNotation s) @@ QueryUtil.query_pnotations ()
   | Definition id  -> fst (QueryUtil.info_of_id env id)
   | TypeOf id      -> snd (QueryUtil.info_of_id env id)

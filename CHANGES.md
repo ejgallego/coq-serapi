@@ -1,3 +1,10 @@
+## Version 0.13.1:
+
+ - [serapi] New query `(Query () (LogicalPath file))` which will
+            return the logical path for a particular `.v` file
+            (@ejgallego, see also
+            https://github.com/cpitclaudel/alectryon/pull/25)
+
 ## Version 0.13.0:
 
  - [serapi] (!) support for Coq 8.13, see upstream changes; in
