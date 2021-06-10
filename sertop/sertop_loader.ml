@@ -61,6 +61,10 @@ let plugin_handler user_handler =
         let () = loader ml_file in
         ()
     with
-      Dynlink.Error err ->
+    | Dynlink.Error err as exn ->
       let msg = Dynlink.error_message err in
-      Format.eprintf "[sertop] Critical Dynlink error %s@\n%!" msg
+      Format.eprintf "[sertop] Critical Dynlink error %s@\n%!" msg;
+      raise exn
+    | Fl_package_base.No_such_package (pkg, _) as exn ->
+      Format.eprintf "[sertop] Couldn't find the SerAPI plugin %s@; please check `ocamlfind list` does include SerAPI's plugin libraries.\n%!" pkg;
+      raise exn
