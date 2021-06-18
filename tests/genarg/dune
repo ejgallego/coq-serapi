@@ -7,6 +7,7 @@
  (action
   (progn
    (copy test_roundtrip.in test_roundtrip)
+   (run chmod +w test_roundtrip)
    ; We insert the digest of the binaries to force a rebuild of the
    ; test cases if the binary has been modified.
    (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
