@@ -10,7 +10,8 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2019-2021 Inria           -- Dual License LGPL 2.1 / GPL3+ *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
@@ -66,14 +67,14 @@ module Extra = struct
   (* End of Core_kernel code, (c) Jane Street *)
   (******************************************************************************)
 
-  let rec stream_tok n_tok acc (str,loc_fn) =
-    let e = Stream.next str in
-    let loc = loc_fn n_tok in
+  let rec stream_tok n_tok acc lstr =
+    let e = LStream.next lstr in
+    let loc = LStream.get_loc n_tok lstr in
     let l_tok = CAst.make ~loc e in
     if Tok.(equal e EOI) then
       List.rev (l_tok::acc)
     else
-      stream_tok (n_tok+1) (l_tok::acc) (str,loc_fn)
+      stream_tok (n_tok+1) (l_tok::acc) lstr
 
 end
 
@@ -800,7 +801,7 @@ end
 (* Init / new document                                                        *)
 (******************************************************************************)
 type newdoc_opts =
-  { top_name     : Stm.interactive_top
+  { top_name     : Coqargs.top
   (** name of the top-level module of the new document *)
   ; ml_load_path   : string list option [@sexp.option]
   (** Initial ML loadpath  *)
@@ -883,16 +884,16 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   coq_protect st @@ fun () -> match cmd with
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
-    let require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
+    let _require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
     let dft_ml, dft_vo =
       Serapi_paths.(coq_loadpath_default ~implicit:true ~coq_path:Coq_config.coqlib)
     in
-    let ml_load_path = Option.default dft_ml opts.ml_load_path in
-    let vo_load_path = Option.default dft_vo opts.vo_load_path in
+    let _ml_load_path = Option.default dft_ml opts.ml_load_path in
+    let _vo_load_path = Option.default dft_vo opts.vo_load_path in
+    let injections = [] in
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
-               ; injections = List.map (fun x -> Stm.RequireInjection x) require_libs
-               ; ml_load_path
-               ; vo_load_path
+               (* ; injections = List.map (fun x -> Stm.RequireInjection x) require_libs *)
+               ; injections
                ; stm_options
                } in
     (* doc_id := fst Stm.(get_doc @@ new_doc ndoc); [] *)
@@ -908,7 +909,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
         let _doc = Stm.observe ~doc opts.sid in
         let pst = Stm.state_of_id ~doc opts.sid in
         let pstate = pstate_of_st pst in
-        Serapi_doc.save_vo ~doc ~pstate ~in_file ?ldir:st.ldir; []
+        Serapi_doc.save_vo ~doc ~pstate ~in_file ?ldir:st.ldir (); []
     end
   | Add (opt, s) ->
     let _doc, pa, res = ControlUtil.add_sentences ~doc opt s in

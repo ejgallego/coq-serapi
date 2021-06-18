@@ -3,4 +3,4 @@
  (public_name coq-serapi.serlib.ssrmatching_plugin)
  (synopsis "Serialization Library for Coq [SSR Matching plugin]")
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
- (libraries coq.plugins.ssrmatching serlib serlib_ltac sexplib))
+ (libraries coq-core.plugins.ssrmatching serlib serlib_ltac sexplib))

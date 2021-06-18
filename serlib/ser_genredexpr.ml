@@ -30,6 +30,10 @@ type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
   [@@deriving sexp,yojson]
 
+type ('a,'b,'c,'d) red_expr_gen0 =
+  [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen0]
+  [@@deriving sexp,yojson]
+
 type ('a,'b,'c) red_expr_gen =
   [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
   [@@deriving sexp,yojson]
@@ -67,13 +71,13 @@ type wrd_h1 =
 
 type wrd_h2 =
   (Ser_genintern.glob_constr_and_expr,
-   Ser_names.evaluable_global_reference and_short_name Ser_locus.or_var,
+   Ser_tacred.evaluable_global_reference and_short_name Ser_locus.or_var,
    Ser_genintern.glob_constr_pattern_and_expr) red_expr_gen
   [@@deriving sexp]
 
 type wrd_h3 =
   (Ser_eConstr.constr,
-   Ser_names.evaluable_global_reference,
+   Ser_tacred.evaluable_global_reference,
    Ser_pattern.constr_pattern) red_expr_gen
   [@@deriving sexp]
 

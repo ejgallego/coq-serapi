@@ -50,7 +50,8 @@ let coq_init opts out_fmt =
 
   if opts.debug then begin
     Printexc.record_backtrace true;
-    Flags.debug := true;
+    (* XXX Use CDebug *)
+    (* Flags.debug := true; *)
   end;
 
   let load_obj = Sertop_loader.plugin_handler opts.ml_load in

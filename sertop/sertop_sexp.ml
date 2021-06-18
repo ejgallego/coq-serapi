@@ -84,7 +84,7 @@ module Ctx = struct
     ; st : SP.State.t
     }
 
-  let make ?in_file ?ldir ~cmd_id ~in_chan ~out_chan =
+  let make ?in_file ?ldir ~cmd_id ~in_chan ~out_chan () =
     let out_fmt = Format.formatter_of_out_channel out_chan in
     let st = SP.State.make ?in_file ?ldir () in
     { out_chan; out_fmt; in_chan; cmd_id; st }
@@ -141,7 +141,7 @@ let doc_type topfile =
   | None ->
     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
     Stm.Interactive (TopLogical sertop_dp)
-  | Some filename -> Stm.Interactive (Stm.TopPhysical filename)
+  | Some filename -> Stm.Interactive (Coqargs.TopPhysical filename)
 
 let process_serloop_cmd ~(ctx : Ctx.t) ~pp_ack ~pp_answer ~pp_err ~pp_feed (cmd : sertop_cmd) : Ctx.t =
   let out = ctx.out_fmt in
@@ -207,7 +207,7 @@ let ser_loop ser_opts =
 
   let ldir = Option.map Serapi.Serapi_paths.dirpath_of_file ser_opts.topfile in
   let ctx = Ctx.make
-      ?in_file:ser_opts.topfile ?ldir ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan  in
+      ?in_file:ser_opts.topfile ?ldir ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan () in
 
   (* Init Coq *)
   let () = Sertop_init.(
@@ -228,16 +228,16 @@ let ser_loop ser_opts =
 
   let injections =
     if ser_opts.no_prelude then []
-    else [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
+    else [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
-  let ml_load_path, vo_load_path = ser_opts.ml_path, ser_opts.vo_path in
+  let _ml_load_path, _vo_load_path = ser_opts.ml_path, ser_opts.vo_path in
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
 
   if not ser_opts.no_init then begin
     let ndoc = { Stm.doc_type = doc_type ser_opts.topfile
                ; injections
-               ; ml_load_path
-               ; vo_load_path
+               (* ; ml_load_path
+                * ; vo_load_path *)
                ; stm_options
                } in
     let _ = Stm.new_doc ndoc in

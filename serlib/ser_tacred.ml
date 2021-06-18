@@ -1,6 +1,6 @@
 (************************************************************************)
 (*         *   The Coq Proof Assistant / The Coq Development Team       *)
-(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2021       *)
+(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2018       *)
 (* <O___,, *       (see CREDITS file for the list of authors)           *)
 (*   \VV/  **************************************************************)
 (*    //   *    This file is distributed under the terms of the         *)
@@ -10,17 +10,15 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
-(* Copyright 2020-2021 Inria                                            *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2019-2021 Inria                                            *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
-(* Status: Experimental                                                 *)
+(* Status: Very Experimental                                            *)
 (************************************************************************)
 
-val save_vo
-  :  doc:Stm.doc
-  -> ?ldir:Names.DirPath.t
-  -> pstate:Declare.Proof.t option
-  -> in_file:string
-  -> unit
-  -> unit
+module Names = Ser_names
+
+type evaluable_global_reference =
+  [%import: Tacred.evaluable_global_reference]
+  [@@deriving sexp]
