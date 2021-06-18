@@ -21,7 +21,7 @@ val sertop_init :
   fb_out:(Sexp.t -> unit) ->
   ml_load_path:string list ->
   vo_load_path:Loadpath.vo_path list ->
-  injections:Stm.injection_command list ->
+  injections:Coqargs.injection_command list ->
   debug:bool ->
   allow_sprop:bool ->
   Stm.doc * Stateid.t

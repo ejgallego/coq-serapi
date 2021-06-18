@@ -10,7 +10,8 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* Copyright 2019-2021 Inria           -- Dual License LGPL 2.1 / GPL3+ *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
@@ -400,7 +401,7 @@ type add_opts = {
     {b experimental} *)
 
 type newdoc_opts =
-  { top_name     : Stm.interactive_top
+  { top_name     : Coqargs.top
   (** name of the top-level module of the new document *)
   ; ml_load_path   : string list option [@sexp.option]
   (** Initial ML loadpath  *)

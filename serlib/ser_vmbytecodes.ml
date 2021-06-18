@@ -8,37 +8,22 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2017 MINES ParisTech                                  *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2019-2021 Inria                                            *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
 
-module Sorts = Ser_sorts
 module Names = Ser_names
-module Univ  = Ser_univ
-module Uint63 = Ser_uint63
-module Float64 = Ser_float64
+module Evar = Ser_evar
 
-type tag =
-  [%import: Vmvalues.tag]
+type fv_elem =
+  [%import: Vmbytecodes.fv_elem]
   [@@deriving sexp]
 
-type structured_values = Vmvalues.structured_values
-
-let structured_values_of_sexp _ = assert false
-let sexp_of_structured_values _ = assert false
-
-type structured_constant =
-  [%import: Vmvalues.structured_constant]
-  [@@deriving sexp]
-
-type reloc_table =
-  [%import: Vmvalues.reloc_table]
-  [@@deriving sexp]
-
-type annot_switch =
-  [%import: Vmvalues.annot_switch]
+type fv =
+  [%import: Vmbytecodes.fv]
   [@@deriving sexp]

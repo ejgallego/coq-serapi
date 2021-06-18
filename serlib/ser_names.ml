@@ -224,12 +224,23 @@ type constructor =
 module Projection = struct
 
   module Repr = struct
-    type t =
-      { proj_ind : inductive;
-        proj_npars : int;
-        proj_arg : int;
-        proj_name : Label.t; }
-    [@@deriving sexp,yojson]
+    type _t =
+      { proj_ind : inductive
+      ; proj_npars : int
+      ; proj_arg : int
+      ; proj_name : Label.t
+      } [@@deriving sexp,yojson]
+
+    (* missing from OCaml 4.07 , after, it is [Result.map] *)
+    let result_map f = function
+      | Ok x -> Ok (f x)
+      | Error e -> Error e
+
+    type t = Names.Projection.Repr.t
+    let t_of_sexp p = Obj.magic (_t_of_sexp p)
+    let sexp_of_t p = sexp_of__t (Obj.magic p)
+    let to_yojson p = _t_to_yojson (Obj.magic p)
+    let of_yojson p = _t_of_yojson p |> result_map Obj.magic
   end
 
   type _t = Repr.t * bool
@@ -252,9 +263,9 @@ type t = [%import: Names.GlobRef.t]
 end
 
 (* Evaluable global reference: public *)
-type evaluable_global_reference =
-  [%import: Names.evaluable_global_reference]
-  [@@deriving sexp]
+(* type evaluable_global_reference =
+ *   [%import: Names.evaluable_global_reference]
+ *   [@@deriving sexp] *)
 
 type lident =
   [%import: Names.lident]

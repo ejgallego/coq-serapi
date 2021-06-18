@@ -9,6 +9,7 @@ on:
     - v8.11
     - v8.12
     - v8.13
+    - v8.14
   pull_request:
     branches:
     - v8.8
@@ -17,6 +18,7 @@ on:
     - v8.11
     - v8.12
     - v8.13
+    - v8.14
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,14 +26,15 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         ocaml-version: [4.07.1, 4.08.1, 4.09.1, 4.10.1, 4.11.1]
         test-target: [test]
-        extra-opam: ["coq.8.13.0 coq-mathcomp-ssreflect"]
+        extra-opam: ["coq.8.14.0 coq-mathcomp-ssreflect"]
         include:
         - ocaml-version: 4.07.1+32bit
           test-target: js-dune
-          extra-opam: coq.8.13.0 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
+          extra-opam: coq.8.14.0 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-version: 4.11.1
           test-target: test
           extra-opam: dune
@@ -42,8 +45,8 @@ jobs:
       OPAMYES: "true"
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
-      COQ_VERSION: "v8.13"
-      COQ_BRANCH: "v8.13"
+      COQ_VERSION: "v8.14"
+      COQ_BRANCH: "v8.14"
       COQ_CONF: "-local -native-compiler no -coqide no"
       COMPILER: ${{ matrix.ocaml-version }}
       EXTRA_OPAM: ${{ matrix.extra-opam }}

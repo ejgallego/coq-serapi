@@ -1,3 +1,10 @@
+## Version 0.14.0:
+
+ - [serapi] (!) support for Coq 8.14, see upstream changes; nothing
+            too remarkable other than `NewDoc` will now ignore
+            loadpaths due to new init setup upstream.
+            (#, @ejgallego)
+
 ## Version 0.13.1:
 
  - [serapi] New query `(Query () (LogicalPath file))` which will

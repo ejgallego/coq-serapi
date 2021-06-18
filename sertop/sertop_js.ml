@@ -113,7 +113,7 @@ let _ =
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
       let ml_load_path = []                                              in
       let vo_load_path = List.map pkg_to_bb all_pkgs                     in
-      let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some true)] in
+      let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some true)] in
       let debug       = false                                            in
       let allow_sprop = true                                             in
       ignore (sertop_init ~fb_out:post_message ~ml_load_path ~vo_load_path ~injections ~debug ~allow_sprop);

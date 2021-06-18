@@ -43,6 +43,8 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~ml_load_path ~vo_load_path ~injectio
   ; debug
   ; allow_sprop
   ; indices_matter = false
+  ; ml_path = ml_load_path
+  ; vo_path = vo_load_path
   } Format.std_formatter;
 
   let stm_options = process_stm_flags
@@ -57,8 +59,6 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~ml_load_path ~vo_load_path ~injectio
 
   let ndoc = { doc_type
              ; injections
-             ; ml_load_path
-             ; vo_load_path
              ; stm_options
              } in
   new_doc ndoc

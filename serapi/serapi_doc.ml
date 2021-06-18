@@ -29,7 +29,7 @@ let check_pending_proofs ~pstate =
     CErrors.user_err msg
     ) pstate
 
-let save_vo ~doc ?ldir ~pstate ~in_file =
+let save_vo ~doc ?ldir ~pstate ~in_file () =
   let _doc = Stm.join ~doc in
   check_pending_proofs ~pstate;
   let ldir = match ldir with

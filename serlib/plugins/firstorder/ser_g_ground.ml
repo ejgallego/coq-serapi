@@ -32,7 +32,7 @@ let ser_wit_firstorder_using :
   }
 
 let register () =
-  Ser_genarg.register_genser Ground_plugin.G_ground.wit_firstorder_using ser_wit_firstorder_using;
+  Ser_genarg.register_genser Firstorder_plugin.G_ground.wit_firstorder_using ser_wit_firstorder_using;
   ()
 
 let _ = register ()

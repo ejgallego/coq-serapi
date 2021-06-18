@@ -23,20 +23,23 @@ type async_flags =
   ; error_recovery : bool
   }
 
-type coq_opts = {
+type coq_opts =
 
+  { fb_handler   : Format.formatter -> Feedback.feedback -> unit
   (* callback to handle async feedback *)
-  fb_handler   : Format.formatter -> Feedback.feedback -> unit;
 
+  ; ml_load      : (string -> unit) option
   (* callback to load cma/cmo files *)
-  ml_load      : (string -> unit) option;
 
+  ; debug        : bool
   (* Enable Coq Debug mode *)
-  debug        : bool;
 
+  ; allow_sprop  : bool
   (* Allow SProp *)
-  allow_sprop  : bool;
-  indices_matter : bool;
+  ; indices_matter : bool
+
+  ; ml_path : string list
+  ; vo_path : Loadpath.vo_path list (** From -R and -Q options usually           *)
 }
 
 (**************************************************************************)
@@ -46,11 +49,45 @@ type coq_opts = {
 (* Reference to feedback_handler *)
 let fb = ref 0
 
+(* mirroring what's done in Coqinit.init_runtime () *)
+let init_runtime opts =
+
+  (* Core Coq initialization *)
+  Lib.init();
+
+  (* This is only needed when statically linking *)
+  Mltop.init_known_plugins ();
+
+  (* This should be configurable somehow. *)
+  Global.set_engagement Declarations.PredicativeSet;
+  Global.set_indices_matter opts.indices_matter;
+
+  (* --allow-sprop in agreement with coq v8.11  *)
+  Global.set_allow_sprop opts.allow_sprop;
+
+  (* XXX fixme *)
+  Flags.set_native_compiler false;
+
+  (* Loadpath is early in the state now *)
+
+  (* This is for defaults, in case we go back to the protocol setting it *)
+  (* let dft_ml, dft_vo =
+   *   Serapi.Serapi_paths.(coq_loadpath_default ~implicit:true ~coq_path:Coq_config.coqlib)
+   * in
+   * let ml_load_path = Option.default dft_ml opts.ml_path in
+   * let vo_load_path = Option.default dft_vo opts.vo_path in *)
+
+  List.iter Mltop.add_ml_dir opts.ml_path;
+  List.iter Loadpath.add_vo_path opts.vo_path;
+
+  ()
+
 let coq_init opts out_fmt =
 
   if opts.debug then begin
     Printexc.record_backtrace true;
-    Flags.debug := true;
+    (* XXX Use CDebug *)
+    (* Flags.debug := true; *)
   end;
 
   let load_obj = Sertop_loader.plugin_handler opts.ml_load in
@@ -67,18 +104,7 @@ let coq_init opts out_fmt =
     } in
   Mltop.set_top ser_mltop;
 
-  (* Core Coq initialization *)
-  Lib.init();
-
-  (* This should be configurable somehow. *)
-  Global.set_engagement Declarations.PredicativeSet;
-  Global.set_indices_matter opts.indices_matter;
-
-  (* --allow-sprop in agreement with coq v8.11  *)
-  Global.set_allow_sprop opts.allow_sprop;
-
-  (* XXX fixme *)
-  Flags.set_native_compiler false;
+  init_runtime opts;
 
   (**************************************************************************)
   (* Feedback setup                                                         *)

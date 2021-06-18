@@ -3190,14 +3190,14 @@ Tactic Notation "induction_wf" ":" constr(E) ident(X) :=
     (see LibTacticsDemos for an example) *)
 
 Require Import Coq.Arith.Compare_dec.
-Require Import Coq.omega.Omega.
+Require Import Lia.
 
 Lemma induct_height_max2 : forall n1 n2 : nat,
   exists n, n1 < n /\ n2 < n.
 Proof using.
   intros. destruct (lt_dec n1 n2).
-  exists (S n2). omega.
-  exists (S n1). omega.
+  exists (S n2). lia.
+  exists (S n1). lia.
 Qed.
 
 Ltac induct_height_step x :=

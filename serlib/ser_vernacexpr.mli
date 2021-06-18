@@ -83,9 +83,9 @@ type export_flag = Vernacexpr.export_flag
 val export_flag_of_sexp : Sexp.t -> export_flag
 val sexp_of_export_flag : export_flag -> Sexp.t
 
-type onlyparsing_flag = Vernacexpr.onlyparsing_flag
-val onlyparsing_flag_of_sexp : Sexp.t -> onlyparsing_flag
-val sexp_of_onlyparsing_flag : onlyparsing_flag -> Sexp.t
+(* type onlyparsing_flag = Vernacexpr.onlyparsing_flag
+ * val onlyparsing_flag_of_sexp : Sexp.t -> onlyparsing_flag
+ * val sexp_of_onlyparsing_flag : onlyparsing_flag -> Sexp.t *)
 
 type locality_flag = Vernacexpr.locality_flag
 val locality_flag_of_sexp : Sexp.t -> locality_flag

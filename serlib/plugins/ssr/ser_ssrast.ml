@@ -33,6 +33,9 @@ module Ltac_plugin = struct
   module Tacexpr = Serlib_ltac.Ser_tacexpr
 end
 
+type ssrtermkind = Ssrmatching_plugin.Ssrmatching.ssrtermkind
+  [@@deriving sexp]
+
 (* What a hack is ssreflect using... *)
 module Proofview = struct
   type 'a tactic = 'a Proofview.tactic
@@ -82,10 +85,6 @@ type ssrclear =
 
 type ssrdocc =
   [%import: Wrap_ssrast.ssrdocc]
-  [@@deriving sexp]
-
-type ssrtermkind =
-  [%import: Wrap_ssrast.ssrtermkind]
   [@@deriving sexp]
 
 type ssrterm =

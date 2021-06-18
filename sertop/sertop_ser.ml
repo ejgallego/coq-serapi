@@ -81,6 +81,7 @@ module Pp       = Ser_pp
 module Names    = Ser_names
 module Environ  = Ser_environ
 module Goptions = Ser_goptions
+module Coqargs  = Ser_coqargs
 module Stateid  = Ser_stateid
 module Evar     = Ser_evar
 module Context  = Ser_context
@@ -259,7 +260,7 @@ type add_opts =
 type newdoc_opts =
   [%import: Serapi.Serapi_protocol.newdoc_opts
   [@with
-     Stm.interactive_top      := Ser_stm.interactive_top;
+     (* Stm.interactive_top      := Ser_stm.interactive_top; *)
      Sexplib.Conv.sexp_list   := sexp_list;
      Sexplib.Conv.sexp_option := sexp_option;
   ]]

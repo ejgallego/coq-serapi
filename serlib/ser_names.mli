@@ -60,11 +60,7 @@ module Projection : sig
   include SerType.SJ with type t = Projection.t
 
   module Repr : sig
-    type t =
-      { proj_ind : inductive;
-        proj_npars : int;
-        proj_arg : int;
-        proj_name : Label.t; }
+    include SerType.S with type t = Projection.Repr.t
   end
 
 end
@@ -86,9 +82,9 @@ val sexp_of_constructor : constructor -> Sexp.t
 val constructor_of_yojson : Yojson.Safe.t -> (constructor, string) Result.result
 val constructor_to_yojson : constructor -> Yojson.Safe.t
 
-type evaluable_global_reference = Names.evaluable_global_reference
-val evaluable_global_reference_of_sexp : Sexp.t -> evaluable_global_reference
-val sexp_of_evaluable_global_reference : evaluable_global_reference -> Sexp.t
+(* type evaluable_global_reference = Names.evaluable_global_reference
+ * val evaluable_global_reference_of_sexp : Sexp.t -> evaluable_global_reference
+ * val sexp_of_evaluable_global_reference : evaluable_global_reference -> Sexp.t *)
 
 type lident = Names.lident
 val lident_of_sexp : Sexp.t -> lident

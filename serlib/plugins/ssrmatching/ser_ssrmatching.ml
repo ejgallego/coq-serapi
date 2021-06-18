@@ -16,6 +16,10 @@
 open Sexplib.Std
 open Serlib
 
+type ssrtermkind =
+  [%import: Ssrmatching_plugin.Ssrmatching.ssrtermkind]
+  [@@deriving sexp]
+
 type cpattern =
   [%import: Ssrmatching_plugin.Ssrmatching.cpattern]
 

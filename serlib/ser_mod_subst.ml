@@ -13,7 +13,7 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib.Std
+(* open Sexplib.Std *)
 
 module Names = Ser_names
 
@@ -35,13 +35,13 @@ type substitution =
 let sexp_of_substitution = Serlib_base.sexp_of_opaque ~typ:"Mod_subst.substitution"
 let substitution_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Mod_subst.substitution"
 
-type 'a _substituted = {
-  mutable subst_value : 'a;
-  mutable subst_subst : substitution list;
-} [@@deriving sexp]
-
-type 'a substituted =
-  [%import: 'a Mod_subst.substituted]
-
-let sexp_of_substituted f x = sexp_of__substituted f (Obj.magic x)
-let substituted_of_sexp f x = Obj.magic (_substituted_of_sexp f x)
+(* type 'a _substituted = {
+ *   mutable subst_value : 'a;
+ *   mutable subst_subst : substitution list;
+ * } [@@deriving sexp]
+ * 
+ * type 'a substituted =
+ *   [%import: 'a Mod_subst.substituted]
+ * 
+ * let sexp_of_substituted f x = sexp_of__substituted f (Obj.magic x)
+ * let substituted_of_sexp f x = Obj.magic (_substituted_of_sexp f x) *)
