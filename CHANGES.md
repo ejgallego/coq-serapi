@@ -8,6 +8,8 @@
             files even when from interactive mode; note that using
             `--topfile` is required (fixes #238, @ejgallego, reported
             by Jason Gross)
+ - [sertop] we don't link the OCaml `num` library anymore, this could
+            have some impact on plugins (@ejgallego)
 
 ## Version 0.13.0:
 

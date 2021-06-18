@@ -11,7 +11,7 @@
  (modules sertop_bin sercomp sertok sername)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (link_flags -linkall)
- (libraries sertop num))
+ (libraries sertop))
 
 (executable
  (name sertop_js)
