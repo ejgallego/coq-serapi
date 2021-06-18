@@ -1,12 +1,15 @@
-.PHONY: clean all serlib sertop sercomp force js-dist js-release
+.PHONY: clean all serlib sertop sercomp force js-dist js-release build build-install test doc
 
 # Leave empty to use OPAM-installed Coq
 SERAPI_COQ_HOME ?=
-# SERAPI_COQ_HOME=/home/egallego/external/coq-v8.12/_build/install/default/lib/
+# SERAPI_COQ_HOME=/home/egallego/external/coq-v8.13/_build/install/default/lib/
 # SERAPI_COQ_HOME=/home/egallego/research/jscoq/coq-external/coq-v8.9+32bit/
 
 ifneq ($SERAPI_COQ_HOME,)
   export OCAMLPATH := $(SERAPI_COQ_HOME):$(OCAMLPATH)
+  SP_PKGS=coq-serapi
+else
+  SP_PKGS=coq,coq-serapi
 endif
 
 all: build
@@ -16,7 +19,7 @@ sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
 build:
-	dune build @install
+	dune build --only-packages=$(SP_PKGS) @install
 
 build-install:
 	dune build coq-serapi.install
@@ -30,8 +33,7 @@ doc:
 browser:
 	google-chrome _build/default/_doc/_html/index.html
 
-sertop:
-	dune build @install
+sertop: build
 	dune exec -- rlwrap sertop
 
 #####################################################
