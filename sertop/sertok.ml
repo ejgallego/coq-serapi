@@ -41,6 +41,8 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
     ; debug
     ; allow_sprop
     ; indices_matter = false
+    ; ml_path = ml_load_path
+    ; vo_path = vo_load_path
     } Format.std_formatter;
 
   (* document initialization *)
@@ -60,12 +62,10 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
     else stm_options
   in
 
-  let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
+  let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; injections
-             ; ml_load_path
-             ; vo_load_path
              ; stm_options
              } in
 
@@ -76,9 +76,9 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
 
   Stm.new_doc ndoc
 
-let rec stream_tok n_tok acc (str,loc_fn) source begin_line begin_char =
-  let e = Stream.next str in
-  let pre_loc : Loc.t = loc_fn n_tok in
+let rec stream_tok n_tok acc str source begin_line begin_char =
+  let e = LStream.next str in
+  let pre_loc : Loc.t = LStream.get_loc n_tok str in
   let loc =
     { pre_loc with
       fname = source;
@@ -91,7 +91,7 @@ let rec stream_tok n_tok acc (str,loc_fn) source begin_line begin_char =
   if Tok.(equal e EOI) then
     List.rev acc
   else
-    stream_tok (n_tok+1) (l_tok::acc) (str,loc_fn) source begin_line begin_char
+    stream_tok (n_tok+1) (l_tok::acc) str source begin_line begin_char
 
 exception End_of_input
 let input_doc ~pp ~in_file ~in_chan ~doc ~sid =

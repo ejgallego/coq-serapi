@@ -42,6 +42,10 @@ type coq_opts =
 
   ; indices_matter : bool
   (** Levels of indices (and nonuniform parameters) contribute to the level of inductives *)
+
+  ; ml_path : string list
+  ; vo_path : Loadpath.vo_path list (** From -R and -Q options usually           *)
+
 }
 
 val coq_init : coq_opts -> Format.formatter -> unit

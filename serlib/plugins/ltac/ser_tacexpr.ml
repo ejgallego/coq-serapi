@@ -39,6 +39,7 @@ module Goal_select = Ser_goal_select
 module Pattern    = Ser_pattern
 module Constrexpr = Ser_constrexpr
 module Vernacexpr = Ser_vernacexpr
+module Tacred     = Ser_tacred
 module Tactypes   = Ser_tactypes
 module Tactics    = Ser_tactics
 module Equality   = Ser_equality
@@ -171,8 +172,8 @@ and ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_tactic_arg =
   | Tacexp of 'tacexpr
   | TacPretype of 'trm
   | TacNumgoals
-and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
-  | TacAtom of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_atomic_tactic_expr CAst.t
+and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr_r =
+  | TacAtom of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_atomic_tactic_expr
   | TacThen of
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr *
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
@@ -228,10 +229,13 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
   | TacMatchGoal of lazy_flag * direction_flag *
       ('p,('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr) match_rule list
   | TacFun of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_fun_ast
-  | TacArg of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg CAst.t
+  | TacArg of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg
   | TacSelect of Goal_select.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
-  | TacML     of (ml_tactic_entry * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list) CAst.t
-  | TacAlias  of (Names.KerName.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list) CAst.t
+  | TacML     of (ml_tactic_entry * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list)
+  | TacAlias  of (Names.KerName.t * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_arg list)
+
+and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
+  ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr_r CAst.t
 
 and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_fun_ast =
     Names.Name.t list * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
@@ -265,13 +269,13 @@ and _gen_tactic_arg_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_arg) :
   | Ltac_plugin.Tacexpr.Tacexp a          -> ITac.Tacexp a
   | Ltac_plugin.Tacexpr.TacPretype a      -> ITac.TacPretype a
   | Ltac_plugin.Tacexpr.TacNumgoals       -> ITac.TacNumgoals
-and _gen_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr) :
-  ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_expr =
+and _gen_tactic_expr_r_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr_r) :
+  ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_expr_r =
   let u  x = _gen_tactic_expr_put x in
   let uu x = List.map u x           in
   let ua x = Array.map u x          in
   match t with
-  | Ltac_plugin.Tacexpr.TacAtom l                -> ITac.TacAtom C.(map _gen_atom_tactic_expr_put l)
+  | Ltac_plugin.Tacexpr.TacAtom l                -> ITac.TacAtom (_gen_atom_tactic_expr_put l)
   | Ltac_plugin.Tacexpr.TacThen (a,b)            -> ITac.TacThen (u a, u b)
   | Ltac_plugin.Tacexpr.TacDispatch a            -> ITac.TacDispatch (uu a)
   | Ltac_plugin.Tacexpr.TacExtendTac (a,b,c)     -> ITac.TacExtendTac (ua a, u b, ua c)
@@ -321,10 +325,13 @@ and _gen_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr) :
       ) in
     ITac.TacMatchGoal(e, d, _pmr t)
   | Ltac_plugin.Tacexpr.TacFun a                 -> ITac.TacFun (_gen_tactic_fun_ast_put a)
-  | Ltac_plugin.Tacexpr.TacArg l                 -> ITac.TacArg C.(map _gen_tactic_arg_put l)
+  | Ltac_plugin.Tacexpr.TacArg l                 -> ITac.TacArg (_gen_tactic_arg_put l)
   | Ltac_plugin.Tacexpr.TacSelect(gs,te)         -> ITac.TacSelect(gs, _gen_tactic_expr_put te)
-  | Ltac_plugin.Tacexpr.TacML l                  -> ITac.TacML C.(map (fun (b,c) -> (b, List.map _gen_tactic_arg_put c)) l)
-  | Ltac_plugin.Tacexpr.TacAlias l               -> ITac.TacAlias C.(map (fun (b,c) -> (b, List.map _gen_tactic_arg_put c)) l)
+  | Ltac_plugin.Tacexpr.TacML (l,m)              -> ITac.TacML (l, List.map _gen_tactic_arg_put m)
+  | Ltac_plugin.Tacexpr.TacAlias (l,m)           -> ITac.TacAlias (l, List.map _gen_tactic_arg_put m)
+and _gen_tactic_expr_put (t : _ Ltac_plugin.Tacexpr.gen_tactic_expr) =
+  C.map _gen_tactic_expr_r_put t
+
 and _gen_tactic_fun_ast_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_fun_ast) :
   ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_fun_ast =
   match t with
@@ -356,13 +363,13 @@ and _gen_tactic_arg_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_
   | ITac.Tacexp a          -> Ltac_plugin.Tacexpr.Tacexp a
   | ITac.TacPretype a      -> Ltac_plugin.Tacexpr.TacPretype a
   | ITac.TacNumgoals       -> Ltac_plugin.Tacexpr.TacNumgoals
-and _gen_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_expr) :
-  'a Ltac_plugin.Tacexpr.gen_tactic_expr =
+and _gen_tactic_expr_r_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_expr_r) :
+  'a Ltac_plugin.Tacexpr.gen_tactic_expr_r =
   let u  x = _gen_tactic_expr_get x in
   let uu x = List.map u x           in
   let ua x = Array.map u x          in
   match t with
-  | ITac.TacAtom l                -> Ltac_plugin.Tacexpr.TacAtom C.(map _gen_atom_tactic_expr_get l)
+  | ITac.TacAtom l                -> Ltac_plugin.Tacexpr.TacAtom (_gen_atom_tactic_expr_get l)
   | ITac.TacThen (a,b)            -> Ltac_plugin.Tacexpr.TacThen (u a, u b)
   | ITac.TacDispatch a            -> Ltac_plugin.Tacexpr.TacDispatch (uu a)
   | ITac.TacExtendTac (a,b,c)     -> Ltac_plugin.Tacexpr.TacExtendTac (ua a, u b, ua c)
@@ -403,10 +410,15 @@ and _gen_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen
       ) in
     Ltac_plugin.Tacexpr.TacMatchGoal(a,d, _gmr t)
   | ITac.TacFun a                 -> Ltac_plugin.Tacexpr.TacFun (_gen_tactic_fun_ast_get a)
-  | ITac.TacArg l                 -> Ltac_plugin.Tacexpr.TacArg C.(map _gen_tactic_arg_get l)
+  | ITac.TacArg l                 -> Ltac_plugin.Tacexpr.TacArg (_gen_tactic_arg_get l)
   | ITac.TacSelect(gs,te)         -> Ltac_plugin.Tacexpr.TacSelect(gs, _gen_tactic_expr_get te)
-  | ITac.TacML l                  -> Ltac_plugin.Tacexpr.TacML C.(map (fun (b,c) -> (b,List.map _gen_tactic_arg_get c)) l)
-  | ITac.TacAlias l               -> Ltac_plugin.Tacexpr.TacAlias C.(map (fun (b,c) -> (b,List.map _gen_tactic_arg_get c)) l)
+  | ITac.TacML (l,m)              -> Ltac_plugin.Tacexpr.TacML (l, List.map _gen_tactic_arg_get m)
+  | ITac.TacAlias (l,m)           -> Ltac_plugin.Tacexpr.TacAlias (l, List.map _gen_tactic_arg_get m)
+
+and _gen_tactic_expr_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_expr) :
+  'a Ltac_plugin.Tacexpr.gen_tactic_expr =
+  C.map _gen_tactic_expr_r_get t
+
 and _gen_tactic_fun_ast_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_tactic_fun_ast) :
   'a Ltac_plugin.Tacexpr.gen_tactic_fun_ast =
   match t with
@@ -461,7 +473,7 @@ let rec glob_tactic_expr_of_sexp tac =
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_pattern_and_expr_of_sexp
-    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Names.evaluable_global_reference_of_sexp))
+    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Tacred.evaluable_global_reference_of_sexp))
     (Locus.or_var_of_sexp (Loc.located_of_sexp ltac_constant_of_sexp))
     Names.lident_of_sexp
     glob_tactic_expr_of_sexp
@@ -472,7 +484,7 @@ and glob_atomic_tactic_expr_of_sexp tac =
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_pattern_and_expr_of_sexp
-    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Names.evaluable_global_reference_of_sexp))
+    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Tacred.evaluable_global_reference_of_sexp))
     (Locus.or_var_of_sexp (Loc.located_of_sexp ltac_constant_of_sexp))
     Names.lident_of_sexp
     glob_tactic_expr_of_sexp
@@ -483,7 +495,7 @@ let rec sexp_of_glob_tactic_expr (tac : glob_tactic_expr) =
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_pattern_and_expr
-    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Names.sexp_of_evaluable_global_reference))
+    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Tacred.sexp_of_evaluable_global_reference))
     (Locus.sexp_of_or_var (Loc.sexp_of_located sexp_of_ltac_constant))
     Names.sexp_of_lident
     sexp_of_glob_tactic_expr
@@ -494,7 +506,7 @@ and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_pattern_and_expr
-    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Names.sexp_of_evaluable_global_reference))
+    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Tacred.sexp_of_evaluable_global_reference))
     (Locus.sexp_of_or_var (Loc.sexp_of_located sexp_of_ltac_constant))
     Names.sexp_of_lident
     sexp_of_glob_tactic_expr
@@ -559,7 +571,7 @@ let atomic_tactic_expr_of_sexp tac =
     EConstr.t_of_sexp
     Genintern.glob_constr_and_expr_of_sexp
     Pattern.constr_pattern_of_sexp
-    Names.evaluable_global_reference_of_sexp
+    Tacred.evaluable_global_reference_of_sexp
     (Loc.located_of_sexp ltac_constant_of_sexp)
     Names.Id.t_of_sexp
     unit_of_sexp
@@ -570,7 +582,7 @@ let sexp_of_atomic_tactic_expr tac =
     EConstr.sexp_of_t
     Genintern.sexp_of_glob_constr_and_expr
     Pattern.sexp_of_constr_pattern
-    Names.sexp_of_evaluable_global_reference
+    Tacred.sexp_of_evaluable_global_reference
     (Loc.sexp_of_located sexp_of_ltac_constant)
     Names.Id.sexp_of_t
     sexp_of_unit

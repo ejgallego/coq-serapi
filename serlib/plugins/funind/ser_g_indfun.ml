@@ -94,12 +94,12 @@ let ser_wit_auto_using' =
   }
 
 let register () =
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_auto_using' ser_wit_auto_using';
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_constr_comma_sequence' ser_wit_auto_using';
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_with_names ser_wit_with_names;
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
-  Ser_genarg.register_genser Recdef_plugin.G_indfun.wit_function_fix_definition ser_wit_function_fix_definition;
+  Ser_genarg.register_genser Funind_plugin.G_indfun.wit_auto_using' ser_wit_auto_using';
+  Ser_genarg.register_genser Funind_plugin.G_indfun.wit_constr_comma_sequence' ser_wit_auto_using';
+  Ser_genarg.register_genser Funind_plugin.G_indfun.wit_with_names ser_wit_with_names;
+  Ser_genarg.register_genser Funind_plugin.G_indfun.wit_fun_ind_using ser_wit_fun_ind_using;
+  Ser_genarg.register_genser Funind_plugin.G_indfun.wit_fun_scheme_arg ser_wit_fun_scheme_arg;
+  Ser_genarg.register_genser Funind_plugin.G_indfun.wit_function_fix_definition ser_wit_function_fix_definition;
   ()
 
 let _ = register ()

@@ -23,6 +23,7 @@
 let coq_loadpath_default ~implicit ~coq_path =
   let open Loadpath in
   let mk_path prefix = coq_path ^ "/" ^ prefix in
+  let mk_core_path prefix = coq_path ^ "/../coq-core/" ^ prefix in
   (* let mk_ml = () in *)
   let mk_vo ~has_ml ~coq_path ~dir ~implicit ~absolute =
     { unix_path = if absolute then dir else mk_path dir
@@ -36,7 +37,9 @@ let coq_loadpath_default ~implicit ~coq_path =
   let coq_root     = Names.DirPath.make [Libnames.coq_root] in
   let default_root = Libnames.default_root_prefix in
   let ml_paths =
-    let plugins_dirs = System.all_subdirs ~unix_path:(mk_path "plugins") in
+    let plugins_path = mk_core_path "plugins" in
+    (* Format.eprintf "plugins_dirs: %s@\n%!" plugins_path; *)
+    let plugins_dirs = System.all_subdirs ~unix_path:plugins_path in
     List.map fst plugins_dirs
   in
   ml_paths ,

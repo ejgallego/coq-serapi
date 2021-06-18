@@ -141,7 +141,7 @@ let doc_type topfile =
   | None ->
     let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
     Stm.Interactive (TopLogical sertop_dp)
-  | Some filename -> Stm.Interactive (Stm.TopPhysical filename)
+  | Some filename -> Stm.Interactive (Coqargs.TopPhysical filename)
 
 let process_serloop_cmd ~(ctx : Ctx.t) ~pp_ack ~pp_answer ~pp_err ~pp_feed (cmd : sertop_cmd) : Ctx.t =
   let out = ctx.out_fmt in
@@ -210,6 +210,8 @@ let ser_loop ser_opts =
       ?in_file:ser_opts.topfile ?ldir ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan () in
 
   (* Init Coq *)
+  let ml_path, vo_path = ser_opts.ml_path, ser_opts.vo_path in
+
   let () = Sertop_init.(
       coq_init
         { fb_handler   = pp_feed
@@ -217,6 +219,8 @@ let ser_loop ser_opts =
         ; debug        = ser_opts.debug
         ; allow_sprop  = ser_opts.allow_sprop
         ; indices_matter = ser_opts.indices_matter
+        ; ml_path
+        ; vo_path
         }) ctx.out_fmt
   in
 
@@ -228,16 +232,13 @@ let ser_loop ser_opts =
 
   let injections =
     if ser_opts.no_prelude then []
-    else [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
+    else [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
-  let ml_load_path, vo_load_path = ser_opts.ml_path, ser_opts.vo_path in
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
 
   if not ser_opts.no_init then begin
     let ndoc = { Stm.doc_type = doc_type ser_opts.topfile
                ; injections
-               ; ml_load_path
-               ; vo_load_path
                ; stm_options
                } in
     let _ = Stm.new_doc ndoc in

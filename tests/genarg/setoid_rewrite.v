@@ -1,6 +1,6 @@
 Require Setoid.
 Require Import PeanoNat Le Gt Minus Bool Lt List.
-Require Import Omega.
+Require Import Lia.
 
 Section ReDun.
 
@@ -15,6 +15,6 @@ Section ReDun.
     setoid_rewrite (count_occ_In decA) at 1.
     unfold gt, lt in *.
     split; intros H x; specialize (H x);
-    set (n := count_occ decA l x) in *; clearbody n; omega.
+    set (n := count_occ decA l x) in *; clearbody n; lia.
   Qed.
 End ReDun.

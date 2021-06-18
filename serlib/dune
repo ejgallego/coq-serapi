@@ -3,5 +3,5 @@
  (public_name coq-serapi.serlib)
  (synopsis "Serialization Library for Coq")
  (preprocess (staged_pps ppx_import ppx_sexp_conv ppx_deriving_yojson))
- (libraries coq.stm sexplib))
+ (libraries coq-core.stm sexplib))
 

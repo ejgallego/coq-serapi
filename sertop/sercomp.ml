@@ -34,6 +34,8 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
     ; debug
     ; allow_sprop
     ; indices_matter
+    ; ml_path = ml_load_path
+    ; vo_path = vo_load_path
     } Format.std_formatter;
 
   (* document initialization *)
@@ -53,12 +55,12 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
     else stm_options
   in
 
-  let injections = [Stm.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
+  let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; injections
-             ; ml_load_path
-             ; vo_load_path
+             (* ; ml_load_path
+              * ; vo_load_path *)
              ; stm_options
              } in
 

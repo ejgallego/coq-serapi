@@ -1,3 +1,14 @@
+## Version 0.14.0:
+
+ - [serapi] (!) support for Coq 8.14, see upstream changes; nothing
+            too remarkable other than `NewDoc` will now ignore
+            loadpaths due to new init setup upstream.
+            (#253, @ejgallego)
+ - [ci]     SerAPI branches should be able to build now against Coq rc
+            packages as to better integrate with Coq's platform beta
+            release; thanks to Érik Martin-Dorel, Karl Palmskog and Théo
+            Zimmermann for feedback.
+
 ## Version 0.13.1:
 
  - [serapi] New query `(Query () (LogicalPath file))` which will

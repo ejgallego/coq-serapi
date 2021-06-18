@@ -102,7 +102,7 @@ type coercion_flag     = [%import: Vernacexpr.coercion_flag     ] [@@deriving se
 (* type inductive_flag    = [%import: Vernacexpr.inductive_flag    ] [@@deriving sexp,yojson] *)
 type instance_flag     = [%import: Vernacexpr.instance_flag     ] [@@deriving sexp,yojson]
 type export_flag       = [%import: Vernacexpr.export_flag       ] [@@deriving sexp,yojson]
-type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp,yojson]
+(* type onlyparsing_flag  = [%import: Vernacexpr.onlyparsing_flag  ] [@@deriving sexp,yojson] *)
 type locality_flag     = [%import: Vernacexpr.locality_flag     ] [@@deriving sexp,yojson]
 (* type obsolete_locality = [%import: Vernacexpr.obsolete_locality ] [@@deriving sexp] *)
 

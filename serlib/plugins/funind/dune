@@ -1,6 +1,6 @@
 (library
  (name serlib_funind)
- (public_name coq-serapi.serlib.recdef_plugin)
+ (public_name coq-serapi.serlib.funind_plugin)
  (synopsis "Serialization Library for Coq Fundind Plugin")
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
- (libraries coq.plugins.funind serlib serlib_ltac sexplib))
+ (libraries coq-core.plugins.funind serlib serlib_ltac sexplib))
