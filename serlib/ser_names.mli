@@ -30,12 +30,12 @@ module Name    : SerType.SJ with type t = Name.t
 module DirPath : SerType.SJ with type t = DirPath.t
 module DPmap   : Ser_cMap.ExtS with type key = DirPath.t and type 'a t = 'a DPmap.t
 
-module Label   : SerType.S with type t = Label.t
-module MBId    : SerType.S with type t = MBId.t
-module ModPath : SerType.S with type t = ModPath.t
+module Label   : SerType.SJ with type t = Label.t
+module MBId    : SerType.SJ with type t = MBId.t
+module ModPath : SerType.SJ with type t = ModPath.t
 module MPmap   : Ser_cMap.ExtS with type key = ModPath.t and type 'a t = 'a MPmap.t
 
-module KerName  : SerType.S with type t = KerName.t
+module KerName  : SerType.SJ with type t = KerName.t
 module Constant : SerType.SJ with type t = Constant.t
 
 module Cmap : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap.t
