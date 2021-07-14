@@ -132,14 +132,17 @@ module KerName = struct
 type t = [%import: Names.KerName.t]
 
 type _kername = KerName of ModPath.t * Label.t
-      [@@deriving sexp]
+      [@@deriving sexp,yojson]
 
 let _kername_put kn              =
   let mp, l = KerName.repr kn in KerName (mp,l)
 let _kername_get (KerName (mp,l)) = KerName.make mp l
 
 let t_of_sexp sexp = _kername_get (_kername_of_sexp sexp)
-let sexp_of_t dp   = sexp_of__kername (_kername_put dp)
+let sexp_of_t kn   = sexp_of__kername (_kername_put kn)
+
+let of_yojson json = Ppx_deriving_yojson_runtime.(_kername_of_yojson json >|= _kername_get)
+let to_yojson kn   = _kername_to_yojson (_kername_put kn)
 
 end
 
