@@ -29,7 +29,7 @@ let map_serlib ml_mod =
     | "ltac_plugin" -> false
     (* | "tauto_plugin" -> false *)
     (* Supported *)
-    | "ground_plugin"           (* firstorder *)
+    | "firstorder_plugin"       (* firstorder *)
     | "recdef_plugin"           (* funind *)
     | "ring_plugin"             (* setoid_ring *)
     | "extraction_plugin"       (* setoid_ring *)
