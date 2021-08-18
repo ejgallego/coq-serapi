@@ -3,7 +3,10 @@
 [![Build Status](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.13)](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.13) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
 ```
+# To install with opam
 $ opam install coq-serapi
+# Alternatively, if you use Nix
+$ nix-shell -p coq_8_13 coqPackages_8_13.serapi
 $ sertop --help
 ```
 
@@ -44,7 +47,8 @@ new use cases.
 
 ### Quick Overview and Install:
 
-SerAPI can be installed as the [OPAM](https://opam.ocaml.org) package `coq-serapi`.
+SerAPI can be installed as the [OPAM](https://opam.ocaml.org) package `coq-serapi`
+or the [Nix](https://nixos.org) package `coqPackages_8_13.serapi`.
 See [build instructions](notes/build.md) for manual installation. The experimental
 [in-browser version](https://x80.org/rhino-hawk) is also online.
 
