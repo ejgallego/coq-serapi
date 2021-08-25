@@ -10,6 +10,8 @@
             by Jason Gross)
  - [sertop] we don't link the OCaml `num` library anymore, this could
             have some impact on plugins (@ejgallego)
+ - [nix]    Added Nix support (#249, fixes #248, @Zimmi48, reported
+            by @nyraghu)
 
 ## Version 0.13.0:
 
