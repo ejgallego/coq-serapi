@@ -2,10 +2,14 @@
 
 [![Build Status](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.13)](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.13) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
 
+To install with opam:
 ```
-# To install with opam
 $ opam install coq-serapi
-# Alternatively, if you use Nix
+$ sertop --help
+```
+
+Alternatively, if you use Nix:
+```
 $ nix-shell -p coq_8_13 coqPackages_8_13.serapi
 $ sertop --help
 ```
