@@ -34,3 +34,5 @@ val sexp_of_punsafe_judgment :
 type unsafe_judgment = Environ.unsafe_judgment
 val unsafe_judgment_of_sexp : Sexp.t -> unsafe_judgment
 val sexp_of_unsafe_judgment : unsafe_judgment -> Sexp.t
+
+type named_context_val = Environ.named_context_val [@@deriving sexp]
