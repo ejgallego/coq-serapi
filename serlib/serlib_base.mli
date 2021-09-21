@@ -15,6 +15,8 @@
 
 open Sexplib
 
+(** Controls when an opaque type produces and error vs an "abstract"
+   constructor *)
 val exn_on_opaque : bool ref
 
 val sexp_of_opaque : typ:string -> 'a -> Sexp.t

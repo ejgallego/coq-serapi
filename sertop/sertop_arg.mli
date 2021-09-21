@@ -56,3 +56,4 @@ val comp_input : comp_input Term.t
 val omit_loc : bool Term.t
 val omit_att : bool Term.t
 val exn_on_opaque : bool Term.t
+val omit_env : bool Term.t

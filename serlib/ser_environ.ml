@@ -76,6 +76,12 @@ type env =
 
 let env_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Environ.env"
 
+let abstract_env = ref false
+let sexp_of_env env =
+  if !abstract_env
+  then Serlib_base.sexp_of_opaque ~typ:"Environ.env" env
+  else sexp_of_env env
+
 type ('constr, 'term) punsafe_judgment =
   [%import: ('constr, 'term) Environ.punsafe_judgment]
   [@@deriving sexp]

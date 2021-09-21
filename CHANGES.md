@@ -13,8 +13,10 @@
  - [nix]    Added Nix support (#249, fixes #248, @Zimmi48, reported
             by @nyraghu)
  - [serapi] Fix COQPATH support: interpret paths as absolute (#249, @Zimmi48)
- - [serlib] Ignore `env` parameter in certain exceptions (#251, fixes #250,
+ - [serlib] Ignore `env` parameter in certain exceptions (#254, fixes #250,
             @ejgallego, reported by @cpitclaudel)
+ - [sertop] New option `--omit_env` that will disable the serialization of
+            Coq's super heavy global environments (#254 @ejgallego)
 
 ## Version 0.13.0:
 
