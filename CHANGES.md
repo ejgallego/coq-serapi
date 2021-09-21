@@ -13,6 +13,8 @@
  - [nix]    Added Nix support (#249, fixes #248, @Zimmi48, reported
             by @nyraghu)
  - [serapi] Fix COQPATH support: interpret paths as absolute (#249, @Zimmi48)
+ - [serlib] Ignore `env` parameter in certain exceptions (#251, fixes #250,
+            @ejgallego, reported by @cpitclaudel)
 
 ## Version 0.13.0:
 
