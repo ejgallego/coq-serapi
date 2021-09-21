@@ -42,6 +42,9 @@ type named_context_val =
   [%import: Environ.named_context_val]
   [@@deriving sexp_of]
 
+let named_context_val_of_sexp =
+  Serlib_base.opaque_of_sexp ~typ:"Environ.named_context_val"
+
 type link_info =
   [%import: Environ.link_info]
   [@@deriving sexp]
@@ -83,3 +86,4 @@ type ('constr, 'term) punsafe_judgment =
 type unsafe_judgment =
   [%import: Environ.unsafe_judgment]
   [@@deriving sexp]
+

@@ -39,4 +39,3 @@ type types =
 type unsafe_judgment =
   [%import: EConstr.unsafe_judgment]
   [@@deriving sexp]
-

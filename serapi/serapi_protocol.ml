@@ -139,6 +139,7 @@ type coq_object =
                     (* * Evd.evar_map *)
   | CoqAssumptions of Serapi_assumptions.t
   | CoqComments of ((int * int) * string) list list
+  | CoqEvarInfo of (Evar.t * Evd.evar_info) list
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -239,6 +240,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
   | CoqComments _ -> Pp.str "FIXME comments"
+  | CoqEvarInfo _ -> Pp.str "FIXME evarinfo"
 
 let str_pp_obj env sigma fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj env sigma obj)
@@ -384,6 +386,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqProof _      -> true
   | CoqAssumptions _-> true
   | CoqComments _   -> true
+  | CoqEvarInfo _   -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -421,6 +424,8 @@ type query_cmd =
   | Complete of string
   | Comments
   (** Get all comments of a document *)
+  | Evars of { defined : bool }
+  (** Get evar map, if [defined] is true, also output the defined variables. *)
 
 module QueryUtil = struct
 
@@ -567,6 +572,25 @@ module QueryUtil = struct
     let comments = Pcoq.Parsable.comments pa |> List.rev in
     _comments := comments :: !_comments
 
+  (* Include defined *)
+  let is_defined einfo =
+    match einfo.Evd.evar_body with
+    | Evd.Evar_empty -> false
+    | Evd.Evar_defined _ -> true
+
+  let build_evar_map ~defined sigma =
+    Evd.fold (fun ev einfo acc ->
+        if is_defined einfo && (not defined)
+        then acc
+        else (ev, einfo)::acc)
+      sigma []
+    |> List.rev
+
+  let evars ~pstate ~defined =
+    let proof = Declare.Proof.get pstate in
+    let Proof.{ sigma; _ } = Proof.data proof in
+    build_evar_map ~defined sigma
+
 end
 
 let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object list =
@@ -609,6 +633,8 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Complete prefix ->
     List.map (fun x -> CoqGlobRefExt x) (Nametab.completion_canditates (Libnames.qualid_of_string prefix))
   | Comments -> [CoqComments (List.rev !QueryUtil._comments)]
+  | Evars { defined } ->
+    Option.cata (fun pstate -> [CoqEvarInfo (QueryUtil.evars ~pstate ~defined)]) [] pstate
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)

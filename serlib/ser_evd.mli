@@ -15,6 +15,8 @@
 
 open Sexplib
 
+type evar_info = Evd.evar_info [@@deriving sexp]
+
 type conv_pb = Evd.conv_pb
 val conv_pb_of_sexp : Sexp.t -> conv_pb
 val sexp_of_conv_pb : conv_pb -> Sexp.t

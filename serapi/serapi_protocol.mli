@@ -237,6 +237,8 @@ type coq_object =
 
      See https://github.com/coq/coq/issues/12413 for updates on
      improved support *)
+  | CoqEvarInfo of (Evar.t * Evd.evar_info) list
+  (** List of evar bindings, maybe defined or undefined *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -360,6 +362,8 @@ type query_cmd =
   (** Naïve but efficient prefix-based completion of identifiers *)
   | Comments
   (** Get all comments of a document *)
+  | Evars of { defined : bool }
+  (** Get evar map, if [defined] is true, also output the defined variables. *)
 
 module QueryUtil : sig
   val info_of_id : Environ.env -> string -> coq_object list * coq_object list

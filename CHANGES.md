@@ -13,6 +13,8 @@
  - [nix]    Added Nix support (#249, fixes #248, @Zimmi48, reported
             by @nyraghu)
  - [serapi] Fix COQPATH support: interpret paths as absolute (#249, @Zimmi48)
+ - [serapi] New Query `(Evars (define %bool))` , which will serialize
+            low-level path information (#256, fixes #20, @ejgallego)
 
 ## Version 0.13.0:
 

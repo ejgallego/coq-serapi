@@ -98,6 +98,7 @@ module Notation_gram = Ser_notation_gram
 module Genarg     = Ser_genarg
 module Loadpath   = Ser_loadpath
 module Printer    = Ser_printer
+module Evd        = Ser_evd
 
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)

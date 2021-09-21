@@ -15,9 +15,11 @@
 
 open Sexplib.Std
 
+module Loc       = Ser_loc
 module Environ   = Ser_environ
 module Reduction = Ser_reduction
 module Constr    = Ser_constr
+module Evar_kinds = Ser_evar_kinds
 
 type econstr =
   [%import: Evd.econstr]
@@ -25,6 +27,41 @@ type econstr =
 (* ahhh *)
 let econstr_of_sexp s = Obj.magic (Constr.t_of_sexp s)
 let sexp_of_econstr c = Constr.sexp_of_t (Obj.magic c)
+
+type evar_body =
+  [%import: Evd.evar_body]
+  [@@deriving sexp]
+
+module Abstraction = struct
+
+  type abstraction =
+    [%import: Evd.Abstraction.abstraction]
+    [@@deriving sexp]
+
+  type t =
+    [%import: Evd.Abstraction.t]
+    [@@deriving sexp]
+end
+
+module Filter = struct
+
+  type t = Evd.Filter.t
+  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Evd.Filter.t"
+  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Evd.Filter.t"
+
+end
+
+module Identity = struct
+
+  type t = Evd.Identity.t
+  let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Evd.Identity.t"
+  let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"Evd.Identity.t"
+
+end
+
+type evar_info =
+  [%import: Evd.evar_info]
+  [@@deriving sexp]
 
 type conv_pb = Reduction.conv_pb
   [@@deriving sexp]
