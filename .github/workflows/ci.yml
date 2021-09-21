@@ -30,11 +30,11 @@ jobs:
       matrix:
         ocaml-version: [4.07.1, 4.08.1, 4.09.1, 4.10.1, 4.11.1]
         test-target: [test]
-        extra-opam: ["coq.8.14.0 coq-mathcomp-ssreflect"]
+        extra-opam: ["coq.8.14+rc1 coq-mathcomp-ssreflect"]
         include:
         - ocaml-version: 4.07.1+32bit
           test-target: js-dune
-          extra-opam: coq.8.14.0 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
+          extra-opam: coq.8.14+rc1 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-version: 4.11.1
           test-target: test
           extra-opam: dune
@@ -67,6 +67,7 @@ jobs:
       - name: More OCaml setup
         run: |
           opam repos add coq-released http://coq.inria.fr/opam/released
+          opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
           opam config set-global jobs $NJOBS
           opam pin add -y -n --kind=path coq-serapi .
           opam install -y --deps-only -j $NJOBS coq-serapi
