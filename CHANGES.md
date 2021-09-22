@@ -17,6 +17,7 @@
             @ejgallego, reported by @cpitclaudel)
  - [sertop] New option `--omit_env` that will disable the serialization of
             Coq's super heavy global environments (#254 @ejgallego)
+ - [build]  Test OCaml 4.12 (#257 @ejgallego)
 
 ## Version 0.13.0:
 

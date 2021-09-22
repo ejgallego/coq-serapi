@@ -84,7 +84,7 @@ module Ctx = struct
     ; st : SP.State.t
     }
 
-  let make ?in_file ?ldir ~cmd_id ~in_chan ~out_chan =
+  let make ?in_file ?ldir ~cmd_id ~in_chan ~out_chan () =
     let out_fmt = Format.formatter_of_out_channel out_chan in
     let st = SP.State.make ?in_file ?ldir () in
     { out_chan; out_fmt; in_chan; cmd_id; st }
@@ -207,7 +207,7 @@ let ser_loop ser_opts =
 
   let ldir = Option.map Serapi.Serapi_paths.dirpath_of_file ser_opts.topfile in
   let ctx = Ctx.make
-      ?in_file:ser_opts.topfile ?ldir ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan  in
+      ?in_file:ser_opts.topfile ?ldir ~cmd_id:0 ~in_chan:ser_opts.in_chan ~out_chan:ser_opts.out_chan () in
 
   (* Init Coq *)
   let () = Sertop_init.(
