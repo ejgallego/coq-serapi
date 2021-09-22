@@ -23,6 +23,25 @@ The supported way is to use the OPAM package manager. The
 `.travis.yml` file contains up to date install instructions if you
 want to build SerAPI manually, see also the [build instructions](notes/build.md) file.
 
+## What serialization formats does SerAPI provide?
+
+SerAPI was built to encode Coq native data types to/from
+S-Expressions, a widely used data and code format pioneered by the
+lisp programming language.
+
+Since then, SerAPI has evolved to take advantage of other formats, and
+now provides experimental Python and JSON output formats too.
+
+## What kind of S-expressions does SerAPI use?
+
+SerAPI does use Jane Street's excellent
+[sexplib](https://github.com/janestreet/sexplib) library print and
+parse S-exps; note that there is not really a S-exp standard, for more
+details about some differences on how quoting happens in `sexplib`,
+please see issues https://github.com/ejgallego/coq-serapi/issues/3 ,
+https://github.com/ejgallego/coq-serapi/issues/8 , and
+https://github.com/ejgallego/coq-serapi/issues/22 .
+
 ## SerAPI hangs with inputs larger than 4096 characters:
 
 This is due to a historical limitation of the UNIX/Linux TTY API. See
