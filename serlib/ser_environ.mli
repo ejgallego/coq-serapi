@@ -15,22 +15,23 @@
 
 open Sexplib
 
+(** Control whether to output environs, they are huge, and in some
+   case problematic; if abstract_env is true, they will be serialized
+   as abstract *)
+val abstract_env : bool ref
+
 type env = Environ.env
 
-val env_of_sexp : Sexp.t -> env
-val sexp_of_env : env -> Sexp.t
+val env_of_sexp : Sexp.t -> env val sexp_of_env : env -> Sexp.t
 
-type ('constr, 'types) punsafe_judgment = ('constr, 'types) Environ.punsafe_judgment
+type ('constr, 'types) punsafe_judgment = ('constr, 'types)
+   Environ.punsafe_judgment
 
-val punsafe_judgment_of_sexp :
-  (Sexp.t -> 'constr) ->
-  (Sexp.t -> 'types) -> Sexp.t ->
-  ('constr, 'types) punsafe_judgment
-val sexp_of_punsafe_judgment :
-  ('constr -> Sexplib.Sexp.t) ->
-  ('types -> Sexplib.Sexp.t) ->
-  ('constr, 'types) punsafe_judgment -> Sexp.t
+val punsafe_judgment_of_sexp : (Sexp.t -> 'constr) -> (Sexp.t ->
+   'types) -> Sexp.t -> ('constr, 'types) punsafe_judgment val
+   sexp_of_punsafe_judgment : ('constr -> Sexplib.Sexp.t) -> ('types
+   -> Sexplib.Sexp.t) -> ('constr, 'types) punsafe_judgment -> Sexp.t
 
-type unsafe_judgment = Environ.unsafe_judgment
-val unsafe_judgment_of_sexp : Sexp.t -> unsafe_judgment
-val sexp_of_unsafe_judgment : unsafe_judgment -> Sexp.t
+type unsafe_judgment = Environ.unsafe_judgment val
+   unsafe_judgment_of_sexp : Sexp.t -> unsafe_judgment val
+   sexp_of_unsafe_judgment : unsafe_judgment -> Sexp.t

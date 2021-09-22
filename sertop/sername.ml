@@ -170,14 +170,14 @@ let sername_doc = "sername Coq tool"
 
 open Cmdliner
 
-let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att exn_on_opaque =
+let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att omit_env exn_on_opaque =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
   let process = process_line ~pp ~str_pp ~de_bruijn ~body in
 
   (* initialization *)
-  let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
+  let options = Serlib.Serlib_init.{ omit_loc; omit_att; omit_env; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
   let allow_sprop = not disallow_sprop in
@@ -215,7 +215,7 @@ let main () =
     let open Sertop.Sertop_arg in
     Term.(const driver
           $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ exn_on_opaque
+          $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
          ),
     Term.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man
   in

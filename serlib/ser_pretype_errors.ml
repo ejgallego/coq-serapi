@@ -13,6 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+let ee = Environ.empty_env
+
 open Sexplib.Std
 
 module Names = Ser_names
@@ -30,6 +32,23 @@ module Evar_kinds  = Ser_evar_kinds
 type unification_error =
   [%import: Pretype_errors.unification_error]
   [@@deriving sexp]
+
+(* workaround env being embedded in the exn, see bug #250 *)
+let rec filter_ue (ue : unification_error) = match ue with
+  | NotClean (e, _, c) ->
+    NotClean (e, ee, c)
+  | ConversionFailed (_, c1, c2) ->
+    ConversionFailed (ee, c1, c2)
+  | IncompatibleInstances (_, e, c1, c2) ->
+    IncompatibleInstances (ee, e, c1, c2)
+  | InstanceNotSameType (e, _, t1, t2) ->
+    InstanceNotSameType (e, ee, t1, t2)
+  | CannotSolveConstraint (e, ue) ->
+    CannotSolveConstraint (e, (filter_ue ue))
+  | ue -> ue
+
+let sexp_of_unification_error ue =
+  filter_ue ue |> sexp_of_unification_error
 
 type position =
   [%import: Pretype_errors.position]
