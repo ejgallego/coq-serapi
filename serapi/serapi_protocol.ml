@@ -908,7 +908,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
         let _doc = Stm.observe ~doc opts.sid in
         let pst = Stm.state_of_id ~doc opts.sid in
         let pstate = pstate_of_st pst in
-        Serapi_doc.save_vo ~doc ~pstate ~in_file ?ldir:st.ldir; []
+        Serapi_doc.save_vo ~doc ~pstate ~in_file ?ldir:st.ldir (); []
     end
   | Add (opt, s) ->
     let _doc, pa, res = ControlUtil.add_sentences ~doc opt s in

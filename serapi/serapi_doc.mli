@@ -23,3 +23,4 @@ val save_vo
   -> pstate:Declare.Proof.t option
   -> in_file:string
   -> unit
+  -> unit
