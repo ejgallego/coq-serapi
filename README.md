@@ -1,6 +1,13 @@
 ## SerAPI: Machine-Friendly, Data-Centric Serialization for Coq
 
-[![Build Status](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.13)](https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.13) [![Gitter](https://badges.gitter.im/coq-serapi/Lobby.svg)](https://gitter.im/coq-serapi/Lobby)
+[![Build Status][action-badge]][action-link]
+[![Zulip][zulip-badge]][zulip-link]
+
+[action-badge]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.13
+[action-link]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.13
+
+[zulip-badge]: https://img.shields.io/badge/Zulip-chat-informational.svg
+[zulip-link]: https://coq.zulipchat.com/#narrow/stream/256331-SerAPI
 
 To install with opam:
 ```
