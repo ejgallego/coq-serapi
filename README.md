@@ -166,10 +166,15 @@ pointers here, feel free to add your own!
 - [Roosterize](https://github.com/EngineeringSoftware/roosterize) is a tool for
   suggesting lemma names in Coq projects based on machine learning.
   See the [paper](https://arxiv.org/abs/2004.07761) describing the technique and tool.
+  Additional paper with demo: https://arxiv.org/abs/2103.01346 .
+- The [paper](https://arxiv.org/abs/2006.16743) _Learning to Format Coq Code Using Language Models_
+  implements a Coq code formatter.
 - [MathComp corpus](https://github.com/EngineeringSoftware/math-comp-corpus) is a machine learning
   dataset based on the [Mathematical Components](https://math-comp.github.io/) family of Coq projects,
   and includes several machine-readable representations of Coq code generated via SerAPI.
   The dataset was used to train and evaluate the Roosterize tool.
+- A Python interface for SerAPI can be found at [PyCoq](https://github.com/IBM/pycoq)
+- A direct Python interface to Coq, using `serlib` can be found at https://github.com/ejgallego/pyCoq
 - SerAPI is being used to improve the Coq regression proof
   selection tool [iCoq](https://cozy.ece.utexas.edu/icoq/),
   see the [paper](https://users.ece.utexas.edu/~gligoric/papers/CelikETAL17iCoq.pdf).
