@@ -222,7 +222,9 @@ let main () =
 
   try match Term.eval ~catch:false sername_cmd with
     | `Error _ -> exit 1
-    | _        -> exit 0
+    | `Version
+    | `Help
+    | `Ok ()   -> exit 0
   with exn ->
     let (e, info) = Exninfo.capture exn in
     fatal_exn e info
