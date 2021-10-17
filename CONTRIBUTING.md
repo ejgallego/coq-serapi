@@ -11,6 +11,28 @@ indentation.
 
 We prefer GPG signed commits as well as `Signed-off-by` commits.
 
+## Releasing SerAPI
+
+As of today, SerAPI is released using a standard process based on
+`dune-release`; to do a release, it should suffice to do:
+
+```
+$ dune-release tag $version
+$ dune-release
+```
+
+where `$version` is `$coq-version+$serapi_version`, for example
+`8.16.2+0.16.4`. Note that `dune-release` requires you to setup a
+github token, see `dune-release` docs for more details.
+
+**Important**: note that `dune-release` will automatically generate
+the changelog from `CHANGES.md`, please keep the formatting tidy in
+that file!
+
+Note that bug https://github.com/ejgallego/coq-serapi/issues/208 may
+require you to edit the opam-repository PR if their linter fails
+[seems fixed as of today, but OMMV]
+
 ### Commit tag conventions [work in progress]:
 
 We have somme
