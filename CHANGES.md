@@ -18,6 +18,7 @@
  - [sertop] New option `--omit_env` that will disable the serialization of
             Coq's super heavy global environments (#254 @ejgallego)
  - [build]  Test OCaml 4.12 (#257 @ejgallego)
+ - [sertop] Async mode was not working due to passing `-no-glob` to workers
 
 ## Version 0.13.0:
 

@@ -120,9 +120,6 @@ let process_stm_flags opts =
   (* Enable async mode if requested *)
   Option.cata (fun coqtop ->
 
-    (* Whether to forward Glob output to the IDE. *)
-    let dump_opt = "-no-glob" in
-
     let open Stm.AsyncOpts in
     let opts =
       { stm_opts with
@@ -135,7 +132,13 @@ let process_stm_flags opts =
     in
 
     (* async_proofs_worker_priority); *)
-    AsyncTaskQueue.async_proofs_flags_for_workers := [dump_opt];
+
+    (* Whether to forward Glob output to the IDE. *)
+    (* let _dump_opt = "-no-glob" in
+     * AsyncTaskQueue.async_proofs_flags_for_workers := []; *)
+
+    (* The -no-glob for workers seems broken recently *)
+    AsyncTaskQueue.async_proofs_flags_for_workers := [];
     CoqworkmgrApi.(init High);
     (* Uh! XXXX *)
     for i = 0 to Array.length Sys.argv - 1 do
