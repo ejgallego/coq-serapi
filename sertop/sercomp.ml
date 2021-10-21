@@ -79,7 +79,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   | I_vernac ->
      begin
        let in_strm = Stream.of_channel in_chan in
-       let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
+       let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile {dirpath=None; file=in_file})) in_strm in
        try while true do
            let doc, sid = !stt in
            let east =

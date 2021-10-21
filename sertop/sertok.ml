@@ -98,7 +98,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let open Format in
   let stt = ref (doc, sid) in
   let in_strm = Stream.of_channel in_chan in
-  let source = Loc.InFile in_file in
+  let source = Loc.InFile {dirpath=None; file=in_file} in
   let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
   let in_bytes = load_file in_file in
   try while true do

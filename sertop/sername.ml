@@ -94,7 +94,7 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_lo
      let doc,sid = Stm.new_doc ndoc in
      let sent = Printf.sprintf "Require %s." l in
      let in_strm = Stream.of_string sent in
-     let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
+     let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile {dirpath=None; file=in_file})) in_strm in
      match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
      | Some ast ->
 	let doc, sid, tip = Stm.add ~doc ~ontop:sid false ast in
