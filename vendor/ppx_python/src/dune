@@ -1,0 +1,6 @@
+(library
+ (name ppx_python_conv_pycoq)
+ (kind ppx_deriver)
+ (ppx_runtime_libraries ppx_python_runtime_pycoq pyml)
+ (libraries base ppxlib)
+ (preprocess (pps ppxlib.metaquot)))

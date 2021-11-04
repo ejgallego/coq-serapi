@@ -18,7 +18,7 @@
 (**********************************************************************)
 
 open! Base
-open Ppx_python_runtime
+open Ppx_python_runtime_serapi
 
 type source =
   [%import: Loc.source]

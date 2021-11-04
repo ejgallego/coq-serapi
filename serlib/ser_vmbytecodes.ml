@@ -16,14 +16,15 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Names = Ser_names
 module Evar = Ser_evar
 
 type fv_elem =
   [%import: Vmbytecodes.fv_elem]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type fv =
   [%import: Vmbytecodes.fv]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

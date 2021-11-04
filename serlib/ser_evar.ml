@@ -15,7 +15,7 @@
 (************************************************************************)
 
 open Sexplib.Std
-open Ppx_python_runtime
+open Ppx_python_runtime_serapi
 
 (* Private *)
 module Self = struct

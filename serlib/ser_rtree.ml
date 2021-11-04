@@ -15,6 +15,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime_serapi
 open Ppx_python_runtime
 
 type 'a _t =

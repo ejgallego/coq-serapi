@@ -1,0 +1,5 @@
+(library
+ (name ppx_python_runtime_pycoq)
+ (public_name coq-serapi.ppx_python_runtime_pycoq)
+ (libraries base pyml)
+ (preprocess (pps ppx_base)))

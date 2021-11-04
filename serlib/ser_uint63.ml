@@ -15,7 +15,7 @@
 (************************************************************************)
 
 open Sexplib
-open Ppx_python_runtime
+open Ppx_python_runtime_serapi
 
 type _t = string [@@deriving yojson,python]
 let _t_put = Uint63.to_string

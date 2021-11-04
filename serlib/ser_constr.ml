@@ -96,13 +96,13 @@ let map_pcase_invert f = function
 
 type 'constr pcase_branch =
   [%import: 'constr Constr.pcase_branch]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 let map_pcase_branch f (bi, c) = (bi, f c)
 
 type 'types pcase_return =
   [%import: 'constr Constr.pcase_return]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 let map_pcase_return f (bi, c) = (bi, f c)
 

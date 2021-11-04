@@ -1,4 +1,6 @@
-include Ppx_python_runtime
+include Ppx_python_runtime_pycoq
+include Ppx_python_runtime_pycoq.Ppx_python_runtime
+
 (* To remove in newer ppx_python release *)
 exception Not_found_s = Base.Not_found_s
 

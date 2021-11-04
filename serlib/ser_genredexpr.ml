@@ -33,7 +33,7 @@ type 'a glob_red_flag =
 
 type ('a,'b,'c,'d) red_expr_gen0 =
   [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen0]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,python]
 
 type ('a,'b,'c) red_expr_gen =
   [%import: ('a,'b,'c) Genredexpr.red_expr_gen]

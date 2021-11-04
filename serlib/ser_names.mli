@@ -90,7 +90,7 @@ module Projection : sig
   include SerType.SJP with type t = Projection.t
 
   module Repr : sig
-    include SerType.S with type t = Projection.Repr.t
+    include SerType.SJP with type t = Projection.Repr.t
   end
 
 end

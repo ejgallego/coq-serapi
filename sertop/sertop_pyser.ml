@@ -83,6 +83,7 @@ module Pp       = Ser_pp
 module Names    = Ser_names
 module Environ  = Ser_environ
 module Goptions = Ser_goptions
+module Coqargs  = Ser_coqargs
 module Stateid  = Ser_stateid
 module Evar     = Ser_evar
 module Context  = Ser_context

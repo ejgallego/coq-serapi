@@ -19,6 +19,7 @@
 type t = Float64.t
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 open Ppx_python_runtime
 
 type _t = float [@@deriving sexp, yojson, python]

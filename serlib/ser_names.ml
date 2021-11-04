@@ -263,6 +263,8 @@ module Projection = struct
     let sexp_of_t p = sexp_of__t (Obj.magic p)
     let to_yojson p = _t_to_yojson (Obj.magic p)
     let of_yojson p = _t_of_yojson p |> result_map Obj.magic
+    let t_of_python p = Obj.magic (_t_of_python p)
+    let python_of_t p = python_of__t (Obj.magic p)
   end
 
   type _t = Repr.t * bool

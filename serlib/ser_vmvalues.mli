@@ -26,6 +26,9 @@ type structured_constant = Vmvalues.structured_constant
 val structured_constant_of_sexp : Sexp.t -> structured_constant
 val sexp_of_structured_constant : structured_constant -> Sexp.t
 
+val structured_constant_of_python : Py.Object.t -> structured_constant
+val python_of_structured_constant : structured_constant -> Py.Object.t
+
 type reloc_table = Vmvalues.reloc_table
 
 val reloc_table_of_sexp : Sexp.t -> reloc_table
@@ -37,3 +40,5 @@ val python_of_reloc_table : reloc_table -> Py.Object.t
 type annot_switch = Vmvalues.annot_switch
 val annot_switch_of_sexp : Sexp.t -> annot_switch
 val sexp_of_annot_switch : annot_switch -> Sexp.t
+val annot_switch_of_python : Py.Object.t -> annot_switch
+val python_of_annot_switch : annot_switch -> Py.Object.t

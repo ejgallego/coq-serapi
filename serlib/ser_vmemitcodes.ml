@@ -17,6 +17,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime_serapi
 
 module Names = Ser_names
 module CPrimitives = Ser_cPrimitives
@@ -27,12 +28,14 @@ module Vmbytecodes = Ser_vmbytecodes
 [@@@ocaml.warning "-37"]
 
 type _emitcodes = string
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type emitcodes = Vmemitcodes.emitcodes
 
 let sexp_of_emitcodes x = sexp_of__emitcodes (Obj.magic x)
 let emitcodes_of_sexp x = Obj.magic (_emitcodes_of_sexp x)
+let python_of_emitcodes x = python_of__emitcodes (Obj.magic x)
+let emitcodes_of_python x = Obj.magic (_emitcodes_of_python x)
 
 type reloc_info =
   | Reloc_annot of Vmvalues.annot_switch
@@ -40,23 +43,26 @@ type reloc_info =
   | Reloc_getglobal of Names.Constant.t
   | Reloc_proj_name of Names.Projection.Repr.t
   | Reloc_caml_prim of CPrimitives.t
- [@@deriving sexp]
+ [@@deriving sexp,python]
 
 type _patches = {
   reloc_infos : (reloc_info * int array) array;
-} [@@deriving sexp]
+} [@@deriving sexp,python]
 
 type patches = Vmemitcodes.patches
 
 let patches_of_sexp p = Obj.magic (_patches_of_sexp p)
 let sexp_of_patches p = sexp_of__patches (Obj.magic p)
 
+let patches_of_python p = Obj.magic (_patches_of_python p)
+let python_of_patches p = python_of__patches (Obj.magic p)
+
 type to_patch = emitcodes * patches * Vmbytecodes.fv
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type body_code =
   [%import: Vmemitcodes.body_code]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 (* type _to_patch_substituted =
  * | PBCdefined of to_patch Mod_subst.substituted

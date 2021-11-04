@@ -6,3 +6,4 @@
  (section share_root)
  (files (sertop.el as emacs/site-lisp/sertop.el)))
 
+(vendored_dirs vendor)
