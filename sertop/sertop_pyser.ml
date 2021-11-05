@@ -16,7 +16,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ppx_python_runtime
+open Serlib.Ppx_python_runtime_serapi
 
 open Serlib
 

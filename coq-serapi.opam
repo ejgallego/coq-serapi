@@ -23,6 +23,7 @@ authors: [
 ]
 
 depends: [
+  "dune"                {           >= "2.0.0"               }
   "ocaml"               {           >= "4.07.0"              }
   "coq"                 { !pinned & >= "8.14" & < "8.15"     }
   "cmdliner"            {           >= "1.0.0"               }
@@ -36,6 +37,10 @@ depends: [
   "ppx_deriving_yojson" {           >= "3.4"                 }
 # Disabled due to ppx_python >= 0.15 and ppx_import < 2.0 not getting along
 # "ppx_python"          {           >= "v0.15.0"             }
+# For the vendored ppx_python
+  "ppx_base"
+  "ppxlib"              {           >= "0.15.0" & < "0.18.0" }
+  "pyml"                {           >= "20200115"            }
 ]
 
 build: [ "dune" "build" "-p" name "-j" jobs ]

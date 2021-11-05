@@ -2,14 +2,14 @@
  (name sertop)
  (public_name coq-serapi.sertop_v8_12)
  (modules :standard \ sertop_bin sercomp sertok sername sertop_js sertop_async)
- (preprocess (staged_pps ppx_import ppx_sexp_conv ppx_python))
+ (preprocess (staged_pps ppx_import ppx_sexp_conv ppx_python_conv_pycoq))
  (libraries findlib.dynload cmdliner serapi serlib serlib_ltac))
 
 (executables
  (public_names sertop sercomp sertok sername)
  (names sertop_bin sercomp sertok sername)
  (modules sertop_bin sercomp sertok sername)
- (preprocess (staged_pps ppx_import ppx_sexp_conv ppx_python))
+ (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (link_flags -linkall)
  (libraries sertop))
 
@@ -17,7 +17,7 @@
  (name sertop_js)
  (modules sertop_async sertop_js)
  (modes js)
- (preprocess (staged_pps ppx_import ppx_sexp_conv ppx_python))
+ (preprocess (staged_pps ppx_import ppx_sexp_conv))
  (js_of_ocaml
   (javascript_files
     ../jscoq/coq-libjs/mutex.js
