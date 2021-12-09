@@ -40,4 +40,4 @@ let save_vo ~doc ?ldir ~pstate ~in_file () =
   in
   let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
   let todo_proofs = Library.ProofsTodoNone in
-  Library.save_library_to todo_proofs ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
+  Library.save_library_to todo_proofs ~output_native_objects:false ldir out_vo

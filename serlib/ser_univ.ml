@@ -38,7 +38,8 @@ end
 
 module Level = struct
 
-  type _t =
+  module Self = struct
+    type _t =
     { hash : int
     ; data : RawLevel.t
     }
@@ -52,10 +53,12 @@ module Level = struct
   let of_yojson json  =
     Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
   let to_yojson level = _t_to_yojson (Obj.magic level)
+  end
+  include Self
 
+  module Set = Ser_cSet.MakeJ(Univ.Level.Set)(Self)
 end
 
-module LSet = Ser_cSet.MakeJ(Univ.LSet)(Level)
 
 (* XXX: Think what to do with this  *)
 module Universe = struct
@@ -110,7 +113,7 @@ type univ_constraint =
   [%import: Univ.univ_constraint]
   [@@deriving sexp, yojson]
 
-module Constraint = Ser_cSet.MakeJ(Univ.Constraint)(struct
+module Constraints = Ser_cSet.MakeJ(Univ.Constraints)(struct
     let t_of_sexp = univ_constraint_of_sexp
     let sexp_of_t = sexp_of_univ_constraint
     let of_yojson = univ_constraint_of_yojson
@@ -118,15 +121,17 @@ module Constraint = Ser_cSet.MakeJ(Univ.Constraint)(struct
   end)
 
 type 'a constrained =
-  [%import: 'a Univ.constrained]
+  [%import: 'a Univ.constrained ]
   [@@deriving sexp,yojson]
 
 module UContext = struct
 
   type t = Univ.UContext.t
 
-  let t_of_sexp s = Univ.UContext.make (Conv.pair_of_sexp Instance.t_of_sexp Constraint.t_of_sexp s)
-  let sexp_of_t t = Conv.sexp_of_pair Instance.sexp_of_t Constraint.sexp_of_t (Univ.UContext.dest t)
+  let t_of_sexp x =
+    let names, (instance, constraints) = Conv.pair_of_sexp (Conv.array_of_sexp (Names.Name.t_of_sexp)) (Conv.pair_of_sexp Instance.t_of_sexp Constraints.t_of_sexp) x in
+    Univ.UContext.make names (instance,constraints)
+  let sexp_of_t t = Conv.sexp_of_pair (Conv.sexp_of_array Names.Name.sexp_of_t) (Conv.sexp_of_pair Instance.sexp_of_t Constraints.sexp_of_t) (Univ.UContext.names t,(Univ.UContext.instance t, Univ.UContext.constraints t))
 
 end
 
