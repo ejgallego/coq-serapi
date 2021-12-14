@@ -13,7 +13,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
 open Sexplib.Conv
 
 module Stdlib = Ser_stdlib
@@ -36,7 +35,7 @@ module RawLevel = struct
 
 end
 
-module Level = struct
+module Level_ = struct
 
   type _t =
     { hash : int
@@ -55,7 +54,10 @@ module Level = struct
 
 end
 
-module LSet = Ser_cSet.MakeJ(Univ.LSet)(Level)
+module Level = struct
+  include Level_
+  module Set = Ser_cSet.MakeJ(Univ.Level.Set)(Level_)
+end
 
 (* XXX: Think what to do with this  *)
 module Universe = struct
@@ -110,7 +112,7 @@ type univ_constraint =
   [%import: Univ.univ_constraint]
   [@@deriving sexp, yojson]
 
-module Constraint = Ser_cSet.MakeJ(Univ.Constraint)(struct
+module Constraints = Ser_cSet.MakeJ(Univ.Constraints)(struct
     let t_of_sexp = univ_constraint_of_sexp
     let sexp_of_t = sexp_of_univ_constraint
     let of_yojson = univ_constraint_of_yojson
@@ -123,18 +125,27 @@ type 'a constrained =
 
 module UContext = struct
 
+  module I = struct
+    type t = Names.Name.t array * Instance.t constrained
+    [@@deriving sexp,yojson]
+
+    let to_uc (un, cs) = Univ.UContext.make un cs
+    let from_uc uc = Univ.UContext.(names uc, (instance uc, constraints uc))
+
+  end
+
   type t = Univ.UContext.t
 
-  let t_of_sexp s = Univ.UContext.make (Conv.pair_of_sexp Instance.t_of_sexp Constraint.t_of_sexp s)
-  let sexp_of_t t = Conv.sexp_of_pair Instance.sexp_of_t Constraint.sexp_of_t (Univ.UContext.dest t)
+  let t_of_sexp s = I.t_of_sexp s |> I.to_uc
+  let sexp_of_t t = I.from_uc t |> I.sexp_of_t
 
 end
 
-module AUContext = struct
+module AbstractContext = struct
 
   type _t = Names.Name.t array constrained
   [@@deriving sexp]
-  type t = Univ.AUContext.t
+  type t = Univ.AbstractContext.t
 
   (* XXX: Opaque, so check they are the same *)
   let t_of_sexp x = Obj.magic (_t_of_sexp x)

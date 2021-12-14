@@ -59,7 +59,7 @@ let init_runtime opts =
   Mltop.init_known_plugins ();
 
   (* This should be configurable somehow. *)
-  Global.set_engagement Declarations.PredicativeSet;
+  Global.set_impredicative_set false;
   Global.set_indices_matter opts.indices_matter;
 
   (* --allow-sprop in agreement with coq v8.11  *)
@@ -135,8 +135,8 @@ let process_stm_flags opts =
   (* Process error resilience *)
   let async_proofs_tac_error_resilience, async_proofs_cmd_error_resilience =
     if opts.error_recovery
-    then `All, true
-    else `None, false
+    then Stm.AsyncOpts.FAll, true
+    else Stm.AsyncOpts.FNone, false
   in
   let stm_opts =
     { stm_opts with

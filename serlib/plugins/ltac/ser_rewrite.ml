@@ -23,6 +23,10 @@ type binary_strategy =
   [%import: Ltac_plugin.Rewrite.binary_strategy]
   [@@deriving sexp]
 
+type nary_strategy =
+  [%import: Ltac_plugin.Rewrite.nary_strategy]
+  [@@deriving sexp]
+
 type ('a,'b) strategy_ast =
   [%import: ('a,'b) Ltac_plugin.Rewrite.strategy_ast]
   [@@deriving sexp]

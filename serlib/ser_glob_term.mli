@@ -40,11 +40,11 @@ val sexp_of_glob_sort : Glob_term.glob_sort -> Sexp.t
 val glob_sort_of_yojson : Yojson.Safe.t -> (glob_sort, string) Result.result
 val glob_sort_to_yojson : glob_sort -> Yojson.Safe.t
 
-type 'a cast_type = 'a Glob_term.cast_type
-val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Glob_term.cast_type
-val sexp_of_cast_type : ('a -> Sexp.t) -> 'a Glob_term.cast_type -> Sexp.t
-val cast_type_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a cast_type, string) Result.result
-val cast_type_to_yojson : ('a -> Yojson.Safe.t) -> 'a cast_type -> Yojson.Safe.t
+(* type 'a cast_type = 'a Glob_term.cast_type
+ * val cast_type_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a Glob_term.cast_type
+ * val sexp_of_cast_type : ('a -> Sexp.t) -> 'a Glob_term.cast_type -> Sexp.t
+ * val cast_type_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a cast_type, string) Result.result
+ * val cast_type_to_yojson : ('a -> Yojson.Safe.t) -> 'a cast_type -> Yojson.Safe.t *)
 
 type glob_constraint = Glob_term.glob_constraint
 val glob_constraint_of_sexp : Sexp.t -> Glob_term.glob_constraint

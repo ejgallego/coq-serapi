@@ -214,7 +214,7 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr_r =
   | TacTime of string option * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
   | TacRepeat of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
   | TacProgress of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
-  | TacShowHyps of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
+  (* | TacShowHyps of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr *)
   | TacAbstract of
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr * Names.Id.t option
   | TacId of 'n message_token list
@@ -295,7 +295,7 @@ and _gen_tactic_expr_r_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr_r) :
   | Ltac_plugin.Tacexpr.TacTime (a,b)            -> ITac.TacTime (a,u b)
   | Ltac_plugin.Tacexpr.TacRepeat a              -> ITac.TacRepeat (u a)
   | Ltac_plugin.Tacexpr.TacProgress a            -> ITac.TacProgress (u a)
-  | Ltac_plugin.Tacexpr.TacShowHyps a            -> ITac.TacShowHyps (u a)
+  (* | Ltac_plugin.Tacexpr.TacShowHyps a            -> ITac.TacShowHyps (u a) *)
   | Ltac_plugin.Tacexpr.TacAbstract (a,b)        -> ITac.TacAbstract (u a,b)
   | Ltac_plugin.Tacexpr.TacId a                  -> ITac.TacId a
   | Ltac_plugin.Tacexpr.TacFail (a,b,c)          -> ITac.TacFail (a,b,c)
@@ -389,7 +389,7 @@ and _gen_tactic_expr_r_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.g
   | ITac.TacTime (a,b)            -> Ltac_plugin.Tacexpr.TacTime (a,u b)
   | ITac.TacRepeat a              -> Ltac_plugin.Tacexpr.TacRepeat (u a)
   | ITac.TacProgress a            -> Ltac_plugin.Tacexpr.TacProgress (u a)
-  | ITac.TacShowHyps a            -> Ltac_plugin.Tacexpr.TacShowHyps (u a)
+  (* | ITac.TacShowHyps a            -> Ltac_plugin.Tacexpr.TacShowHyps (u a) *)
   | ITac.TacAbstract (a,b)        -> Ltac_plugin.Tacexpr.TacAbstract (u a,b)
   | ITac.TacId a                  -> Ltac_plugin.Tacexpr.TacId a
   | ITac.TacFail (a,b,c)          -> Ltac_plugin.Tacexpr.TacFail (a,b,c)

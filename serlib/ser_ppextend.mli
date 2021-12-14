@@ -36,3 +36,7 @@ val sexp_of_unparsing_rule : unparsing_rule -> Sexp.t
 type extra_unparsing_rules = Ppextend.extra_unparsing_rules
 val extra_unparsing_rules_of_sexp : Sexp.t -> extra_unparsing_rules
 val sexp_of_extra_unparsing_rules : extra_unparsing_rules -> Sexp.t
+
+type notation_printing_rules = Ppextend.notation_printing_rules
+val notation_printing_rules_of_sexp : Sexp.t -> notation_printing_rules
+val sexp_of_notation_printing_rules : notation_printing_rules -> Sexp.t

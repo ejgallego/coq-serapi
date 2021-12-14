@@ -34,6 +34,9 @@ let ser_wit_hyp : (Ser_names.lident, Ser_names.lident, Ser_names.Id.t) Ser_genar
   ; top_des = Ser_names.Id.t_of_sexp
   }
 
+(* Same *)
+let ser_wit_identref = ser_wit_hyp
+
 let ser_wit_nat_or_var = Ser_genarg.{
     raw_ser = Ser_locus.sexp_of_or_var sexp_of_int;
     glb_ser = Ser_locus.sexp_of_or_var sexp_of_int;
@@ -114,6 +117,7 @@ let register () =
   Ser_genarg.register_genser Stdarg.wit_clause_dft_concl ser_wit_clause_dft_concl;
   Ser_genarg.register_genser Stdarg.wit_constr ser_wit_constr;
   Ser_genarg.register_genser Stdarg.wit_ident ser_wit_ident;
+  Ser_genarg.register_genser Stdarg.wit_identref ser_wit_identref;
   Ser_genarg.register_genser Stdarg.wit_hyp ser_wit_hyp;
   Ser_genarg.register_genser Stdarg.wit_int ser_wit_int;
   Ser_genarg.register_genser Stdarg.wit_int_or_var ser_wit_int_or_var;

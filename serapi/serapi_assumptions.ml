@@ -19,7 +19,7 @@
 type ax_ctx = (Names.Label.t * Constr.rel_context * Constr.t) list
 
 type t =
-  { predicative : Declarations.set_predicativity
+  { predicative : bool
   ; type_in_type : bool
   ; vars   : (Names.Id.t * Constr.t) list
   ; axioms : (Printer.axiom * Constr.t * ax_ctx) list
@@ -43,7 +43,7 @@ let build env ctxmap =
   in
   let (vars, axioms, opaque, trans) =
     ContextObjectMap.fold fold ctxmap ([], [], [], []) in
-  { predicative = Environ.engagement env
+  { predicative = not (Environ.is_impredicative_set env)
   ; type_in_type = Environ.type_in_type env
   ; vars
   ; axioms
@@ -54,8 +54,8 @@ let build env ctxmap =
 let print env sigma { predicative; type_in_type; vars; axioms; opaque; trans } =
   let pr_engament e =
     match e with
-    | Declarations.ImpredicativeSet -> Pp.str "Set is Impredicative"
-    | Declarations.PredicativeSet -> Pp.str "Set is Predicative"
+    | false -> Pp.str "Set is Impredicative"
+    | true -> Pp.str "Set is Predicative"
   in
   let pr_var env sigma (id, typ) =
     Pp.(seq [Names.Id.print id; str " : "; Printer.pr_ltype_env env sigma typ ])

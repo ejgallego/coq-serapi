@@ -24,3 +24,8 @@ type focus = Stm.focus
 
 val sexp_of_focus : Stm.focus -> Sexp.t
 val focus_of_sexp : Sexp.t -> Stm.focus
+
+type add_focus = Stm.add_focus
+
+val sexp_of_add_focus : Stm.add_focus -> Sexp.t
+val add_focus_of_sexp : Sexp.t -> Stm.add_focus

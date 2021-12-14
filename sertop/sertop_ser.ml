@@ -48,9 +48,8 @@ let _ =
       | _ -> assert false);
   Conv.Exn_converter.add [%extension_constructor CErrors.UserError] (function
       (* Errors *)
-      | CErrors.UserError(hdr,msg) ->
-        let hdr = Option.default "" hdr in
-        List [Atom "CErrors.UserError"; List [Atom hdr; sexp_of_std_ppcmds msg]]
+      | CErrors.UserError(msg) ->
+        List [Atom "CErrors.UserError"; List [sexp_of_std_ppcmds msg]]
       | _ -> assert false);
   Conv.Exn_converter.add [%extension_constructor DeclareUniv.AlreadyDeclared] (function
       | DeclareUniv.AlreadyDeclared (msg, id) ->
@@ -234,7 +233,9 @@ end
 
 type answer_kind =
   [%import: Serapi.Serapi_protocol.answer_kind
-  [@with Exninfo.t := Exninfo.t;
+  [@with
+    Exninfo.t := Exninfo.t;
+    Stm.add_focus := Ser_stm.add_focus;
   ]]
   [@@deriving sexp]
 

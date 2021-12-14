@@ -126,6 +126,18 @@ type definition_expr =
   [%import: Vernacexpr.definition_expr]
   [@@deriving sexp,yojson]
 
+type import_categories =
+  [%import: Vernacexpr.import_categories]
+  [@@deriving sexp,yojson]
+
+type infix_flag =
+  [%import: Vernacexpr.infix_flag]
+  [@@deriving sexp,yojson]
+
+type notation_format =
+  [%import: Vernacexpr.notation_format]
+  [@@deriving sexp,yojson]
+
 type syntax_modifier =
   [%import: Vernacexpr.syntax_modifier]
   [@@deriving sexp,yojson]

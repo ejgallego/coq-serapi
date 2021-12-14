@@ -131,7 +131,7 @@ type coq_object =
   | CoqImplicit  of Impargs.implicits_list
   | CoqProfData  of Profile_ltac.treenode
   | CoqNotation  of Constrexpr.notation
-  | CoqUnparsing of Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
+  | CoqUnparsing of Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqProof     of Goal.goal list
@@ -173,14 +173,14 @@ let pp_opt n s =
   let open Pp in
   str (String.concat "." n) ++ str " := " ++ pp_opt_value s.Goptions.opt_value
 
-let pp_explicitation = let open Constrexpr in function
-  | ExplByPos (i, None) -> Pp.(int i ++ str "None")
-  | ExplByPos (i, Some iname) -> Pp.(int i ++ Names.Id.print iname)
+(* XXX fixme 8.15 *)
+let _pp_explicitation = let open Constrexpr in function
+  | ExplByPos i -> Pp.(int i ++ str "None")
   | ExplByName iname -> Names.Id.print iname
 
 let pp_implicit : Impargs.implicit_status -> Pp.t = function
   | None              -> Pp.str "!"
-  | Some (expl, _, _) -> pp_explicitation expl
+  | Some (_expl, _, _) -> Pp.str "!" (* pp_explicitation expl *)
 
 (*
 let pp_richpp xml =
@@ -336,7 +336,7 @@ end
 type answer_kind =
     Ack
   | Completed
-  | Added     of Stateid.t * Loc.t * [`NewTip | `Unfocus of Stateid.t ]
+  | Added     of Stateid.t * Loc.t * Stm.add_focus
   | Canceled  of Stateid.t list
   | ObjList   of coq_object list
   | CoqExn    of ExnInfo.t
@@ -475,7 +475,7 @@ module QueryUtil = struct
     (* List.map  map entries [] *)
 
   let query_unparsing (nt : Constrexpr.notation) :
-    Ppextend.unparsing_rule * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar =
+    Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar =
     Ppextend.find_notation_printing_rule None nt,
     Ppextend.find_notation_extra_printing_rules None nt,
     Notgram_ops.grammar_of_notation nt
@@ -630,12 +630,12 @@ let doc_id = ref 0
 
 (* XXX: Needs to take into account possibly local proof state *)
 let pstate_of_st m = match m with
-  | `Valid (Some { Vernacstate.lemmas; _ } ) ->
+  | Stm.Valid (Some { Vernacstate.lemmas; _ } ) ->
     Option.map (Vernacstate.LemmaStack.with_top ~f:(fun p -> p)) lemmas
   | _ -> None
 
 let context_of_st m = match m with
-  | `Valid (Some { Vernacstate.lemmas = Some lemma; _ } ) ->
+  | Stm.Valid (Some { Vernacstate.lemmas = Some lemma; _ } ) ->
     Vernacstate.LemmaStack.with_top lemma
       ~f:(fun p -> Declare.Proof.get_current_context p)
     (* let pstate = st.Vernacstate.proof in *)
@@ -783,7 +783,7 @@ module ControlUtil = struct
     let c_ran, k_ran = invalid_range can_st ~incl:true in
     let prev_st      = Extra.value (Extra.hd_opt k_ran) ~default:Stateid.initial in
     match Stm.edit_at ~doc prev_st with
-    | doc, `NewTip ->
+    | doc, NewTip ->
       cur_doc := k_ran;
       doc, [Canceled c_ran]
     (* - [tip] is the new document tip.
@@ -792,7 +792,7 @@ module ControlUtil = struct
        - [start] is where the editing zone starts
        - [add] happen on top of [id].
     *)
-    | doc, `Focus foc ->
+    | doc, Focus foc ->
       doc, cancel_interval can_st foc
 
 end
