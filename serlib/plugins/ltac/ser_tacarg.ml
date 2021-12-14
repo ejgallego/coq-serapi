@@ -391,7 +391,7 @@ let ser_wit_lconstr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_exp
     top_des = Ser_eConstr.t_of_sexp;
   }
 
-let ser_wit_casted_constr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
+let _ser_wit_casted_constr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
   Ser_genarg.{
     raw_ser = Ser_constrexpr.sexp_of_constr_expr;
     glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
@@ -479,7 +479,8 @@ let register () =
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
   Ser_genarg.register_genser Extraargs.wit_by_arg_tac ser_wit_by_arg_tac;
-  Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr;
+  (* XXX *)
+  (* Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr; *)
   Ser_genarg.register_genser Extraargs.wit_glob ser_wit_lglob;
   Ser_genarg.register_genser Extraargs.wit_hloc ser_wit_hloc;
   Ser_genarg.register_genser Extraargs.wit_in_clause ser_wit_in_clause;
@@ -492,4 +493,4 @@ let register () =
   Ser_genarg.register_genser Extraargs.wit_test_lpar_id_colon ser_wit_lpar_id_colon;
   ()
 
-let _ = register ()
+let () = register ()

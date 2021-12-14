@@ -17,7 +17,7 @@
 
 let fatal_exn exn info =
   let loc = Loc.get_loc info in
-  let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
+  let msg = Pp.(pr_opt_no_spc Loc.pr loc ++ fnl ()
                 ++ CErrors.iprint (exn, info)) in
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
@@ -43,14 +43,14 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_lo
 
   let stm_options =
     { stm_options with
-      async_proofs_tac_error_resilience = `None
+      async_proofs_tac_error_resilience = FNone
     ; async_proofs_cmd_error_resilience = false
     } in
 
   (* Disable due to https://github.com/ejgallego/coq-serapi/pull/94 *)
   let stm_options =
     { stm_options with
-      async_proofs_tac_error_resilience = `None
+      async_proofs_tac_error_resilience = FNone
     ; async_proofs_cmd_error_resilience = false
     } in
 
@@ -95,11 +95,11 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_lo
      let doc,sid = Stm.new_doc ndoc in
      let sent = Printf.sprintf "Require %s." l in
      let in_strm = Stream.of_string sent in
-     let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
+     let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file})) in_strm in
      match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
      | Some ast ->
 	let doc, sid, tip = Stm.add ~doc ~ontop:sid false ast in
-	if tip <> `NewTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
+	if tip <> NewAddTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
 	doc, sid
      | None -> assert false
 
@@ -113,7 +113,7 @@ let input_doc ~in_chan ~process ~doc ~sid =
   with End_of_file -> ()
 
 let context_of_st m = match m with
-  | `Valid (Some { Vernacstate.lemmas = Some pstate; _ } ) ->
+  | Stm.Valid (Some { Vernacstate.lemmas = Some pstate; _ } ) ->
     Vernacstate.LemmaStack.with_top pstate
       ~f:Declare.Proof.get_current_context
   | _ ->
@@ -200,7 +200,7 @@ let driver debug printer disallow_sprop async async_workers error_recovery quick
   let in_chan = open_in in_file in
   let () = input_doc ~in_chan ~process ~doc ~sid in (* XX *)
   let pstate = match Stm.state_of_id ~doc sid with
-    | `Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
+    | Stm.Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~doc ~pstate in

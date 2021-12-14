@@ -19,7 +19,7 @@
 type ax_ctx = (Names.Label.t * Constr.rel_context * Constr.t) list
 
 type t =
-  { predicative : Declarations.set_predicativity
+  { predicative : bool
   ; type_in_type : bool
   ; vars   : (Names.Id.t * Constr.t) list
   ; axioms : (Printer.axiom * Constr.t * ax_ctx) list

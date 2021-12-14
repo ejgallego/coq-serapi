@@ -50,17 +50,17 @@ type variance_entry =
   [%import: Entries.variance_entry]
   [@@deriving sexp]
 
-type mutual_inductive_entry =
-  [%import: Entries.mutual_inductive_entry]
-  [@@deriving sexp]
+(* type mutual_inductive_entry =
+ *   [%import: Entries.mutual_inductive_entry]
+ *   [@@deriving sexp] *)
 
 type 'a proof_output =
   [%import: 'a Entries.proof_output]
   [@@deriving sexp]
 
-type 'a const_entry_body =
-  [%import: 'a Entries.const_entry_body]
-  [@@deriving sexp]
+(* type 'a const_entry_body =
+ *   [%import: 'a Entries.const_entry_body]
+ *   [@@deriving sexp] *)
 
 (* type constant_universes_entry =
  *   [%import: Entries.constant_universes_entry]

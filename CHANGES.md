@@ -1,3 +1,10 @@
+## Version 0.15.0:
+
+ - [serapi] (!) support for Coq 8.15, see upstream changes; nothing
+            too remarkable so far, except for `NewTip` -> `NewAddTip`
+            in the answer response, we may want to add a compat layer
+            for this if problematic. (#265, @ejgallego)
+
 ## Version 0.14.0:
 
  - [serapi] (!) support for Coq 8.14, see upstream changes; nothing

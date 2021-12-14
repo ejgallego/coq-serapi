@@ -3,8 +3,8 @@
 [![Build Status][action-badge]][action-link]
 [![Zulip][zulip-badge]][zulip-link]
 
-[action-badge]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.13
-[action-link]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.13
+[action-badge]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.15
+[action-link]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.15
 
 [zulip-badge]: https://img.shields.io/badge/Zulip-chat-informational.svg
 [zulip-link]: https://coq.zulipchat.com/#narrow/stream/256331-SerAPI
@@ -119,7 +119,7 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 
 ### Roadmap:
 
-SerAPI 0.13.x is based on Coq 8.13. These days, most work related to
+SerAPI 0.15.x is based on Coq 8.15. These days, most work related to
 SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
 itself. The main objective is to improve the proof-document model; building
 a rich query language will be next.

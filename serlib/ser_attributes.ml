@@ -17,6 +17,8 @@
 
 open Sexplib.Std
 
+module CAst = Ser_cAst
+
 type vernac_flag_type =
   [%import: Attributes.vernac_flag_type]
   [@@deriving sexp,yojson]

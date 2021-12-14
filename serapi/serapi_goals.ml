@@ -54,8 +54,8 @@ let get_hyp (ppx : Constr.t -> 'pc)
 (** gets the constr associated to the type of the current goal *)
 let get_goal_type (ppx : Constr.t -> 'pc)
     (sigma : Evd.evar_map)
-    (g : Goal.goal) =
-  ppx @@ EConstr.to_constr ~abort_on_undefined_evars:false sigma (Goal.V82.concl sigma g)
+    (g : Goal.goal) : _ =
+  ppx @@ EConstr.to_constr ~abort_on_undefined_evars:false sigma Evd.(evar_concl (find sigma g))
 
 let build_info sigma g =
   { evar = g
@@ -64,7 +64,10 @@ let build_info sigma g =
 
 (** Generic processor  *)
 let process_goal_gen ppx sigma g : 'a reified_goal =
-  let env       = Goal.V82.env sigma g                                      in
+  (* XXX This looks cumbersome *)
+  let env = Global.env () in
+  let evi = Evd.find sigma g in
+  let env = Evd.evar_filtered_env env evi in
   (* why is compaction neccesary... ? [eg for better display] *)
   let ctx       = Termops.compact_named_context (Environ.named_context env) in
   let ppx       = ppx env sigma                                             in
@@ -77,7 +80,7 @@ let if_not_empty (pp : Pp.t) = if Pp.(repr pp = Ppcmd_empty) then None else Some
 let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) ~doc sid
   : 'a reified_goal ser_goals option =
   match Stm.state_of_id ~doc sid with
-  | `Valid (Some { Vernacstate.lemmas = Some lemmas ; _ } ) ->
+  | Valid (Some { Vernacstate.lemmas = Some lemmas ; _ } ) ->
     let proof = Vernacstate.LemmaStack.with_top lemmas
         ~f:(fun pstate -> Declare.Proof.get pstate) in
     let { Proof.goals; stack; sigma; _ } = Proof.data proof in
@@ -89,7 +92,7 @@ let get_goals_gen (ppx : Environ.env -> Evd.evar_map -> Constr.t -> 'a) ~doc sid
       ; shelf = Evd.shelf sigma |> ppx
       ; given_up = Evd.given_up sigma |> Evar.Set.elements |> ppx
       }
-  | `Expired | `Error _ | `Valid _ -> None
+  | Expired | Error _ | Valid _ -> None
 
 let get_goals  = get_goals_gen (fun _ _ x -> x)
 let get_egoals = get_goals_gen (fun env evd ec -> Constrextern.extern_constr ~inctx:true env evd EConstr.(of_constr ec))

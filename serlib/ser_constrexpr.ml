@@ -106,11 +106,14 @@ type explicitation = [%import: Constrexpr.explicitation]
 type binder_kind = [%import: Constrexpr.binder_kind]
   [@@deriving sexp,yojson]
 
-type abstraction_kind = [%import: Constrexpr.abstraction_kind]
+type explicit_flag = [%import: Constrexpr.explicit_flag]
   [@@deriving sexp,yojson]
 
-type proj_flag = [%import: Constrexpr.proj_flag]
-  [@@deriving sexp,yojson]
+(* type abstraction_kind = [%import: Constrexpr.abstraction_kind]
+ *   [@@deriving sexp,yojson] *)
+
+(* type proj_flag = [%import: Constrexpr.proj_flag]
+ *   [@@deriving sexp,yojson] *)
 
 (* type raw_numeral = [%import: Constrexpr.raw_numeral]
  *   [@@deriving sexp,yojson] *)

@@ -39,6 +39,8 @@ val sexp_of_pconstructor : pconstructor -> Sexp.t
 type cast_kind = Constr.cast_kind
 val cast_kind_of_sexp : Sexp.t -> cast_kind
 val sexp_of_cast_kind : cast_kind -> Sexp.t
+val cast_kind_of_yojson : Yojson.Safe.t -> (cast_kind, string) Result.result
+val cast_kind_to_yojson : cast_kind -> Yojson.Safe.t
 
 type case_style = Constr.case_style
 

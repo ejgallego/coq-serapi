@@ -64,13 +64,13 @@ type one_inductive_body =
   [%import: Declarations.one_inductive_body]
   [@@deriving sexp]
 
-type set_predicativity =
-  [%import: Declarations.set_predicativity]
-  [@@deriving sexp]
+(* type set_predicativity =
+ *   [%import: Declarations.set_predicativity]
+ *   [@@deriving sexp] *)
 
-type engagement =
-  [%import: Declarations.engagement]
-  [@@deriving sexp]
+(* type engagement =
+ *   [%import: Declarations.engagement]
+ *   [@@deriving sexp] *)
 
 type inline =
   [%import: Declarations.inline]
@@ -88,13 +88,29 @@ type typing_flags =
   [%import: Declarations.typing_flags]
   [@@deriving sexp]
 
-type 'a constant_body =
-  [%import: 'a Declarations.constant_body]
+type work_list =
+  [%import: Declarations.work_list]
   [@@deriving sexp]
 
-let sexp_of_constant_body f e =
+type abstr_info =
+  [%import: Declarations.abstr_info]
+  [@@deriving sexp]
+
+type cooking_info =
+  [%import: Declarations.cooking_info]
+  [@@deriving sexp]
+
+type 'a pconstant_body =
+  [%import: 'a Declarations.pconstant_body]
+  [@@deriving sexp]
+
+type constant_body =
+  [%import: Declarations.constant_body]
+  [@@deriving sexp]
+
+let sexp_of_constant_body e =
   (* We cannot handle VM values *)
-  sexp_of_constant_body f { e with const_body_code = None }
+  sexp_of_constant_body { e with const_body_code = None }
 
 (* XXX: At least one serializer can be done *)
 let sexp_of_module_retroknowledge _ =

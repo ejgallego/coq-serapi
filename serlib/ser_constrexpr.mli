@@ -90,15 +90,15 @@ type binder_kind = Constrexpr.binder_kind
 val binder_kind_of_sexp : Sexp.t -> binder_kind
 val sexp_of_binder_kind : binder_kind -> Sexp.t
 
-type abstraction_kind = Constrexpr.abstraction_kind
+(* type abstraction_kind = Constrexpr.abstraction_kind
+ * 
+ * val abstraction_kind_of_sexp : Sexp.t -> abstraction_kind
+ * val sexp_of_abstraction_kind : abstraction_kind -> Sexp.t *)
 
-val abstraction_kind_of_sexp : Sexp.t -> abstraction_kind
-val sexp_of_abstraction_kind : abstraction_kind -> Sexp.t
-
-type proj_flag = Constrexpr.proj_flag
-
-val proj_flag_of_sexp : Sexp.t -> proj_flag
-val sexp_of_proj_flag : proj_flag -> Sexp.t
+(* type proj_flag = Constrexpr.proj_flag
+ * 
+ * val proj_flag_of_sexp : Sexp.t -> proj_flag
+ * val sexp_of_proj_flag : proj_flag -> Sexp.t *)
 
 type prim_token = Constrexpr.prim_token
 

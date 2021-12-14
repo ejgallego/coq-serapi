@@ -72,9 +72,9 @@ type glob_sort =
   [%import: Glob_term.glob_sort]
   [@@deriving sexp,yojson]
 
-type 'a cast_type =
-  [%import: 'a Glob_term.cast_type]
-  [@@deriving sexp,yojson]
+(* type 'a cast_type =
+ *   [%import: 'a Glob_term.cast_type]
+ *   [@@deriving sexp,yojson] *)
 
 type existential_name =
   [%import: Glob_term.existential_name]

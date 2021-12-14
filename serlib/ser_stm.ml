@@ -26,5 +26,9 @@ type focus =
  [%import: Stm.focus]
  [@@deriving sexp]
 
+type add_focus =
+ [%import: Stm.add_focus]
+ [@@deriving sexp]
+
  (* { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
 

@@ -18,7 +18,7 @@
 
 let fatal_exn exn info =
   let loc = Loc.get_loc info in
-  let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
+  let msg = Pp.(pr_opt_no_spc Loc.pr loc ++ fnl ()
                 ++ CErrors.iprint (exn, info)) in
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
@@ -45,7 +45,7 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
   (* Disable due to https://github.com/ejgallego/coq-serapi/pull/94 *)
   let stm_options =
     { stm_options with
-      async_proofs_tac_error_resilience = `None
+      async_proofs_tac_error_resilience = FNone
     ; async_proofs_cmd_error_resilience = false
     } in
 
@@ -81,7 +81,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   | I_vernac ->
      begin
        let in_strm = Stream.of_channel in_chan in
-       let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile in_file)) in_strm in
+       let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file} )) in_strm in
        try while true do
            let doc, sid = !stt in
            let east =
@@ -110,7 +110,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
 let process_vernac ~mode ~pp ~doc ~sid ast =
   let open Format in
   let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
-  if tip <> `NewTip then
+  if tip <> NewAddTip then
     CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
   let open Sertop.Sertop_arg in
   let () = match mode with
@@ -160,7 +160,8 @@ let close_document ~pp ~mode ~doc ~in_file ~pstate =
     let ldir = Stm.get_ldir ~doc in
     let out_vo = Filename.(remove_extension in_file) ^ ".vo" in
     let todo_proofs = Library.ProofsTodoNone in
-    Library.save_library_to todo_proofs ~output_native_objects:false ldir out_vo (Global.opaque_tables ())
+    let () = Library.save_library_to todo_proofs ~output_native_objects:false ldir out_vo in
+    ()
 
 (* Command line processing *)
 let sercomp_version = Sertop.Ser_version.ser_git_version
@@ -212,7 +213,7 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
   let in_chan = open_in in_file in
   let doc, _sid = input_doc ~input ~in_file ~in_chan ~process ~doc ~sid in
   let pstate = match Stm.state_of_id ~doc sid with
-    | `Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
+    | Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~pp ~mode ~doc ~in_file ~pstate in

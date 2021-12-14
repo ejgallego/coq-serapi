@@ -47,6 +47,10 @@ let implicit_side_condition_of_sexp (sexp : Sexp.t) : implicit_side_condition =
 let sexp_of_implicit_side_condition (isc : implicit_side_condition) : Sexp.t =
   sexp_of__implicit_side_condition (Obj.magic isc)
 
+type implicit_position =
+  [%import: Impargs.implicit_position]
+  [@@deriving sexp]
+
 type implicit_status =
   [%import: Impargs.implicit_status]
   [@@deriving sexp]

@@ -25,7 +25,7 @@ let load_file f =
 
 let fatal_exn exn info =
   let loc = Loc.get_loc info in
-  let msg = Pp.(pr_opt_no_spc Topfmt.pr_loc loc ++ fnl ()
+  let msg = Pp.(pr_opt_no_spc Loc.pr loc ++ fnl ()
                 ++ CErrors.iprint (exn, info)) in
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
@@ -52,7 +52,7 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
   (* Disable due to https://github.com/ejgallego/coq-serapi/pull/94 *)
   let stm_options =
     { stm_options with
-      async_proofs_tac_error_resilience = `None
+      async_proofs_tac_error_resilience = FNone
     ; async_proofs_cmd_error_resilience = false
     } in
 
@@ -98,7 +98,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let open Format in
   let stt = ref (doc, sid) in
   let in_strm = Stream.of_channel in_chan in
-  let source = Loc.InFile in_file in
+  let source = Loc.InFile { dirpath = None; file = in_file } in
   let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
   let in_bytes = load_file in_file in
   try while true do
@@ -124,7 +124,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
         CLexer.Lexer.State.set l_post_st;
         printf "@[%a@]@\n%!" pp (Sertop.Sertop_ser.sexp_of_sentence sen);
         let doc, n_st, tip = Stm.add ~doc ~ontop:sid false ast in
-        if tip <> `NewTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
+        if tip <> NewAddTip then CErrors.user_err ?loc:ast.loc Pp.(str "fatal, got no `NewTip`");
         stt := doc, n_st
       with exn -> begin
         CLexer.Lexer.State.set l_post_st;
@@ -193,7 +193,7 @@ let driver debug disallow_sprop printer async async_workers error_recovery quick
   let in_chan = open_in in_file in
   let doc, _sid = input_doc ~pp ~in_file ~in_chan ~doc ~sid in
   let pstate = match Stm.state_of_id ~doc sid with
-    | `Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
+    | Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~doc ~pstate in

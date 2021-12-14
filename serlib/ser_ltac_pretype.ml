@@ -18,6 +18,8 @@ module Names     = Ser_names
 module Constr    = Ser_constr
 module Glob_term = Ser_glob_term
 module EConstr   = Ser_eConstr
+module Declarations = Ser_declarations
+module Geninterp = Ser_geninterp
 
 type constr_under_binders =
   [%import: Ltac_pretype.constr_under_binders]
