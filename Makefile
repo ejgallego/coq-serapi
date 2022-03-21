@@ -34,7 +34,7 @@ browser:
 	google-chrome _build/default/_doc/_html/index.html
 
 sertop: build
-	dune exec -- rlwrap sertop
+	dune exec -- rlwrap sertop --printer=human --omit_att --omit_loc
 
 #####################################################
 # Javascript support

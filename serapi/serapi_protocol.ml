@@ -140,6 +140,8 @@ type coq_object =
                     (* * Evd.evar_map *)
   | CoqAssumptions of Serapi_assumptions.t
   | CoqComments of ((int * int) * string) list list
+  | CoqTacticInfo of Names.Id.t list list * string
+  (** List of new identifiers added to the context for each new goal *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -240,6 +242,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
   | CoqComments _ -> Pp.str "FIXME comments"
+  | CoqTacticInfo _ -> Pp.str "FIXME CoqTacticInfo"
 
 let str_pp_obj env sigma fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj env sigma obj)
@@ -385,6 +388,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqProof _      -> true
   | CoqAssumptions _-> true
   | CoqComments _   -> true
+  | CoqTacticInfo _ -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -656,6 +660,72 @@ let exec_query opt cmd =
   let res = obj_limit  opt.limit res in
   List.map ((obj_print env sigma) opt.pp) res
 
+let _count_goals (pst : Declare.Proof.t) : int =
+  let pf = Declare.Proof.get pst in
+  let { Proof.goals ; _ } = Proof.data pf in
+  List.length goals
+
+let get_hyp_name sigma (g : Evar.t) =
+  let open Context.Named in
+  (* The next 4 lines will find the hypothesis (env of type
+     named_context) of a particular goal, it is indeed black magic :( *)
+  let evi = Evd.find sigma g in
+  let env, _sigma = Evd.evar_filtered_env (Global.env ()) evi, Evd.evar_concl evi in
+  let env = Environ.named_context env in
+  (* We just fold over the name context to extract the names *)
+  let names = fold_inside (fun acc d -> Declaration.get_id d :: acc) env ~init:[] in
+  names
+
+let get_hyps_name sigma pst =
+  let pf = Declare.Proof.get pst in
+  let { Proof.goals ; _ } = Proof.data pf in
+  List.map (get_hyp_name sigma) goals
+
+let diff_pstates sigma (_pst1 : Declare.Proof.t) (pst2 : Declare.Proof.t) =
+  get_hyps_name sigma pst2, ""
+
+(* Hack for now *)
+let tmp_sid : int ref = ref (max_int - 1)
+
+let exec_tactic_speculatively ~doc ~pstate ~sid tac =
+  let pa = Pcoq.Parsable.make (Stream.of_string tac) in
+  let entry = Pvernac.main_entry in
+
+  match Stm.parse_sentence ~doc sid ~entry pa with
+  | None -> []
+  | Some ast ->
+    (* Execute the sentence. TODO add a fucntion to atomically add and
+       execute a sentence. *)
+    decr tmp_sid;
+    (* nsid == newtip ; also todo check add_focus *)
+    let doc, nsid, _add_focus = Stm.add ~doc ~ontop:sid ~newtip:(Stateid.of_int !tmp_sid) false ast in
+    let doc = Stm.observe ~doc nsid in
+    let st = Stm.state_of_id ~doc nsid in
+    let pstate' = pstate_of_st st in
+    let sigma', _env = context_of_st st in
+    let _doc, _focus = Stm.edit_at ~doc sid in
+    match pstate' with
+    | None -> []                  (* the proof was closed *)
+    | Some pstate' ->
+      let gd, gm = diff_pstates sigma' pstate pstate' in
+      [CoqTacticInfo (gd,gm)]
+
+let exec_tactic_info opt tac =
+  let doc = Stm.get_doc !doc_id in
+  let sid = opt.sid in
+  let st = Stm.state_of_id ~doc opt.sid in
+  (* let sigma, env = context_of_st st in *)
+  let pstate = pstate_of_st st in
+  match pstate with
+  | None -> []                    (* No open proof *)
+  | Some pstate ->
+    exec_tactic_speculatively ~doc ~pstate ~sid tac
+
+(* Lemma foo : Bar.
+ * [sid:1] tac1.
+ * [sid:2] tac2.
+ * [sid:3] tac3. *)
+
 (******************************************************************************)
 (* Control Sub-Protocol                                                       *)
 (******************************************************************************)
@@ -864,6 +934,8 @@ type cmd =
   | Cancel     of Stateid.t list
   | Exec       of Stateid.t
   | Query      of query_opt * query_cmd
+  (** "Speculatively" execute a tactic and return information about how the goal changed *)
+  | TacticInfo of query_opt * string
   | Print      of print_opt * coq_object
   | Parse      of parse_opt * string
   (* Full document checking *)
@@ -912,6 +984,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   | Cancel stms  -> List.concat @@ List.map (fun x -> snd @@ ControlUtil.(cancel_sentence ~doc x)) stms
   | Exec st      -> ignore(Stm.observe ~doc st); []
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
+  | TacticInfo (opt, tac) -> [ObjList (exec_tactic_info opt tac)]
   | Print(opts, obj)  ->
     let st = Stm.state_of_id ~doc opts.sid in
     let sigma, env = context_of_st st in

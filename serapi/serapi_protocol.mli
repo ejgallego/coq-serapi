@@ -239,6 +239,16 @@ type coq_object =
      See https://github.com/coq/coq/issues/12413 for updates on
      improved support *)
 
+  | CoqTacticInfo of Names.Id.t list list * string
+  (** List of identifiers in the goal context *)
+
+(* Idea for CoqTacticInfo if that for example we do [destruct foo] and
+   that generates two cases with new identifiers A B , C D , then this
+   will return [[A;B];[C;D]]
+
+   *)
+
+
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
 (******************************************************************************)
@@ -460,6 +470,8 @@ type cmd =
   | Exec       of Stateid.t
   (** Execute a particular sentence *)
   | Query      of query_opt * query_cmd
+  (** "Speculatively" execute a tactic and return information about how the goal changed *)
+  | TacticInfo of query_opt * string
   (** Query a Coq document *)
   | Print      of print_opt * coq_object
   (** Print some object *)
