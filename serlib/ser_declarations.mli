@@ -68,17 +68,17 @@ type inline = Declarations.inline
 val sexp_of_inline : inline -> Sexp.t
 val inline_of_sexp : Sexp.t -> inline
 
-type work_list = Declarations.work_list
+(* type work_list = Declarations.work_list *)
 
-type abstr_info = Declarations.abstr_info = {
-  abstr_ctx : Constr.named_context;
-  abstr_subst : Univ.Instance.t;
-  abstr_uctx : Univ.AbstractContext.t;
-}
-
-type cooking_info = Declarations.cooking_info
-val sexp_of_cooking_info : cooking_info -> Sexp.t
-val cooking_info_of_sexp : Sexp.t -> cooking_info
+(* type abstr_info = Declarations.abstr_info = {
+ *   abstr_ctx : Constr.named_context;
+ *   abstr_subst : Univ.Instance.t;
+ *   abstr_uctx : Univ.AbstractContext.t;
+ * }
+ * 
+ * type cooking_info = Declarations.cooking_info
+ * val sexp_of_cooking_info : cooking_info -> Sexp.t
+ * val cooking_info_of_sexp : Sexp.t -> cooking_info *)
 
 type constant_body = Declarations.constant_body
 val sexp_of_constant_body : constant_body -> Sexp.t
@@ -98,9 +98,9 @@ type mutual_inductive_body = Declarations.mutual_inductive_body
 val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body
 val sexp_of_mutual_inductive_body : mutual_inductive_body -> Sexp.t
 
-type module_alg_expr = Declarations.module_alg_expr
-val sexp_of_module_alg_expr : module_alg_expr -> Sexp.t
-val module_alg_expr_of_sexp : Sexp.t -> module_alg_expr
+type 'a module_alg_expr = 'a Declarations.module_alg_expr
+val sexp_of_module_alg_expr : ('a -> Sexp.t) -> 'a module_alg_expr -> Sexp.t
+val module_alg_expr_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a module_alg_expr
 
 type structure_body = Declarations.structure_body
 val sexp_of_structure_body : structure_body -> Sexp.t

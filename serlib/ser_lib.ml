@@ -8,14 +8,10 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016 MINES ParisTech                                       *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2019-2022 Inria                                            *)
 (************************************************************************)
-(* Status: Very Experimental                                            *)
-(************************************************************************)
 
-open Sexplib
-
-type goal = Goal.goal
-
-val goal_of_sexp : Sexp.t -> goal
-val sexp_of_goal : goal -> Sexp.t
+type export_flag =
+  [%import: Lib.export_flag]
+  [@@deriving sexp]

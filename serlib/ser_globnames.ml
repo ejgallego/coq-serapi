@@ -15,8 +15,8 @@
 
 module Names = Ser_names
 
-type syndef_name =
-  [%import: Globnames.syndef_name]
+type abbreviation =
+  [%import: Globnames.abbreviation]
   [@@deriving sexp]
 
 type extended_global_reference =

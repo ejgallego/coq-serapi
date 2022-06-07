@@ -39,7 +39,7 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~ml_load_path ~vo_load_path ~injectio
 
   coq_init {
     fb_handler
-  ; ml_load = None
+  ; plugin_load = None
   ; debug
   ; allow_sprop
   ; indices_matter = false

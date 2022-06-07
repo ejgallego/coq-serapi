@@ -26,3 +26,8 @@ type t = UGraph.t
 
 val sexp_of_t : t -> Sexp.t
 val t_of_sexp : Sexp.t -> t
+
+type univ_inconsistency = UGraph.univ_inconsistency
+
+val univ_inconsistency_of_sexp : Sexp.t -> univ_inconsistency
+val sexp_of_univ_inconsistency : univ_inconsistency -> Sexp.t

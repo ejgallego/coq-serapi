@@ -62,8 +62,3 @@ type explanation = Univ.explanation
 val explanation_of_sexp : Sexp.t -> explanation
 val sexp_of_explanation : explanation -> Sexp.t
 
-type univ_inconsistency = Univ.univ_inconsistency
-
-val univ_inconsistency_of_sexp : Sexp.t -> univ_inconsistency
-val sexp_of_univ_inconsistency : univ_inconsistency -> Sexp.t
-

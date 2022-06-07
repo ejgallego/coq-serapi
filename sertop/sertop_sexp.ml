@@ -215,7 +215,7 @@ let ser_loop ser_opts =
   let () = Sertop_init.(
       coq_init
         { fb_handler   = pp_feed
-        ; ml_load      = None
+        ; plugin_load  = None
         ; debug        = ser_opts.debug
         ; allow_sprop  = ser_opts.allow_sprop
         ; indices_matter = ser_opts.indices_matter
@@ -232,7 +232,7 @@ let ser_loop ser_opts =
 
   let injections =
     if ser_opts.no_prelude then []
-    else [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
+    else [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
 
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
 

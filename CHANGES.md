@@ -1,3 +1,15 @@
+## Version 0.16.0:
+
+ - [serapi] (!) support for Coq 8.16, see upstream changes and SerAPI
+            test-suite changes for more information. Remarkable
+            changes are:
+            - kernel terms are serialized a bit differently now due to
+              KerName being used in more places upstream. Some
+              internal structures also changes in kernel's env, so be
+              attentive if you are depending on them.
+            - plugin loading is adapted for 8.16 findlib loading
+              method
+
 ## Version 0.15.1:
 
  - [serlib] Fix bad bypass of opaquetab serialization. This caused a

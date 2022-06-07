@@ -28,8 +28,8 @@ type coq_opts =
   { fb_handler   : Format.formatter -> Feedback.feedback -> unit
   (* callback to handle async feedback *)
 
-  ; ml_load      : (string -> unit) option
-  (* callback to load cma/cmo files *)
+  ; plugin_load      : (string list -> unit) option
+  (* callback to load findlib packages *)
 
   ; debug        : bool
   (* Enable Coq Debug mode *)
@@ -90,17 +90,16 @@ let coq_init opts out_fmt =
     (* Flags.debug := true; *)
   end;
 
-  let load_obj = Sertop_loader.plugin_handler opts.ml_load in
-
-  (* XXX: We may not have to set path once the issue in Coq upstream is fixed. *)
-  let add_dir = Sertop_loader.add_ml_path in
+  let load_plugin = Sertop_loader.plugin_handler opts.plugin_load in
+  let load_module = Dynlink.loadfile in
 
   (* Custom toplevel is used for bytecode-to-js dynlink  *)
   let ser_mltop : Mltop.toplevel = let open Mltop in
-    { load_obj
+    { load_plugin
+    ; load_module
     (* We ignore all the other operations for now. *)
-    ; add_dir
-    ; ml_loop  = (fun _ -> ())
+    ; add_dir = (fun _ -> ())
+    ; ml_loop = (fun _ -> ())
     } in
   Mltop.set_top ser_mltop;
 

@@ -15,9 +15,6 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(** [add_ml_path path] Adds a directory to the ML search path *)
-val add_ml_path : string -> unit
-
 (** [plugin_handler user_loader] Plugin loader that will also load
    serialization for generic arguments *)
-val plugin_handler : (string -> unit) option -> string -> unit
+val plugin_handler : (string list -> unit) option -> Mltop.PluginSpec.t -> unit

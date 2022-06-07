@@ -25,6 +25,7 @@ module Evar        = Ser_evar
 module Environ     = Ser_environ
 module EConstr     = Ser_eConstr
 module Univ        = Ser_univ
+module UGraph      = Ser_uGraph
 module Type_errors = Ser_type_errors
 module Locus       = Ser_locus
 module Evar_kinds  = Ser_evar_kinds

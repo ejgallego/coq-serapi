@@ -134,8 +134,8 @@ type coq_object =
   | CoqUnparsing of Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
-  | CoqProof     of Goal.goal list
-                    * (Goal.goal list * Goal.goal list) list
+  | CoqProof     of Evar.t list
+                    * (Evar.t list * Evar.t list) list
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
   | CoqAssumptions of Serapi_assumptions.t
@@ -230,7 +230,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   | CoqGlobRefExt gr ->
     (match gr with
      | Globnames.TrueGlobal gr -> Printer.pr_global gr
-     | Globnames.SynDef kn -> Names.KerName.print kn
+     | Globnames.Abbrev kn -> Names.KerName.print kn
     )
   | CoqImplicit(_,l) -> Pp.pr_sequence pp_implicit l
   | CoqNotation ntn  -> Pp.str (snd ntn)
@@ -492,8 +492,8 @@ module QueryUtil = struct
     let expand = function
       | TrueGlobal ref ->
         Nametab.shortest_qualid_of_global Id.Set.empty ref
-      | SynDef kn ->
-        Nametab.shortest_qualid_of_syndef Id.Set.empty kn
+      | Abbrev kn ->
+        Nametab.shortest_qualid_of_abbreviation Id.Set.empty kn
     in
     List.map expand (Nametab.locate_extended_all qid)
 
@@ -807,7 +807,7 @@ type newdoc_opts =
   (** Initial ML loadpath  *)
   ; vo_load_path   : Loadpath.vo_path list option [@sexp.option]
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
-  ; require_libs : (string * string option * bool option) list option [@sexp.option]
+  ; require_libs : (string * string option * Lib.export_flag option) list option [@sexp.option]
   (** Libraries to load in the initial document state *)
   }
 
@@ -884,7 +884,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   coq_protect st @@ fun () -> match cmd with
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
-    let require_libs = Option.default (["Coq.Init.Prelude", None, Some true]) opts.require_libs in
+    let require_libs = Option.default (["Coq.Init.Prelude", None, Some Lib.Export]) opts.require_libs in
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
                ; injections = List.map (fun x -> Coqargs.RequireInjection x) require_libs
                ; stm_options

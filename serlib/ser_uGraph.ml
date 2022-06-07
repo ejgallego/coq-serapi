@@ -13,6 +13,12 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
+open Sexplib.Std
+
+module Stdlib = Ser_stdlib
+module Sorts = Ser_sorts
+module Univ = Ser_univ
+
 module Bound = struct
   type t = [%import: UGraph.Bound.t]
   [@@deriving sexp]
@@ -22,3 +28,7 @@ type t = [%import: UGraph.t]
 
 let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"UGraph.t"
 let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"UGraph.t"
+
+type univ_inconsistency =
+  [%import: UGraph.univ_inconsistency]
+  [@@deriving sexp]

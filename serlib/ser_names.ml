@@ -144,6 +144,8 @@ let sexp_of_t kn   = sexp_of__kername (_kername_put kn)
 let of_yojson json = Ppx_deriving_yojson_runtime.(_kername_of_yojson json >|= _kername_get)
 let to_yojson kn   = _kername_to_yojson (_kername_put kn)
 
+let equal = KerName.equal
+
 end
 
 module Constant = struct
@@ -151,11 +153,15 @@ module Constant = struct
 (* Constant.t: private *)
 type t = [%import: Names.Constant.t]
 
-type _t = Constant of ModPath.t * Label.t
+type _t = Constant of KerName.t * KerName.t option
       [@@deriving sexp,yojson]
 
-let _t_put cs = let mp, l = Constant.repr2 cs in Constant (mp,l)
-let _t_get (Constant (mp,l)) = Constant.make2 mp l
+let _t_put cs =
+  let cu, cc = Constant.(user cs, canonical cs) in
+  if KerName.equal cu cc then Constant (cu, None) else Constant (cu, Some cc)
+let _t_get = function
+  | Constant (cu, None) -> Constant.make1 cu
+  | Constant (cu, Some cc) -> Constant.make cu cc
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__t (_t_put dp)
@@ -165,6 +171,8 @@ let to_yojson level = _t_to_yojson (_t_put level)
 
 end
 
+module Cset_env = Ser_cSet.Make(Cset_env)(Constant)
+
 module Cmap = Ser_cMap.Make(Cmap)(Constant)
 module Cmap_env = Ser_cMap.Make(Cmap_env)(Constant)
 
@@ -173,12 +181,15 @@ module MutInd = struct
 (* MutInd.t: private *)
 type t = [%import: Names.MutInd.t]
 
-type _t = MutInd of ModPath.t * Label.t
+type _t = MutInd of KerName.t * KerName.t option
       [@@deriving sexp,yojson]
 
 let _t_put cs              =
-  let mp, l = MutInd.repr2 cs in MutInd (mp,l)
-let _t_get (MutInd (mp,l)) = MutInd.make2 mp l
+  let cu, cc = MutInd.(user cs, canonical cs) in
+  if KerName.equal cu cc then MutInd (cu, None) else MutInd (cu, Some cc)
+let _t_get = function
+  | MutInd (cu, None) -> MutInd.make1 cu
+  | MutInd (cu, Some cc) -> MutInd.make cu cc
 
 let t_of_sexp sexp = _t_get (_t_of_sexp sexp)
 let sexp_of_t dp   = sexp_of__t (_t_put dp)
@@ -205,6 +216,8 @@ module Ind = struct
   [%import: Names.Ind.t]
   [@@deriving sexp, yojson]
 end
+
+module Indset_env = Ser_cSet.Make(Indset_env)(Ind)
 
 type inductive =
   [%import: Names.inductive]

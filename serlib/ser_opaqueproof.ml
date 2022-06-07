@@ -20,32 +20,21 @@ module Names  = Ser_names
 module Univ   = Ser_univ
 module Constr = Ser_constr
 module Mod_subst = Ser_mod_subst
+module Cooking = Ser_cooking
 
-type proofterm = (Constr.constr * Univ.ContextSet.t) Future.computation
-  [@@deriving sexp]
-
-(* type work_list =
- *   [%import: Opaqueproof.work_list]
- *   [@@deriving sexp]
- *
- * type cooking_info =
- *   [%import: Opaqueproof.cooking_info]
- *   [@@deriving sexp]
-*)
-
-type 'cooking_info _opaque =
-| Indirect of Mod_subst.substitution list * 'cooking_info list * Names.DirPath.t * int (* subst, discharge, lib, index *)
+type _opaque =
+  | Indirect of Mod_subst.substitution list * Cooking.cooking_info list * Names.DirPath.t * int (* subst, discharge, lib, index *)
 [@@deriving sexp]
 
-type opaque = [%import: 'a Opaqueproof.opaque]
+type opaque = [%import: Opaqueproof.opaque]
 
-let sexp_of_opaque f x = sexp_of__opaque f (Obj.magic x)
-let opaque_of_sexp f x = Obj.magic (_opaque_of_sexp f x)
+let sexp_of_opaque x = sexp_of__opaque (Obj.magic x)
+let opaque_of_sexp x = Obj.magic (_opaque_of_sexp x)
 
 module Map = Ser_cMap.Make(Int.Map)(Ser_int)
+
 type _opaquetab = {
   opaque_len : int;
-  (** Size of the above map *)
   opaque_dir : Names.DirPath.t;
 } [@@deriving sexp]
 

@@ -14,7 +14,6 @@
 (************************************************************************)
 
 open Sexplib
-open Ltac_plugin
 
 type unary_strategy = Rewrite.unary_strategy
 val unary_strategy_of_sexp : Sexp.t -> unary_strategy

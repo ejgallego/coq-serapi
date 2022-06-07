@@ -16,9 +16,34 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Declarations = Ser_declarations
-module Opaqueproof = Ser_opaqueproof
+open Sexplib.Std
 
-type recipe =
-  [%import: Cooking.recipe]
-  [@@deriving sexp]
+module Names = Ser_names
+module Univ = Ser_univ
+module Constr = Ser_constr
+
+type abstr_info = {
+  abstr_ctx : Constr.named_context;
+  abstr_auctx : Univ.AbstractContext.t;
+  abstr_ausubst : Univ.Instance.t;
+} [@@deriving sexp]
+
+type abstr_inst_info = {
+  abstr_rev_inst : Names.Id.t list;
+  abstr_uinst : Univ.Instance.t;
+} [@@deriving sexp]
+
+type 'a entry_map = 'a Names.Cmap.t * 'a Names.Mindmap.t [@@deriving sexp]
+type expand_info = abstr_inst_info entry_map [@@deriving sexp]
+
+type _cooking_info = {
+  expand_info : expand_info;
+  abstr_info : abstr_info;
+} [@@deriving sexp]
+
+type cooking_info =
+  [%import: Cooking.cooking_info]
+
+let sexp_of_cooking_info ci = sexp_of__cooking_info (Obj.magic ci)
+let cooking_info_of_sexp se = Obj.magic (_cooking_info_of_sexp se)
+

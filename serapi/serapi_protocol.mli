@@ -223,8 +223,8 @@ type coq_object =
   (** Goals, with types and terms in Kernel-level representation *)
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   (** Goals, with types and terms in user-level, AST representation *)
-  | CoqProof     of Goal.goal list
-                    * (Goal.goal list * Goal.goal list) list
+  | CoqProof     of Evar.t list
+                    * (Evar.t list * Evar.t list) list
                     (* We don't seralize the evar map for now... *)
                     (* * Evd.evar_map *)
   (** Proof object: really low-level and likely to be deprecated. *)
@@ -407,7 +407,7 @@ type newdoc_opts =
   (** Initial ML loadpath  *)
   ; vo_load_path   : Loadpath.vo_path list option [@sexp.option]
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
-  ; require_libs : (string * string option * bool option) list option [@sexp.option]
+  ; require_libs : (string * string option * Lib.export_flag option) list option [@sexp.option]
   (** Libraries to load in the initial document state *)
   }
 
