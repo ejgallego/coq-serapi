@@ -11,6 +11,7 @@ on:
     - v8.13
     - v8.14
     - v8.15
+    - v8.16
   pull_request:
     branches:
     - v8.8
@@ -21,6 +22,7 @@ on:
     - v8.13
     - v8.14
     - v8.15
+    - v8.16
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,14 +32,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ocaml-version: [4.07.1, 4.08.1, 4.09.1, 4.10.1, 4.11.1, 4.12.1, 4.13.1]
+        ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: ["coq.8.15.0 coq-mathcomp-ssreflect"]
+        extra-opam: ["coq.8.16+rc1 coq-mathcomp-ssreflect.dev"]
         include:
-        - ocaml-version: 4.07.1+32bit
+        - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
           test-target: js-dune
-          extra-opam: coq.8.15.0 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
-        - ocaml-version: 4.11.1
+          extra-opam: coq.8.16+rc1 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
+        - ocaml-compiler: 4.13.1
           test-target: test
           extra-opam: dune
           coq-from-git: true
@@ -47,10 +49,9 @@ jobs:
       OPAMYES: "true"
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
-      COQ_VERSION: "v8.15"
-      COQ_BRANCH: "v8.15"
+      COQ_VERSION: "v8.16"
+      COQ_BRANCH: "v8.16"
       COQ_CONF: "-local -native-compiler no -coqide no"
-      COMPILER: ${{ matrix.ocaml-version }}
       EXTRA_OPAM: ${{ matrix.extra-opam }}
       SERAPI_COQ_HOME: ""
     runs-on: ubuntu-latest
@@ -62,25 +63,32 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt-get -o Acquire::Retries=30 update -q
           sudo apt-get -o Acquire::Retries=30 install gcc-multilib libgmp-dev:i386 -y --allow-unauthenticated
-      - name: Set up OCaml ${{ matrix.ocaml-version }}
-        uses: avsm/setup-ocaml@v1
+      - name: Set up OCaml ${{ matrix.ocaml-compiler }}
+        uses: avsm/setup-ocaml@v2
         with:
-          ocaml-version: ${{ matrix.ocaml-version }}
+          ocaml-compiler: ${{ matrix.ocaml-compiler }}
+          dune-cache: true
       - name: More OCaml setup
         run: |
+          eval $(opam env)
           opam repos add coq-released http://coq.inria.fr/opam/released
           opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
+          # Only for mathcomp.dev which is needed for 8.16
+          opam repos add coq-extra-dev http://coq.inria.fr/opam/extra-dev
           opam config set-global jobs $NJOBS
           opam pin add -y -n --kind=path coq-serapi .
           opam install -y --deps-only -j $NJOBS coq-serapi
           opam pin remove coq-serapi
-      - run: opam list
+      - name: Display OPAM Setup
+        run: |
+          eval $(opam env)
+          opam list
       - name: Install Coq via git
         if: ${{ matrix.coq-from-git }}
         run: |
+          eval $(opam env)
           # First we update SERAPI_COQ_HOME for future steps as per https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
           echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_VERSION/_build/install/default/lib/" >> $GITHUB_ENV
-          eval $(opam env)
           opam install -y zarith
           git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_VERSION"
           pushd "$HOME/coq-$COQ_VERSION"
@@ -93,10 +101,11 @@ jobs:
           make install
           popd
       - name: Install extra opam
-        run: opam install --ignore-constraints-on=coq $EXTRA_OPAM
+        run: |
+          eval $(opam env)
+          opam install --ignore-constraints-on=coq $EXTRA_OPAM
       - name: Build SerAPI
         run: |
-          set -e
           eval $(opam env)
           make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "${{ matrix.test-target }}"
           ls -lR _build/install/default/ || true

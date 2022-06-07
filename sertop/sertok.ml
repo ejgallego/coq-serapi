@@ -37,7 +37,7 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
   (* coq initialization *)
   coq_init
     { fb_handler = (fun _ _ -> ())  (* XXXX *)
-    ; ml_load    = None
+    ; plugin_load = None
     ; debug
     ; allow_sprop
     ; indices_matter = false
@@ -62,7 +62,7 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
     else stm_options
   in
 
-  let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some false)] in
+  let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
 
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; injections

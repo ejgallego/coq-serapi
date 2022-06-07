@@ -88,17 +88,17 @@ type typing_flags =
   [%import: Declarations.typing_flags]
   [@@deriving sexp]
 
-type work_list =
-  [%import: Declarations.work_list]
-  [@@deriving sexp]
+(* type work_list =
+ *   [%import: Declarations.work_list]
+ *   [@@deriving sexp] *)
 
-type abstr_info =
-  [%import: Declarations.abstr_info]
-  [@@deriving sexp]
+(* type abstr_info =
+ *   [%import: Declarations.abstr_info]
+ *   [@@deriving sexp] *)
 
-type cooking_info =
-  [%import: Declarations.cooking_info]
-  [@@deriving sexp]
+(* type cooking_info =
+ *   [%import: Declarations.cooking_info]
+ *   [@@deriving sexp] *)
 
 type 'a pconstant_body =
   [%import: 'a Declarations.pconstant_body]
@@ -144,12 +144,12 @@ type ('ty,'a) functorize =
   [%import: ('ty, 'a) Declarations.functorize]
   [@@deriving sexp]
 
-type with_declaration =
-  [%import: Declarations.with_declaration]
+type 'a with_declaration =
+  [%import: 'a Declarations.with_declaration]
   [@@deriving sexp]
 
-type module_alg_expr =
-  [%import: Declarations.module_alg_expr]
+type 'a module_alg_expr =
+  [%import: 'a Declarations.module_alg_expr]
   [@@deriving sexp]
 
 type structure_field_body =

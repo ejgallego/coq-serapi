@@ -31,8 +31,8 @@ type coq_opts =
   { fb_handler   : Format.formatter -> Feedback.feedback -> unit
   (** callback to handle async feedback *)
 
-  ; ml_load      : (string -> unit) option
-  (** callback to load cma/cmo files    *)
+  ; plugin_load      : (string list -> unit) option
+  (** callback to load findlib plugins  *)
 
   ; debug        : bool
   (** Enable Coq Debug mode             *)

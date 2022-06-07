@@ -16,50 +16,48 @@
 (************************************************************************)
 
 let debug = false
-let ml_path = ref []
 
-let add_ml_path path =
-  ml_path := path :: !ml_path
+let list_last l = List.(nth l (length l - 1))
 
 (* Should improve *)
-let map_serlib ml_mod =
-  let plugin_name = Filename.(remove_extension (basename ml_mod)) in
-  let supported = match plugin_name with
+let map_serlib fl_pkg =
+  let supported = match fl_pkg with
     (* Linked-in statically *)
-    | "ltac_plugin" -> false
+    | "coq-core.plugins.ltac." -> false
     (* | "tauto_plugin" -> false *)
     (* Supported *)
-    | "firstorder_plugin"       (* firstorder  *)
-    | "funind_plugin"           (* funind      *)
-    | "ring_plugin"             (* setoid_ring *)
-    | "extraction_plugin"       (* setoid_ring *)
-    | "ssrmatching_plugin"      (* ssrmatching *)
-    | "ssreflect_plugin"        (* ssr *)
+    | "coq-core.plugins.firstorder"       (* firstorder  *)
+    | "coq-core.plugins.funind"           (* funind      *)
+    | "coq-core.plugins.ring"             (* setoid_ring *)
+    | "coq-core.plugins.extraction"       (* setoid_ring *)
+    | "coq-core.plugins.ssrmatching"      (* ssrmatching *)
+    | "coq-core.plugins.ssreflect"        (* ssr *)
       -> true
     | _ ->
-      if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
+      if debug then Format.eprintf "missing serlib: %s@\n%!" fl_pkg;
       false
   in
   if supported
-  then Some ("coq-serapi.serlib." ^ plugin_name)
+  then
+    let plugin_name = String.split_on_char '.' fl_pkg |> list_last in
+    Some ("coq-serapi.serlib." ^ plugin_name)
   else None
 
 let plugin_handler user_handler =
-  let loader = Option.default Dynlink.loadfile user_handler in
-  fun ml_mod ->
+  let loader = Option.default (Fl_dynload.load_packages ~debug:false) user_handler in
+  fun fl_pkg ->
     try
+      let _, fl_pkg = Mltop.PluginSpec.repr fl_pkg in
       (* In 8.10 with a Dune-built Coq Fl_dynload will track the dependencies *)
-      match map_serlib ml_mod with
+      match map_serlib fl_pkg with
       | Some serlib_pkg ->
         if debug then
-          Format.eprintf "[plugin loader]: module %s requested via findlib@\n%!" ml_mod;
-        Fl_dynload.load_packages [serlib_pkg]
+          Format.eprintf "[plugin loader]: plugin %s requested via findlib@\n%!" fl_pkg;
+        loader [serlib_pkg]
       | None ->
         if debug then
-          Format.eprintf "[plugin loader]: module %s requested via mltop@\n%!" ml_mod;
-        let _, ml_file = System.find_file_in_path ~warn:true !ml_path ml_mod in
-        let () = loader ml_file in
-        ()
+          Format.eprintf "[plugin loader]: plugin %s requested via mltop@\n%!" fl_pkg;
+        loader [fl_pkg]
     with
     | Dynlink.Error err as exn ->
       let msg = Dynlink.error_message err in

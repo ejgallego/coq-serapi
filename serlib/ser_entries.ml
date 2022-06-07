@@ -100,7 +100,11 @@ type constant_entry =
 
 type module_struct_entry =
   [%import: Entries.module_struct_entry]
-  [@@deriving sexp]
+  (* [@@deriving sexp] *)
+
+(* XXX *)
+let module_struct_entry_of_sexp = Obj.magic
+let sexp_of_module_struct_entry = Obj.magic
 
 type module_params_entry =
   [%import: Entries.module_params_entry]

@@ -28,11 +28,11 @@ let on_message = sertop_callback post_message
 (* Special JS ML toplevel*)
 let jstop : Mltop.toplevel =
   let open Mltop in
-  {
-    load_obj = Jslibmng.coq_cma_link;
-    (* We ignore all the other operations for now *)
-    add_dir  = (fun _ -> ());
-    ml_loop  = (fun _ -> ());
+  { load_plugin = (fun _ -> ())
+  ; load_module = Jslibmng.coq_cma_link
+  ; (* We ignore all the other operations for now *)
+    add_dir  = (fun _ -> ())
+  ; ml_loop  = (fun _ -> ())
   }
 
 let setup_pseudo_fs () =
@@ -113,7 +113,7 @@ let _ =
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
       let ml_load_path = []                                              in
       let vo_load_path = List.map pkg_to_bb all_pkgs                     in
-      let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some true)] in
+      let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
       let debug       = false                                            in
       let allow_sprop = true                                             in
       ignore (sertop_init ~fb_out:post_message ~ml_load_path ~vo_load_path ~injections ~debug ~allow_sprop);

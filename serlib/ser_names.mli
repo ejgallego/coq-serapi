@@ -38,6 +38,8 @@ module MPmap   : Ser_cMap.ExtS with type key = ModPath.t and type 'a t = 'a MPma
 module KerName  : SerType.SJ with type t = KerName.t
 module Constant : SerType.SJ with type t = Constant.t
 
+module Cset_env : Ser_cSet.ExtS with type elt = Constant.t and type t = Cset_env.t
+
 module Cmap : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap_env.t
 
@@ -45,6 +47,8 @@ module MutInd : SerType.S with type t = MutInd.t
 
 module Mindmap : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap.t
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap_env.t
+
+module Indset_env : Ser_cSet.ExtS with type elt = inductive and type t = Indset_env.t
 
 type 'a tableKey = 'a Names.tableKey
 

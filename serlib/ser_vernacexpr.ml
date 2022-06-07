@@ -234,6 +234,14 @@ type import_filter_expr =
   [%import: Vernacexpr.import_filter_expr]
   [@@deriving sexp,yojson]
 
+type scheme_type =
+  [%import: Vernacexpr.scheme_type]
+  [@@deriving sexp,yojson]
+
+type equality_scheme_type =
+  [%import: Vernacexpr.equality_scheme_type]
+  [@@deriving sexp,yojson]
+
 type scheme =
   [%import: Vernacexpr.scheme]
   [@@deriving sexp,yojson]
@@ -252,6 +260,10 @@ type register_kind =
 
 type module_ast_inl =
   [%import: Vernacexpr.module_ast_inl]
+  [@@deriving sexp,yojson]
+
+type export_with_cats =
+  [%import: Vernacexpr.export_with_cats]
   [@@deriving sexp,yojson]
 
 type module_binder =

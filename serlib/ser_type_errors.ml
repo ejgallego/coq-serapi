@@ -15,6 +15,7 @@
 
 open Sexplib.Std
 
+module Stdlib  = Ser_stdlib
 module Loc     = Ser_loc
 module Names   = Ser_names
 module Constr  = Ser_constr
@@ -26,6 +27,14 @@ module CPrimitives = Ser_cPrimitives
 
 type arity_error =
   [%import: Type_errors.arity_error]
+  [@@deriving sexp]
+
+type 'constr pfix_guard_error =
+  [%import: 'constr Type_errors.pfix_guard_error]
+  [@@deriving sexp]
+
+type 'constr pcofix_guard_error =
+  [%import: 'constr Type_errors.pcofix_guard_error]
   [@@deriving sexp]
 
 type 'constr pguard_error =

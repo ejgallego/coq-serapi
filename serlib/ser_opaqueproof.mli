@@ -23,9 +23,9 @@ open Sexplib
  * val sexp_of_cooking_info : cooking_info -> Sexp.t
  * val cooking_info_of_sexp : Sexp.t -> cooking_info *)
 
-type 'a opaque = 'a Opaqueproof.opaque
-val sexp_of_opaque : ('a -> Sexp.t) -> 'a opaque -> Sexp.t
-val opaque_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a opaque
+type opaque = Opaqueproof.opaque
+val sexp_of_opaque : opaque -> Sexp.t
+val opaque_of_sexp : Sexp.t -> opaque
 
 type opaquetab = Opaqueproof.opaquetab
 val sexp_of_opaquetab : opaquetab -> Sexp.t

@@ -174,7 +174,3 @@ type 'a puniverses =
 type explanation =
   [%import: Univ.explanation]
   [@@deriving sexp]
-
-type univ_inconsistency =
-  [%import: Univ.univ_inconsistency]
-  [@@deriving sexp]
