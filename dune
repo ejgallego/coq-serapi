@@ -1,5 +1,5 @@
 (env
- (dev     (flags :standard -rectypes -w -3))
+ (dev     (flags :standard -rectypes))
  (release (flags :standard -rectypes)))
 
 (install

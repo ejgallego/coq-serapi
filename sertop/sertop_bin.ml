@@ -78,16 +78,13 @@ let sertop_cmd =
     `P "See the documentation on the project's webpage for more information"
   ]
   in
-  Term.(const sertop
-        $ printer $ print0 $ debug $ disallow_sprop $ indices_matter $ length $ prelude $ ml_include_path $ no_init $topfile $ no_prelude $ load_path $ rload_path $ implicit_stdlib
-        $ async $ deep_edits $ async_workers $ error_recovery $ omit_loc $ omit_att $ omit_env $ exn_on_opaque ),
-  Term.info "sertop" ~version:sertop_version ~doc ~man
+  let term =
+    Term.(const sertop
+          $ printer $ print0 $ debug $ disallow_sprop $ indices_matter $ length $ prelude $ ml_include_path $ no_init $topfile $ no_prelude $ load_path $ rload_path $ implicit_stdlib
+          $ async $ deep_edits $ async_workers $ error_recovery $ omit_loc $ omit_att $ omit_env $ exn_on_opaque ) in
+  let info = Cmd.info "sertop" ~version:sertop_version ~doc ~man in
+  Cmd.v info term
 
-let main () =
-  match Term.eval sertop_cmd with
-  | `Error _ -> exit 1
-  | `Version
-  | `Help
-  | `Ok ()   -> exit 0
+let main () = exit (Cmd.eval sertop_cmd)
 
 let _ = main ()

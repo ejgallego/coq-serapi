@@ -601,7 +601,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | TypeOf id      -> snd (QueryUtil.info_of_id env id)
   | Search         -> [CoqString "Not Implemented"]
   (* XXX: should set printing options in all queries *)
-  | Vernac q       -> let pa = Pcoq.Parsable.make (Stream.of_string q) in
+  | Vernac q       -> let pa = Pcoq.Parsable.make (Ser_stream.of_string q) in
                       Stm.query ~doc ~at:opt.sid ~route:opt.route pa; []
   (* XXX: Should set the proper sid state *)
   | Env            -> [CoqEnv env]
@@ -705,14 +705,14 @@ module ControlUtil = struct
 
   let parse_sentence ~doc ~(opt : parse_opt) sent =
     let ontop = Extra.value opt.ontop ~default:(Stm.get_current_state ~doc) in
-    let pa = Pcoq.Parsable.make (Stream.of_string sent) in
+    let pa = Pcoq.Parsable.make (Ser_stream.of_string sent) in
     let entry = Pvernac.main_entry in
     Stm.parse_sentence ~doc ontop ~entry pa
 
   exception End_of_input
 
   let add_sentences ~doc opts sent =
-    let pa = Pcoq.Parsable.make (Stream.of_string sent) in
+    let pa = Pcoq.Parsable.make (Ser_stream.of_string sent) in
     let i   = ref 1                    in
     let acc = ref []                   in
     let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ~doc)) in
@@ -937,7 +937,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   | Tokenize input ->
     let st = CLexer.Lexer.State.get () in
     begin try
-        let istr = Stream.of_string input in
+        let istr = Ser_stream.of_string input in
         let lex = CLexer.Lexer.tok_func istr in
         CLexer.Lexer.State.set st;
         let objs = Extra.stream_tok 0 [] lex in

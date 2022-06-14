@@ -97,7 +97,7 @@ exception End_of_input
 let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let open Format in
   let stt = ref (doc, sid) in
-  let in_strm = Stream.of_channel in_chan in
+  let in_strm = Serapi.Ser_stream.of_channel in_chan in
   let source = Loc.InFile { dirpath = None; file = in_file } in
   let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
   let in_bytes = load_file in_file in
@@ -116,7 +116,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
 	Bytes.sub_string in_bytes begin_char (end_char - begin_char)
       in
       let l_post_st = CLexer.Lexer.State.get () in
-      let sstr = Stream.of_string istr in
+      let sstr = Serapi.Ser_stream.of_string istr in
       try
 	CLexer.Lexer.State.set l_pre_st;
         let lex = CLexer.Lexer.tok_func sstr in
@@ -207,18 +207,18 @@ let main () =
 
   let sertok_cmd =
     let open Sertop.Sertop_arg in
-    Term.(const driver
-          $ debug $ disallow_sprop $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
-         ),
-    Term.info "sertok" ~version:sertok_version ~doc:sertok_doc ~man:sertok_man
+    let term =
+      Term.(const driver
+            $ debug $ disallow_sprop $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
+            $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
+           ) in
+    let info = Cmd.info "sertok" ~version:sertok_version ~doc:sertok_doc ~man:sertok_man in
+    Cmd.v info term
   in
 
-  try match Term.eval ~catch:false sertok_cmd with
-    | `Error _ -> exit 1
-    | `Version
-    | `Help
-    | `Ok ()   -> exit 0
+  try
+    let ecode = Cmd.eval ~catch:false sertok_cmd in
+    exit ecode
   with exn ->
     let (e, info) = Exninfo.capture exn in
     fatal_exn e info
