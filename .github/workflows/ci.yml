@@ -34,7 +34,7 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: ["coq.8.16+rc1 coq-mathcomp-ssreflect.dev"]
+        extra-opam: [coq.8.16+rc1 coq-mathcomp-ssreflect.dev]
         include:
         - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
           test-target: js-dune
@@ -49,11 +49,8 @@ jobs:
       OPAMYES: "true"
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
-      COQ_VERSION: "v8.16"
       COQ_BRANCH: "v8.16"
-      COQ_CONF: "-local -native-compiler no -coqide no"
       EXTRA_OPAM: ${{ matrix.extra-opam }}
-      SERAPI_COQ_HOME: ""
     runs-on: ubuntu-latest
 
     steps:
@@ -68,14 +65,17 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           dune-cache: true
-      - name: More OCaml setup
+      - name: Basic OPAM setup for SerAPI
         run: |
           eval $(opam env)
+          opam list
+          opam pin list
           opam repos add coq-released http://coq.inria.fr/opam/released
           opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
           # Only for mathcomp.dev which is needed for 8.16
           opam repos add coq-extra-dev http://coq.inria.fr/opam/extra-dev
           opam config set-global jobs $NJOBS
+          # avsm/setup-ocaml@v2 does the pinning I think.
           opam pin add -y -n --kind=path coq-serapi .
           opam install -y --deps-only -j $NJOBS coq-serapi
           opam pin remove coq-serapi
@@ -88,23 +88,23 @@ jobs:
         run: |
           eval $(opam env)
           # First we update SERAPI_COQ_HOME for future steps as per https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
-          echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_VERSION/_build/install/default/lib/" >> $GITHUB_ENV
+          echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_BRANCH/_build/install/default/lib/" >> $GITHUB_ENV
           opam install -y zarith
-          git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_VERSION"
-          pushd "$HOME/coq-$COQ_VERSION"
+          git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH"
+          pushd "$HOME/coq-$COQ_BRANCH"
           make -f Makefile.dune world
           popd
-          PATH="$HOME/coq-$COQ_VERSION/_build/install/default/bin:$PATH"
+          PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
           git clone --depth=3 -b master https://github.com/math-comp/math-comp.git
           pushd math-comp/mathcomp/ssreflect
           make
           make install
           popd
-      - name: Install extra opam
+      - name: Extra OPAM Setup (coq if not from git, js_of_ocaml)
         run: |
           eval $(opam env)
-          opam install --ignore-constraints-on=coq $EXTRA_OPAM
-      - name: Build SerAPI
+          opam install $EXTRA_OPAM
+      - name: Build and Test SerAPI
         run: |
           eval $(opam env)
           make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "${{ matrix.test-target }}"
