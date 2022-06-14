@@ -94,7 +94,7 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_lo
      *)
      let doc,sid = Stm.new_doc ndoc in
      let sent = Printf.sprintf "Require %s." l in
-     let in_strm = Stream.of_string sent in
+     let in_strm = Serapi.Ser_stream.of_string sent in
      let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file})) in_strm in
      match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
      | Some ast ->
@@ -214,18 +214,16 @@ let main () =
 
   let sername_cmd =
     let open Sertop.Sertop_arg in
-    Term.(const driver
-          $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
-         ),
-    Term.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man
+    let term =
+      Term.(const driver
+            $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
+            $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
+           ) in
+    let info = Cmd.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man in
+    Cmd.v info term
   in
 
-  try match Term.eval ~catch:false sername_cmd with
-    | `Error _ -> exit 1
-    | `Version
-    | `Help
-    | `Ok ()   -> exit 0
+  try exit (Cmd.eval ~catch:false sername_cmd)
   with exn ->
     let (e, info) = Exninfo.capture exn in
     fatal_exn e info

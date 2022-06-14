@@ -80,7 +80,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   match input with
   | I_vernac ->
      begin
-       let in_strm = Stream.of_channel in_chan in
+       let in_strm = Serapi.Ser_stream.of_channel in_chan in
        let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file} )) in_strm in
        try while true do
            let doc, sid = !stt in
@@ -227,18 +227,16 @@ let main () =
 
   let sercomp_cmd =
     let open Sertop.Sertop_arg in
-    Term.(const driver
-          $ comp_input $ comp_mode $ debug $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
-          $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
-         ),
-    Term.info "sercomp" ~version:sercomp_version ~doc:sercomp_doc ~man:sercomp_man
+    let term =
+      Term.(const driver
+            $ comp_input $ comp_mode $ debug $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
+            $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
+           ) in
+    let info = Cmd.info "sercomp" ~version:sercomp_version ~doc:sercomp_doc ~man:sercomp_man in
+    Cmd.v info term
   in
 
-  try match Term.eval ~catch:false sercomp_cmd with
-    | `Error _ -> exit 1
-    | `Version
-    | `Help
-    | `Ok ()   -> exit 0
+  try exit (Cmd.eval ~catch:false sercomp_cmd)
   with exn ->
     let (e, info) = Exninfo.capture exn in
     fatal_exn e info

@@ -9,6 +9,8 @@
               attentive if you are depending on them.
             - plugin loading is adapted for 8.16 findlib loading
               method
+            (@ejgallego)
+ - [deps]   Require cmdliner >= 1.1.0 (@ejgallego)
 
 ## Version 0.15.1:
 
