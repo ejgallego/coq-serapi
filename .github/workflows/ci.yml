@@ -41,7 +41,7 @@ jobs:
           extra-opam: coq.8.16+rc1 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-compiler: 4.13.1
           test-target: test
-          extra-opam: dune
+          extra-opam:
           coq-from-git: true
     env:
       OPAMJOBS: "2"
@@ -100,7 +100,8 @@ jobs:
           make
           make install
           popd
-      - name: Extra OPAM Setup (coq if not from git, js_of_ocaml)
+      - name: Extra OPAM Setup (Coq, js_of_ocaml)
+        if: ${{ matrix.extra-opam != '' }}
         run: |
           eval $(opam env)
           opam install $EXTRA_OPAM
