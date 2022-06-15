@@ -15,8 +15,11 @@
 
 open Sexplib.Conv
 
-type nonrec 'a ref = 'a ref
+type nonrec 'a ref = 'a Stdlib.ref
 
+let ref x = ref x
+let (!) x = !x
+let (:=) x v = x := v
 let ref_of_sexp = ref_of_sexp
 let sexp_of_ref = sexp_of_ref
 
@@ -24,3 +27,5 @@ module Lazy = struct
   type 'a t = 'a lazy_t
   [@@deriving sexp]
 end
+
+module Option = Stdlib.Option

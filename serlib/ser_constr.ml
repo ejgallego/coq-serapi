@@ -99,7 +99,7 @@ type 'constr pcase_branch =
 let map_pcase_branch f (bi, c) = (bi, f c)
 
 type 'types pcase_return =
-  [%import: 'constr Constr.pcase_return]
+  [%import: 'types Constr.pcase_return]
   [@@deriving sexp,yojson]
 
 let map_pcase_return f (bi, c) = (bi, f c)
@@ -110,23 +110,21 @@ type _constr =
   | Meta      of int
   | Evar      of _constr pexistential
   | Sort      of Sorts.t
-  | Cast      of _constr * cast_kind * _types
-  | Prod      of Names.Name.t Context.binder_annot * _types * _types
-  | Lambda    of Names.Name.t Context.binder_annot * _types * _constr
-  | LetIn     of Names.Name.t Context.binder_annot * _constr * _types * _constr
+  | Cast      of _constr * cast_kind * _constr
+  | Prod      of Names.Name.t Context.binder_annot * _constr * _constr
+  | Lambda    of Names.Name.t Context.binder_annot * _constr * _constr
+  | LetIn     of Names.Name.t Context.binder_annot * _constr * _constr * _constr
   | App       of _constr * _constr array
   | Const     of pconstant
   | Ind       of pinductive
   | Construct of pconstructor
   | Case      of case_info * Univ.Instance.t * _constr array * _constr pcase_return * _constr pcase_invert *  _constr * _constr pcase_branch array
-  | Fix       of (_constr, _types) pfixpoint
-  | CoFix     of (_constr, _types) pcofixpoint
+  | Fix       of (_constr, _constr) pfixpoint
+  | CoFix     of (_constr, _constr) pcofixpoint
   | Proj      of Names.Projection.t * _constr
   | Int       of Uint63.t
   | Float     of Float64.t
-  | Array     of Univ.Instance.t * _constr array * _constr * _types
-[@@deriving sexp,yojson]
-and _types = _constr
+  | Array     of Univ.Instance.t * _constr array * _constr * _constr
 [@@deriving sexp,yojson]
 
 let rec _constr_put (c : constr) : _constr =
