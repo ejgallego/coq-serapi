@@ -1,3 +1,7 @@
+## Version 0.15.2:
+
+ - [deps]   Support Jane Street libraries v0.15.0 (@ejgallego)
+
 ## Version 0.15.1:
 
  - [serlib] Fix bad bypass of opaquetab serialization. This caused a

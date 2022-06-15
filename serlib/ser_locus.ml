@@ -58,22 +58,22 @@ type clause_atom =
   [@@deriving sexp]
 
 type concrete_clause =
-  [%import: 'id Locus.clause_expr]
+  [%import: Locus.concrete_clause]
   [@@deriving sexp]
 
 type hyp_location =
-  [%import: Locus.clause_atom]
+  [%import: Locus.hyp_location]
   [@@deriving sexp]
 
 type goal_location =
-  [%import: 'id Locus.clause_expr]
+  [%import: Locus.goal_location]
   [@@deriving sexp]
 
 type simple_clause =
-  [%import: Locus.clause_atom]
+  [%import: Locus.simple_clause]
   [@@deriving sexp]
 
 type 'a or_like_first =
-  [%import: 'id Locus.clause_expr]
+  [%import: 'a Locus.or_like_first]
   [@@deriving sexp]
 
