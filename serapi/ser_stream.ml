@@ -1,4 +1,4 @@
 (* Compat_code *)
 
-let of_string = Stream.of_string [@warning "-3"]
-let of_channel = Stream.of_channel [@warning "-3"]
+let of_string = Gramlib.Stream.of_string
+let of_channel = Gramlib.Stream.of_channel

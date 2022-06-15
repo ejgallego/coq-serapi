@@ -27,6 +27,7 @@ open Ppx_hash_lib.Std.Hash.Builtin
 
 let hash_fold_array = hash_fold_array_frozen
 
+module SList   = Ser_sList
 module Names   = Ser_names
 module Sorts   = Ser_sorts
 module Evar    = Ser_evar
@@ -132,7 +133,7 @@ type _constr =
 
 let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
-  let crl = List.map _constr_put  in
+  let crl = SList.map _constr_put in
   let cra = Array.map _constr_put in
   let crci = map_pcase_invert _constr_put in
   let crcb = map_pcase_branch _constr_put in
@@ -164,7 +165,7 @@ let rec _constr_put (c : constr) : _constr =
 
 let rec _constr_get (c : _constr) : constr =
   let cr  = _constr_get           in
-  let crl = List.map _constr_get  in
+  let crl = SList.map _constr_get in
   let cra = Array.map _constr_get in
   let crci = map_pcase_invert _constr_get in
   let crcb = map_pcase_branch _constr_get in

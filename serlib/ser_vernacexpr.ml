@@ -180,6 +180,10 @@ type 'a with_coercion =
   [%import: 'a Vernacexpr.with_coercion]
   [@@deriving sexp,yojson,hash,compare]
 
+type 'a with_coercion_instance =
+  [%import: 'a Vernacexpr.with_coercion_instance]
+  [@@deriving sexp,yojson,hash,compare]
+
 (* type 'a with_instance =
  *   [%import: 'a Vernacexpr.with_instance]
  *   [@@deriving sexp,yojson,hash,compare] *)

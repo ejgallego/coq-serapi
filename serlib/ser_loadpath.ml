@@ -18,10 +18,6 @@
 open Sexplib.Std
 module Names = Ser_names
 
-type library_location =
-  [%import: Loadpath.library_location]
-  [@@deriving sexp]
-
 type vo_path =
   [%import: Loadpath.vo_path]
   [@@deriving sexp]

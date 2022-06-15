@@ -23,7 +23,7 @@ module Libnames = Ser_libnames
 
 type option_locality =
   [%import: Goptions.option_locality]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type option_name =
   [%import: Goptions.option_name]

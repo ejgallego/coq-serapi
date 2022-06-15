@@ -68,8 +68,8 @@ module Extra = struct
   (******************************************************************************)
 
   let rec stream_tok n_tok acc lstr =
-    let e = LStream.next lstr in
-    let loc = LStream.get_loc n_tok lstr in
+    let e = Gramlib.LStream.next lstr in
+    let loc = Gramlib.LStream.get_loc n_tok lstr in
     let l_tok = CAst.make ~loc e in
     if Tok.(equal e EOI) then
       List.rev (l_tok::acc)

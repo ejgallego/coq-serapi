@@ -24,8 +24,8 @@ let load_file f =
   (s)
 
 let rec stream_tok n_tok acc str source begin_line begin_char =
-  let e = LStream.next str in
-  let pre_loc : Loc.t = LStream.get_loc n_tok str in
+  let e = Gramlib.LStream.next str in
+  let pre_loc : Loc.t = Gramlib.LStream.get_loc n_tok str in
   let loc =
     { pre_loc with
       fname = source;

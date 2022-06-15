@@ -18,11 +18,10 @@
 open Sexplib
 
 type option_locality = Goptions.option_locality
+[@@deriving sexp, yojson, hash,compare]
 
-val option_locality_of_sexp : Sexp.t -> option_locality
-val sexp_of_option_locality : option_locality -> Sexp.t
-
-type option_name = Goptions.option_name [@@deriving sexp, yojson, hash,compare]
+type option_name = Goptions.option_name
+[@@deriving sexp, yojson, hash,compare]
 
 type option_value = Goptions.option_value
 

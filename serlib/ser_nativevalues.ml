@@ -23,9 +23,12 @@ module Sorts  = Ser_sorts
 module Constr = Ser_constr
 module Univ   = Ser_univ
 
-type t =
-  [%import: Nativevalues.t]
-  [@@deriving sexp]
+module NVI = struct
+  type t = Nativevalues.t
+  let name = "Nativevalues.t"
+end
+
+include SerType.Opaque(NVI)
 
 type tag =
   [%import: Nativevalues.tag]
