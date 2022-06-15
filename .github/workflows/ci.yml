@@ -50,7 +50,6 @@ jobs:
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
       COQ_BRANCH: "v8.16"
-      EXTRA_OPAM: ${{ matrix.extra-opam }}
     runs-on: ubuntu-latest
 
     steps:
@@ -68,17 +67,12 @@ jobs:
       - name: Basic OPAM setup for SerAPI
         run: |
           eval $(opam env)
-          opam list
-          opam pin list
           opam repos add coq-released http://coq.inria.fr/opam/released
           opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
-          # Only for mathcomp.dev which is needed for 8.16
+          # Only for mathcomp.dev which is needed for 8.16, remove when math-comp is fixed
           opam repos add coq-extra-dev http://coq.inria.fr/opam/extra-dev
-          opam config set-global jobs $NJOBS
-          # avsm/setup-ocaml@v2 does the pinning I think.
-          opam pin add -y -n --kind=path coq-serapi .
-          opam install -y --deps-only -j $NJOBS coq-serapi
-          opam pin remove coq-serapi
+          # coq-serapi already pinned by the setup-ocaml@v2 action
+          opam install --deps-only coq-serapi
       - name: Display OPAM Setup
         run: |
           eval $(opam env)
@@ -89,22 +83,21 @@ jobs:
           eval $(opam env)
           # First we update SERAPI_COQ_HOME for future steps as per https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
           echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_BRANCH/_build/install/default/lib/" >> $GITHUB_ENV
-          opam install -y zarith
+          # Update to coq-core some day
+          # opam install --deps-only coq-core
+          opam install --deps-only coq
           git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH"
-          pushd "$HOME/coq-$COQ_BRANCH"
-          make -f Makefile.dune world
-          popd
+          make -C "$HOME/coq-$COQ_BRANCH" -f Makefile.dune world
+          # Install math-comp using Coq from git
           PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
           git clone --depth=3 -b master https://github.com/math-comp/math-comp.git
-          pushd math-comp/mathcomp/ssreflect
-          make
-          make install
-          popd
+          make -C math-comp/mathcomp/ssreflect
+          make -C math-comp/mathcomp/ssreflect install
       - name: Extra OPAM Setup (Coq, js_of_ocaml)
         if: ${{ matrix.extra-opam != '' }}
         run: |
           eval $(opam env)
-          opam install $EXTRA_OPAM
+          opam install ${{ matrix.extra-opam }}
       - name: Build and Test SerAPI
         run: |
           eval $(opam env)
