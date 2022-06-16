@@ -1,6 +1,6 @@
 (************************************************************************)
 (*         *   The Coq Proof Assistant / The Coq Development Team       *)
-(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2021       *)
+(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2018       *)
 (* <O___,, *       (see CREDITS file for the list of authors)           *)
 (*   \VV/  **************************************************************)
 (*    //   *    This file is distributed under the terms of the         *)
@@ -9,20 +9,9 @@
 (************************************************************************)
 
 (************************************************************************)
-(* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
-(* Copyright 2020-2021 Inria                                            *)
+(* Coq Extended API                                                     *)
 (* Written by: Emilio J. Gallego Arias                                  *)
 (************************************************************************)
-(* Status: Experimental                                                 *)
-(************************************************************************)
 
-val check_pending_proofs : pstate:Vernacstate.LemmaStack.t option -> unit
-
-val save_vo
-  :  doc:Stm.doc
-  -> ?ldir:Names.DirPath.t
-  -> pstate:Vernacstate.LemmaStack.t option
-  -> in_file:string
-  -> unit
-  -> unit
+(* Functions missing from Coq's API, to be upstreamed! *)
+val context_of_st : Stm.state -> Evd.evar_map * Environ.env

@@ -111,12 +111,12 @@ let _ =
 
       Lwt_list.map_s (Jslibmng.load_pkg out_libevent base_path) pkgs >>= fun bundles ->
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
-      let ml_load_path = []                                              in
-      let vo_load_path = List.map pkg_to_bb all_pkgs                     in
+      let ml_path = []                                              in
+      let vo_path = List.map pkg_to_bb all_pkgs                     in
       let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
       let debug       = false                                            in
       let allow_sprop = true                                             in
-      ignore (sertop_init ~fb_out:post_message ~ml_load_path ~vo_load_path ~injections ~debug ~allow_sprop);
+      ignore (sertop_init ~fb_out:post_message ~ml_path ~vo_path ~injections ~debug ~allow_sprop);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit
