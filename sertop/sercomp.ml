@@ -198,8 +198,8 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
   let options = Serlib.Serlib_init.{ omit_loc; omit_att; exn_on_opaque } in
   Serlib.Serlib_init.init ~options;
 
-<<<<<<< HEAD
   let iload_path = Serapi.Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
+
   let allow_sprop = not disallow_sprop in
   let stm_flags =
     { Sertop.Sertop_init.enable_async = async
@@ -207,11 +207,7 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
     ; async_workers
     ; error_recovery
     } in
-  let doc, sid = create_document ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter in
-=======
-  let iload_path = Serapi_paths.coq_loadpath_default ~implicit:true ~coq_path @ ml_path @ load_path @ rload_path in
-  let doc, sid = create_document ~mode ~in_file ~async ~async_workers ~quick ~iload_path ~debug in
->>>>>>> [sertop] Add support for kernel trace serialization.
+  let doc, sid = create_document ~mode ~in_file ~stm_flags ~quick ~iload_path ~debug ~allow_sprop ~indices_matter in
 
   (* main loop *)
   let in_chan = open_in in_file in
