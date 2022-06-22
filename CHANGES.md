@@ -1,3 +1,8 @@
+## Version 0.15.1:
+
+ - [serlib] Fix bad bypass of opaquetab serialization. This caused a
+            segfault in some cases.
+
 ## Version 0.15.0:
 
  - [serapi] (!) support for Coq 8.15, see upstream changes; nothing

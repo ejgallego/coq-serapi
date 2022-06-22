@@ -44,8 +44,6 @@ let opaque_of_sexp f x = Obj.magic (_opaque_of_sexp f x)
 
 module Map = Ser_cMap.Make(Int.Map)(Ser_int)
 type _opaquetab = {
-  opaque_val : proofterm Map.t;
-  (** Actual proof terms *)
   opaque_len : int;
   (** Size of the above map *)
   opaque_dir : Names.DirPath.t;
