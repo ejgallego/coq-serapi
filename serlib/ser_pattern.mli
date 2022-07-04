@@ -15,12 +15,7 @@
 
 open Sexplib
 
-type patvar = Pattern.patvar
-
-val patvar_of_sexp : Sexp.t -> patvar
-val sexp_of_patvar : patvar -> Sexp.t
-val patvar_of_yojson : Yojson.Safe.t -> (patvar, string) Result.result
-val patvar_to_yojson : patvar -> Yojson.Safe.t
+type patvar = Pattern.patvar [@@deriving sexp,yojson,hash,compare]
 
 type case_info_pattern = Pattern.case_info_pattern
 

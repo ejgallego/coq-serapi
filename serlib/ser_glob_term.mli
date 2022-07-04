@@ -15,17 +15,8 @@
 
 open Sexplib
 
-type binding_kind = Glob_term.binding_kind
-val binding_kind_of_sexp : Sexp.t -> Glob_term.binding_kind
-val sexp_of_binding_kind : Glob_term.binding_kind -> Sexp.t
-val binding_kind_of_yojson : Yojson.Safe.t -> (binding_kind,string) result
-val binding_kind_to_yojson : Glob_term.binding_kind -> Yojson.Safe.t
-
-type 'a glob_sort_gen = 'a Glob_term.glob_sort_gen
-val glob_sort_gen_of_sexp : (Sexp.t -> 'a) ->Sexp.t -> 'a Glob_term.glob_sort_gen
-val sexp_of_glob_sort_gen : ('a -> Sexp.t) -> 'a Glob_term.glob_sort_gen -> Sexp.t
-val glob_sort_gen_of_yojson : (Yojson.Safe.t -> ('a,string) result ) -> Yojson.Safe.t -> ('a glob_sort_gen, string) result
-val glob_sort_gen_to_yojson : ('a -> Yojson.Safe.t) -> 'a Glob_term.glob_sort_gen -> Yojson.Safe.t
+type binding_kind = Glob_term.binding_kind [@@deriving sexp,yojson,hash,compare]
+type 'a glob_sort_gen = 'a Glob_term.glob_sort_gen [@@deriving sexp,yojson,hash,compare]
 
 type glob_level = Glob_term.glob_level
 val glob_level_of_sexp : Sexp.t -> Glob_term.glob_level
@@ -52,8 +43,7 @@ val sexp_of_glob_constraint : Glob_term.glob_constraint -> Sexp.t
 val glob_constraint_of_yojson : Yojson.Safe.t -> (glob_constraint, string) Result.result
 val glob_constraint_to_yojson : glob_constraint -> Yojson.Safe.t
 
-type existential_name = Glob_term.existential_name
-
+type existential_name = Glob_term.existential_name [@@deriving sexp,yojson,hash,compare]
 type cases_pattern    = Glob_term.cases_pattern
 
 type glob_constr        = Glob_term.glob_constr
@@ -63,11 +53,6 @@ and tomatch_tuple       = Glob_term.tomatch_tuple
 and tomatch_tuples      = Glob_term.tomatch_tuples
 and cases_clause        = Glob_term.cases_clause
 and cases_clauses       = Glob_term.cases_clauses
-
-val existential_name_of_sexp : Sexp.t -> Glob_term.existential_name
-val sexp_of_existential_name : Glob_term.existential_name -> Sexp.t
-val existential_name_of_yojson : Yojson.Safe.t -> (existential_name, string) Result.result
-val existential_name_to_yojson : existential_name -> Yojson.Safe.t
 
 val cases_pattern_of_sexp : Sexp.t -> cases_pattern
 val sexp_of_cases_pattern : cases_pattern -> Sexp.t

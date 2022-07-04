@@ -13,19 +13,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+include SerType.SJHC with type t = Sorts.t
 
-type family = Sorts.family
-val family_of_sexp : Sexp.t -> family
-val sexp_of_family : family -> Sexp.t
-
-val family_of_yojson : Yojson.Safe.t -> (family, string) Result.result
-val family_to_yojson : family -> Yojson.Safe.t
-
-include SerType.SJ with type t = Sorts.t
-
-type relevance = Sorts.relevance
-val relevance_of_sexp : Sexp.t -> relevance
-val sexp_of_relevance : relevance -> Sexp.t
-val relevance_of_yojson : Yojson.Safe.t -> (relevance, string) Result.result
-val relevance_to_yojson : relevance -> Yojson.Safe.t
+type family = Sorts.family [@@deriving sexp,yojson,hash,compare]
+type relevance = Sorts.relevance [@@deriving sexp,yojson,hash,compare]

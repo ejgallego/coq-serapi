@@ -13,6 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module Names = Ser_names
@@ -22,7 +24,7 @@ module RawLevel = struct
 
   module UGlobal = struct
     type t = Names.DirPath.t * int
-    [@@deriving sexp, yojson]
+    [@@deriving sexp, yojson, hash,compare]
   end
 
   type t =
@@ -31,7 +33,7 @@ module RawLevel = struct
   | Set
   | Level of UGlobal.t
   | Var of int
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash,compare]
 
 end
 
@@ -41,9 +43,11 @@ module Level_ = struct
     { hash : int
     ; data : RawLevel.t
     }
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash,compare]
 
   type t = Univ.Level.t
+
+  let _t_put = Obj.magic
 
   let t_of_sexp sexp  = Obj.magic (_t_of_sexp sexp)
   let sexp_of_t level = sexp_of__t (Obj.magic level)
@@ -51,6 +55,11 @@ module Level_ = struct
   let of_yojson json  =
     Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
   let to_yojson level = _t_to_yojson (Obj.magic level)
+
+  let hash level = hash__t (Obj.magic level)
+  let hash_fold_t st level = hash_fold__t st (Obj.magic level)
+
+  let compare x y = compare__t (_t_put x) (_t_put y)
 
 end
 
@@ -64,7 +73,9 @@ module Universe = struct
   type t = [%import: Univ.Universe.t]
 
   type _t = (Level.t * int) list
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,hash,compare]
+
+  let _t_put = Obj.magic
 
   let t_of_sexp sexp     = Obj.magic (_t_of_sexp sexp)
   let sexp_of_t universe = sexp_of__t (Obj.magic universe)
@@ -72,6 +83,11 @@ module Universe = struct
   let of_yojson json  =
     Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
   let to_yojson level = _t_to_yojson (Obj.magic level)
+
+  let hash level = hash__t (Obj.magic level)
+  let hash_fold_t st level = hash_fold__t st (Obj.magic level)
+
+  let compare x y = compare__t (_t_put x) (_t_put y)
 end
 
 (*************************************************************************)
@@ -80,7 +96,7 @@ module Variance = struct
 
   type t =
     [%import: Univ.Variance.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -106,7 +122,7 @@ end
 
 type constraint_type =
   [%import: Univ.constraint_type]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson,hash,compare]
 
 type univ_constraint =
   [%import: Univ.univ_constraint]

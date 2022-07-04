@@ -1,3 +1,9 @@
+## Version 0.15.3:
+
+ - [serlib] Backport serlib improvements from 0.16.0:
+ - [serlib] Coq AST now support compare and hash (ignoring locations)
+            (@ejgallego)
+
 ## Version 0.15.2:
 
  - [deps]   Support Jane Street libraries v0.15.0 (@ejgallego)

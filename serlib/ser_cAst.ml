@@ -20,8 +20,8 @@ module Loc        = Ser_loc
 module L = struct
 type 'a t = {
   v   : 'a;
-  loc : Loc.t option;
-} [@@deriving sexp,yojson]
+  loc : Loc.t option [@ignore] [@hash.ignore];
+} [@@deriving sexp,yojson,hash,compare]
 end
 
 type 'a t = 'a CAst.t = private {
@@ -34,6 +34,10 @@ let sexp_of_t f { CAst.v ; loc } = L.sexp_of_t f { L.v ; loc }
 
 let of_yojson f json = Ppx_deriving_yojson_runtime.(L.of_yojson f json >|= fun { L.v; loc } -> CAst.make ?loc:loc v)
 let to_yojson f { CAst.v ; loc } = L.to_yojson f { L.v ; loc }
+
+let hash_fold_t f st { CAst.v; loc } = L.hash_fold_t f st { L.v; loc }
+
+let compare f { CAst.v = v1; loc = l1 } { CAst.v = v2; loc = l2 } = L.compare f { L.v = v1; loc = l1 } { L.v = v2; loc = l2 }
 
 let omit_att = ref false
 

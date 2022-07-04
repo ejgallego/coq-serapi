@@ -13,25 +13,27 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module Names     = Ser_names
 
 type 'a or_var =
   [%import: 'a Locus.or_var]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a occurrences_gen =
   [%import: 'a Locus.occurrences_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type occurrences_expr =
   [%import: Locus.occurrences_expr]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a with_occurrences =
   [%import: 'a Locus.with_occurrences]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type occurrences =
   [%import: Locus.occurrences]

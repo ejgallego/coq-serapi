@@ -15,6 +15,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module Libnames = Ser_libnames
@@ -25,7 +27,7 @@ type option_locality =
 
 type option_name =
   [%import: Goptions.option_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type option_value =
   [%import: Goptions.option_value]
@@ -37,5 +39,5 @@ type option_state =
 
 type table_value =
   [%import: Goptions.table_value]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 

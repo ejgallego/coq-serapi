@@ -15,18 +15,13 @@
 
 open Sexplib
 
-module Level : SerType.SJ with type t = Univ.Level.t
-module Universe : SerType.SJ with type t = Univ.Universe.t
+module Level : SerType.SJHC with type t = Univ.Level.t
+module Universe : SerType.SJHC with type t = Univ.Universe.t
 
-module Variance : SerType.SJ with type t = Univ.Variance.t
+module Variance : SerType.SJHC with type t = Univ.Variance.t
 module Instance : SerType.SJ with type t = Univ.Instance.t
 
-type constraint_type = Univ.constraint_type
-
-val constraint_type_of_sexp : Sexp.t -> constraint_type
-val sexp_of_constraint_type : constraint_type -> Sexp.t
-val constraint_type_of_yojson : Yojson.Safe.t -> (constraint_type, string) Result.result
-val constraint_type_to_yojson : constraint_type -> Yojson.Safe.t
+type constraint_type = Univ.constraint_type [@@deriving sexp,yojson,hash,compare]
 
 type univ_constraint = Univ.univ_constraint
 

@@ -23,7 +23,7 @@ open Genarg
 
 type rlevel =
   [%import: Genarg.rlevel]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash]
 type glevel =
   [%import: Genarg.glevel]
   [@@deriving sexp,yojson]
@@ -196,6 +196,13 @@ let generic_argument_of_sexp _lvl sexp : 'a Genarg.generic_argument =
 let generic_argument_of_yojson _lvl _json = Error "not supported generic_argument_of_yojson"
 let generic_argument_to_yojson _lvl _g = `String "foo"
 
+(* let hash_generic_argument = Hashtbl.hash *)
+open Ppx_hash_lib.Std.Hash
+(* XXX *)
+(* let hash_fold_generic_argument (_f : state -> rlevel -> state) (_st : state) (x : 'a generic_argument) =
+ *   Builtin.hash_fold_string _st (Sexp.to_string (sexp_of_generic_argument _f x)) *)
+let _hash_fold_generic_argument _st _f _x = raise (Invalid_argument "genarg hash")
+
 type 'a generic_argument = 'a Genarg.generic_argument
 
 type glob_generic_argument =
@@ -205,6 +212,17 @@ type glob_generic_argument =
 type raw_generic_argument =
   [%import: Genarg.raw_generic_argument]
   [@@deriving sexp,yojson]
+
+let hash_raw_generic_argument x =
+  Builtin.hash_string (Sexp.to_string (sexp_of_raw_generic_argument x))
+
+let hash_fold_raw_generic_argument st x =
+  Builtin.hash_fold_string st (Sexp.to_string (sexp_of_raw_generic_argument x))
+
+open Ppx_compare_lib
+
+let compare_raw_generic_argument x y =
+  Builtin.compare_string (Sexp.to_string (sexp_of_raw_generic_argument x)) (Sexp.to_string (sexp_of_raw_generic_argument y))
 
 type typed_generic_argument =
   [%import: Genarg.typed_generic_argument]

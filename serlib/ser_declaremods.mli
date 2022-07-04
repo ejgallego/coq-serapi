@@ -15,17 +15,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
-type 'a module_signature = 'a Declaremods.module_signature
-
-val module_signature_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a module_signature
-val sexp_of_module_signature : ('a -> Sexp.t) -> 'a module_signature -> Sexp.t
-val module_signature_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a module_signature, string) Result.result
-val module_signature_to_yojson : ('a -> Yojson.Safe.t) -> 'a module_signature -> Yojson.Safe.t
-
-type inline = Declaremods.inline
-val inline_of_sexp : Sexp.t -> inline
-val sexp_of_inline : inline -> Sexp.t
-val inline_of_yojson : Yojson.Safe.t -> (inline, string) Result.result
-val inline_to_yojson : inline -> Yojson.Safe.t
+type 'a module_signature = 'a Declaremods.module_signature [@@deriving sexp,yojson,hash,compare]
+type inline = Declaremods.inline [@@deriving sexp,yojson,hash,compare]

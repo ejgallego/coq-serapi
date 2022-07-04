@@ -48,11 +48,7 @@ val sexp_of_may_eval :
   ('b -> Sexp.t) ->
   ('c -> Sexp.t) -> ('a, 'b, 'c) may_eval -> Sexp.t
 
-type raw_red_expr = Genredexpr.raw_red_expr
-val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
-val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
-val raw_red_expr_of_yojson : Yojson.Safe.t -> (raw_red_expr, string) Result.result
-val raw_red_expr_to_yojson : raw_red_expr -> Yojson.Safe.t
+type raw_red_expr = Genredexpr.raw_red_expr [@@deriving sexp,yojson,hash,compare]
 
 type r_cst = Genredexpr.r_cst
 val r_cst_of_sexp : Sexp.t -> r_cst
