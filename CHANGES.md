@@ -14,6 +14,7 @@
  - [deps]   Support Jane Street libraries v0.15.0 (@ejgallego)
  - [serlib] Coq AST now support compare and hash (ignoring locations)
             (@ejgallego)
+ - [serapi] New query `Objects` to dump Coq's libobject (@ejgallego)
 
 ## Version 0.15.1:
 

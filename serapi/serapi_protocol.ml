@@ -140,6 +140,8 @@ type coq_object =
                     (* * Evd.evar_map *)
   | CoqAssumptions of Serapi_assumptions.t
   | CoqComments of ((int * int) * string) list list
+  | CoqLibObjects of { library_segment : Lib.library_segment; path_prefix : Nametab.object_prefix }
+  (** Meta-logical Objects in Coq's library / module system *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -240,6 +242,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   (* | CoqGoal (_,g,_) -> pr (Ppconstr.pr_lconstr_expr g) *)
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
   | CoqComments _ -> Pp.str "FIXME comments"
+  | CoqLibObjects _ -> Pp.str "FIXME libobjects"
 
 let str_pp_obj env sigma fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj env sigma obj)
@@ -385,6 +388,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqProof _      -> true
   | CoqAssumptions _-> true
   | CoqComments _   -> true
+  | CoqLibObjects _   -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -422,6 +426,8 @@ type query_cmd =
   | Complete of string
   | Comments
   (** Get all comments of a document *)
+  | Objects
+  (** Get Coq meta-logical module objects *)
 
 module QueryUtil = struct
 
@@ -568,6 +574,11 @@ module QueryUtil = struct
     let comments = Pcoq.Parsable.comments pa |> List.rev in
     _comments := comments :: !_comments
 
+  let libobjects () =
+    let library_segment = Lib.contents () in
+    let path_prefix = Lib.prefix () in
+    CoqLibObjects { library_segment; path_prefix }
+
 end
 
 let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object list =
@@ -610,6 +621,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Complete prefix ->
     List.map (fun x -> CoqGlobRefExt x) (Nametab.completion_canditates (Libnames.qualid_of_string prefix))
   | Comments -> [CoqComments (List.rev !QueryUtil._comments)]
+  | Objects -> [QueryUtil.libobjects ()]
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)

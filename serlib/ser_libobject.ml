@@ -14,26 +14,44 @@
 
 open Sexplib.Std
 
-module Nametab = Ser_nametab
-module Libobject = Ser_libobject
-module Summary = Ser_summary
+module Names = Ser_names
+module Mod_subst = Ser_mod_subst
 
-type is_type =
-  [%import: Lib.is_type]
+module CString = struct
+  module Pred = struct
+    include CString.Pred
+    let t_of_sexp _ = CString.Pred.empty
+    let sexp_of_t _ = Sexplib.Sexp.Atom "XXX: CString.Pred.t"
+  end
+end
+
+type _open_filter =
+  | Unfiltered
+  | Filtered of CString.Pred.t
   [@@deriving sexp]
 
-type export_flag =
-  [%import: Lib.export_flag]
+let _t_put x = Obj.magic x
+let _t_get x = Obj.magic x
+
+type open_filter = [%import: Libobject.open_filter]
+let open_filter_of_sexp x = _t_put (_open_filter_of_sexp x)
+let sexp_of_open_filter x = sexp_of__open_filter (_t_get x)
+
+module Dyn = struct
+  include Libobject.Dyn
+
+  let t_of_sexp x = Serlib_base.opaque_of_sexp ~typ:"Libobject.Dyn.t" x
+  let sexp_of_t x = Serlib_base.sexp_of_opaque ~typ:"Libobject.Dyn.t" x
+end
+
+type obj =
+  [%import: Libobject.obj]
   [@@deriving sexp]
 
-type export =
-  [%import: Lib.export]
-  [@@deriving sexp]
+type algebraic_objects =
+  [%import: Libobject.algebraic_objects]
+and t = [%import: Libobject.t]
+and substitutive_objects = [%import: Libobject.substitutive_objects]
+[@@deriving sexp]
 
-type node =
-  [%import: Lib.node]
-  [@@deriving sexp]
 
-type library_segment =
-  [%import: Lib.library_segment]
-  [@@deriving sexp]

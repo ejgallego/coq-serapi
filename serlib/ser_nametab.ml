@@ -15,6 +15,6 @@
 
 module Names = Ser_names
 
-(* type ltac_constant =
- *   [%import: Nametab.ltac_constant]
- *   [@@deriving sexp] *)
+type object_prefix =
+  [%import: Nametab.object_prefix]
+  [@@deriving sexp]

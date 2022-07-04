@@ -238,6 +238,8 @@ type coq_object =
 
      See https://github.com/coq/coq/issues/12413 for updates on
      improved support *)
+  | CoqLibObjects of { library_segment : Lib.library_segment; path_prefix : Nametab.object_prefix }
+  (** Meta-logical Objects in Coq's library / module system *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -361,6 +363,8 @@ type query_cmd =
   (** Naïve but efficient prefix-based completion of identifiers *)
   | Comments
   (** Get all comments of a document *)
+  | Objects
+  (** Get Coq meta-logical module objects *)
 
 module QueryUtil : sig
   val info_of_id : Environ.env -> string -> coq_object list * coq_object list

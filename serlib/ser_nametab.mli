@@ -13,9 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-(* open Sexplib *)
-
-(* type ltac_constant = Nametab.ltac_constant
- * val ltac_constant_of_sexp : Sexp.t -> ltac_constant
- * val sexp_of_ltac_constant : ltac_constant -> Sexp.t *)
+type object_prefix = Nametab.object_prefix [@@deriving sexp]
 
