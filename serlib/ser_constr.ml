@@ -50,11 +50,11 @@ type pconstructor =
 
 type cast_kind =
   [%import: Constr.cast_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type case_style =
   [%import: Constr.case_style]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type case_printing =
   [%import: Constr.case_printing]

@@ -16,6 +16,18 @@ module type SJ = sig
   val to_yojson : t -> Yojson.Safe.t
 end
 
+module type SJH = sig
+
+  include SJ
+  val hash : t -> int
+  val hash_fold_t : Ppx_hash_lib.Std.Hash.state -> t -> Ppx_hash_lib.Std.Hash.state
+end
+
+module type SJHC = sig
+  include SJH
+  val compare : t -> t -> int
+end
+
 module type S1 = sig
 
   type 'a t

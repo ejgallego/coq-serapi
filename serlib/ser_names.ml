@@ -16,6 +16,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 open Names
@@ -33,7 +35,7 @@ module Id = struct
 module Self = struct
 type t   = [%import: Names.Id.t]
 
-type _t            = Id of string [@@deriving sexp, yojson]
+type _t            = Id of string [@@deriving sexp, yojson, hash, compare]
 let _t_put  id     = Id (Id.to_string id)
 let _t_get (Id id) = Id.of_string_soft id
 
@@ -43,6 +45,10 @@ let sexp_of_t id   = sexp_of__t (_t_put id)
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
 
+let hash x = hash__t (_t_put x)
+let hash_fold_t st id = hash_fold__t st (_t_put id)
+
+let compare x y = compare__t (_t_put x) (_t_put y)
 end
 
 include Self
@@ -57,7 +63,7 @@ module Name = struct
 (* Name.t: public *)
 type t =
   [%import: Names.Name.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -67,7 +73,7 @@ module DirPath = struct
 type t = [%import: Names.DirPath.t]
 
 type _t = DirPath of Id.t list
-      [@@deriving sexp,yojson]
+      [@@deriving sexp,yojson,hash,compare]
 
 let _t_put dp            = DirPath (DirPath.repr dp)
 let _t_get (DirPath dpl) = DirPath.make dpl
@@ -77,6 +83,11 @@ let sexp_of_t dp   = sexp_of__t (_t_put dp)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
+
+let hash x = hash__t (_t_put x)
+let hash_fold_t st id = hash_fold__t st (_t_put id)
+
+let compare x y = compare__t (_t_put x) (_t_put y)
 
 end
 
@@ -94,6 +105,12 @@ let sexp_of_t label = Id.sexp_of_t (Label.to_id label)
 let of_yojson json = Ppx_deriving_yojson_runtime.(Id.of_yojson json >|= Label.of_id)
 let to_yojson level = Id.to_yojson (Label.to_id level)
 
+(* let hash x = Id.hash (Label.to_id x) *)
+let hash_fold_t st id = Id.hash_fold_t st (Label.to_id id)
+
+let _t_put x = Label.to_id x
+let compare x y = Id.compare (_t_put x) (_t_put y)
+
 end
 
 module MBId = struct
@@ -102,7 +119,7 @@ module MBId = struct
 type t = [%import: Names.MBId.t]
 
 type _t = Mbid of int * Id.t * DirPath.t
-      [@@deriving sexp,yojson]
+      [@@deriving sexp,yojson,hash,compare]
 
 let _t_put dp              =
   let i, n, dp = MBId.repr dp in Mbid (i,n,dp)
@@ -114,13 +131,18 @@ let sexp_of_t dp   = sexp_of__t (_t_put dp)
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
 
+(* let hash x = hash__t (_t_put x) *)
+let hash_fold_t st id = hash_fold__t st (_t_put id)
+
+let compare x y = compare__t (_t_put x) (_t_put y)
+
 end
 
 module ModPath = struct
 
 (* ModPath.t: public *)
 type t = [%import: Names.ModPath.t]
-         [@@deriving sexp,yojson]
+         [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -131,18 +153,23 @@ module KerName = struct
 
 type t = [%import: Names.KerName.t]
 
-type _kername = KerName of ModPath.t * Label.t
-      [@@deriving sexp,yojson]
+type _t = KerName of ModPath.t * Label.t
+      [@@deriving sexp,yojson,hash,compare]
 
-let _kername_put kn              =
+let _t_put kn              =
   let mp, l = KerName.repr kn in KerName (mp,l)
 let _kername_get (KerName (mp,l)) = KerName.make mp l
 
-let t_of_sexp sexp = _kername_get (_kername_of_sexp sexp)
-let sexp_of_t kn   = sexp_of__kername (_kername_put kn)
+let t_of_sexp sexp = _kername_get (_t_of_sexp sexp)
+let sexp_of_t kn   = sexp_of__t (_t_put kn)
 
-let of_yojson json = Ppx_deriving_yojson_runtime.(_kername_of_yojson json >|= _kername_get)
-let to_yojson kn   = _kername_to_yojson (_kername_put kn)
+let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _kername_get)
+let to_yojson kn   = _t_to_yojson (_t_put kn)
+
+let hash x = hash__t (_t_put x)
+let hash_fold_t st id = hash_fold__t st (_t_put id)
+
+let compare x y = compare__t (_t_put x) (_t_put y)
 
 let equal = KerName.equal
 
@@ -154,7 +181,7 @@ module Constant = struct
 type t = [%import: Names.Constant.t]
 
 type _t = Constant of KerName.t * KerName.t option
-      [@@deriving sexp,yojson]
+      [@@deriving sexp,yojson,hash,compare]
 
 let _t_put cs =
   let cu, cc = Constant.(user cs, canonical cs) in
@@ -169,6 +196,11 @@ let sexp_of_t dp   = sexp_of__t (_t_put dp)
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
 
+let hash x = hash__t (_t_put x)
+let hash_fold_t st id = hash_fold__t st (_t_put id)
+
+let compare x y = compare__t (_t_put x) (_t_put y)
+
 end
 
 module Cset_env = Ser_cSet.Make(Cset_env)(Constant)
@@ -182,7 +214,7 @@ module MutInd = struct
 type t = [%import: Names.MutInd.t]
 
 type _t = MutInd of KerName.t * KerName.t option
-      [@@deriving sexp,yojson]
+      [@@deriving sexp,yojson,hash,compare]
 
 let _t_put cs              =
   let cu, cc = MutInd.(user cs, canonical cs) in
@@ -197,6 +229,11 @@ let sexp_of_t dp   = sexp_of__t (_t_put dp)
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
 
+(* let hash x = hash__t (_t_put x) *)
+let hash_fold_t st id = hash_fold__t st (_t_put id)
+
+let compare x y = compare__t (_t_put x) (_t_put y)
+
 end
 
 module Mindmap = Ser_cMap.Make(Mindmap)(MutInd)
@@ -208,30 +245,30 @@ type 'a tableKey =
 
 type variable =
   [%import: Names.variable]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* Inductive and constructor = public *)
 module Ind = struct
   type t =
   [%import: Names.Ind.t]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,hash,compare]
 end
 
 module Indset_env = Ser_cSet.Make(Indset_env)(Ind)
 
 type inductive =
   [%import: Names.inductive]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 module Construct = struct
   type t =
   [%import: Names.Construct.t]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 end
 type constructor =
   [%import: Names.constructor]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* Projection: private *)
 module Projection = struct
@@ -271,7 +308,7 @@ end
 module GlobRef = struct
 
 type t = [%import: Names.GlobRef.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -282,12 +319,12 @@ end
 
 type lident =
   [%import: Names.lident]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type lname =
   [%import: Names.lname]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type lstring =
   [%import: Names.lstring]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]

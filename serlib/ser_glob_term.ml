@@ -13,6 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module Loc        = Ser_loc
@@ -34,7 +36,7 @@ module Namegen    = Ser_namegen
 
 type binding_kind =
   [%import: Glob_term.binding_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type 'a universe_kind =
  *   [%import: 'a Glob_term.universe_kind]
@@ -50,7 +52,7 @@ type glob_sort_name =
 
 type 'a glob_sort_gen =
   [%import: 'a Glob_term.glob_sort_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type 'a glob_sort_expr =
  *   [%import: 'a Glob_term.glob_sort_expr]
@@ -78,7 +80,7 @@ type glob_sort =
 
 type existential_name =
   [%import: Glob_term.existential_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a cases_pattern_r = [%import: 'a Glob_term.cases_pattern_r]
 and 'a cases_pattern_g  = [%import: 'a Glob_term.cases_pattern_g]

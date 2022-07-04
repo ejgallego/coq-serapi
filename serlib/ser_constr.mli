@@ -36,18 +36,8 @@ type pconstructor = Constr.pconstructor
 val pconstructor_of_sexp : Sexp.t -> pconstructor
 val sexp_of_pconstructor : pconstructor -> Sexp.t
 
-type cast_kind = Constr.cast_kind
-val cast_kind_of_sexp : Sexp.t -> cast_kind
-val sexp_of_cast_kind : cast_kind -> Sexp.t
-val cast_kind_of_yojson : Yojson.Safe.t -> (cast_kind, string) Result.result
-val cast_kind_to_yojson : cast_kind -> Yojson.Safe.t
-
-type case_style = Constr.case_style
-
-val case_style_of_sexp : Sexp.t -> case_style
-val sexp_of_case_style : case_style -> Sexp.t
-val case_style_of_yojson : Yojson.Safe.t -> (case_style, string) Result.result
-val case_style_to_yojson : case_style -> Yojson.Safe.t
+type cast_kind = Constr.cast_kind [@@deriving sexp, yojson, hash,compare]
+type case_style = Constr.case_style [@@deriving sexp, yojson, hash,compare]
 
 type case_printing = Constr.case_printing
 

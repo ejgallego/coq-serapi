@@ -22,8 +22,8 @@ module CAst  = Ser_cAst
 module Names = Ser_names
 
 type _t =
-    Ser_Qualid of Names.DirPath.t * Names.Id.t
-  [@@deriving sexp,yojson]
+  | Ser_Qualid of Names.DirPath.t * Names.Id.t
+    [@@deriving sexp,yojson,hash,compare]
 
 let _t_put qid =
   let (dp, id) = Libnames.repr_qualid (cmake qid) in
@@ -40,16 +40,20 @@ let sexp_of_qualid_r qid  = sexp_of__t (_t_put qid)
 let qualid_r_of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let qualid_r_to_yojson level = _t_to_yojson (_t_put level)
 
+(* let hash_qualid_r x = hash__t (_t_put x) *)
+let hash_fold_qualid_r st x = hash_fold__t st (_t_put x)
+let compare_qualid_r x y = compare__t (_t_put x) (_t_put y)
+
 (* qualid: private *)
 type qualid =
   [%import: Libnames.qualid]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 module FP = struct
   type _t =
     { dirpath : Names.DirPath.t
     ; basename : Names.Id.t }
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
   let _t_get { dirpath; basename } = Libnames.make_path dirpath basename
   let _t_put fp = let dirpath, basename = Libnames.repr_path fp in { dirpath; basename }
@@ -64,3 +68,7 @@ let sexp_of_full_path qid  = sexp_of__t (_t_put qid)
 let full_path_of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let full_path_to_yojson level = _t_to_yojson (_t_put level)
 
+let hash_full_path x = hash__t (_t_put x)
+let hash_fold_full_path st x = hash_fold__t st (_t_put x)
+
+let compare_full_path x y = compare__t (_t_put x) (_t_put y)

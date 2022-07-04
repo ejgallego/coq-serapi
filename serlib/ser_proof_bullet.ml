@@ -15,8 +15,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Conv
 
 type t =
   [%import: Proof_bullet.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]

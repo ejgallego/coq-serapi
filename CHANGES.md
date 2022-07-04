@@ -12,6 +12,8 @@
             (@ejgallego)
  - [deps]   Require cmdliner >= 1.1.0 (@ejgallego)
  - [deps]   Support Jane Street libraries v0.15.0 (@ejgallego)
+ - [serlib] Coq AST now support compare and hash (ignoring locations)
+            (@ejgallego)
 
 ## Version 0.15.1:
 
