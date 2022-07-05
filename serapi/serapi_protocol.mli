@@ -192,6 +192,8 @@ type coq_object =
   (** Coq Options, as in [Set Resolution Depth] *)
   | CoqConstr    of Constr.constr
   (** Coq Kernel terms, this is the fundamental representation for terms of the Calculus of Inductive constructions *)
+  | CoqEConstr   of EConstr.t
+  (** Coq Kernel terms, but maybe open *)
   | CoqExpr      of Constrexpr.constr_expr
   (** Coq term ASTs, this is the user-level parsing tree of terms *)
   | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
@@ -223,10 +225,7 @@ type coq_object =
   (** Goals, with types and terms in Kernel-level representation *)
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   (** Goals, with types and terms in user-level, AST representation *)
-  | CoqProof     of Evar.t list
-                    * (Evar.t list * Evar.t list) list
-                    (* We don't seralize the evar map for now... *)
-                    (* * Evd.evar_map *)
+  | CoqProof     of EConstr.constr list
   (** Proof object: really low-level and likely to be deprecated. *)
   | CoqAssumptions of Serapi_assumptions.t
   (** Structured representation of the assumptions of a constant. *)

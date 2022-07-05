@@ -119,6 +119,7 @@ type coq_object =
   | CoqAst       of Vernacexpr.vernac_control
   | CoqOption    of Goptions.option_name * Goptions.option_state
   | CoqConstr    of Constr.constr
+  | CoqEConstr   of EConstr.t
   | CoqExpr      of Constrexpr.constr_expr
   | CoqMInd      of Names.MutInd.t * Declarations.mutual_inductive_body
   | CoqEnv       of Environ.env
@@ -134,10 +135,7 @@ type coq_object =
   | CoqUnparsing of Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
-  | CoqProof     of Evar.t list
-                    * (Evar.t list * Evar.t list) list
-                    (* We don't seralize the evar map for now... *)
-                    (* * Evd.evar_map *)
+  | CoqProof     of EConstr.constr list
   | CoqAssumptions of Serapi_assumptions.t
   | CoqComments of ((int * int) * string) list list
   | CoqLibObjects of { library_segment : Lib.library_segment; path_prefix : Nametab.object_prefix }
@@ -209,6 +207,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   | CoqMInd(m,mind) -> Printmod.pr_mutual_inductive_body env m mind None
   | CoqOption (n,s) -> pp_opt n s
   | CoqConstr  c    -> Printer.pr_lconstr_env env sigma c
+  | CoqEConstr c    -> Printer.pr_leconstr_env env sigma c
   | CoqExpr    e    -> Ppconstr.pr_lconstr_expr env sigma e
   | CoqEnv _env     -> Pp.str "Cannot pretty print environments"
   | CoqTactic(kn,_) -> Names.KerName.print kn
@@ -369,6 +368,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqDP     _     -> true
   | CoqOption (n,_) -> Extra.is_prefix (String.concat "." n) ~prefix
   | CoqConstr _     -> true
+  | CoqEConstr _    -> true
   | CoqExpr _       -> true
   | CoqMInd _       -> true
   | CoqEnv _        -> true
@@ -579,6 +579,12 @@ module QueryUtil = struct
     let path_prefix = Lib.prefix () in
     CoqLibObjects { library_segment; path_prefix }
 
+  let get_proof ~pstate =
+    match pstate with
+    | Some pstate ->
+      let pterms = Declare.Proof.get pstate |> Proof.partial_proof in
+      List.map (fun x -> CoqEConstr x) pterms
+    | None -> []
 end
 
 let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object list =
@@ -594,11 +600,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
   | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
-  | Proof          -> Option.cata (fun pstate ->
-                        let Proof.{goals; stack; _} =
-                          Proof.data (Declare.Proof.get pstate) in
-                        [CoqProof (goals,stack)])
-                      [] pstate
+  | Proof          -> QueryUtil.get_proof ~pstate
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.
                        *)
