@@ -38,10 +38,24 @@ let open_filter_of_sexp x = _t_put (_open_filter_of_sexp x)
 let sexp_of_open_filter x = sexp_of__open_filter (_t_get x)
 
 module Dyn = struct
-  include Libobject.Dyn
+
+  type t = Libobject.Dyn.t
+
+  module Reified = struct
+
+    type t =
+      (* | Constant of Internal.Constant.t
+       * | Inductive of DeclareInd.Internal.inductive_obj *)
+      | TaggedAnon of string
+    [@@deriving sexp]
+
+    let to_t (x : Libobject.Dyn.t) =
+      let Libobject.Dyn.Dyn (tag, _) = x in
+      TaggedAnon (Libobject.Dyn.repr tag)
+  end
 
   let t_of_sexp x = Serlib_base.opaque_of_sexp ~typ:"Libobject.Dyn.t" x
-  let sexp_of_t x = Serlib_base.sexp_of_opaque ~typ:"Libobject.Dyn.t" x
+  let sexp_of_t x = Reified.sexp_of_t (Reified.to_t x)
 end
 
 type obj =
@@ -53,5 +67,3 @@ type algebraic_objects =
 and t = [%import: Libobject.t]
 and substitutive_objects = [%import: Libobject.substitutive_objects]
 [@@deriving sexp]
-
-
