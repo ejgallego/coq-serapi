@@ -1,4 +1,6 @@
 open Sexplib.Conv
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Serlib
 
 module CAst       = Ser_cAst
@@ -15,67 +17,63 @@ end
 
 type 'constr coeff_spec =
   [%import: 'constr Ring_plugin.Ring_ast.coeff_spec]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type cst_tac_spec =
   [%import: Ring_plugin.Ring_ast.cst_tac_spec]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type 'constr ring_mod =
   [%import: 'constr Ring_plugin.Ring_ast.ring_mod]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type 'a field_mod =
   [%import: 'a Ring_plugin.Ring_ast.field_mod]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
-let ser_wit_field_mod =
-  Ser_genarg.
-    { raw_ser = sexp_of_field_mod Constrexpr.sexp_of_constr_expr
-    ; raw_des = field_mod_of_sexp Constrexpr.constr_expr_of_sexp
+module A0 = struct
+  type raw = Constrexpr.constr_expr field_mod
+    [@@deriving sexp,hash,compare]
+  type glb = unit
+    [@@deriving sexp,hash,compare]
+  type top = unit
+    [@@deriving sexp,hash,compare]
+end
 
-    ; glb_ser = sexp_of_unit
-    ; glb_des = unit_of_sexp
+let ser_wit_field_mod = let module M = Ser_genarg.GS(A0) in M.genser
 
-    ; top_ser = sexp_of_unit
-    ; top_des = unit_of_sexp
-  }
+module A1 = struct
+  type raw = Constrexpr.constr_expr field_mod list
+    [@@deriving sexp,hash,compare]
+  type glb = unit
+    [@@deriving sexp,hash,compare]
+  type top = unit
+    [@@deriving sexp,hash,compare]
+end
 
-let ser_wit_field_mods =
-  Ser_genarg.
-    { raw_ser = sexp_of_list (sexp_of_field_mod Constrexpr.sexp_of_constr_expr)
-    ; raw_des = list_of_sexp (field_mod_of_sexp Constrexpr.constr_expr_of_sexp)
+let ser_wit_field_mods = let module M = Ser_genarg.GS(A1) in M.genser
 
-    ; glb_ser = sexp_of_unit
-    ; glb_des = unit_of_sexp
+module A2 = struct
+  type raw = Constrexpr.constr_expr ring_mod
+    [@@deriving sexp,hash,compare]
+  type glb = unit
+    [@@deriving sexp,hash,compare]
+  type top = unit
+    [@@deriving sexp,hash,compare]
+end
 
-    ; top_ser = sexp_of_unit
-    ; top_des = unit_of_sexp
-  }
+let ser_wit_ring_mod = let module M = Ser_genarg.GS(A2) in M.genser
 
-let ser_wit_ring_mod =
-  Ser_genarg.
-    { raw_ser = sexp_of_ring_mod Constrexpr.sexp_of_constr_expr
-    ; raw_des = ring_mod_of_sexp Constrexpr.constr_expr_of_sexp
+module A3 = struct
+  type raw = Constrexpr.constr_expr ring_mod list
+    [@@deriving sexp,hash,compare]
+  type glb = unit
+    [@@deriving sexp,hash,compare]
+  type top = unit
+    [@@deriving sexp,hash,compare]
+end
 
-    ; glb_ser = sexp_of_unit
-    ; glb_des = unit_of_sexp
-
-    ; top_ser = sexp_of_unit
-    ; top_des = unit_of_sexp
-  }
-
-let ser_wit_ring_mods =
-  Ser_genarg.
-    { raw_ser = sexp_of_list (sexp_of_ring_mod Constrexpr.sexp_of_constr_expr)
-    ; raw_des = list_of_sexp (ring_mod_of_sexp Constrexpr.constr_expr_of_sexp)
-
-    ; glb_ser = sexp_of_unit
-    ; glb_des = unit_of_sexp
-
-    ; top_ser = sexp_of_unit
-    ; top_des = unit_of_sexp
-  }
+let ser_wit_ring_mods = let module M = Ser_genarg.GS(A3) in M.genser
 
 let register () =
   Ser_genarg.register_genser Ring_plugin.G_ring.wit_field_mod  ser_wit_field_mod;

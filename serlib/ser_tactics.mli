@@ -13,21 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type clear_flag = Tactics.clear_flag
 
 type 'a core_destruction_arg = 'a Tactics.core_destruction_arg
-
-val core_destruction_arg_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a core_destruction_arg
-val sexp_of_core_destruction_arg :
-  ('a -> Sexp.t) -> 'a core_destruction_arg -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a destruction_arg = clear_flag * 'a core_destruction_arg
-
-val destruction_arg_of_sexp :
-  (Sexp.t -> 'a) -> Sexp.t -> 'a destruction_arg
-
-val sexp_of_destruction_arg :
-  ('a -> Sexp.t) -> 'a destruction_arg -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

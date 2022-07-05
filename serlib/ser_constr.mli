@@ -65,9 +65,7 @@ val cofixpoint_of_sexp : Sexp.t -> cofixpoint
 val sexp_of_cofixpoint : cofixpoint -> Sexp.t
 
 type 'constr pexistential = 'constr Constr.pexistential
-
-val pexistential_of_sexp : (Sexp.t -> 'constr) -> Sexp.t -> 'constr pexistential
-val sexp_of_pexistential : ('constr -> Sexp.t) -> 'constr pexistential -> Sexp.t
+  [@@deriving sexp, yojson, hash, compare]
 
 type ('constr, 'types) prec_declaration = ('constr, 'types) Constr.prec_declaration
 
@@ -99,27 +97,13 @@ val sexp_of_pcofixpoint :
   ('constr, 'types) pcofixpoint -> Sexp.t
 
 type t = Constr.t
-
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
-
-val of_yojson : Yojson.Safe.t -> (t, string) Result.result
-val to_yojson : t -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type constr = t
-
-val constr_of_sexp : Sexp.t -> constr
-val sexp_of_constr : constr -> Sexp.t
-
-val constr_of_yojson : Yojson.Safe.t -> (constr, string) Result.result
-val constr_to_yojson : constr -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type types  = constr
-val types_of_sexp : Sexp.t -> types
-val sexp_of_types : types -> Sexp.t
-
-val types_of_yojson : Yojson.Safe.t -> (types, string) Result.result
-val types_to_yojson : types -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential
@@ -134,13 +118,11 @@ val named_declaration_of_sexp : Sexp.t -> named_declaration
 val sexp_of_named_declaration : named_declaration -> Sexp.t
 
 type named_context = Constr.named_context
-val named_context_of_sexp : Sexp.t -> named_context
-val sexp_of_named_context : named_context -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type rel_declaration = Constr.rel_declaration
 val rel_declaration_of_sexp : Sexp.t -> rel_declaration
 val sexp_of_rel_declaration : rel_declaration -> Sexp.t
 
 type rel_context = Constr.rel_context
-val rel_context_of_sexp : Sexp.t -> rel_context
-val sexp_of_rel_context : rel_context -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

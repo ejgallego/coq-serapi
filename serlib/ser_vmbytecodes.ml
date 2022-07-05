@@ -16,14 +16,18 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names = Ser_names
 module Evar = Ser_evar
 
+let hash_fold_array = hash_fold_array_frozen
+
 type fv_elem =
   [%import: Vmbytecodes.fv_elem]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type fv =
   [%import: Vmbytecodes.fv]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

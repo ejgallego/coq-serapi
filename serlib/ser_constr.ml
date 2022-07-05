@@ -21,8 +21,11 @@
    need to recurse throu the constr to build the clone.
 *)
 
-open Sexplib
 open Sexplib.Std
+open Ppx_compare_lib.Builtin
+open Ppx_hash_lib.Std.Hash.Builtin
+
+let hash_fold_array = hash_fold_array_frozen
 
 module Names   = Ser_names
 module Sorts   = Ser_sorts
@@ -34,19 +37,19 @@ module Float64 = Ser_float64
 
 type metavariable =
   [%import: Constr.metavariable]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash, compare]
 
 type pconstant =
   [%import: Constr.pconstant]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash, compare]
 
 type pinductive =
   [%import: Constr.pinductive]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash, compare]
 
 type pconstructor =
   [%import: Constr.pconstructor]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash, compare]
 
 type cast_kind =
   [%import: Constr.cast_kind]
@@ -58,34 +61,34 @@ type case_style =
 
 type case_printing =
   [%import: Constr.case_printing]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type case_info =
   [%import: Constr.case_info]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson, hash, compare]
 
 type 'constr pexistential =
   [%import: 'constr Constr.pexistential]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('constr, 'types) prec_declaration =
   [%import: ('constr, 'types) Constr.prec_declaration]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('constr, 'types) pfixpoint =
   [%import: ('constr, 'types) Constr.pfixpoint]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('constr, 'types) pcofixpoint =
   [%import: ('constr, 'types) Constr.pcofixpoint]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type constr = Constr.constr
 type types  = Constr.constr
 
 type 'constr pcase_invert =
   [%import: 'constr Constr.pcase_invert]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 let map_pcase_invert f = function
   | NoInvert -> NoInvert
@@ -94,13 +97,13 @@ let map_pcase_invert f = function
 
 type 'constr pcase_branch =
   [%import: 'constr Constr.pcase_branch]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 let map_pcase_branch f (bi, c) = (bi, f c)
 
 type 'types pcase_return =
   [%import: 'types Constr.pcase_return]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 let map_pcase_return f (bi, c) = (bi, f c)
 
@@ -125,7 +128,7 @@ type _constr =
   | Int       of Uint63.t
   | Float     of Float64.t
   | Array     of Univ.Instance.t * _constr array * _constr * _constr
-[@@deriving sexp,yojson]
+[@@deriving sexp,yojson,hash,compare]
 
 let rec _constr_put (c : constr) : _constr =
   let cr  = _constr_put           in
@@ -189,28 +192,46 @@ let rec _constr_get (c : _constr) : constr =
   | Float f             -> C.mkFloat f
   | Array (u,a,e,t)     -> C.mkArray(u, cra a, cr e, cr t)
 
-let constr_of_sexp (c : Sexp.t) : constr =
-  _constr_get (_constr_of_sexp c)
+module ConstrBij = struct
 
-let sexp_of_constr (c : constr) : Sexp.t =
-  sexp_of__constr (_constr_put c)
+  type t = constr
 
-let constr_of_yojson json = Ppx_deriving_yojson_runtime.(_constr_of_yojson json >|= _constr_get)
-let constr_to_yojson level = _constr_to_yojson (_constr_put level)
+  type _t = _constr
+  [@@deriving sexp,yojson,hash,compare]
 
-let types_of_sexp = constr_of_sexp
-let sexp_of_types = sexp_of_constr
+  let to_t = _constr_get
+  let of_t = _constr_put
 
-let types_of_yojson = constr_of_yojson
-let types_to_yojson = constr_to_yojson
+end
+
+module CC = SerType.Biject(ConstrBij)
+
+(* type constr = CC.t *)
+let sexp_of_constr = CC.sexp_of_t
+let constr_of_sexp = CC.t_of_sexp
+let constr_of_yojson = CC.of_yojson
+let constr_to_yojson = CC.to_yojson
+let hash_constr = CC.hash
+let hash_fold_constr = CC.hash_fold_t
+let compare_constr = CC.compare
+
+let sexp_of_types = CC.sexp_of_t
+let types_of_sexp = CC.t_of_sexp
+let types_of_yojson = CC.of_yojson
+let types_to_yojson = CC.to_yojson
+let hash_types = CC.hash
+let hash_fold_types = CC.hash_fold_t
+let compare_types = CC.compare
 
 type t = constr
 
 let t_of_sexp = constr_of_sexp
 let sexp_of_t = sexp_of_constr
-
 let of_yojson = constr_of_yojson
 let to_yojson = constr_to_yojson
+let hash = hash_constr
+let hash_fold_t = hash_fold_constr
+let compare = compare_constr
 
 type case_invert =
   [%import: Constr.case_invert]
@@ -238,16 +259,16 @@ let sexp_of_sorts_family = Sorts.sexp_of_family
 
 type named_declaration =
   [%import: Constr.named_declaration]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type named_context =
   [%import: Constr.named_context]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type rel_declaration =
   [%import: Constr.rel_declaration]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type rel_context =
   [%import: Constr.rel_context]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

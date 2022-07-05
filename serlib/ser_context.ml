@@ -14,14 +14,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names   = Ser_names
 module Sorts   = Ser_sorts
 
 type 'a binder_annot =
   [%import: 'a Context.binder_annot]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 module Rel = struct
 
@@ -29,13 +31,14 @@ module Rel = struct
 
   type ('constr, 'types) pt =
     [%import: ('constr, 'types) Context.Rel.Declaration.pt]
-    [@@deriving sexp]
+    [@@deriving sexp,yojson,hash,compare]
+
 
   end
 
   type ('constr, 'types) pt =
     [%import: ('constr, 'types) Context.Rel.pt]
-    [@@deriving sexp]
+    [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -45,13 +48,13 @@ module Named = struct
 
   type ('constr, 'types) pt =
     [%import: ('constr, 'types) Context.Named.Declaration.pt]
-    [@@deriving sexp]
+    [@@deriving sexp,yojson,hash,compare]
 
   end
 
   type ('constr, 'types) pt =
     [%import: ('constr, 'types) Context.Named.pt]
-    [@@deriving sexp]
+    [@@deriving sexp,yojson,hash,compare]
 
 end
 

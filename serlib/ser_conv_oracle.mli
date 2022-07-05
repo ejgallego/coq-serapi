@@ -13,10 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type level = Conv_oracle.level [@@deriving sexp,yojson,hash,compare]
-
-type oracle = Conv_oracle.oracle
-val oracle_of_sexp : Sexp.t -> oracle
-val sexp_of_oracle : oracle -> Sexp.t
+type oracle = Conv_oracle.oracle [@@deriving sexp,yojson,hash,compare]

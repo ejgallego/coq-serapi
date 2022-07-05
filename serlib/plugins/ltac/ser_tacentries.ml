@@ -13,7 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
 open Serlib
 
 module Loc   = Ser_loc
@@ -23,8 +26,8 @@ open Ltac_plugin [@@ocaml.warning "-33"]
 
 type 'a grammar_tactic_prod_item_expr =
   [%import: 'a Ltac_plugin.Tacentries.grammar_tactic_prod_item_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type raw_argument =
   [%import: Ltac_plugin.Tacentries.raw_argument]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]

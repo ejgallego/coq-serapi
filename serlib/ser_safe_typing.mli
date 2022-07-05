@@ -19,8 +19,7 @@
 open Sexplib
 
 type private_constants = Safe_typing.private_constants
-val private_constants_of_sexp : Sexp.t -> private_constants
-val sexp_of_private_constants : private_constants -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type global_declaration = Safe_typing.global_declaration
 val global_declaration_of_sexp : Sexp.t -> global_declaration

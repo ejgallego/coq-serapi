@@ -17,6 +17,11 @@
 
 open Sexplib
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
+let hash_fold_array = hash_fold_array_frozen
+
 open Serlib
 
 module C = CAst
@@ -47,87 +52,87 @@ module Inv        = Ser_inv
 
 type direction_flag =
   [%import: Ltac_plugin.Tacexpr.direction_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type lazy_flag =
   [%import: Ltac_plugin.Tacexpr.lazy_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type global_flag =
   [%import: Ltac_plugin.Tacexpr.global_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type evars_flag =
   [%import: Ltac_plugin.Tacexpr.evars_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type rec_flag =
   [%import: Ltac_plugin.Tacexpr.rec_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type advanced_flag =
   [%import: Ltac_plugin.Tacexpr.advanced_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type letin_flag =
   [%import: Ltac_plugin.Tacexpr.letin_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type clear_flag =
   [%import: Ltac_plugin.Tacexpr.clear_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type check_flag =
   [%import: Ltac_plugin.Tacexpr.check_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ltac_constant =
   [%import: Ltac_plugin.Tacexpr.ltac_constant]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('c,'d,'id) inversion_strength =
   [%import: ('c,'d,'id) Ltac_plugin.Tacexpr.inversion_strength]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('a,'b) location =
   [%import: ('a, 'b) Ltac_plugin.Tacexpr.location]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'id message_token =
   [%import: ('id) Ltac_plugin.Tacexpr.message_token]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('dconstr,'id) induction_clause =
   [%import: ('dconstr,'id) Ltac_plugin.Tacexpr.induction_clause]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('constr,'dconstr,'id) induction_clause_list =
   [%import: ('constr,'dconstr,'id) Ltac_plugin.Tacexpr.induction_clause_list]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a with_bindings_arg =
   [%import: 'a Ltac_plugin.Tacexpr.with_bindings_arg]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a match_pattern =
   [%import: 'a Ltac_plugin.Tacexpr.match_pattern]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a match_context_hyps =
   [%import: 'a Ltac_plugin.Tacexpr.match_context_hyps]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('a,'t) match_rule =
   [%import: ('a, 't) Ltac_plugin.Tacexpr.match_rule]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ml_tactic_name =
   [%import: Ltac_plugin.Tacexpr.ml_tactic_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ml_tactic_entry =
   [%import: Ltac_plugin.Tacexpr.ml_tactic_entry]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type dyn = Ser_Dyn [@@deriving sexp] *)
 (* let to_dyn _   = Ser_Dyn *)
@@ -139,6 +144,7 @@ type ml_tactic_entry =
 (* We thus iso-project the tactic definition in a virtually identical copy (but for the Dyn) *)
 module ITac = struct
 
+[@@@ocaml.warning "-27"]
 type ('trm, 'dtrm, 'pat, 'cst, 'ref, 'nam, 'tacexpr, 'lev) gen_atomic_tactic_expr =
   | TacIntroPattern of evars_flag * 'dtrm Tactypes.intro_pattern_expr CAst.t list
   | TacApply of advanced_flag * evars_flag * 'trm with_bindings_arg list *
@@ -239,11 +245,12 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr =
 
 and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_fun_ast =
     Names.Name.t list * ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
-   [@@deriving sexp]
+   [@@deriving sexp,yojson,hash,compare]
 
 end
+[@@@ocaml.warning "+27"]
 
-let rec _gen_atom_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_atomic_tactic_expr) :
+let rec _gen_atomic_tactic_expr_put (t : 'a Ltac_plugin.Tacexpr.gen_atomic_tactic_expr) :
   ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.gen_atomic_tactic_expr = match t with
   | Ltac_plugin.Tacexpr.TacIntroPattern(a,b)         -> ITac.TacIntroPattern(a,b)
   | Ltac_plugin.Tacexpr.TacApply (a,b,c,d)           -> ITac.TacApply (a,b,c,d)
@@ -275,7 +282,7 @@ and _gen_tactic_expr_r_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr_r) :
   let uu x = List.map u x           in
   let ua x = Array.map u x          in
   match t with
-  | Ltac_plugin.Tacexpr.TacAtom l                -> ITac.TacAtom (_gen_atom_tactic_expr_put l)
+  | Ltac_plugin.Tacexpr.TacAtom l                -> ITac.TacAtom (_gen_atomic_tactic_expr_put l)
   | Ltac_plugin.Tacexpr.TacThen (a,b)            -> ITac.TacThen (u a, u b)
   | Ltac_plugin.Tacexpr.TacDispatch a            -> ITac.TacDispatch (uu a)
   | Ltac_plugin.Tacexpr.TacExtendTac (a,b,c)     -> ITac.TacExtendTac (ua a, u b, ua c)
@@ -426,9 +433,11 @@ and _gen_tactic_fun_ast_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.
 
 type 'd gen_atomic_tactic_expr = 'd Ltac_plugin.Tacexpr.gen_atomic_tactic_expr
 
+(* Sexp part for generic functions *)
+
 let sexp_of_gen_atomic_tactic_expr
   t d p c r n te l (tac : 'a Ltac_plugin.Tacexpr.gen_atomic_tactic_expr) : Sexp.t =
-  ITac.sexp_of_gen_atomic_tactic_expr t d p c r n te l (_gen_atom_tactic_expr_put tac)
+  ITac.sexp_of_gen_atomic_tactic_expr t d p c r n te l (_gen_atomic_tactic_expr_put tac)
 
 let sexp_of_gen_tactic_expr
   t d p c r n te l (tac : 'a Ltac_plugin.Tacexpr.gen_tactic_expr) : Sexp.t =
@@ -457,6 +466,40 @@ let gen_tactic_arg_of_sexp (tac : Sexp.t)
 let gen_fun_ast_of_sexp (tac : Sexp.t)
   t d p c r n te l : 'a Ltac_plugin.Tacexpr.gen_tactic_fun_ast =
   _gen_tactic_fun_ast_get (ITac.gen_tactic_fun_ast_of_sexp t d p c r n te l tac)
+
+(* Yojson part for generic functions *)
+
+let gen_atomic_tactic_expr_to_yojson
+  t d p c r n te l (tac : 'a Ltac_plugin.Tacexpr.gen_atomic_tactic_expr) : _ =
+  ITac.gen_atomic_tactic_expr_to_yojson t d p c r n te l (_gen_atomic_tactic_expr_put tac)
+
+let gen_tactic_expr_to_yojson
+  t d p c r n te l (tac : 'a Ltac_plugin.Tacexpr.gen_tactic_expr) : Yojson.Safe.t =
+  ITac.gen_tactic_expr_to_yojson t d p c r n te l (_gen_tactic_expr_put tac)
+
+let gen_tactic_expr_of_yojson tac
+  t d p c r n te l : ('a Ltac_plugin.Tacexpr.gen_tactic_expr, _) result =
+  Result.map _gen_tactic_expr_get (ITac.gen_tactic_expr_of_yojson t d p c r n te l tac)
+
+let gen_atomic_tactic_expr_of_yojson tac
+  t d p c r n te l : ('a Ltac_plugin.Tacexpr.gen_atomic_tactic_expr, _) result =
+  Result.map _gen_atom_tactic_expr_get (ITac.gen_atomic_tactic_expr_of_yojson t d p c r n te l tac)
+
+(* Hash part for generic functions *)
+
+let hash_fold_gen_tactic_expr t d p c r n te l st tac =
+  ITac.hash_fold_gen_tactic_expr t d p c r n te l st (_gen_tactic_expr_put tac)
+
+let hash_fold_gen_atomic_tactic_expr t d p c r n te l st tac =
+  ITac.hash_fold_gen_atomic_tactic_expr t d p c r n te l st (_gen_atomic_tactic_expr_put tac)
+
+(* Compare part for generic functions *)
+
+let compare_gen_tactic_expr t d p c r n te l t1 t2 : int =
+  ITac.compare_gen_tactic_expr t d p c r n te l (_gen_tactic_expr_put t1) (_gen_tactic_expr_put t2)
+
+let compare_gen_atomic_tactic_expr t d p c r n te l t1 t2 =
+  ITac.compare_gen_atomic_tactic_expr t d p c r n te l (_gen_atomic_tactic_expr_put t1) (_gen_atomic_tactic_expr_put t2)
 
 (************************************************************************)
 (* Main tactics types, we follow tacexpr and provide glob,raw, and      *)
@@ -513,6 +556,101 @@ and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
     Genarg.sexp_of_glevel
     tac
 
+let rec glob_tactic_expr_of_yojson tac =
+  gen_tactic_expr_of_yojson
+    tac
+    Genintern.glob_constr_and_expr_of_yojson
+    Genintern.glob_constr_and_expr_of_yojson
+    Genintern.glob_constr_pattern_and_expr_of_yojson
+    (Locus.or_var_of_yojson (Genredexpr.and_short_name_of_yojson Tacred.evaluable_global_reference_of_yojson))
+    (Locus.or_var_of_yojson (Loc.located_of_yojson ltac_constant_of_yojson))
+    Names.lident_of_yojson
+    glob_tactic_expr_of_yojson
+    Genarg.glevel_of_yojson
+and glob_atomic_tactic_expr_of_yojson tac =
+  gen_atomic_tactic_expr_of_yojson
+    tac
+    Genintern.glob_constr_and_expr_of_yojson
+    Genintern.glob_constr_and_expr_of_yojson
+    Genintern.glob_constr_pattern_and_expr_of_yojson
+    (Locus.or_var_of_yojson (Genredexpr.and_short_name_of_yojson Tacred.evaluable_global_reference_of_yojson))
+    (Locus.or_var_of_yojson (Loc.located_of_yojson ltac_constant_of_yojson))
+    Names.lident_of_yojson
+    glob_tactic_expr_of_yojson
+    Genarg.glevel_of_yojson
+
+let rec glob_tactic_expr_to_yojson tac =
+  gen_tactic_expr_to_yojson
+    Genintern.glob_constr_and_expr_to_yojson
+    Genintern.glob_constr_and_expr_to_yojson
+    Genintern.glob_constr_pattern_and_expr_to_yojson
+    (Locus.or_var_to_yojson (Genredexpr.and_short_name_to_yojson Tacred.evaluable_global_reference_to_yojson))
+    (Locus.or_var_to_yojson (Loc.located_to_yojson ltac_constant_to_yojson))
+    Names.lident_to_yojson
+    glob_tactic_expr_to_yojson
+    Genarg.glevel_to_yojson
+    tac
+and glob_atomic_tactic_expr_to_yojson tac =
+  gen_atomic_tactic_expr_to_yojson
+    Genintern.glob_constr_and_expr_to_yojson
+    Genintern.glob_constr_and_expr_to_yojson
+    Genintern.glob_constr_pattern_and_expr_to_yojson
+    (Locus.or_var_to_yojson (Genredexpr.and_short_name_to_yojson Tacred.evaluable_global_reference_to_yojson))
+    (Locus.or_var_to_yojson (Loc.located_to_yojson ltac_constant_to_yojson))
+    Names.lident_to_yojson
+    glob_tactic_expr_to_yojson
+    Genarg.glevel_to_yojson
+    tac
+
+let rec hash_fold_glob_tactic_expr st tac =
+  hash_fold_gen_tactic_expr
+    Genintern.hash_fold_glob_constr_and_expr
+    Genintern.hash_fold_glob_constr_and_expr
+    Genintern.hash_fold_glob_constr_pattern_and_expr
+    (Locus.hash_fold_or_var (Genredexpr.hash_fold_and_short_name Tacred.hash_fold_evaluable_global_reference))
+    (Locus.hash_fold_or_var (Loc.hash_fold_located hash_fold_ltac_constant))
+    Names.hash_fold_lident
+    hash_fold_glob_tactic_expr
+    Genarg.hash_fold_glevel
+    st tac
+and hash_fold_glob_atomic_tactic_expr st tac =
+  hash_fold_gen_atomic_tactic_expr
+    Genintern.hash_fold_glob_constr_and_expr
+    Genintern.hash_fold_glob_constr_and_expr
+    Genintern.hash_fold_glob_constr_pattern_and_expr
+    (Locus.hash_fold_or_var (Genredexpr.hash_fold_and_short_name Tacred.hash_fold_evaluable_global_reference))
+    (Locus.hash_fold_or_var (Loc.hash_fold_located hash_fold_ltac_constant))
+    Names.hash_fold_lident
+    hash_fold_glob_tactic_expr
+    Genarg.hash_fold_glevel
+    st tac
+
+let hash_glob_tactic_expr = Ppx_hash_lib.Std.Hash.of_fold hash_fold_glob_tactic_expr
+let hash_glob_atomic_tactic_expr = Ppx_hash_lib.Std.Hash.of_fold hash_fold_glob_atomic_tactic_expr
+
+let rec compare_glob_tactic_expr tac =
+  compare_gen_tactic_expr
+    Genintern.compare_glob_constr_and_expr
+    Genintern.compare_glob_constr_and_expr
+    Genintern.compare_glob_constr_pattern_and_expr
+    (Locus.compare_or_var (Genredexpr.compare_and_short_name Tacred.compare_evaluable_global_reference))
+    (Locus.compare_or_var (Loc.compare_located compare_ltac_constant))
+    Names.compare_lident
+    compare_glob_tactic_expr
+    Genarg.compare_glevel
+    tac
+and compare_glob_atomic_tactic_expr tac =
+  compare_gen_atomic_tactic_expr
+    Genintern.compare_glob_constr_and_expr
+    Genintern.compare_glob_constr_and_expr
+    Genintern.compare_glob_constr_pattern_and_expr
+    (Locus.compare_or_var (Genredexpr.compare_and_short_name Tacred.compare_evaluable_global_reference))
+    (Locus.compare_or_var (Loc.compare_located compare_ltac_constant))
+    Names.compare_lident
+    compare_glob_tactic_expr
+    Genarg.compare_glevel
+    tac
+
 (* Raw *)
 type raw_tactic_expr = Ltac_plugin.Tacexpr.raw_tactic_expr
 type raw_atomic_tactic_expr = Ltac_plugin.Tacexpr.raw_atomic_tactic_expr
@@ -563,6 +701,102 @@ and sexp_of_raw_atomic_tactic_expr tac =
     Genarg.sexp_of_rlevel
     tac
 
+(* Yojson *)
+let rec raw_tactic_expr_of_yojson tac =
+  gen_tactic_expr_of_yojson
+    tac
+    Constrexpr.constr_expr_of_yojson
+    Constrexpr.constr_expr_of_yojson
+    Constrexpr.constr_pattern_expr_of_yojson
+    (Constrexpr.or_by_notation_of_yojson Libnames.qualid_of_yojson)
+    Libnames.qualid_of_yojson
+    Names.lident_of_yojson
+    raw_tactic_expr_of_yojson
+    Genarg.rlevel_of_yojson
+and raw_atomic_tactic_expr_of_yojson tac =
+  gen_atomic_tactic_expr_of_yojson
+    tac
+    Constrexpr.constr_expr_of_yojson
+    Constrexpr.constr_expr_of_yojson
+    Constrexpr.constr_pattern_expr_of_yojson
+    (Constrexpr.or_by_notation_of_yojson Libnames.qualid_of_yojson)
+    Libnames.qualid_of_yojson
+    Names.lident_of_yojson
+    raw_tactic_expr_of_yojson
+    Genarg.rlevel_of_yojson
+
+let rec raw_tactic_expr_to_yojson (tac : raw_tactic_expr) =
+  gen_tactic_expr_to_yojson
+    Constrexpr.constr_expr_to_yojson
+    Constrexpr.constr_expr_to_yojson
+    Constrexpr.constr_pattern_expr_to_yojson
+    (Constrexpr.or_by_notation_to_yojson Libnames.qualid_to_yojson)
+    Libnames.qualid_to_yojson
+    Names.lident_to_yojson
+    raw_tactic_expr_to_yojson
+    Genarg.rlevel_to_yojson
+    tac
+and raw_atomic_tactic_expr_to_yojson tac =
+  gen_atomic_tactic_expr_to_yojson
+    Constrexpr.constr_expr_to_yojson
+    Constrexpr.constr_expr_to_yojson
+    Constrexpr.constr_pattern_expr_to_yojson
+    (Constrexpr.or_by_notation_to_yojson Libnames.qualid_to_yojson)
+    Libnames.qualid_to_yojson
+    Names.lident_to_yojson
+    raw_tactic_expr_to_yojson
+    Genarg.rlevel_to_yojson
+    tac
+
+let rec hash_fold_raw_tactic_expr st tac =
+  hash_fold_gen_tactic_expr
+    Constrexpr.hash_fold_constr_expr
+    Constrexpr.hash_fold_constr_expr
+    Constrexpr.hash_fold_constr_pattern_expr
+    (Constrexpr.hash_fold_or_by_notation Libnames.hash_fold_qualid)
+    Libnames.hash_fold_qualid
+    Names.hash_fold_lident
+    hash_fold_raw_tactic_expr
+    Genarg.hash_fold_rlevel
+    st tac
+and hash_fold_raw_atomic_tactic_expr st tac =
+  hash_fold_gen_atomic_tactic_expr
+    Constrexpr.hash_fold_constr_expr
+    Constrexpr.hash_fold_constr_expr
+    Constrexpr.hash_fold_constr_pattern_expr
+    (Constrexpr.hash_fold_or_by_notation Libnames.hash_fold_qualid)
+    Libnames.hash_fold_qualid
+    Names.hash_fold_lident
+    hash_fold_raw_tactic_expr
+    Genarg.hash_fold_rlevel
+    st tac
+
+let hash_raw_tactic_expr = Ppx_hash_lib.Std.Hash.of_fold hash_fold_raw_tactic_expr
+let hash_raw_atomic_tactic_expr = Ppx_hash_lib.Std.Hash.of_fold hash_fold_raw_atomic_tactic_expr
+
+let rec compare_raw_tactic_expr tac =
+  compare_gen_tactic_expr
+    Constrexpr.compare_constr_expr
+    Constrexpr.compare_constr_expr
+    Constrexpr.compare_constr_pattern_expr
+    (Constrexpr.compare_or_by_notation Libnames.compare_qualid)
+    Libnames.compare_qualid
+    Names.compare_lident
+    compare_raw_tactic_expr
+    Genarg.compare_rlevel
+    tac
+and compare_raw_atomic_tactic_expr tac =
+  compare_gen_atomic_tactic_expr
+    Constrexpr.compare_constr_expr
+    Constrexpr.compare_constr_expr
+    Constrexpr.compare_constr_pattern_expr
+    (Constrexpr.compare_or_by_notation Libnames.compare_qualid)
+    Libnames.compare_qualid
+    Names.compare_lident
+    compare_raw_tactic_expr
+    Genarg.compare_rlevel
+    tac
+
 (* Atomic *)
 type atomic_tactic_expr = Ltac_plugin.Tacexpr.atomic_tactic_expr
 
@@ -592,29 +826,29 @@ let sexp_of_atomic_tactic_expr tac =
 (* Helpers for raw_red_expr *)
 type tacdef_body =
   [%import: Ltac_plugin.Tacexpr.tacdef_body]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* Unsupported serializers *)
 type intro_pattern =
   [%import: Ltac_plugin.Tacexpr.intro_pattern]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type raw_red_expr =
   [%import: Ltac_plugin.Tacexpr.raw_red_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type g_trm =
   [%import: Ltac_plugin.Tacexpr.g_trm]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type g_cst =
   [%import: Ltac_plugin.Tacexpr.g_cst]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type g_pat =
   [%import: Ltac_plugin.Tacexpr.g_pat]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_red_expr =
   [%import: Ltac_plugin.Tacexpr.glob_red_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

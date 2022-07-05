@@ -17,6 +17,8 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names = Ser_names
 module CPrimitives = Ser_cPrimitives
@@ -29,23 +31,39 @@ type reloc_info =
   | Reloc_const of Vmvalues.structured_constant
   | Reloc_getglobal of Names.Constant.t
   | Reloc_caml_prim of CPrimitives.t
- [@@deriving sexp]
+ [@@deriving sexp,yojson,hash,compare]
+
+let hash_fold_array = hash_fold_array_frozen
 
 type patches = {
   reloc_infos : (reloc_info * int array) array;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson,hash,compare]
 
 type emitcodes = string
-  [@@deriving sexp]
+ [@@deriving sexp,yojson,hash,compare]
 
 type _to_patch = emitcodes * patches
-  [@@deriving sexp]
+ [@@deriving sexp,yojson,hash,compare]
 
-type to_patch = Vmemitcodes.to_patch
+module PierceToPatch = struct
 
-let to_patch_of_sexp p = Obj.magic (_to_patch_of_sexp p)
-let sexp_of_to_patch p = sexp_of__to_patch (Obj.magic p)
+  type t = Vmemitcodes.to_patch
+  type _t = _to_patch
+   [@@deriving sexp,yojson,hash,compare]
+
+end
+
+module B = SerType.Pierce(PierceToPatch)
+
+type to_patch = B.t
+let sexp_of_to_patch = B.sexp_of_t
+let to_patch_of_sexp = B.t_of_sexp
+let to_patch_of_yojson = B.of_yojson
+let to_patch_to_yojson = B.to_yojson
+(* let hash_to_patch = B.hash *)
+let hash_fold_to_patch = B.hash_fold_t
+let compare_to_patch = B.compare
 
 type body_code =
   [%import: Vmemitcodes.body_code]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

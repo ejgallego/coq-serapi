@@ -15,5 +15,20 @@
 
 type 'a key = 'a CEphemeron.key
 
-let key_of_sexp f x = CEphemeron.create (f x)
-let sexp_of_key f v = f CEphemeron.(get v)
+module EBiject = struct
+  type 'a t = 'a CEphemeron.key
+
+  type 'a _t = 'a [@@deriving sexp,yojson,hash,compare]
+
+  let to_t x = CEphemeron.create x
+  let of_t x = CEphemeron.get x
+end
+
+module B = SerType.Biject1(EBiject)
+
+let sexp_of_key = B.sexp_of_t
+let key_of_sexp = B.t_of_sexp
+let key_of_yojson = B.of_yojson
+let key_to_yojson = B.to_yojson
+let hash_fold_key = B.hash_fold_t
+let compare_key = B.compare

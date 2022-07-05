@@ -13,7 +13,9 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 type nonrec 'a ref = 'a Stdlib.ref
 
@@ -22,6 +24,10 @@ let (!) x = !x
 let (:=) x v = x := v
 let ref_of_sexp = ref_of_sexp
 let sexp_of_ref = sexp_of_ref
+let ref_to_yojson f x = f !x
+let ref_of_yojson f x = Result.map (fun x -> ref x) (f x)
+let hash_fold_ref = hash_fold_ref_frozen
+let compare_ref = compare_ref
 
 module Lazy = struct
   type 'a t = 'a lazy_t

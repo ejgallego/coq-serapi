@@ -22,14 +22,10 @@ val tag_of_sexp : Sexp.t -> tag
 val sexp_of_tag : tag -> Sexp.t
 
 type structured_constant = Vmvalues.structured_constant
-
-val structured_constant_of_sexp : Sexp.t -> structured_constant
-val sexp_of_structured_constant : structured_constant -> Sexp.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type reloc_table = Vmvalues.reloc_table
-val reloc_table_of_sexp : Sexp.t -> reloc_table
-val sexp_of_reloc_table : reloc_table -> Sexp.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type annot_switch = Vmvalues.annot_switch
-val annot_switch_of_sexp : Sexp.t -> annot_switch
-val sexp_of_annot_switch : annot_switch -> Sexp.t
+ [@@deriving sexp,yojson,hash,compare]

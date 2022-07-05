@@ -14,15 +14,20 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_compare_lib.Builtin
+open Ppx_hash_lib.Std.Hash.Builtin
 
-type 'a _t =
-    Param of int * int
-  | Node of 'a * 'a _t array
-  | Rec of int * 'a _t array
-[@@deriving sexp]
+let hash_fold_array = hash_fold_array_frozen
 
-type 'a t = 'a Rtree.t
+module RTreePierce = struct
 
-let sexp_of_t f r = sexp_of__t f (Obj.magic r)
-let t_of_sexp f r = Obj.magic (_t_of_sexp f r)
+  type 'a t = 'a Rtree.t
+  type 'a _t =
+    | Param of int * int
+    | Node of 'a * 'a _t array
+    | Rec of int * 'a _t array
+  [@@deriving sexp,yojson,hash,compare]
+end
+
+include SerType.Pierce1(RTreePierce)

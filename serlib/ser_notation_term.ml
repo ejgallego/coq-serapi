@@ -19,19 +19,21 @@ module Loc        = Ser_loc
 module Names      = Ser_names
 module Tok        = Ser_tok
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 type scope_name =
   [%import: Notation_term.scope_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type tmp_scope_name =
   [%import: Notation_term.tmp_scope_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type subscopes =
   [%import: Notation_term.subscopes]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type notation_spec = *)
 (*   [%import: Notation_term.notation_spec] *)
@@ -47,5 +49,5 @@ type constr_as_binder_kind =
 
 type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 

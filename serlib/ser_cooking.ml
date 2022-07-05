@@ -17,6 +17,8 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names = Ser_names
 module Univ = Ser_univ
@@ -26,24 +28,34 @@ type abstr_info = {
   abstr_ctx : Constr.named_context;
   abstr_auctx : Univ.AbstractContext.t;
   abstr_ausubst : Univ.Instance.t;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson,hash,compare]
 
 type abstr_inst_info = {
   abstr_rev_inst : Names.Id.t list;
   abstr_uinst : Univ.Instance.t;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson,hash,compare]
 
-type 'a entry_map = 'a Names.Cmap.t * 'a Names.Mindmap.t [@@deriving sexp]
-type expand_info = abstr_inst_info entry_map [@@deriving sexp]
+type 'a entry_map = 'a Names.Cmap.t * 'a Names.Mindmap.t [@@deriving sexp,yojson,hash,compare]
+type expand_info = abstr_inst_info entry_map [@@deriving sexp,yojson,hash,compare]
 
-type _cooking_info = {
+module CIP = struct
+type _t = {
   expand_info : expand_info;
   abstr_info : abstr_info;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson,hash,compare]
 
-type cooking_info =
+type t =
   [%import: Cooking.cooking_info]
+end
 
-let sexp_of_cooking_info ci = sexp_of__cooking_info (Obj.magic ci)
-let cooking_info_of_sexp se = Obj.magic (_cooking_info_of_sexp se)
+module B_ = SerType.Pierce(CIP)
+
+type cooking_info = B_.t
+let sexp_of_cooking_info = B_.sexp_of_t
+let cooking_info_of_sexp = B_.t_of_sexp
+let cooking_info_of_yojson = B_.of_yojson
+let cooking_info_to_yojson = B_.to_yojson
+let hash_cooking_info = B_.hash
+let hash_fold_cooking_info = B_.hash_fold_t
+let compare_cooking_info = B_.compare
 

@@ -13,27 +13,17 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type hint_db_name = Hints.hint_db_name
-
-val sexp_of_hint_db_name : hint_db_name -> Sexp.t
-val hint_db_name_of_sexp : Sexp.t -> hint_db_name
+ [@@deriving sexp,yojson,hash,compare]
 
 type 'a hints_path_gen = 'a Hints.hints_path_gen
-
-val sexp_of_hints_path_gen : ('a -> Sexp.t) -> 'a hints_path_gen -> Sexp.t
-val hints_path_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_path_gen
+ [@@deriving sexp,yojson,hash,compare]
 
 type 'a hints_path_atom_gen = 'a Hints.hints_path_atom_gen
-
-val sexp_of_hints_path_atom_gen : ('a -> Sexp.t) -> 'a hints_path_atom_gen -> Sexp.t
-val hints_path_atom_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_path_atom_gen
+ [@@deriving sexp,yojson,hash,compare]
 
 type hints_path = Hints.hints_path
-
-val sexp_of_hints_path : hints_path -> Sexp.t
-val hints_path_of_sexp : Sexp.t -> hints_path
+ [@@deriving sexp,yojson,hash,compare]
 
 type 'a hints_transparency_target = 'a Hints.hints_transparency_target [@@deriving sexp,yojson,hash,compare]
 type hint_mode = Hints.hint_mode [@@deriving sexp,yojson,hash,compare]

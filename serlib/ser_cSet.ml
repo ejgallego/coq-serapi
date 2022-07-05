@@ -16,48 +16,31 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module type ExtS = sig
 
   include CSig.SetS
 
-  include SerType.S with type t := t
+  include SerType.SJHC with type t := t
 
 end
 
-module Make (M : CSig.SetS) (S : SerType.S with type t := M.elt) = struct
+module Make (M : CSig.SetS) (S : SerType.SJHC with type t = M.elt) = struct
 
   include M
 
-  let from_list = List.fold_left (fun e s -> M.add s e) M.empty
+  module BijectSpec = struct
 
-  let sexp_of_t cst =
-    sexp_of_list S.sexp_of_t M.(elements cst)
+    type t = M.t
+    type _t = S.t list
+    [@@deriving sexp,yojson,hash,compare]
 
-  let t_of_sexp sexp =
-    from_list (list_of_sexp S.t_of_sexp sexp)
+    let to_t = List.fold_left (fun e s -> M.add s e) M.empty
+    let of_t = M.elements
+  end
 
-end
-
-module type ExtSJ = sig
-
-  include CSig.SetS
-
-  include SerType.SJ with type t := t
-
-end
-
-module MakeJ (M : CSig.SetS) (S : SerType.SJ with type t := M.elt) = struct
-
-  include Make(M)(S)
-
-  let to_yojson cst =
-    `List (List.map S.to_yojson M.(elements cst))
-
-  let of_yojson json =
-    let open Ppx_deriving_yojson_runtime in
-    let json = Yojson.Safe.Util.to_list json in
-    map_bind S.of_yojson [] json >|= from_list
-
+  include SerType.Biject(BijectSpec)
 end
