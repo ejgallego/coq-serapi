@@ -16,13 +16,12 @@
 open Sexplib
 
 type closure = Ltac_pretype.closure
-type closed_glob_constr = Ltac_pretype.closed_glob_constr
 
 val closure_of_sexp : Sexp.t -> closure
 val sexp_of_closure : closure -> Sexp.t
 
-val closed_glob_constr_of_sexp : Sexp.t -> closed_glob_constr
-val sexp_of_closed_glob_constr : closed_glob_constr -> Sexp.t
+type closed_glob_constr = Ltac_pretype.closed_glob_constr
+  [@@deriving sexp,hash,compare]
 
 type constr_under_binders = Ltac_pretype.constr_under_binders
 

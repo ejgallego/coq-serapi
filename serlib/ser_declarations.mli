@@ -77,12 +77,10 @@ type abstr_info = Declarations.abstr_info = {
 }
 
 type cooking_info = Declarations.cooking_info
-val sexp_of_cooking_info : cooking_info -> Sexp.t
-val cooking_info_of_sexp : Sexp.t -> cooking_info
+  [@@deriving sexp,yojson,hash,compare]
 
 type constant_body = Declarations.constant_body
-val sexp_of_constant_body : constant_body -> Sexp.t
-val constant_body_of_sexp : Sexp.t -> constant_body
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type record_body = Declarations.record_body
  * val record_body_of_sexp : Sexp.t -> record_body
@@ -95,21 +93,17 @@ val recursivity_kind_of_yojson : Yojson.Safe.t -> (recursivity_kind, string) Res
 val recursivity_kind_to_yojson : recursivity_kind -> Yojson.Safe.t
 
 type mutual_inductive_body = Declarations.mutual_inductive_body
-val mutual_inductive_body_of_sexp : Sexp.t -> mutual_inductive_body
-val sexp_of_mutual_inductive_body : mutual_inductive_body -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type module_alg_expr = Declarations.module_alg_expr
 val sexp_of_module_alg_expr : module_alg_expr -> Sexp.t
 val module_alg_expr_of_sexp : Sexp.t -> module_alg_expr
 
 type structure_body = Declarations.structure_body
-val sexp_of_structure_body : structure_body -> Sexp.t
-val structure_body_of_sexp : Sexp.t -> structure_body
+  [@@deriving sexp,yojson,hash,compare]
 
 type module_body = Declarations.module_body
-val sexp_of_module_body : module_body -> Sexp.t
-val module_body_of_sexp : Sexp.t -> module_body
+  [@@deriving sexp,yojson,hash,compare]
 
 type module_type_body = Declarations.module_type_body
-val sexp_of_module_type_body : module_type_body -> Sexp.t
-val module_type_body_of_sexp : Sexp.t -> module_type_body
+  [@@deriving sexp,yojson,hash,compare]

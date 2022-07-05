@@ -53,27 +53,4 @@ and tomatch_tuple       = Glob_term.tomatch_tuple
 and tomatch_tuples      = Glob_term.tomatch_tuples
 and cases_clause        = Glob_term.cases_clause
 and cases_clauses       = Glob_term.cases_clauses
-
-val cases_pattern_of_sexp : Sexp.t -> cases_pattern
-val sexp_of_cases_pattern : cases_pattern -> Sexp.t
-
-val glob_constr_of_sexp : Sexp.t -> glob_constr
-val sexp_of_glob_constr : glob_constr -> Sexp.t
-
-val glob_decl_of_sexp : Sexp.t -> glob_decl
-val sexp_of_glob_decl : glob_decl -> Sexp.t
-
-val predicate_pattern_of_sexp : Sexp.t -> predicate_pattern
-val sexp_of_predicate_pattern : predicate_pattern -> Sexp.t
-
-val tomatch_tuple_of_sexp : Sexp.t -> tomatch_tuple
-val sexp_of_tomatch_tuple : tomatch_tuple -> Sexp.t
-
-val tomatch_tuples_of_sexp : Sexp.t -> tomatch_tuples
-val sexp_of_tomatch_tuples : tomatch_tuples -> Sexp.t
-
-val cases_clause_of_sexp : Sexp.t -> cases_clause
-val sexp_of_cases_clause : cases_clause -> Sexp.t
-
-val cases_clauses_of_sexp : Sexp.t -> cases_clauses
-val sexp_of_cases_clauses : cases_clauses -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

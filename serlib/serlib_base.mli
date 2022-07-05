@@ -21,3 +21,11 @@ val exn_on_opaque : bool ref
 
 val sexp_of_opaque : typ:string -> 'a -> Sexp.t
 val opaque_of_sexp : typ:string -> Sexp.t -> 'a
+
+val opaque_of_yojson : typ:string -> Yojson.Safe.t -> ('a, string) Result.t
+val opaque_to_yojson : typ:string -> 'a -> Yojson.Safe.t
+
+val hash_opaque : typ:string -> 'a -> Ppx_hash_lib.Std.Hash.hash_value
+val hash_fold_opaque : typ:string -> Ppx_hash_lib.Std.Hash.state -> 'a -> Ppx_hash_lib.Std.Hash.state
+
+val compare_opaque : typ:string -> 'a -> 'a -> int

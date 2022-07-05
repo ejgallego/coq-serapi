@@ -1,7 +1,11 @@
 ## Version 0.15.3:
 
  - [serlib] Backport serlib improvements from 0.16.0:
- - [serlib] Coq AST now support compare and hash (ignoring locations)
+ - [serlib] Coq AST now supports ppx_hash intf (ignoring locations by default)
+            (@ejgallego)
+ - [serlib] Coq AST now supports ppx_compare intf (ignoring locations by default)
+            (@ejgallego)
+ - [serlib] Large refactoring on Serlib, using functors, see serlib/README.md
             (@ejgallego)
 
 ## Version 0.15.2:

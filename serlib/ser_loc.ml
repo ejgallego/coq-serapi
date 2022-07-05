@@ -18,20 +18,21 @@
 (**********************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 type source =
   [%import: Loc.source]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type t =
   [%import: Loc.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 let omit_loc = ref false
 let sexp_of_t x =
   if !omit_loc then Sexplib.Sexp.Atom "[LOC]" else sexp_of_t x
 
 (* located: public *)
-type 'a located =
-  [%import: 'a Loc.located]
-  [@@deriving sexp,yojson]
+type 'a located = (t option [@ignore]) * 'a
+  [@@deriving sexp,yojson,hash,compare]

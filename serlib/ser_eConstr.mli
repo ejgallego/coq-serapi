@@ -17,9 +17,7 @@
 open Sexplib
 
 type t = EConstr.t
-
-val sexp_of_t : t -> Sexp.t
-val t_of_sexp : Sexp.t -> t
+  [@@deriving sexp,yojson,hash,compare]
 
 type existential = EConstr.existential
 
@@ -27,9 +25,7 @@ val existential_of_sexp : Sexp.t -> existential
 val sexp_of_existential : existential -> Sexp.t
 
 type constr = t
-
-val sexp_of_constr : constr -> Sexp.t
-val constr_of_sexp : Sexp.t -> constr
+  [@@deriving sexp,yojson,hash,compare]
 
 type types = t
 

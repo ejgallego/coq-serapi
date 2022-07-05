@@ -31,20 +31,16 @@ type 'a exp =
 
 module Unsigned = struct
 
-  type _t = {
-    int : string;
-    frac : string;
-    exp : string
-  } [@@deriving sexp,yojson,hash,compare]
+  module PierceSpec = struct
+    type t = NumTok.Unsigned.t
+    type _t = {
+      int : string;
+      frac : string;
+      exp : string
+    } [@@deriving sexp,yojson,hash,compare]
+  end
 
-  type t = NumTok.Unsigned.t
-  let t_of_sexp s = Obj.magic (_t_of_sexp s)
-  let sexp_of_t s = sexp_of__t (Obj.magic s)
-  let of_yojson s = Obj.magic (_t_of_yojson s)
-  let to_yojson s = _t_to_yojson (Obj.magic s)
-  let hash level = hash__t (Obj.magic level)
-  let hash_fold_t st level = hash_fold__t st (Obj.magic level)
-  let compare x y = compare__t (Obj.magic x) (Obj.magic y)
+  include SerType.Pierce(PierceSpec)
 end
 
 module Signed = struct

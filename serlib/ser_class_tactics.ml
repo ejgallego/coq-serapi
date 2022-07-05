@@ -15,4 +15,4 @@
 
 type search_strategy =
   [%import: Class_tactics.search_strategy]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]

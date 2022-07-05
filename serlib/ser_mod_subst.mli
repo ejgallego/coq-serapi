@@ -13,15 +13,11 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
-
 type delta_resolver = Mod_subst.delta_resolver
-val sexp_of_delta_resolver : delta_resolver -> Sexp.t
-val delta_resolver_of_sexp : Sexp.t -> delta_resolver
+ [@@deriving sexp,yojson,hash,compare]
 
 type substitution = Mod_subst.substitution
-val sexp_of_substitution : substitution -> Sexp.t
-val substitution_of_sexp : Sexp.t -> substitution
+ [@@deriving sexp,yojson,hash,compare]
 
 (* type 'a substituted = 'a Mod_subst.substituted
  * val sexp_of_substituted : ('a -> Sexp.t) -> 'a substituted -> Sexp.t

@@ -23,6 +23,4 @@ val case_info_pattern_of_sexp : Sexp.t -> case_info_pattern
 val sexp_of_case_info_pattern : case_info_pattern -> Sexp.t
 
 type constr_pattern = Pattern.constr_pattern
-
-val constr_pattern_of_sexp : Sexp.t -> constr_pattern
-val sexp_of_constr_pattern : constr_pattern -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

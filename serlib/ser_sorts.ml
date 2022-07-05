@@ -19,19 +19,17 @@ type family =
   [%import: Sorts.family]
   [@@deriving sexp,yojson,hash,compare]
 
-type _t =
-  | SProp
-  | Prop
-  | Set
-  | Type of Univ.Universe.t
-  [@@deriving of_sexp,yojson,hash,compare]
+module PierceSpec = struct
+  type t = Sorts.t
+  type _t =
+    | SProp
+    | Prop
+    | Set
+    | Type of Univ.Universe.t
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-type t =
-  [%import: Sorts.t]
-  [@@deriving sexp_of,to_yojson,hash,compare]
-
-let t_of_sexp x = Obj.magic (_t_of_sexp x)
-let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
+include SerType.Pierce(PierceSpec)
 
 type relevance =
   [%import: Sorts.relevance]

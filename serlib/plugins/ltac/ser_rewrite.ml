@@ -13,25 +13,30 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Conv
 
 type unary_strategy =
   [%import: Ltac_plugin.Rewrite.unary_strategy]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type binary_strategy =
   [%import: Ltac_plugin.Rewrite.binary_strategy]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type nary_strategy =
   [%import: Ltac_plugin.Rewrite.nary_strategy]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type ('a,'b) strategy_ast =
   [%import: ('a,'b) Ltac_plugin.Rewrite.strategy_ast]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type strategy = Ltac_plugin.Rewrite.strategy
 
 let strategy_of_sexp = Serlib.Serlib_base.opaque_of_sexp ~typ:"rewrite/strategy"
 let sexp_of_strategy = Serlib.Serlib_base.sexp_of_opaque ~typ:"rewrite/strategy"
+let hash_strategy = Hashtbl.hash
+let hash_fold_strategy st d = Ppx_hash_lib.Std.Hash.Builtin.hash_fold_int st (Hashtbl.hash d)
+let compare_strategy = Stdlib.compare

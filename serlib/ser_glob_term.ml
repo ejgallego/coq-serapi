@@ -17,6 +17,8 @@ open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
+let hash_fold_array = hash_fold_array_frozen
+
 module Loc        = Ser_loc
 module CAst       = Ser_cAst
 module DAst       = Ser_dAst
@@ -48,7 +50,7 @@ type binding_kind =
 
 type glob_sort_name =
   [%import: Glob_term.glob_sort_name]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a glob_sort_gen =
   [%import: 'a Glob_term.glob_sort_gen]
@@ -60,11 +62,11 @@ type 'a glob_sort_gen =
 
 type glob_level =
   [%import: Glob_term.glob_level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_constraint =
   [%import: Glob_term.glob_constraint]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type sort_info =
  *   [%import: Glob_term.sort_info]
@@ -72,7 +74,7 @@ type glob_constraint =
 
 type glob_sort =
   [%import: Glob_term.glob_sort]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type 'a cast_type =
  *   [%import: 'a Glob_term.cast_type]
@@ -84,20 +86,21 @@ type existential_name =
 
 type 'a cases_pattern_r = [%import: 'a Glob_term.cases_pattern_r]
 and 'a cases_pattern_g  = [%import: 'a Glob_term.cases_pattern_g]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type cases_pattern =
   [%import: Glob_term.cases_pattern]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_recarg =
   [%import: Glob_term.glob_recarg]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_fix_kind =
   [%import: Glob_term.glob_fix_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
+[@@@ocaml.warning "-27"]
 type 'a glob_constr_r        = [%import: 'a Glob_term.glob_constr_r]
 and 'a glob_constr_g         = [%import: 'a Glob_term.glob_constr_g]
 and 'a glob_decl_g           = [%import: 'a Glob_term.glob_decl_g]
@@ -106,28 +109,29 @@ and 'a tomatch_tuple_g       = [%import: 'a Glob_term.tomatch_tuple_g]
 and 'a tomatch_tuples_g      = [%import: 'a Glob_term.tomatch_tuples_g]
 and 'a cases_clause_g        = [%import: 'a Glob_term.cases_clause_g]
 and 'a cases_clauses_g       = [%import: 'a Glob_term.cases_clauses_g]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
+[@@@ocaml.warning "+27"]
 
 type glob_constr =
   [%import: Glob_term.glob_constr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_decl =
   [%import: Glob_term.glob_decl]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type predicate_pattern   = [%import: Glob_term.predicate_pattern]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type tomatch_tuple       = [%import: Glob_term.tomatch_tuple]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type tomatch_tuples      = [%import: Glob_term.tomatch_tuples]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type cases_clause        = [%import: Glob_term.cases_clause]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type cases_clauses       = [%import: Glob_term.cases_clauses]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 

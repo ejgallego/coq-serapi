@@ -16,7 +16,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module type ExtS = sig
 
@@ -24,21 +26,24 @@ module type ExtS = sig
 
   (* module SSet : Ser_cSet.ExtS *)
 
-  include SerType.S1 with type 'a t := 'a t
+  include SerType.SJHC1 with type 'a t := 'a t
 
 end
 
-module Make (M : CSig.MapS) (S : SerType.S with type t := M.key) = struct
+module Make (M : CSig.MapS) (S : SerType.SJHC with type t = M.key) = struct
 
   include M
 
-  (* module SSet = Ser_cSet.Make(M.Set)(S) *)
+  module BijectSpec = struct
 
-  let sexp_of_t f cst =
-    sexp_of_list (Sexplib.Conv.sexp_of_pair S.sexp_of_t f) M.(bindings cst)
+    type 'a t = 'a M.t
+    type 'a _t = (S.t * 'a) list
+    [@@deriving sexp,yojson,hash,compare]
 
-  let t_of_sexp f sexp =
-    List.fold_left (fun e (k,s) -> M.add k s e) M.empty
-      (list_of_sexp (pair_of_sexp S.t_of_sexp f) sexp)
+    let to_t l = List.fold_left (fun e (k,s) -> M.add k s e) M.empty l
+    let of_t = M.bindings
+  end
+
+  include SerType.Biject1(BijectSpec)
 
 end

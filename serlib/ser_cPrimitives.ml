@@ -13,14 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ppx_hash_lib.Std.Hash.Builtin
-open Ppx_compare_lib.Builtin
 open Sexplib
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 type t =
   [%import: CPrimitives.t]
-  [@@deriving sexp,yojson,hash]
+  [@@deriving sexp,yojson,hash,compare]
 
 type const =
   [%import: CPrimitives.const]
