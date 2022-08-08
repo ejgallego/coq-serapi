@@ -22,17 +22,17 @@ open Sexplib
 module Id : sig
   include SerType.SJHC with type t = Id.t
 
-  module Set : SerType.S with type t = Id.Set.t
-  module Map : SerType.S1 with type 'a t = 'a Id.Map.t
+  module Set : SerType.SJHC with type t = Id.Set.t
+  module Map : SerType.SJHC1 with type 'a t = 'a Id.Map.t
 end
 
 module Name    : SerType.SJHC with type t = Name.t
 module DirPath : SerType.SJHC with type t = DirPath.t
 module DPmap   : Ser_cMap.ExtS with type key = DirPath.t and type 'a t = 'a DPmap.t
 
-module Label   : SerType.SJ with type t = Label.t
-module MBId    : SerType.SJ with type t = MBId.t
-module ModPath : SerType.SJ with type t = ModPath.t
+module Label   : SerType.SJHC with type t = Label.t
+module MBId    : SerType.SJHC with type t = MBId.t
+module ModPath : SerType.SJHC with type t = ModPath.t
 module MPmap   : Ser_cMap.ExtS with type key = ModPath.t and type 'a t = 'a MPmap.t
 
 module KerName  : SerType.SJHC with type t = KerName.t
@@ -61,7 +61,7 @@ type constructor = Names.constructor [@@deriving sexp, yojson, hash, compare]
 
 module Projection : sig
 
-  include SerType.SJ with type t = Projection.t
+  include SerType.SJHC with type t = Projection.t
 
   module Repr : sig
     include SerType.S with type t = Projection.Repr.t

@@ -13,14 +13,11 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type subscopes = Notation_term.subscopes
-val subscopes_of_sexp : Sexp.t -> subscopes
-val sexp_of_subscopes : subscopes -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
-type constr_as_binder_kind = Notation_term.constr_as_binder_kind [@@deriving sexp,yojson,hash,compare]
+type constr_as_binder_kind = Notation_term.constr_as_binder_kind
+  [@@deriving sexp,yojson,hash,compare]
 
 type notation_var_internalization_type = Notation_term.notation_var_internalization_type
-val notation_var_internalization_type_of_sexp : Sexp.t -> notation_var_internalization_type
-val sexp_of_notation_var_internalization_type : notation_var_internalization_type -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

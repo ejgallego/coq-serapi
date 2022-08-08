@@ -21,11 +21,18 @@ type level =
   [%import: Conv_oracle.level]
   [@@deriving sexp,yojson,hash,compare]
 
-(* XXX: Fixme *)
-type oracle =
-  [%import: Conv_oracle.oracle]
+module OpaqueOracle = struct
+  type t = Conv_oracle.oracle
+  let name = "Conv_oracle.oracle"
+end
 
-let sexp_of_oracle _ =
-  Sexplib.Sexp.(Atom "[Conv_oracle.oracle: Abstract]")
+module B = SerType.Opaque(OpaqueOracle)
 
-let oracle_of_sexp _ = Conv_oracle.empty
+type oracle = B.t
+let sexp_of_oracle = B.sexp_of_t
+let oracle_of_sexp = B.t_of_sexp
+let oracle_of_yojson = B.of_yojson
+let oracle_to_yojson = B.to_yojson
+let hash_oracle = B.hash
+let hash_fold_oracle = B.hash_fold_t
+let compare_oracle = B.compare

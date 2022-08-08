@@ -14,6 +14,8 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names     = Ser_names
 module Uint63    = Ser_uint63
@@ -30,8 +32,10 @@ type patvar =
 
 type case_info_pattern =
   [%import: Pattern.case_info_pattern]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
+
+let hash_fold_array = hash_fold_array_frozen
 
 type constr_pattern =
   [%import: Pattern.constr_pattern]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

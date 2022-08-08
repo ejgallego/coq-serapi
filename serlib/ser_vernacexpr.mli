@@ -128,8 +128,7 @@ val definition_expr_of_sexp : Sexp.t -> definition_expr
 val sexp_of_definition_expr : definition_expr -> Sexp.t
 
 type fixpoint_expr = Vernacexpr.fixpoint_expr
-val fixpoint_expr_of_sexp : Sexp.t -> fixpoint_expr
-val sexp_of_fixpoint_expr : fixpoint_expr -> Sexp.t
+  [@@deriving sexp,hash,compare]
 
 type cofixpoint_expr = Vernacexpr.cofixpoint_expr
 val cofixpoint_expr_of_sexp : Sexp.t -> cofixpoint_expr

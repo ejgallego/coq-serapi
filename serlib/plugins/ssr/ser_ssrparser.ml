@@ -15,7 +15,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
 open Serlib
 
 module Ssrmatching = Serlib_ssrmatching.Ser_ssrmatching
@@ -36,208 +39,173 @@ end
 open! Ssrast
 
 type t_movearg = (cpattern ssragens) ssrmovearg
-[@@deriving sexp]
+[@@deriving sexp,yojson,hash,compare]
 
 let ser_wit_ssrmovearg  =
-  Ser_genarg.mk_uniform sexp_of_t_movearg t_movearg_of_sexp
+  Ser_genarg.mk_uniform sexp_of_t_movearg t_movearg_of_sexp hash_fold_t_movearg compare_t_movearg
 
 let ser_wit_ssrapplyarg =
-  Ser_genarg.mk_uniform sexp_of_ssrapplyarg ssrapplyarg_of_sexp
+  Ser_genarg.mk_uniform sexp_of_ssrapplyarg ssrapplyarg_of_sexp hash_fold_ssrapplyarg compare_ssrapplyarg
 
 let ser_wit_clauses =
-  Ser_genarg.mk_uniform sexp_of_clauses clauses_of_sexp
+  Ser_genarg.mk_uniform sexp_of_clauses clauses_of_sexp hash_fold_clauses compare_clauses
 
-type t_rwarg = Ssreflect_plugin.Ssrequality.ssrrwarg list [@@deriving sexp]
+type t_rwarg = Ssreflect_plugin.Ssrequality.ssrrwarg list [@@deriving sexp,hash,compare]
 
 let ser_wit_ssrrwargs =
-  Ser_genarg.mk_uniform sexp_of_t_rwarg t_rwarg_of_sexp
+  Ser_genarg.mk_uniform sexp_of_t_rwarg t_rwarg_of_sexp hash_fold_t_rwarg compare_t_rwarg
 
-type t_h1 = Ltac_plugin.Tacexpr.raw_tactic_expr fwdbinders
-[@@deriving sexp]
+module A0 = struct
+  type raw = Ltac_plugin.Tacexpr.raw_tactic_expr fwdbinders
+  [@@deriving sexp,yojson,hash,compare]
 
-type t_h2 = Ltac_plugin.Tacexpr.glob_tactic_expr fwdbinders
-[@@deriving sexp]
+  type glb = Ltac_plugin.Tacexpr.glob_tactic_expr fwdbinders
+  [@@deriving sexp,yojson,hash,compare]
 
-type t_h3 = Geninterp.Val.t fwdbinders
-[@@deriving sexp]
+  type top = Geninterp.Val.t fwdbinders
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-let ser_wit_ssrhavefwdwbinders =
-  Ser_genarg.{
-    raw_ser = sexp_of_t_h1;
-    raw_des = t_h1_of_sexp;
-
-    glb_ser = sexp_of_t_h2;
-    glb_des = t_h2_of_sexp;
-
-    top_ser = sexp_of_t_h3;
-    top_des = t_h3_of_sexp;
-  }
+let ser_wit_ssrhavefwdwbinders = let module M = Ser_genarg.GS(A0) in M.genser
 
 type ssrfwdview =
   [%import: Ssreflect_plugin.Ssrparser.ssrfwdview]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ssreqid =
   [%import: Ssreflect_plugin.Ssrparser.ssreqid]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ssrarg =
   [%import: Ssreflect_plugin.Ssrparser.ssrarg]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 let ser_wit_ssrarg =
-  Ser_genarg.mk_uniform sexp_of_ssrarg ssrarg_of_sexp
-
-type h_h1 = Ltac_plugin.Tacexpr.raw_tactic_expr ssrhint
-[@@deriving sexp]
-type h_h2 = Ltac_plugin.Tacexpr.glob_tactic_expr ssrhint
-[@@deriving sexp]
-type h_h3 = Geninterp.Val.t ssrhint
-[@@deriving sexp]
-
-let ser_wit_ssrhintarg =
-  Ser_genarg.{
-    raw_ser = sexp_of_h_h1;
-    raw_des = h_h1_of_sexp;
-
-    glb_ser = sexp_of_h_h2;
-    glb_des = h_h2_of_sexp;
-
-    top_ser = sexp_of_h_h3;
-    top_des = h_h3_of_sexp;
-  }
+  Ser_genarg.mk_uniform sexp_of_ssrarg ssrarg_of_sexp hash_fold_ssrarg compare_ssrarg
 
 module A1 = struct
-  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrseqarg
-  [@@deriving sexp]
-  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrseqarg
-  [@@deriving sexp]
-  type h3 = Geninterp.Val.t ssrseqarg
-  [@@deriving sexp]
+  type raw = Ltac_plugin.Tacexpr.raw_tactic_expr ssrhint
+  [@@deriving sexp,yojson,hash,compare]
+  type glb = Ltac_plugin.Tacexpr.glob_tactic_expr ssrhint
+  [@@deriving sexp,yojson,hash,compare]
+  type top = Geninterp.Val.t ssrhint
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrseqarg = let open A1 in Ser_genarg.
-  { raw_ser = sexp_of_h1
-  ; raw_des = h1_of_sexp
-
-  ; glb_ser = sexp_of_h2
-  ; glb_des = h2_of_sexp
-
-  ; top_ser = sexp_of_h3
-  ; top_des = h3_of_sexp
-  }
+let ser_wit_ssrhintarg = let module M = Ser_genarg.GS(A1) in M.genser
 
 module A2 = struct
-  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr * ssripats
-  [@@deriving sexp]
-  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr * ssripats
-  [@@deriving sexp]
-  type h3 = Geninterp.Val.t * ssripats
-  [@@deriving sexp]
+  type raw = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrseqarg
+  [@@deriving sexp,yojson,hash,compare]
+
+  type glb = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrseqarg
+  [@@deriving sexp,yojson,hash,compare]
+
+  type top = Geninterp.Val.t ssrseqarg
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrintrosarg = let open A2 in Ser_genarg.
-  { raw_ser = sexp_of_h1
-  ; raw_des = h1_of_sexp
-
-  ; glb_ser = sexp_of_h2
-  ; glb_des = h2_of_sexp
-
-  ; top_ser = sexp_of_h3
-  ; top_des = h3_of_sexp
-  }
+let ser_wit_ssrseqarg = let module M = Ser_genarg.GS(A2) in M.genser
 
 module A3 = struct
-  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ffwbinders
-  [@@deriving sexp]
-  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ffwbinders
-  [@@deriving sexp]
-  type h3 = Geninterp.Val.t ffwbinders
-  [@@deriving sexp]
+  type raw = Serlib_ltac.Ser_tacexpr.raw_tactic_expr * ssripats
+  [@@deriving sexp,yojson,hash,compare]
+  type glb = Serlib_ltac.Ser_tacexpr.glob_tactic_expr * ssripats
+  [@@deriving sexp,yojson,hash,compare]
+  type top = Geninterp.Val.t * ssripats
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrsufffwd = let open A3 in Ser_genarg.
-  { raw_ser = sexp_of_h1 ; raw_des = h1_of_sexp ; glb_ser = sexp_of_h2
-  ; glb_des = h2_of_sexp ; top_ser = sexp_of_h3 ; top_des = h3_of_sexp
-  }
+let ser_wit_ssrintrosarg = let module M = Ser_genarg.GS(A3) in M.genser
 
 module A4 = struct
-  type h1 = ((int * Ssreflect_plugin.Ssrast.ssrterm) * Ssrmatching_plugin.Ssrmatching.cpattern ssragens)
-  [@@deriving sexp]
+  type raw = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ffwbinders
+  [@@deriving sexp,yojson,hash,compare]
+  type glb = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ffwbinders
+  [@@deriving sexp,yojson,hash,compare]
+  type top = Geninterp.Val.t ffwbinders
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrcongrarg = let open A4 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrsufffwd = let module M = Ser_genarg.GS(A4) in M.genser
 
 module A5 = struct
-  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrdoarg
-  [@@deriving sexp]
-  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrdoarg
-  [@@deriving sexp]
-  type h3 = Geninterp.Val.t ssrdoarg
-  [@@deriving sexp]
-
+  type t = ((int * Ssreflect_plugin.Ssrast.ssrterm) * Ssrmatching_plugin.Ssrmatching.cpattern ssragens)
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrdoarg = let open A5 in Ser_genarg.
-  { raw_ser = sexp_of_h1 ; raw_des = h1_of_sexp ; glb_ser = sexp_of_h2
-  ; glb_des = h2_of_sexp ; top_ser = sexp_of_h3 ; top_des = h3_of_sexp
-  }
+let ser_wit_ssrcongrarg = let module M = Ser_genarg.GS0(A5) in M.genser
 
 module A6 = struct
-  type h1 = ((ssrfwdfmt * (cpattern * ast_closure_term option)) * ssrdocc)
-  [@@deriving sexp]
+  type raw = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrdoarg
+  [@@deriving sexp,yojson,hash,compare]
+  type glb = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrdoarg
+  [@@deriving sexp,yojson,hash,compare]
+  type top = Geninterp.Val.t ssrdoarg
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrsetfwd = let open A6 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrdoarg = let module M = Ser_genarg.GS(A6) in M.genser
 
 module A7 = struct
-  type h1 = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrhint
-  [@@deriving sexp]
-  type h2 = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrhint
-  [@@deriving sexp]
-  type h3 = Geninterp.Val.t ssrhint
-  [@@deriving sexp]
+  type t = ((ssrfwdfmt * (cpattern * ast_closure_term option)) * ssrdocc)
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrhint = let open A7 in Ser_genarg.
-  { raw_ser = sexp_of_h1 ; raw_des = h1_of_sexp ; glb_ser = sexp_of_h2
-  ; glb_des = h2_of_sexp ; top_ser = sexp_of_h3 ; top_des = h3_of_sexp
-  }
+let ser_wit_ssrsetfwd = let module M = Ser_genarg.GS0(A7) in M.genser
 
 module A8 = struct
-  type h1 = ssrfwdfmt * ast_closure_term
-  [@@deriving sexp]
+  type raw = Serlib_ltac.Ser_tacexpr.raw_tactic_expr ssrhint
+  [@@deriving sexp,yojson,hash,compare]
+  type glb = Serlib_ltac.Ser_tacexpr.glob_tactic_expr ssrhint
+  [@@deriving sexp,yojson,hash,compare]
+  type top = Geninterp.Val.t ssrhint
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrposefwd = let open A8 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrhint = let module M = Ser_genarg.GS(A8) in M.genser
 
 module A9 = struct
-  type h1 = ssrocc * ssrterm
-  [@@deriving sexp]
+  type t = ssrfwdfmt * ast_closure_term
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrunlockarg = let open A9 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrposefwd = let module M = Ser_genarg.GS0(A9) in M.genser
 
 module A10 = struct
-  type h1 = clause list * (ssrfwdfmt * ast_closure_term)
-  [@@deriving sexp]
+  type t = ssrocc * ssrterm
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrwlogfwd = let open A10 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrunlockarg = let module M = Ser_genarg.GS0(A10) in M.genser
 
 module A11 = struct
-  type h1 = Names.Id.t * (ssrfwdfmt * ast_closure_term)
-  [@@deriving sexp]
+  type t = clause list * (ssrfwdfmt * ast_closure_term)
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrfixfwd = let open A11 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrwlogfwd = let module M = Ser_genarg.GS0(A11) in M.genser
 
 module A12 = struct
-  type h1 = ssrfwdfmt * ast_closure_term
-  [@@deriving sexp]
+  type t = Names.Id.t * (ssrfwdfmt * ast_closure_term)
+  [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_ssrfwd = let open A12 in Ser_genarg.mk_uniform sexp_of_h1 h1_of_sexp
+let ser_wit_ssrfixfwd = let module M = Ser_genarg.GS0(A12) in M.genser
+
+module A13 = struct
+  type t = ssrfwdfmt * ast_closure_term
+  [@@deriving sexp,yojson,hash,compare]
+end
+
+let ser_wit_ssrfwd = let module M = Ser_genarg.GS0(A13) in M.genser
+
+module A14 = struct
+  type t = cpattern ssragens
+  [@@deriving sexp,yojson,hash,compare]
+end
+
+let ser_wit_ssrdgens = let module M = Ser_genarg.GS0(A14) in M.genser
 
 let register () =
   let open Ser_genarg in
@@ -267,10 +235,10 @@ let register () =
      register_genser wit_ssrcofixfwd       ser_wit_ssrcofixfwd *)
 
   register_genser wit_ssrcongrarg ser_wit_ssrcongrarg;
-  register_genser wit_ssrcpat     (mk_uniform sexp_of_ssripat ssripat_of_sexp);
-  register_genser wit_ssrdgens    (mk_uniform (sexp_of_ssragens sexp_of_cpattern) (ssragens_of_sexp cpattern_of_sexp));
-  register_genser wit_ssrdgens_tl (mk_uniform (sexp_of_ssragens sexp_of_cpattern) (ssragens_of_sexp cpattern_of_sexp));
-  register_genser wit_ssrdir      (mk_uniform sexp_of_ssrdir ssrdir_of_sexp);
+  register_genser wit_ssrcpat     (mk_uniform sexp_of_ssripat ssripat_of_sexp hash_fold_ssripat compare_ssripat);
+  register_genser wit_ssrdgens    ser_wit_ssrdgens;
+  register_genser wit_ssrdgens_tl ser_wit_ssrdgens;
+  register_genser wit_ssrdir      (mk_uniform sexp_of_ssrdir ssrdir_of_sexp hash_fold_ssrdir compare_ssrdir);
   register_genser wit_ssrdoarg    ser_wit_ssrdoarg;
 (*
   Ssreflect_plugin.Ssrparser.wit_ssrdocc
@@ -279,8 +247,8 @@ let register () =
   register_genser wit_ssrexactarg ser_wit_ssrapplyarg;
   register_genser wit_ssrfixfwd   ser_wit_ssrfixfwd;
   register_genser wit_ssrfwd      ser_wit_ssrfwd;
-  register_genser wit_ssrfwdfmt   (mk_uniform sexp_of_ssrfwdfmt ssrfwdfmt_of_sexp);
-  register_genser wit_ssrfwdid    Ser_names.(mk_uniform Id.sexp_of_t Id.t_of_sexp);
+  register_genser wit_ssrfwdfmt   (mk_uniform sexp_of_ssrfwdfmt ssrfwdfmt_of_sexp hash_fold_ssrfwdfmt compare_ssrfwdfmt);
+  register_genser wit_ssrfwdid    (let module M = Ser_genarg.GS0(Ser_names.Id) in M.genser);
 
 (*
   Ssreflect_plugin.Ssrparser.wit_ssrfwdview
@@ -292,9 +260,9 @@ let register () =
   Ssreflect_plugin.Ssrparser.wit_ssrhoi_hyp
   Ssreflect_plugin.Ssrparser.wit_ssrhoi_id
 *)
-  register_genser wit_ssrhpats         (mk_uniform sexp_of_ssrhpats ssrhpats_of_sexp);
-  register_genser wit_ssrhpats_nobs    (mk_uniform sexp_of_ssrhpats ssrhpats_of_sexp);
-  register_genser wit_ssrhpats_wtransp (mk_uniform sexp_of_ssrhpats_wtransp ssrhpats_wtransp_of_sexp);
+  register_genser wit_ssrhpats         (mk_uniform sexp_of_ssrhpats ssrhpats_of_sexp hash_fold_ssrhpats compare_ssrhpats);
+  register_genser wit_ssrhpats_nobs    (mk_uniform sexp_of_ssrhpats ssrhpats_of_sexp hash_fold_ssrhpats compare_ssrhpats);
+  register_genser wit_ssrhpats_wtransp (mk_uniform sexp_of_ssrhpats_wtransp ssrhpats_wtransp_of_sexp hash_fold_ssrhpats_wtransp compare_ssrhpats_wtransp);
 
 (*
   Ssreflect_plugin.Ssrparser.wit_ssrhyp
@@ -324,7 +292,7 @@ let register () =
   Ssreflect_plugin.Ssrparser.wit_ssrpattern_ne_squarep
 *)
   register_genser wit_ssrposefwd ser_wit_ssrposefwd;
-  register_genser wit_ssrrpat    (mk_uniform sexp_of_ssripat ssripat_of_sexp);
+  register_genser wit_ssrrpat    (mk_uniform sexp_of_ssripat ssripat_of_sexp hash_fold_ssripat compare_ssripat);
 
 (*
   Ssreflect_plugin.Ssrparser.wit_ssrrule
@@ -336,7 +304,7 @@ let register () =
   *)
 
   register_genser wit_ssrseqarg ser_wit_ssrseqarg;
-  register_genser wit_ssrseqdir (mk_uniform sexp_of_ssrdir ssrdir_of_sexp);
+  register_genser wit_ssrseqdir (mk_uniform sexp_of_ssrdir ssrdir_of_sexp hash_fold_ssrdir compare_ssrdir);
   register_genser wit_ssrsetfwd ser_wit_ssrsetfwd;
 (*
   Ssreflect_plugin.Ssrparser.wit_ssrsimpl
@@ -348,10 +316,10 @@ let register () =
   register_genser wit_ssrtacarg Serlib_ltac.Ser_tacarg.ser_wit_tactic;
   register_genser wit_ssrtclarg Serlib_ltac.Ser_tacarg.ser_wit_tactic;
 
-  register_genser wit_ssrterm       (mk_uniform sexp_of_ssrterm ssrterm_of_sexp);
+  register_genser wit_ssrterm       (mk_uniform sexp_of_ssrterm ssrterm_of_sexp hash_fold_ssrterm compare_ssrterm);
   register_genser wit_ssrunlockarg  ser_wit_ssrunlockarg;
   register_genser wit_ssrunlockargs (gen_ser_list ser_wit_ssrunlockarg);
-  register_genser wit_ssrwgen       (mk_uniform sexp_of_clause clause_of_sexp);
+  register_genser wit_ssrwgen       (mk_uniform sexp_of_clause clause_of_sexp hash_fold_clause compare_clause);
   register_genser wit_ssrwlogfwd    ser_wit_ssrwlogfwd;
   ()
 

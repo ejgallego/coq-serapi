@@ -13,21 +13,14 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type unary_strategy = Rewrite.unary_strategy
-val unary_strategy_of_sexp : Sexp.t -> unary_strategy
-val sexp_of_unary_strategy : unary_strategy -> Sexp.t
+  [@@deriving sexp, hash, compare]
 
 type binary_strategy = Rewrite.binary_strategy
-val binary_strategy_of_sexp : Sexp.t -> binary_strategy
-val sexp_of_binary_strategy : binary_strategy -> Sexp.t
+  [@@deriving sexp, hash, compare]
 
 type ('a,'b) strategy_ast = ('a,'b) Rewrite.strategy_ast
-
-val strategy_ast_of_sexp : (Sexp.t -> 'a) -> (Sexp.t -> 'b) -> Sexp.t -> ('a,'b) strategy_ast
-val sexp_of_strategy_ast : ('a -> Sexp.t) -> ('b -> Sexp.t) -> ('a,'b) strategy_ast -> Sexp.t
+  [@@deriving sexp, hash, compare]
 
 type strategy = Rewrite.strategy
-val strategy_of_sexp : Sexp.t -> strategy
-val sexp_of_strategy : strategy -> Sexp.t
+  [@@deriving sexp, hash, compare]

@@ -17,31 +17,34 @@
 
 module Names = Ser_names
 
-type delta_resolver =
-  [%import: Mod_subst.delta_resolver]
+module OD = struct
+  type t = Mod_subst.delta_resolver
+  let name = "Mod_subst.delta_resolver"
+end
 
-let sexp_of_delta_resolver =
-  Serlib_base.sexp_of_opaque ~typ:"Mod_subst.delta_resolver"
+module A_ = SerType.Opaque(OD)
 
-let delta_resolver_of_sexp =
-  Serlib_base.opaque_of_sexp ~typ:"Mod_subst.delta_resolver"
+type delta_resolver = A_.t
+let sexp_of_delta_resolver = A_.sexp_of_t
+let delta_resolver_of_sexp = A_.t_of_sexp
+let delta_resolver_of_yojson = A_.of_yojson
+let delta_resolver_to_yojson = A_.to_yojson
+let hash_delta_resolver = A_.hash
+let hash_fold_delta_resolver = A_.hash_fold_t
+let compare_delta_resolver = A_.compare
 
-(* type substitution = (Names.ModPath.t * delta_resolver) Names.Umap.t
- *   [@@deriving sexp] *)
+module OS = struct
+  type t = Mod_subst.substitution
+  let name = "Mod_subst.substitution"
+end
 
-type substitution =
-  [%import: Mod_subst.substitution]
+module B_ = SerType.Opaque(OS)
 
-let sexp_of_substitution = Serlib_base.sexp_of_opaque ~typ:"Mod_subst.substitution"
-let substitution_of_sexp = Serlib_base.opaque_of_sexp ~typ:"Mod_subst.substitution"
-
-(* type 'a _substituted = {
- *   mutable subst_value : 'a;
- *   mutable subst_subst : substitution list;
- * } [@@deriving sexp]
- * 
- * type 'a substituted =
- *   [%import: 'a Mod_subst.substituted]
- * 
- * let sexp_of_substituted f x = sexp_of__substituted f (Obj.magic x)
- * let substituted_of_sexp f x = Obj.magic (_substituted_of_sexp f x) *)
+type substitution = B_.t
+let sexp_of_substitution = B_.sexp_of_t
+let substitution_of_sexp = B_.t_of_sexp
+let substitution_of_yojson = B_.of_yojson
+let substitution_to_yojson = B_.to_yojson
+let hash_substitution = B_.hash
+let hash_fold_substitution = B_.hash_fold_t
+let compare_substitution = B_.compare

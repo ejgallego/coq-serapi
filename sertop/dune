@@ -13,21 +13,6 @@
  (link_flags -linkall)
  (libraries sertop))
 
-(executable
- (name sertop_js)
- (modules sertop_async sertop_js)
- (modes js)
- (preprocess (staged_pps ppx_import ppx_sexp_conv))
- (js_of_ocaml
-  (javascript_files
-    ../jscoq/coq-libjs/mutex.js
-    ../jscoq/coq-libjs/unix.js
-    ../jscoq/coq-libjs/str.js
-    ../jscoq/coq-libjs/coq_vm.js)
-  (flags :standard --dynlink +dynlink.js +toplevel.js))
- (link_flags -linkall -noautolink -no-check-prims)
- (libraries sertop ppx_deriving_yojson.runtime zarith_stubs_js jscoq_lib))
-
 (rule
  (targets ser_version.ml)
  (action (write-file %{targets} "let ser_git_version = \"%{version:coq-serapi}\";;")))

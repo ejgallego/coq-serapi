@@ -13,18 +13,12 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 module Val : sig
 
   type t = Geninterp.Val.t
-
-  (* val t_of_sexp : Sexp.t -> t *)
-  val sexp_of_t : t -> Sexp.t
-  val t_of_sexp : Sexp.t -> t
+  [@@deriving sexp,yojson,hash,compare]
 
 end
 
 type interp_sign = Geninterp.interp_sign
-val interp_sign_of_sexp : Sexp.t -> interp_sign
-val sexp_of_interp_sign : interp_sign -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

@@ -21,4 +21,4 @@ module Names = Ser_names
 
 type evaluable_global_reference =
   [%import: Tacred.evaluable_global_reference]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

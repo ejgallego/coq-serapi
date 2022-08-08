@@ -17,25 +17,18 @@
 open Sexplib
 
 type 'a binder_annot = 'a Context.binder_annot
-val binder_annot_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a binder_annot
-val sexp_of_binder_annot : ('a -> Sexp.t) -> 'a binder_annot -> Sexp.t
-
-val binder_annot_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a binder_annot, string) Result.result
-val binder_annot_to_yojson : ('a -> Yojson.Safe.t) -> 'a binder_annot -> Yojson.Safe.t
-
+  [@@deriving sexp,yojson,hash,compare]
 
 module Rel : sig
   module Declaration : sig
 
     type ('c,'t) pt = ('c,'t) Context.Rel.Declaration.pt
-    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
-    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+     [@@deriving sexp,yojson,hash,compare]
 
   end
 
   type ('c, 't) pt = ('c,'t) Context.Rel.pt
-  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
-  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+   [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -44,14 +37,12 @@ module Named : sig
   module Declaration : sig
 
     type ('c, 't) pt = ('c, 't) Context.Named.Declaration.pt
-    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
-    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+     [@@deriving sexp,yojson,hash,compare]
 
   end
 
   type ('c, 't) pt = ('c, 't) Context.Named.pt
-  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
-  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+   [@@deriving sexp,yojson,hash,compare]
 
 end
 

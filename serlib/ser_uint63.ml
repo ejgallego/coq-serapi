@@ -27,3 +27,9 @@ let sexp_of_t (x : Uint63.t) : Sexp.t = Conv.sexp_of_string (_t_put x)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
+
+let hash_fold_t st i =
+  Ppx_hash_lib.Std.Hash.Builtin.hash_fold_int64 st (Uint63.to_int64 i)
+
+let compare i1 i2 =
+  Ppx_compare_lib.Builtin.compare_int64 (Uint63.to_int64 i1) (Uint63.to_int64 i2)

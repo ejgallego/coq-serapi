@@ -13,13 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
 open Ltac_plugin
 
 type 'a grammar_tactic_prod_item_expr = 'a Tacentries.grammar_tactic_prod_item_expr
-val grammar_tactic_prod_item_expr_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a grammar_tactic_prod_item_expr
-val sexp_of_grammar_tactic_prod_item_expr : ('a -> Sexp.t) -> 'a grammar_tactic_prod_item_expr -> Sexp.t
+[@@deriving sexp,hash,compare]
 
 type raw_argument = Tacentries.raw_argument
-val raw_argument_of_sexp : Sexp.t -> raw_argument
-val sexp_of_raw_argument : raw_argument -> Sexp.t
+[@@deriving sexp,hash,compare]

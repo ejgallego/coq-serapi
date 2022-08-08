@@ -13,7 +13,9 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Stdlib = Ser_stdlib
 module CEphemeron = Ser_cEphemeron
@@ -44,30 +46,28 @@ type named_context_val =
 
 type link_info =
   [%import: Environ.link_info]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type key =
   [%import: Environ.key]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type constant_key =
   [%import: Environ.constant_key]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type mind_key =
   [%import: Environ.mind_key]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 module Globals = struct
 
-  type t = Environ.Globals.t
-
-  type _t =
-    [%import: Environ.Globals.view]
-    [@@deriving sexp]
-
-  let sexp_of_t g = sexp_of__t (Obj.magic g)
-  let _t_of_sexp s = Obj.magic (_t_of_sexp s)
+  module PierceSpec = struct
+    type t = Environ.Globals.t
+    type _t = [%import: Environ.Globals.view]
+    [@@deriving sexp,yojson,hash,compare]
+  end
+  include SerType.Pierce(PierceSpec)
 end
 
 type env =

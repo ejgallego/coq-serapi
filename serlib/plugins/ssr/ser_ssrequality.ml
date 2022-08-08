@@ -13,7 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Ssrmatching_plugin = struct
   module Ssrmatching = Serlib_ssrmatching.Ser_ssrmatching
@@ -28,12 +30,12 @@ open Ssreflect_plugin [@@ocaml.warning "-33"]
 
 type ssrwkind =
   [%import: Ssreflect_plugin.Ssrequality.ssrwkind]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type ssrrule =
   [%import: Ssreflect_plugin.Ssrequality.ssrrule]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type ssrrwarg =
   [%import: Ssreflect_plugin.Ssrequality.ssrrwarg]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]

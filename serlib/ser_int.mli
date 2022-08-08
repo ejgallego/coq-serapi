@@ -14,9 +14,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type t = Int.t
-
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

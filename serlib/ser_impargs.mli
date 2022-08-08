@@ -36,9 +36,7 @@ val force_inference_of_sexp : Sexp.t -> force_inference
 val sexp_of_force_inference : force_inference -> Sexp.t
 
 type implicit_side_condition = Impargs.implicit_side_condition
-
-val implicit_side_condition_of_sexp : Sexp.t -> implicit_side_condition
-val sexp_of_implicit_side_condition : implicit_side_condition -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type implicit_status = Impargs.implicit_status
 

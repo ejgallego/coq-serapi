@@ -15,4 +15,4 @@
 
 type inversion_kind =
   [%import: Inv.inversion_kind]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

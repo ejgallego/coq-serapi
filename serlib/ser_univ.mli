@@ -19,7 +19,7 @@ module Level : SerType.SJHC with type t = Univ.Level.t
 module Universe : SerType.SJHC with type t = Univ.Universe.t
 
 module Variance : SerType.SJHC with type t = Univ.Variance.t
-module Instance : SerType.SJ with type t = Univ.Instance.t
+module Instance : SerType.SJHC with type t = Univ.Instance.t
 
 type constraint_type = Univ.constraint_type [@@deriving sexp,yojson,hash,compare]
 
@@ -31,9 +31,9 @@ val sexp_of_univ_constraint : univ_constraint -> Sexp.t
 module Constraints : SerType.SJ with type t = Univ.Constraints.t
 module UContext : SerType.S with type t = Univ.UContext.t
 
-module AbstractContext : SerType.S with type t = Univ.AbstractContext.t
+module AbstractContext : SerType.SJHC with type t = Univ.AbstractContext.t
 
-module ContextSet : SerType.SJ with type t = Univ.ContextSet.t
+module ContextSet : SerType.SJHC with type t = Univ.ContextSet.t
 
 (** A value in a universe context (resp. context set). *)
 type 'a in_universe_context = 'a Univ.in_universe_context
@@ -45,12 +45,7 @@ val in_universe_context_set_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a in_universe
 val sexp_of_in_universe_context_set : ('a -> Sexp.t) -> 'a in_universe_context_set -> Sexp.t
 
 type 'a puniverses = 'a * Instance.t
-
-val puniverses_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a puniverses
-val sexp_of_puniverses : ('a -> Sexp.t) -> 'a puniverses -> Sexp.t
-
-val puniverses_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a puniverses, string) Result.result
-val puniverses_to_yojson : ('a -> Yojson.Safe.t) -> 'a puniverses -> Yojson.Safe.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type explanation = Univ.explanation
 

@@ -74,14 +74,7 @@ type ('a, 'b) location =
   ('a, 'b) Tacexpr.location =
     HypLocation of 'a
   | ConclLocation of 'b
-
-val location_of_sexp :
-  (Sexp.t -> 'a) ->
-  (Sexp.t -> 'b) -> Sexp.t -> ('a, 'b) location
-
-val sexp_of_location :
-  ('a -> Sexp.t) ->
-  ('b -> Sexp.t) -> ('a, 'b) location -> Sexp.t
+  [@@deriving sexp,hash,compare]
 
 type 'id message_token = 'id Tacexpr.message_token
 
@@ -260,37 +253,29 @@ val gen_fun_ast_of_sexp :
   Tacexpr.gen_tactic_fun_ast
 
 type glob_tactic_expr = Tacexpr.glob_tactic_expr
-val glob_tactic_expr_of_sexp : Sexp.t -> glob_tactic_expr
-val sexp_of_glob_tactic_expr : glob_tactic_expr -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_atomic_tactic_expr = Tacexpr.glob_atomic_tactic_expr
-val glob_atomic_tactic_expr_of_sexp : Sexp.t -> glob_atomic_tactic_expr
-val sexp_of_glob_atomic_tactic_expr : glob_atomic_tactic_expr -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type raw_tactic_expr = Tacexpr.raw_tactic_expr
-val raw_tactic_expr_of_sexp : Sexp.t -> raw_tactic_expr
-val sexp_of_raw_tactic_expr : raw_tactic_expr -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type raw_atomic_tactic_expr = Tacexpr.raw_atomic_tactic_expr
-val raw_atomic_tactic_expr_of_sexp : Sexp.t -> raw_atomic_tactic_expr
-val sexp_of_raw_atomic_tactic_expr : raw_atomic_tactic_expr -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type atomic_tactic_expr = Tacexpr.atomic_tactic_expr
 val atomic_tactic_expr_of_sexp : Sexp.t -> atomic_tactic_expr
 val sexp_of_atomic_tactic_expr : atomic_tactic_expr -> Sexp.t
 
 type tacdef_body = Tacexpr.tacdef_body
-val tacdef_body_of_sexp : Sexp.t -> tacdef_body
-val sexp_of_tacdef_body : tacdef_body -> Sexp.t
+  [@@deriving sexp,hash,compare]
 
 type intro_pattern = Tacexpr.intro_pattern
-val intro_pattern_of_sexp : Sexp.t -> intro_pattern
-val sexp_of_intro_pattern : intro_pattern -> Sexp.t
+  [@@deriving sexp,hash,compare]
 
 type raw_red_expr = Tacexpr.raw_red_expr
-val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
-val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
+  [@@deriving sexp,hash,compare]
 
 type glob_red_expr = Tacexpr.glob_red_expr
-val glob_red_expr_of_sexp : Sexp.t -> glob_red_expr
-val sexp_of_glob_red_expr : glob_red_expr -> Sexp.t
+  [@@deriving sexp,hash,compare]

@@ -13,9 +13,5 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
-
 type inversion_kind = Inv.inversion_kind
-
-val inversion_kind_of_sexp : Sexp.t -> inversion_kind
-val sexp_of_inversion_kind : inversion_kind -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

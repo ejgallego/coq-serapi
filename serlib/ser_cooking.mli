@@ -16,9 +16,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
-type cooking_info = Cooking.cooking_info
-
-val cooking_info_of_sexp : Sexp.t -> cooking_info
-val sexp_of_cooking_info : cooking_info -> Sexp.t
+type cooking_info = Cooking.cooking_info [@@deriving sexp,yojson,hash,compare]

@@ -41,15 +41,15 @@ type occurrences =
 
 type hyp_location_flag =
   [%import: Locus.hyp_location_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a hyp_location_expr =
   [%import: 'a Locus.hyp_location_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'id clause_expr =
   [%import: 'id Locus.clause_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type clause =
   [%import: Locus.clause]
@@ -65,7 +65,7 @@ type concrete_clause =
 
 type hyp_location =
   [%import: Locus.hyp_location]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type goal_location =
   [%import: Locus.goal_location]
