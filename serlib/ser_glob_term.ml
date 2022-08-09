@@ -13,9 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Std
 
 let hash_fold_array = hash_fold_array_frozen
 
@@ -38,67 +39,47 @@ module Namegen    = Ser_namegen
 
 type binding_kind =
   [%import: Glob_term.binding_kind]
-  [@@deriving sexp,yojson,hash,compare]
-
-(* type 'a universe_kind =
- *   [%import: 'a Glob_term.universe_kind]
- *   [@@deriving sexp,yojson] *)
-
-(* type level_info =
- *   [%import: Glob_term.level_info]
- *   [@@deriving sexp,yojson] *)
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_sort_name =
   [%import: Glob_term.glob_sort_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a glob_sort_gen =
   [%import: 'a Glob_term.glob_sort_gen]
-  [@@deriving sexp,yojson,hash,compare]
-
-(* type 'a glob_sort_expr =
- *   [%import: 'a Glob_term.glob_sort_expr]
- *   [@@deriving sexp,yojson] *)
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_level =
   [%import: Glob_term.glob_level]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_constraint =
   [%import: Glob_term.glob_constraint]
-  [@@deriving sexp,yojson,hash,compare]
-
-(* type sort_info =
- *   [%import: Glob_term.sort_info]
- *   [@@deriving sexp,yojson] *)
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_sort =
   [%import: Glob_term.glob_sort]
-  [@@deriving sexp,yojson,hash,compare]
-
-(* type 'a cast_type =
- *   [%import: 'a Glob_term.cast_type]
- *   [@@deriving sexp,yojson] *)
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type existential_name =
   [%import: Glob_term.existential_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a cases_pattern_r = [%import: 'a Glob_term.cases_pattern_r]
 and 'a cases_pattern_g  = [%import: 'a Glob_term.cases_pattern_g]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type cases_pattern =
   [%import: Glob_term.cases_pattern]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_recarg =
   [%import: Glob_term.glob_recarg]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_fix_kind =
   [%import: Glob_term.glob_fix_kind]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 [@@@ocaml.warning "-27"]
 type 'a glob_constr_r        = [%import: 'a Glob_term.glob_constr_r]
@@ -109,29 +90,29 @@ and 'a tomatch_tuple_g       = [%import: 'a Glob_term.tomatch_tuple_g]
 and 'a tomatch_tuples_g      = [%import: 'a Glob_term.tomatch_tuples_g]
 and 'a cases_clause_g        = [%import: 'a Glob_term.cases_clause_g]
 and 'a cases_clauses_g       = [%import: 'a Glob_term.cases_clauses_g]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 [@@@ocaml.warning "+27"]
 
 type glob_constr =
   [%import: Glob_term.glob_constr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_decl =
   [%import: Glob_term.glob_decl]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type predicate_pattern   = [%import: Glob_term.predicate_pattern]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type tomatch_tuple       = [%import: Glob_term.tomatch_tuple]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type tomatch_tuples      = [%import: Glob_term.tomatch_tuples]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type cases_clause        = [%import: Glob_term.cases_clause]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type cases_clauses       = [%import: Glob_term.cases_clauses]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 

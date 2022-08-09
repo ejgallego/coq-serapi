@@ -16,4 +16,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type cooking_info = Cooking.cooking_info [@@deriving sexp,yojson,hash,compare]
+type cooking_info = Cooking.cooking_info [@@deriving sexp,yojson,python,hash,compare]

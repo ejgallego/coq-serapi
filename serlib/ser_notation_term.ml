@@ -20,34 +20,27 @@ module Names      = Ser_names
 module Tok        = Ser_tok
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
 type scope_name =
   [%import: Notation_term.scope_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type tmp_scope_name =
   [%import: Notation_term.tmp_scope_name]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type subscopes =
   [%import: Notation_term.subscopes]
-  [@@deriving sexp,yojson,hash,compare]
-
-(* type notation_spec = *)
-(*   [%import: Notation_term.notation_spec] *)
-(*   [@@deriving sexp] *)
-
-(* type syntax_modifier = *)
-(*   [%import: Notation_term.syntax_modifier] *)
-(*   [@@deriving sexp] *)
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type constr_as_binder_kind =
   [%import: Notation_term.constr_as_binder_kind]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 

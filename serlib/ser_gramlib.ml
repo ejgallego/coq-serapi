@@ -16,5 +16,5 @@
 module Gramext = struct
   type g_assoc =
     [%import: Gramlib.Gramext.g_assoc]
-    [@@deriving sexp,yojson,hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
 end

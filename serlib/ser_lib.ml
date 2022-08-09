@@ -13,6 +13,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Nametab = Ser_nametab
 module Libobject = Ser_libobject
@@ -20,20 +21,20 @@ module Summary = Ser_summary
 
 type is_type =
   [%import: Lib.is_type]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type export_flag =
   [%import: Lib.export_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type export =
   [%import: Lib.export]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type node =
   [%import: Lib.node]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type library_segment =
   [%import: Lib.library_segment]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

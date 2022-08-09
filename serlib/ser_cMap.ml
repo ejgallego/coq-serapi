@@ -17,6 +17,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -24,13 +25,11 @@ module type ExtS = sig
 
   include CSig.MapS
 
-  (* module SSet : Ser_cSet.ExtS *)
-
-  include SerType.SJHC1 with type 'a t := 'a t
+  include SerType.SJPHC1 with type 'a t := 'a t
 
 end
 
-module Make (M : CSig.MapS) (S : SerType.SJHC with type t = M.key) = struct
+module Make (M : CSig.MapS) (S : SerType.SJPHC with type t = M.key) = struct
 
   include M
 
@@ -38,7 +37,7 @@ module Make (M : CSig.MapS) (S : SerType.SJHC with type t = M.key) = struct
 
     type 'a t = 'a M.t
     type 'a _t = (S.t * 'a) list
-    [@@deriving sexp,yojson,hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
 
     let to_t l = List.fold_left (fun e (k,s) -> M.add k s e) M.empty l
     let of_t = M.bindings

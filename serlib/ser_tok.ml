@@ -14,12 +14,13 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
-module NumTok     = Ser_numTok
+module NumTok = Ser_numTok
 
 type t =
   [%import: Tok.t]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,python]
 
 type 'c p =
   [%import: 'c Tok.p]
@@ -37,6 +38,9 @@ type 'c _p =
   | PBULLET of string option
   | PQUOTATION of string
   | PEOI
-  [@@deriving of_sexp]
+  [@@deriving of_sexp,python]
 
 let p_of_sexp f x = Obj.magic (_p_of_sexp f x)
+
+let p_of_python f x = Obj.magic (_p_of_python f x)
+let python_of_p f x = python_of__p f (Obj.magic x)

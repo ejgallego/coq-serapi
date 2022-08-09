@@ -17,33 +17,26 @@
 open Sexplib
 
 type 'a binder_annot = 'a Context.binder_annot
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module Rel : sig
   module Declaration : sig
-
     type ('c,'t) pt = ('c,'t) Context.Rel.Declaration.pt
-     [@@deriving sexp,yojson,hash,compare]
-
+     [@@deriving sexp,yojson,python,hash,compare]
   end
 
   type ('c, 't) pt = ('c,'t) Context.Rel.pt
-   [@@deriving sexp,yojson,hash,compare]
-
+   [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module Named : sig
-
   module Declaration : sig
-
     type ('c, 't) pt = ('c, 't) Context.Named.Declaration.pt
-     [@@deriving sexp,yojson,hash,compare]
-
+     [@@deriving sexp,yojson,python,hash,compare]
   end
 
   type ('c, 't) pt = ('c, 't) Context.Named.pt
-   [@@deriving sexp,yojson,hash,compare]
-
+   [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module Compacted : sig

@@ -14,21 +14,15 @@
 (************************************************************************)
 
 (* open Sexplib.Conv *)
+open Ppx_python_runtime
 
 module Stateid = Ser_stateid
 module Names   = Ser_names
 
-(* type interactive_top =
- *  [%import: Stm.interactive_top]
- *  [@@deriving sexp] *)
-
 type focus =
  [%import: Stm.focus]
- [@@deriving sexp]
+ [@@deriving sexp,python]
 
 type add_focus =
  [%import: Stm.add_focus]
- [@@deriving sexp]
-
- (* { start : Stateid.t; stop : Stateid.t; tip : Stateid.t } *)
-
+ [@@deriving sexp,python]

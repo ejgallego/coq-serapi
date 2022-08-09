@@ -20,11 +20,11 @@ module type ExtS = sig
 
   include CSig.SetS
 
-  include SerType.SJHC with type t := t
+  include SerType.SJPHC with type t := t
 
 end
 
-module Make (M : CSig.SetS) (S : SerType.SJHC with type t = M.elt)
+module Make (M : CSig.SetS) (S : SerType.SJPHC with type t = M.elt)
   : ExtS
     with type t = M.t
      and type elt = M.elt

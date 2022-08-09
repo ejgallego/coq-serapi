@@ -15,5 +15,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type 'a module_signature = 'a Declaremods.module_signature [@@deriving sexp,yojson,hash,compare]
-type inline = Declaremods.inline [@@deriving sexp,yojson,hash,compare]
+type 'a module_signature = 'a Declaremods.module_signature [@@deriving sexp,yojson,python,hash,compare]
+type inline = Declaremods.inline [@@deriving sexp,yojson,python,hash,compare]

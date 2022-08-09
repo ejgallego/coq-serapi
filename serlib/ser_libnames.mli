@@ -13,5 +13,5 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type qualid = Libnames.qualid [@@deriving sexp,yojson,hash,compare]
-type full_path = Libnames.full_path [@@deriving sexp,yojson,hash,compare]
+type qualid = Libnames.qualid [@@deriving sexp,yojson,python,hash,compare]
+type full_path = Libnames.full_path [@@deriving sexp,yojson,python,hash,compare]

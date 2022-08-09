@@ -14,7 +14,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -26,7 +27,7 @@ module Float64 = Ser_float64
 
 type tag =
   [%import: Vmvalues.tag]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module OpaqueSV = struct
   type t = Vmvalues.structured_values
@@ -38,6 +39,8 @@ module B = SerType.Opaque(OpaqueSV)
 type structured_values = B.t
 let sexp_of_structured_values = B.sexp_of_t
 let structured_values_of_sexp = B.t_of_sexp
+let python_of_structured_values = B.python_of_t
+let structured_values_of_python = B.t_of_python
 let structured_values_of_yojson = B.of_yojson
 let structured_values_to_yojson = B.to_yojson
 (* let hash_structured_values = B.hash *)
@@ -46,14 +49,14 @@ let compare_structured_values = B.compare
 
 type structured_constant =
   [%import: Vmvalues.structured_constant]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 let hash_fold_array = hash_fold_array_frozen
 
 type reloc_table =
   [%import: Vmvalues.reloc_table]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type annot_switch =
   [%import: Vmvalues.annot_switch]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

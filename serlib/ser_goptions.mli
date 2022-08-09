@@ -22,18 +22,13 @@ type option_locality = Goptions.option_locality
 val option_locality_of_sexp : Sexp.t -> option_locality
 val sexp_of_option_locality : option_locality -> Sexp.t
 
-type option_name = Goptions.option_name [@@deriving sexp, yojson, hash,compare]
+type option_name = Goptions.option_name [@@deriving sexp,yojson,python,hash,compare]
 
 type option_value = Goptions.option_value
-
-val option_value_of_sexp : Sexp.t -> option_value
-val sexp_of_option_value : option_value -> Sexp.t
-val option_value_of_yojson : Yojson.Safe.t -> (option_value, string) Result.result
-val option_value_to_yojson : option_value -> Yojson.Safe.t
+[@@deriving sexp,yojson,python,hash,compare]
 
 type option_state = Goptions.option_state
+[@@deriving sexp,yojson,python,hash,compare]
 
-val option_state_of_sexp : Sexp.t -> option_state
-val sexp_of_option_state : option_state -> Sexp.t
-
-type table_value = Goptions.table_value [@@deriving sexp, yojson, hash,compare]
+type table_value = Goptions.table_value
+[@@deriving sexp,yojson,python,hash,compare]

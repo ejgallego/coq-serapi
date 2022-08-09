@@ -259,7 +259,7 @@ type glob_atomic_tactic_expr = Tacexpr.glob_atomic_tactic_expr
   [@@deriving sexp,yojson,hash,compare]
 
 type raw_tactic_expr = Tacexpr.raw_tactic_expr
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,hash,compare,python]
 
 type raw_atomic_tactic_expr = Tacexpr.raw_atomic_tactic_expr
   [@@deriving sexp,yojson,hash,compare]

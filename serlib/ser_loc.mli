@@ -18,10 +18,10 @@
 (**********************************************************************)
 
 type t = Loc.t
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 (* Don't print locations. Global-flag Hack. *)
 val omit_loc : bool ref
 
 type 'a located = 'a Loc.located
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

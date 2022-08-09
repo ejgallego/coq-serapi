@@ -15,7 +15,7 @@
 
 open Sexplib
 
-type patvar = Pattern.patvar [@@deriving sexp,yojson,hash,compare]
+type patvar = Pattern.patvar [@@deriving sexp,yojson,python,hash,compare]
 
 type case_info_pattern = Pattern.case_info_pattern
 
@@ -23,4 +23,4 @@ val case_info_pattern_of_sexp : Sexp.t -> case_info_pattern
 val sexp_of_case_info_pattern : case_info_pattern -> Sexp.t
 
 type constr_pattern = Pattern.constr_pattern
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

@@ -16,15 +16,23 @@ module type SJ = sig
   val to_yojson : t -> Yojson.Safe.t
 end
 
-module type SJH = sig
+module type SJP = sig
 
   include SJ
+  val t_of_python : Py.Object.t -> t
+  val python_of_t : t -> Py.Object.t
+
+end
+
+module type SJPH = sig
+
+  include SJP
   val hash : t -> int
   val hash_fold_t : Ppx_hash_lib.Std.Hash.state -> t -> Ppx_hash_lib.Std.Hash.state
 end
 
-module type SJHC = sig
-  include SJH
+module type SJPHC = sig
+  include SJPH
   val compare : t -> t -> int
 end
 
@@ -46,9 +54,17 @@ module type SJ1 = sig
 
 end
 
-module type SJH1 = sig
+module type SJP1 = sig
 
   include SJ1
+
+  val t_of_python : (Py.Object.t -> 'a) -> Py.Object.t -> 'a t
+  val python_of_t : ('a -> Py.Object.t) -> 'a t -> Py.Object.t
+end
+
+module type SJPH1 = sig
+
+  include SJP1
 
   open Ppx_hash_lib.Std.Hash
 
@@ -56,9 +72,9 @@ module type SJH1 = sig
 
 end
 
-module type SJHC1 = sig
+module type SJPHC1 = sig
 
-  include SJH1
+  include SJPH1
 
   open Ppx_compare_lib
 
@@ -73,7 +89,7 @@ module type Bijectable = sig
   type t
 
   (* Representation type *)
-  type _t [@@deriving sexp,yojson,hash,compare]
+  type _t [@@deriving sexp,yojson,python,hash,compare]
 
   (* Need to be bijetive *)
   val to_t : _t -> t
@@ -81,12 +97,15 @@ module type Bijectable = sig
 
 end
 
-module Biject(M : Bijectable) : SJHC with type t = M.t = struct
+module Biject(M : Bijectable) : SJPHC with type t = M.t = struct
 
   type t = M.t
 
   let sexp_of_t x = M.sexp_of__t (M.of_t x)
   let t_of_sexp s = M.to_t (M._t_of_sexp s)
+
+  let python_of_t x = M.python_of__t (M.of_t x)
+  let t_of_python x = M.to_t (M._t_of_python x)
 
   let to_yojson p = M._t_to_yojson (M.of_t p)
   let of_yojson p = M._t_of_yojson p |> Result.map M.to_t
@@ -104,7 +123,7 @@ module type Bijectable1 = sig
   type 'a t
 
   (* Representation type *)
-  type 'a _t [@@deriving sexp,yojson,hash,compare]
+  type 'a _t [@@deriving sexp,yojson,python,hash,compare]
 
   (* Need to be bijetive *)
   val to_t : 'a _t -> 'a t
@@ -112,12 +131,15 @@ module type Bijectable1 = sig
 
 end
 
-module Biject1(M : Bijectable1) : SJHC1 with type 'a t = 'a M.t = struct
+module Biject1(M : Bijectable1) : SJPHC1 with type 'a t = 'a M.t = struct
 
   type 'a t = 'a M.t
 
   let sexp_of_t f x = M.sexp_of__t f (M.of_t x)
   let t_of_sexp f s = M.to_t (M._t_of_sexp f s)
+
+  let python_of_t f x = M.python_of__t f (M.of_t x)
+  let t_of_python f x = M.to_t (M._t_of_python f x)
 
   let to_yojson f p = M._t_to_yojson f (M.of_t p)
   let of_yojson f p = M._t_of_yojson f p |> Result.map M.to_t
@@ -137,7 +159,7 @@ module type Pierceable = sig
   type t
 
   (* Representation type *)
-  type _t [@@deriving sexp,yojson,hash,compare]
+  type _t [@@deriving sexp,yojson,python,hash,compare]
 end
 
 module type Pierceable1 = sig
@@ -146,15 +168,18 @@ module type Pierceable1 = sig
   type 'a t
 
   (* Representation type *)
-  type 'a _t [@@deriving sexp,yojson,hash,compare]
+  type 'a _t [@@deriving sexp,yojson,python,hash,compare]
 end
 
-module Pierce(M : Pierceable) : SJHC with type t = M.t = struct
+module Pierce(M : Pierceable) : SJPHC with type t = M.t = struct
 
   type t = M.t
 
   let sexp_of_t x = M.sexp_of__t (_sercast x)
   let t_of_sexp s = _sercast (M._t_of_sexp s)
+
+  let python_of_t x = M.python_of__t (_sercast x)
+  let t_of_python s = _sercast (M._t_of_python s)
 
   let to_yojson p = M._t_to_yojson (_sercast p)
   let of_yojson p = M._t_of_yojson p |> Result.map _sercast
@@ -166,12 +191,15 @@ module Pierce(M : Pierceable) : SJHC with type t = M.t = struct
 
 end
 
-module Pierce1(M : Pierceable1) : SJHC1 with type 'a t = 'a M.t = struct
+module Pierce1(M : Pierceable1) : SJPHC1 with type 'a t = 'a M.t = struct
 
   type 'a t = 'a M.t
 
   let sexp_of_t f x = M.sexp_of__t f (_sercast x)
   let t_of_sexp f s = _sercast (M._t_of_sexp f s)
+
+  let python_of_t f x = M.python_of__t f (_sercast x)
+  let t_of_python f s = _sercast (M._t_of_python f s)
 
   let to_yojson f p = M._t_to_yojson f (_sercast p)
   let of_yojson f p = M._t_of_yojson f p |> Result.map _sercast
@@ -186,10 +214,13 @@ end
 (* Unfortunately this doesn't really work for types that are named as
    the functions would have to be sexp_of_name etc... Maybe fixme in
    the future *)
-module PierceAlt(M : Pierceable) : SJHC with type t := M.t = struct
+module PierceAlt(M : Pierceable) : SJPHC with type t := M.t = struct
 
   let sexp_of_t x = M.sexp_of__t (_sercast x)
   let t_of_sexp s = _sercast (M._t_of_sexp s)
+
+  let python_of_t x = M.python_of__t (_sercast x)
+  let t_of_python s = _sercast (M._t_of_python s)
 
   let to_yojson p = M._t_to_yojson (_sercast p)
   let of_yojson p = M._t_of_yojson p |> Result.map _sercast
@@ -203,13 +234,16 @@ end
 
 module type OpaqueDesc = sig type t val name : string end
 
-module Opaque(M : OpaqueDesc) : SJHC with type t = M.t = struct
+module Opaque(M : OpaqueDesc) : SJPHC with type t = M.t = struct
 
   type t = M.t
   let typ = M.name
 
   let sexp_of_t x = Serlib_base.sexp_of_opaque ~typ x
   let t_of_sexp s = Serlib_base.opaque_of_sexp ~typ s
+
+  let python_of_t x = Serlib_base.python_of_opaque ~typ x
+  let t_of_python s = Serlib_base.opaque_of_python ~typ s
 
   let to_yojson p = Serlib_base.opaque_to_yojson ~typ p
   let of_yojson p = Serlib_base.opaque_of_yojson ~typ p
@@ -223,13 +257,16 @@ end
 
 module type OpaqueDesc1 = sig type 'a t val name : string end
 
-module Opaque1(M : OpaqueDesc1) : SJHC1 with type 'a t = 'a M.t = struct
+module Opaque1(M : OpaqueDesc1) : SJPHC1 with type 'a t = 'a M.t = struct
 
   type 'a  t = 'a M.t
   let typ = M.name
 
   let sexp_of_t _ x = Serlib_base.sexp_of_opaque ~typ x
   let t_of_sexp _ s = Serlib_base.opaque_of_sexp ~typ s
+
+  let python_of_t _ x = Serlib_base.python_of_opaque ~typ x
+  let t_of_python _ s = Serlib_base.opaque_of_python ~typ s
 
   let to_yojson _ p = Serlib_base.opaque_to_yojson ~typ p
   let of_yojson _ p = Serlib_base.opaque_of_yojson ~typ p

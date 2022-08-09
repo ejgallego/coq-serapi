@@ -15,6 +15,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_compare_lib.Builtin
 open Ppx_hash_lib.Std.Hash.Builtin
 
@@ -27,7 +28,7 @@ module RTreePierce = struct
     | Param of int * int
     | Node of 'a * 'a _t array
     | Rec of int * 'a _t array
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 end
 
 include SerType.Pierce1(RTreePierce)

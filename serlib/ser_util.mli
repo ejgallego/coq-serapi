@@ -13,4 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type ('a, 'b) union = ('a, 'b) Util.union [@@deriving sexp,yojson,hash,compare]
+type ('a, 'b) union = ('a, 'b) Util.union [@@deriving sexp,yojson,python,hash,compare]

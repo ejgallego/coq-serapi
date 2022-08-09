@@ -15,4 +15,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type 'a hint_info_gen = 'a Typeclasses.hint_info_gen [@@deriving sexp, yojson, hash,compare]
+type 'a hint_info_gen = 'a Typeclasses.hint_info_gen [@@deriving sexp,yojson,python,hash,compare]

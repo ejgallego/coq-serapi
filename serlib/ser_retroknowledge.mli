@@ -18,6 +18,8 @@ type retroknowledge = Retroknowledge.retroknowledge
 
 val sexp_of_retroknowledge : retroknowledge -> Sexp.t
 val retroknowledge_of_sexp : Sexp.t -> retroknowledge
+val python_of_retroknowledge : retroknowledge -> Py.Object.t
+val retroknowledge_of_python : Py.Object.t -> retroknowledge
 
 type action = Retroknowledge.action
 

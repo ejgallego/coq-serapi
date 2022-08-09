@@ -19,4 +19,4 @@
 module Names = Ser_names
 type axiom =
   [%import: Printer.axiom]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

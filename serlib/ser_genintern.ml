@@ -16,6 +16,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -37,7 +38,7 @@ end
 
 type intern_variable_status =
   [%import: Genintern.intern_variable_status]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_sign =
   [%import: Genintern.glob_sign]
@@ -45,8 +46,8 @@ type glob_sign =
 
 type glob_constr_and_expr =
   [%import: Genintern.glob_constr_and_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type glob_constr_pattern_and_expr =
   [%import: Genintern.glob_constr_pattern_and_expr]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

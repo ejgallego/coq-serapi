@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_python_runtime
 
 module Names         = Ser_names
 module Constrexpr    = Ser_constrexpr
@@ -22,26 +23,14 @@ module Extend        = Ser_extend
 module Gramlib       = Ser_gramlib
 module Notation      = Ser_notation
 
-(* type precedence =
- *   [%import: Notation_gram.precedence]
- *   [@@deriving sexp] *)
-
-(* type parenRelation =
- *   [%import: Notation_gram.parenRelation]
- *   [@@deriving sexp] *)
-
-(* type tolerability =
- *   [%import: Notation_gram.tolerability]
- *   [@@deriving sexp] *)
-
 type grammar_constr_prod_item =
   [%import: Notation_gram.grammar_constr_prod_item]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type one_notation_grammar =
   [%import: Notation_gram.one_notation_grammar]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type notation_grammar =
   [%import: Notation_gram.notation_grammar]
-  [@@deriving sexp]
+  [@@deriving sexp,python]

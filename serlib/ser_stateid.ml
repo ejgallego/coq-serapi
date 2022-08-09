@@ -14,13 +14,12 @@
 (************************************************************************)
 
 open Sexplib.Std
-
-module Self = struct
+open Ppx_python_runtime
 
 type t =
   [%import: Stateid.t]
 
-type _t = int [@@deriving sexp, yojson]
+type _t = int [@@deriving sexp, yojson, python]
 
 let _t_put stateid = (Stateid.to_int stateid)
 let _t_get stateid = Stateid.of_int stateid
@@ -30,6 +29,6 @@ let sexp_of_t stateid = sexp_of__t (_t_put stateid)
 
 let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
 let to_yojson level = _t_to_yojson (_t_put level)
-end
 
-include Self
+let t_of_python python    = _t_get (_t_of_python python)
+let python_of_t stateid = python_of__t (_t_put stateid)

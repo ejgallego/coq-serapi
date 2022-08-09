@@ -17,6 +17,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -31,25 +32,25 @@ type reloc_info =
   | Reloc_const of Vmvalues.structured_constant
   | Reloc_getglobal of Names.Constant.t
   | Reloc_caml_prim of CPrimitives.t
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
 let hash_fold_array = hash_fold_array_frozen
 
 type patches = {
   reloc_infos : (reloc_info * int array) array;
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 
 type emitcodes = string
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
 type _to_patch = emitcodes * patches
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
 module PierceToPatch = struct
 
   type t = Vmemitcodes.to_patch
   type _t = _to_patch
-   [@@deriving sexp,yojson,hash,compare]
+   [@@deriving sexp,yojson,python,hash,compare]
 
 end
 
@@ -58,6 +59,8 @@ module B = SerType.Pierce(PierceToPatch)
 type to_patch = B.t
 let sexp_of_to_patch = B.sexp_of_t
 let to_patch_of_sexp = B.t_of_sexp
+let python_of_to_patch = B.python_of_t
+let to_patch_of_python = B.t_of_python
 let to_patch_of_yojson = B.of_yojson
 let to_patch_to_yojson = B.to_yojson
 (* let hash_to_patch = B.hash *)
@@ -66,4 +69,4 @@ let compare_to_patch = B.compare
 
 type body_code =
   [%import: Vmemitcodes.body_code]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

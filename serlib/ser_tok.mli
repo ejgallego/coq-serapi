@@ -15,7 +15,7 @@
 
 open Sexplib
 
-type t = Tok.t
+include SerType.SJP with type t = Tok.t
 
 val t_of_sexp : Sexp.t -> t
 val sexp_of_t : t -> Sexp.t
@@ -23,3 +23,6 @@ val sexp_of_t : t -> Sexp.t
 type 'c p = 'c Tok.p
 val p_of_sexp : (Sexp.t -> 'c) -> Sexp.t -> 'c p
 val sexp_of_p : ('c -> Sexp.t) -> 'c p -> Sexp.t
+
+val p_of_python : (Py.Object.t -> 'c) -> Py.Object.t -> 'c p
+val python_of_p : ('c -> Py.Object.t) -> 'c p -> Py.Object.t

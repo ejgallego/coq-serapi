@@ -14,7 +14,7 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Self : SerType.SJHC with type t = Evar.t
+module Self : SerType.SJPHC with type t = Evar.t
 
 include module type of Self
 

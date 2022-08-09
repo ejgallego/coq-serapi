@@ -30,6 +30,14 @@ let sexp_of_thunk : type a b. (a -> Sexp.t) -> (b -> Sexp.t) -> (a,b) thunk -> S
 let thunk_of_sexp : type a b. (Sexp.t -> a) -> (Sexp.t -> b) -> Sexp.t -> (a,b) thunk =
   fun f _ s -> Value (f s)
 
+let python_of_thunk : type a b. (a -> Py.Object.t) -> (b -> Py.Object.t) -> (a,b) thunk -> Py.Object.t =
+  fun f _ t -> match t with
+  | Value v -> f v
+  | Thunk t -> f (Lazy.force t)
+
+let thunk_of_python : type a b. (Py.Object.t -> a) -> (Py.Object.t -> b) -> Py.Object.t -> (a,b) thunk =
+  fun f _ s -> Value (f s)
+
 let thunk_of_yojson : type a b. (Yojson.Safe.t -> (a, string) Result.result) -> (Yojson.Safe.t -> (b, string) Result.result) -> Yojson.Safe.t -> ((a,b) thunk, string) Result.result =
   fun f _ s -> Result.map (fun s -> Value s) (f s)
 
@@ -57,4 +65,4 @@ let compare_thunk : type a b. (a Ppx_compare_lib.compare) -> (b Ppx_compare_lib.
 
 type ('a, 'b) t =
   [%import: ('a, 'b) DAst.t]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

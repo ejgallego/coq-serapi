@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
@@ -23,7 +24,7 @@ module RawLevel = struct
 
   module UGlobal = struct
     type t = Names.DirPath.t * int
-    [@@deriving sexp, yojson, hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
   end
 
   type t =
@@ -32,7 +33,7 @@ module RawLevel = struct
   | Set
   | Level of UGlobal.t
   | Var of int
-  [@@deriving sexp, yojson, hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 end
 
@@ -42,7 +43,7 @@ module Level = struct
     type _t =
       { hash : int
       ; data : RawLevel.t
-      } [@@deriving sexp, yojson, hash,compare]
+      } [@@deriving sexp,yojson,python,hash,compare]
   end
 
   module PierceImp = SerType.Pierce(PierceSpec)
@@ -57,7 +58,7 @@ module Universe = struct
 
     type t = Univ.Universe.t
     type _t = (Level.t * int) list
-    [@@deriving sexp,yojson,hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
   end
 
   include SerType.Pierce(PierceSpec)
@@ -69,7 +70,7 @@ module Variance = struct
 
   type t =
     [%import: Univ.Variance.t]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 end
 
@@ -81,7 +82,7 @@ type t =
 let hash_fold_array = hash_fold_array_frozen
 
 type _t = Instance of Level.t array
-  [@@deriving sexp, yojson, hash, compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 let _instance_put instance            = Instance (Univ.Instance.to_array instance)
 let _instance_get (Instance instance) = Univ.Instance.of_array instance
@@ -97,15 +98,18 @@ let hash i = hash__t (Instance (Univ.Instance.to_array i))
 let hash_fold_t st i = hash_fold__t st (Instance (Univ.Instance.to_array i))
 let compare i1 i2 = compare__t (Instance (Univ.Instance.to_array i1)) (Instance (Univ.Instance.to_array i2))
 
+let t_of_python python     = _instance_get (_t_of_python python)
+let python_of_t instance = python_of__t (_instance_put instance)
+
 end
 
 type constraint_type =
   [%import: Univ.constraint_type]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type univ_constraint =
   [%import: Univ.univ_constraint]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module Constraints = Ser_cSet.Make(Univ.Constraints)(struct
     type t = univ_constraint
@@ -116,11 +120,13 @@ module Constraints = Ser_cSet.Make(Univ.Constraints)(struct
     let hash = hash_univ_constraint
     let hash_fold_t = hash_fold_univ_constraint
     let compare = compare_univ_constraint
+    let t_of_python = univ_constraint_of_python
+    let python_of_t = python_of_univ_constraint
   end)
 
 type 'a constrained =
   [%import: 'a Univ.constrained]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module UContext = struct
 
@@ -147,7 +153,7 @@ module AbstractContext = struct
 
     type t = Univ.AbstractContext.t
     type _t = Names.Name.t array constrained
-    [@@deriving sexp,yojson,hash,compare]
+    [@@deriving sexp,yojson,python,hash,compare]
   end
 
   include SerType.Pierce(ACPierceDef)
@@ -157,7 +163,7 @@ end
 module ContextSet = struct
   type t =
     [%import: Univ.ContextSet.t]
-    [@@deriving sexp, yojson, hash, compare]
+    [@@deriving sexp,yojson,python,hash,compare]
 end
 
 type 'a in_universe_context =
@@ -170,7 +176,7 @@ type 'a in_universe_context_set =
 
 type 'a puniverses =
   [%import: 'a Univ.puniverses]
-  [@@deriving sexp, yojson, hash, compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type explanation =
   [%import: Univ.explanation]

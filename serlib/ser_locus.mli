@@ -16,7 +16,7 @@
 open Sexplib
 
 type 'a or_var = 'a Locus.or_var
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a occurrences_gen = 'a Locus.occurrences_gen
 val occurrences_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a occurrences_gen
@@ -27,7 +27,7 @@ type occurrences_expr = Locus.occurrences_expr
 val occurrences_expr_of_sexp : Sexp.t -> occurrences_expr
 val sexp_of_occurrences_expr : occurrences_expr -> Sexp.t
 
-type 'a with_occurrences = 'a Locus.with_occurrences [@@deriving sexp, yojson, hash,compare]
+type 'a with_occurrences = 'a Locus.with_occurrences [@@deriving sexp,yojson,python,hash,compare]
 
 type occurrences = Locus.occurrences
 val occurrences_of_sexp : Sexp.t -> occurrences
@@ -41,7 +41,7 @@ val hyp_location_expr_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hyp_location_expr
 val sexp_of_hyp_location_expr : ('a -> Sexp.t) -> 'a hyp_location_expr -> Sexp.t
 
 type 'id clause_expr = 'id Locus.clause_expr
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type clause = Locus.clause
 
@@ -59,7 +59,7 @@ val concrete_clause_of_sexp : Sexp.t -> concrete_clause
 val sexp_of_concrete_clause : concrete_clause -> Sexp.t
 
 type hyp_location = Locus.hyp_location
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type goal_location = Locus.goal_location
 

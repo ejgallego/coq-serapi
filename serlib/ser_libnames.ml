@@ -15,60 +15,64 @@
 
 (* open Sexplib.Std *)
 
+include Ppx_python_runtime
+
 let cmake = CAst.make
 
 module Loc   = Ser_loc
 module CAst  = Ser_cAst
 module Names = Ser_names
 
-type _t =
-  | Ser_Qualid of Names.DirPath.t * Names.Id.t
-    [@@deriving sexp,yojson,hash,compare]
+module QIDBIJ = struct
+  type t = Libnames.qualid_r
+  type _t =
+    | Ser_Qualid of Names.DirPath.t * Names.Id.t
+    [@@deriving sexp,yojson,python,hash,compare]
 
-let _t_put qid =
-  let (dp, id) = Libnames.repr_qualid (cmake qid) in
-  Ser_Qualid (dp, id)
+  let of_t qid =
+    let (dp, id) = Libnames.repr_qualid (cmake qid) in
+    Ser_Qualid (dp, id)
+  let to_t (Ser_Qualid (dp, id)) = Libnames.(make_qualid dp id).CAst.v
+end
 
-let _t_get (Ser_Qualid (dp, id)) = Libnames.(make_qualid dp id).CAst.v
+module QID = SerType.Biject(QIDBIJ)
 
-type qualid_r =
-  [%import: Libnames.qualid_r]
-
-let qualid_r_of_sexp sexp = _t_get (_t_of_sexp sexp)
-let sexp_of_qualid_r qid  = sexp_of__t (_t_put qid)
-
-let qualid_r_of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
-let qualid_r_to_yojson level = _t_to_yojson (_t_put level)
-
-(* let hash_qualid_r x = hash__t (_t_put x) *)
-let hash_fold_qualid_r st x = hash_fold__t st (_t_put x)
-let compare_qualid_r x y = compare__t (_t_put x) (_t_put y)
+type qualid_r = QID.t
+let sexp_of_qualid_r = QID.sexp_of_t
+let qualid_r_of_sexp = QID.t_of_sexp
+let python_of_qualid_r = QID.python_of_t
+let qualid_r_of_python = QID.t_of_python
+let qualid_r_of_yojson = QID.of_yojson
+let qualid_r_to_yojson = QID.to_yojson
+(* let hash_qualid_r = QID.hash *)
+let hash_fold_qualid_r = QID.hash_fold_t
+let compare_qualid_r = QID.compare
 
 (* qualid: private *)
 type qualid =
   [%import: Libnames.qualid]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 module FP = struct
+  type t = Libnames.full_path
   type _t =
     { dirpath : Names.DirPath.t
     ; basename : Names.Id.t }
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
-  let _t_get { dirpath; basename } = Libnames.make_path dirpath basename
-  let _t_put fp = let dirpath, basename = Libnames.repr_path fp in { dirpath; basename }
+  let to_t { dirpath; basename } = Libnames.make_path dirpath basename
+  let of_t fp = let dirpath, basename = Libnames.repr_path fp in { dirpath; basename }
 end
 
-open FP
+module F = SerType.Biject(FP)
 
-type full_path = Libnames.full_path
-let full_path_of_sexp sexp = _t_get (_t_of_sexp sexp)
-let sexp_of_full_path qid  = sexp_of__t (_t_put qid)
-
-let full_path_of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
-let full_path_to_yojson level = _t_to_yojson (_t_put level)
-
-let hash_full_path x = hash__t (_t_put x)
-let hash_fold_full_path st x = hash_fold__t st (_t_put x)
-
-let compare_full_path x y = compare__t (_t_put x) (_t_put y)
+type full_path = F.t
+let sexp_of_full_path = F.sexp_of_t
+let full_path_of_sexp = F.t_of_sexp
+let python_of_full_path = F.python_of_t
+let full_path_of_python = F.t_of_python
+let full_path_of_yojson = F.of_yojson
+let full_path_to_yojson = F.to_yojson
+let hash_full_path = F.hash
+let hash_fold_full_path = F.hash_fold_t
+let compare_full_path = F.compare

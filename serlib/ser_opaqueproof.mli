@@ -14,7 +14,7 @@
 (************************************************************************)
 
 type opaque = Opaqueproof.opaque
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type opaquetab = Opaqueproof.opaquetab
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

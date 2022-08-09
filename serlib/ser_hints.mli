@@ -14,16 +14,16 @@
 (************************************************************************)
 
 type hint_db_name = Hints.hint_db_name
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a hints_path_gen = 'a Hints.hints_path_gen
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
 type 'a hints_path_atom_gen = 'a Hints.hints_path_atom_gen
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
 type hints_path = Hints.hints_path
- [@@deriving sexp,yojson,hash,compare]
+ [@@deriving sexp,yojson,python,hash,compare]
 
-type 'a hints_transparency_target = 'a Hints.hints_transparency_target [@@deriving sexp,yojson,hash,compare]
-type hint_mode = Hints.hint_mode [@@deriving sexp,yojson,hash,compare]
+type 'a hints_transparency_target = 'a Hints.hints_transparency_target [@@deriving sexp,yojson,python,hash,compare]
+type hint_mode = Hints.hint_mode [@@deriving sexp,yojson,python,hash,compare]

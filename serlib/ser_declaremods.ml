@@ -15,14 +15,15 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Conv
+open Ppx_python_runtime
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
-open Sexplib.Conv
 
 type 'a module_signature =
   [%import: 'a Declaremods.module_signature]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]
 
 type inline =
   [%import: Declaremods.inline]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp,yojson,python,hash,compare]

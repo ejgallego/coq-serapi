@@ -13,29 +13,30 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Names = Ser_names
 module Mod_subst = Ser_mod_subst
 
 module CString = struct
-  module Pred = struct
-    include CString.Pred
-    let t_of_sexp _ = CString.Pred.empty
-    let sexp_of_t _ = Sexplib.Sexp.Atom "XXX: CString.Pred.t"
-  end
+  module OP = struct type t = CString.Pred.t let name = "CString.Pred.t" end
+  module Pred = SerType.Opaque(OP)
 end
 
-type _open_filter =
-  | Unfiltered
-  | Filtered of CString.Pred.t
-  [@@deriving sexp]
+module OPP = struct
+  type t = Libobject.open_filter
+  type _t =
+    | Unfiltered
+    | Filtered of CString.Pred.t
+  [@@deriving sexp,yojson,python,hash,compare]
+end
 
-let _t_put x = Obj.magic x
-let _t_get x = Obj.magic x
-
-type open_filter = [%import: Libobject.open_filter]
-let open_filter_of_sexp x = _t_put (_open_filter_of_sexp x)
-let sexp_of_open_filter x = sexp_of__open_filter (_t_get x)
+module OF = SerType.Pierce(OPP)
+type open_filter = OF.t
+let open_filter_of_sexp = OF.t_of_sexp
+let sexp_of_open_filter = OF.sexp_of_t
+let open_filter_of_python = OF.t_of_python
+let python_of_open_filter = OF.python_of_t
 
 module Dyn = struct
 
@@ -47,7 +48,7 @@ module Dyn = struct
       (* | Constant of Internal.Constant.t
        * | Inductive of DeclareInd.Internal.inductive_obj *)
       | TaggedAnon of string
-    [@@deriving sexp]
+    [@@deriving sexp,python]
 
     let to_t (x : Libobject.Dyn.t) =
       let Libobject.Dyn.Dyn (tag, _) = x in
@@ -56,14 +57,16 @@ module Dyn = struct
 
   let t_of_sexp x = Serlib_base.opaque_of_sexp ~typ:"Libobject.Dyn.t" x
   let sexp_of_t x = Reified.sexp_of_t (Reified.to_t x)
+  let t_of_python x = Serlib_base.opaque_of_python ~typ:"Libobject.Dyn.t" x
+  let python_of_t x = Reified.python_of_t (Reified.to_t x)
 end
 
 type obj =
   [%import: Libobject.obj]
-  [@@deriving sexp]
+  [@@deriving sexp,python]
 
 type algebraic_objects =
   [%import: Libobject.algebraic_objects]
 and t = [%import: Libobject.t]
 and substitutive_objects = [%import: Libobject.substitutive_objects]
-[@@deriving sexp]
+[@@deriving sexp,python]

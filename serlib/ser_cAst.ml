@@ -14,6 +14,7 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_python_runtime
 
 module Loc        = Ser_loc
 
@@ -21,7 +22,7 @@ module L = struct
 type 'a t = {
   v   : 'a;
   loc : Loc.t option [@ignore] [@hash.ignore];
-} [@@deriving sexp,yojson,hash,compare]
+} [@@deriving sexp,yojson,python,hash,compare]
 end
 
 type 'a t = 'a CAst.t = private {
@@ -34,6 +35,9 @@ let sexp_of_t f { CAst.v ; loc } = L.sexp_of_t f { L.v ; loc }
 
 let of_yojson f json = Ppx_deriving_yojson_runtime.(L.of_yojson f json >|= fun { L.v; loc } -> CAst.make ?loc:loc v)
 let to_yojson f { CAst.v ; loc } = L.to_yojson f { L.v ; loc }
+
+let t_of_python f s = let { L.v ; loc } = L.t_of_python f s in CAst.make ?loc:loc v
+let python_of_t f { CAst.v ; loc } = L.python_of_t f { L.v ; loc }
 
 let hash_fold_t f st { CAst.v; loc } = L.hash_fold_t f st { L.v; loc }
 

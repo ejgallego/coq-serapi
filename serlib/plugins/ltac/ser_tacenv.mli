@@ -23,3 +23,6 @@ type ltac_entry = Tacenv.ltac_entry
 
 val ltac_entry_of_sexp : Sexp.t -> ltac_entry
 val sexp_of_ltac_entry : ltac_entry -> Sexp.t
+
+val ltac_entry_of_python : Py.Object.t -> ltac_entry
+val python_of_ltac_entry : ltac_entry -> Py.Object.t
