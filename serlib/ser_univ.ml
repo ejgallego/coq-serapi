@@ -17,6 +17,8 @@ open Sexplib.Std
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
+let hash_fold_array = hash_fold_array_frozen
+
 module Names = Ser_names
 module Stdlib = Ser_stdlib
 
@@ -79,8 +81,6 @@ module Instance = struct
 type t =
   [%import: Univ.Instance.t]
 
-let hash_fold_array = hash_fold_array_frozen
-
 type _t = Instance of Level.t array
   [@@deriving sexp, yojson, hash, compare]
 
@@ -126,18 +126,15 @@ type 'a constrained =
 module UContext = struct
 
   module I = struct
-    type t = Names.Name.t array * Instance.t constrained
-    [@@deriving sexp,yojson]
+    type t = Univ.UContext.t
+    type _t = Names.Name.t array * Instance.t constrained
+    [@@deriving sexp,yojson,hash,compare]
 
-    let to_uc (un, cs) = Univ.UContext.make un cs
-    let from_uc uc = Univ.UContext.(names uc, (instance uc, constraints uc))
-
+    let to_t (un, cs) = Univ.UContext.make un cs
+    let of_t uc = Univ.UContext.(names uc, (instance uc, constraints uc))
   end
 
-  type t = Univ.UContext.t
-
-  let t_of_sexp s = I.t_of_sexp s |> I.to_uc
-  let sexp_of_t t = I.from_uc t |> I.sexp_of_t
+  include SerType.Biject(I)
 
 end
 

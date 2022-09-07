@@ -18,4 +18,4 @@ module Self : SerType.SJHC with type t = Evar.t
 
 include module type of Self
 
-module Set : SerType.S with type t = Evar.Set.t
+module Set : SerType.SJHC with type t = Evar.Set.t

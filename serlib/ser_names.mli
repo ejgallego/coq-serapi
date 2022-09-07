@@ -41,7 +41,7 @@ module Constant : SerType.SJHC with type t = Constant.t
 module Cmap : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap_env.t
 
-module MutInd : SerType.S with type t = MutInd.t
+module MutInd : SerType.SJHC with type t = MutInd.t
 
 module Mindmap : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap.t
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap_env.t

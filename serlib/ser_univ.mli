@@ -28,8 +28,8 @@ type univ_constraint = Univ.univ_constraint
 val univ_constraint_of_sexp : Sexp.t -> univ_constraint
 val sexp_of_univ_constraint : univ_constraint -> Sexp.t
 
-module Constraints : SerType.SJ with type t = Univ.Constraints.t
-module UContext : SerType.S with type t = Univ.UContext.t
+module Constraints : SerType.SJHC with type t = Univ.Constraints.t
+module UContext : SerType.SJHC with type t = Univ.UContext.t
 
 module AbstractContext : SerType.SJHC with type t = Univ.AbstractContext.t
 

@@ -10,9 +10,8 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2020 MINES ParisTech / INRIA                          *)
-(************************************************************************)
-(* Status: Very Experimental                                            *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2019-2022 Inria                                            *)
 (************************************************************************)
 
 open Ppx_hash_lib.Std.Hash.Builtin

@@ -13,6 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-module Self : SerType.SJ with type t = Stateid.t
-
-include module type of Self
+type t = Stateid.t [@@deriving sexp,yojson,hash,compare]
