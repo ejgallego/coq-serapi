@@ -34,11 +34,11 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: [coq.8.16+rc1 coq-mathcomp-ssreflect.dev]
+        extra-opam: [coq.8.16 coq-mathcomp-ssreflect.dev]
         include:
         - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
           test-target: js-dune
-          extra-opam: coq.8.16+rc1 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
+          extra-opam: coq.8.16 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-compiler: 4.13.1
           test-target: test
           extra-opam:
@@ -81,6 +81,7 @@ jobs:
         if: ${{ matrix.coq-from-git }}
         run: |
           eval $(opam env)
+          opam pin add dune.3.3.1
           # First we update SERAPI_COQ_HOME for future steps as per https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
           echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_BRANCH/_build/install/default/lib/" >> $GITHUB_ENV
           # Update to coq-core some day
