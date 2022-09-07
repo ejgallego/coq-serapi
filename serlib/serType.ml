@@ -1,69 +1,25 @@
-open Sexplib
+(************************************************************************)
+(*         *   The Coq Proof Assistant / The Coq Development Team       *)
+(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2019       *)
+(* <O___,, *       (see CREDITS file for the list of authors)           *)
+(*   \VV/  **************************************************************)
+(*    //   *    This file is distributed under the terms of the         *)
+(*         *     GNU Lesser General Public License Version 2.1          *)
+(*         *     (see LICENSE file for the text of the license)         *)
+(************************************************************************)
 
-module type S = sig
-
-  type t
-
-  val t_of_sexp : Sexp.t -> t
-  val sexp_of_t : t -> Sexp.t
-
-end
-
-module type SJ = sig
-
-  include S
-  val of_yojson : Yojson.Safe.t -> (t, string) Result.result
-  val to_yojson : t -> Yojson.Safe.t
-end
-
-module type SJH = sig
-
-  include SJ
-  val hash : t -> int
-  val hash_fold_t : Ppx_hash_lib.Std.Hash.state -> t -> Ppx_hash_lib.Std.Hash.state
-end
+(************************************************************************)
+(* Coq serialization API/Plugin                                         *)
+(* Copyright 2016-2019 MINES ParisTech                                  *)
+(* Copyright 2019-2022 Inria                                            *)
+(************************************************************************)
 
 module type SJHC = sig
-  include SJH
-  val compare : t -> t -> int
-end
-
-module type S1 = sig
-
-  type 'a t
-
-  val t_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a t
-  val sexp_of_t : ('a -> Sexp.t) -> 'a t -> Sexp.t
-
-end
-
-module type SJ1 = sig
-
-  include S1
-
-  val of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a t, string) Result.result
-  val to_yojson : ('a -> Yojson.Safe.t) -> 'a t -> Yojson.Safe.t
-
-end
-
-module type SJH1 = sig
-
-  include SJ1
-
-  open Ppx_hash_lib.Std.Hash
-
-  val hash_fold_t : 'a folder -> 'a t folder
-
+  type t [@@deriving sexp,yojson,hash,compare]
 end
 
 module type SJHC1 = sig
-
-  include SJH1
-
-  open Ppx_compare_lib
-
-  val compare : 'a compare -> 'a t compare
-
+  type 'a t [@@deriving sexp,yojson,hash,compare]
 end
 
 (* Bijection with serializable types *)

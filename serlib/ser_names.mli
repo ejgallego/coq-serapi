@@ -43,7 +43,7 @@ module Cset_env : Ser_cSet.ExtS with type elt = Constant.t and type t = Cset_env
 module Cmap : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap.t
 module Cmap_env : Ser_cMap.ExtS with type key = Constant.t and type 'a t = 'a Cmap_env.t
 
-module MutInd : SerType.S with type t = MutInd.t
+module MutInd : SerType.SJHC with type t = MutInd.t
 
 module Mindmap : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap.t
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap_env.t
@@ -64,7 +64,7 @@ module Projection : sig
   include SerType.SJHC with type t = Projection.t
 
   module Repr : sig
-    include SerType.S with type t = Projection.Repr.t
+    include SerType.SJHC with type t = Projection.Repr.t
   end
 
 end
