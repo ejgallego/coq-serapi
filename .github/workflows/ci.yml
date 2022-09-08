@@ -34,11 +34,11 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: [coq.8.16 coq-mathcomp-ssreflect.dev]
+        extra-opam: [coq.8.16.0 coq-mathcomp-ssreflect.dev]
         include:
         - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
           test-target: js-dune
-          extra-opam: coq.8.16 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
+          extra-opam: coq.8.16.0 js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-compiler: 4.13.1
           test-target: test
           extra-opam:
