@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Comp_common (coq-serapi.Sertop.Comp_common)</title><link rel="stylesheet" href="../../../odoc.css"/><meta charset="utf-8"/><meta name="generator" content="odoc 2.1.1"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../../index.html">coq-serapi</a> &#x00BB; <a href="../index.html">Sertop</a> &#x00BB; Comp_common</nav><header class="odoc-preamble"><h1>Module <code><span>Sertop.Comp_common</span></code></h1></header><div class="odoc-content"><div class="odoc-spec"><div class="spec value" id="val-fatal_exn" class="anchored"><a href="#val-fatal_exn" class="anchor"></a><code><span><span class="keyword">val</span> fatal_exn : <span>exn <span class="arrow">&#45;&gt;</span></span> <span><span class="xref-unresolved">Exninfo</span>.info <span class="arrow">&#45;&gt;</span></span> <span class="type-var">'a</span></span></code></div></div><div class="odoc-spec"><div class="spec value" id="val-create_document" class="anchored"><a href="#val-create_document" class="anchor"></a><code><span><span class="keyword">val</span> create_document : 
+  <span>debug:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>disallow_sprop:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>ml_path:<span>string list</span> <span class="arrow">&#45;&gt;</span></span>
+  <span>load_path:<span><span class="xref-unresolved">Loadpath</span>.vo_path list</span> <span class="arrow">&#45;&gt;</span></span>
+  <span>rload_path:<span><span class="xref-unresolved">Loadpath</span>.vo_path list</span> <span class="arrow">&#45;&gt;</span></span>
+  <span>quick:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>in_file:string <span class="arrow">&#45;&gt;</span></span>
+  <span>indices_matter:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>omit_loc:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>omit_att:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>exn_on_opaque:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>omit_env:bool <span class="arrow">&#45;&gt;</span></span>
+  <span>coq_path:string <span class="arrow">&#45;&gt;</span></span>
+  <span>async:<span>string option</span> <span class="arrow">&#45;&gt;</span></span>
+  <span>async_workers:int <span class="arrow">&#45;&gt;</span></span>
+  <span>error_recovery:bool <span class="arrow">&#45;&gt;</span></span>
+  <span class="xref-unresolved">Stm</span>.doc * <span class="xref-unresolved">Stateid</span>.t</span></code></div></div></div></body></html>
