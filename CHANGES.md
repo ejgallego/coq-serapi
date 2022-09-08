@@ -20,6 +20,8 @@
             (@ejgallego)
  - [serlib] Large refactoring on Serlib, using functors, see serlib/README.md
             (@ejgallego)
+ - [serapi] (!) Query `Proofs` has changed type and will now return the
+            partial terms under construction (#271 , fixes #270, @ejgallego)
 
 ## Version 0.15.1:
 

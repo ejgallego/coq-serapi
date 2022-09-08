@@ -91,6 +91,7 @@ module Nametab    = Ser_nametab
 module Globnames  = Ser_globnames
 module Impargs    = Ser_impargs
 module Constr     = Ser_constr
+module EConstr    = Ser_eConstr
 module Constrexpr = Ser_constrexpr
 module Proof      = Ser_proof
 module Tok        = Ser_tok
