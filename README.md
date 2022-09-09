@@ -3,8 +3,8 @@
 [![Build Status][action-badge]][action-link]
 [![Zulip][zulip-badge]][zulip-link]
 
-[action-badge]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.15
-[action-link]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.15
+[action-badge]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml/badge.svg?branch=v8.16
+[action-link]: https://github.com/ejgallego/coq-serapi/actions/workflows/ci.yml?query=branch%3Av8.16
 
 [zulip-badge]: https://img.shields.io/badge/Zulip-chat-informational.svg
 [zulip-link]: https://coq.zulipchat.com/#narrow/stream/256331-SerAPI
