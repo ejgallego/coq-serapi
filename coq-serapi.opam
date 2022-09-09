@@ -38,4 +38,8 @@ depends: [
   "ppx_deriving_yojson" {           >= "3.4"                 }
 ]
 
+conflicts: [
+  "result" {< "1.5"}
+]
+
 build: [ "dune" "build" "-p" name "-j" jobs ]
