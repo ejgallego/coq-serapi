@@ -37,6 +37,13 @@ type 'a ser_goals =
   ; given_up : 'a list
   }
 
+(** Stm-independent goal processor *)
+val process_goal_gen :
+  (Environ.env -> Evd.evar_map -> Constr.t -> 'a)
+  -> Evd.evar_map
+  -> Evar.t
+  -> 'a reified_goal
+
 (* Ready to make into a GADT *)
 val get_goals_gen
   :  (Environ.env -> Evd.evar_map -> Constr.t -> 'a)
