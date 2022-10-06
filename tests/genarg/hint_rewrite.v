@@ -21,4 +21,4 @@ intros x.
 destruct x; auto.
 Qed.
 
-Hint Rewrite neg_neg : rew_neg_neg.
+#[global] Hint Rewrite neg_neg : rew_neg_neg.
