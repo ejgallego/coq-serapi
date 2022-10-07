@@ -1,3 +1,9 @@
+## Version 0.16.1:
+
+ - [sertop] Allow to set `--coqlib` using the `COQLIB` environment
+            variable. The cmdline argument option still has
+            precedence.
+
 ## Version 0.16.0:
 
  - [serapi] (!) support for Coq 8.16, see upstream changes and SerAPI
