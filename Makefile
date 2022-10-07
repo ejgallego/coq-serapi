@@ -19,13 +19,16 @@ sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
 build:
-	dune build --only-packages=$(SP_PKGS) @install
+	dune build --root . --only-packages=$(SP_PKGS) @install
+
+check:
+	dune build --root . @check
 
 build-install:
 	dune build coq-serapi.install
 
 test:
-	dune runtest
+	dune runtest --root .
 
 doc:
 	dune build @doc-private @doc
