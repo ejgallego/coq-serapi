@@ -187,7 +187,7 @@ type coq_object =
   | CoqDP        of Names.DirPath.t
   (** Coq "Logical" Paths, used for module and section names *)
   | CoqAst       of Vernacexpr.vernac_control
-  (** Coq Abstract Syntax tress, as produced by the parser *)
+  (** Coq Abstract Syntax trees for statements, as produced by the parser *)
   | CoqOption    of Goptions.option_name * Goptions.option_state
   (** Coq Options, as in [Set Resolution Depth] *)
   | CoqConstr    of Constr.constr
@@ -377,11 +377,13 @@ end
 
 (** {4 Adding a new sentence } *)
 
+type parse_entry = Vernac | Constr
+
+(** parse [ontop] of the given sentence with entry [entry] *)
 type parse_opt =
   { ontop  : Stateid.t option [@sexp.option]
-  (** parse [ontop] of the given sentence *)
+  ; entry : parse_entry [@default Vernac]
   }
-
 
 (** [Add] will take a string and parse all the sentences on it, until an error of the end is found.
     Options for [Add] are: *)
