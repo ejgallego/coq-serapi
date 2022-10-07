@@ -18,10 +18,15 @@
 
 open Cmdliner
 
+let coqlib_from_env_or_config =
+  match Sys.getenv_opt "COQLIB" with
+  | Some coqlib -> coqlib
+  | None -> Coq_config.coqlib
+
 [@@@ocaml.warning "-44-45"]
 let prelude =
   let doc = "Load Coq.Init.Prelude from $(docv); plugins/ and theories/ should live there." in
-  Arg.(value & opt string Coq_config.coqlib & info ["coqlib"] ~docv:"COQPATH" ~doc)
+  Arg.(value & opt string coqlib_from_env_or_config & info ["coqlib"] ~docv:"COQPATH" ~doc)
 
 let require_lib =
   let doc = "Coq module to require." in
