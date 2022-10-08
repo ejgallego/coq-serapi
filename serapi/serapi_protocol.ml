@@ -643,16 +643,21 @@ let obj_limit limit objs =
 let doc_id = ref 0
 
 (* XXX: Needs to take into account possibly local proof state *)
-let pstate_of_st m = match m with
+let proof_state_of_st m = match m with
   | Stm.Valid (Some { Vernacstate.lemmas; _ } ) ->
     lemmas
+  | _ -> None
+
+let parsing_state_of_st m = match m with
+  | Stm.Valid (Some { Vernacstate.parsing; _ } ) ->
+    Some parsing
   | _ -> None
 
 let exec_query opt cmd =
   let doc = Stm.get_doc !doc_id in
   let st = Stm.state_of_id ~doc opt.sid in
   let sigma, env = Extcoq.context_of_st st in
-  let pstate = pstate_of_st st in
+  let pstate = proof_state_of_st st in
 
   let pstate = Option.map (Vernacstate.LemmaStack.with_top ~f:(fun p -> p)) pstate in
   let res = obj_query ~doc ~pstate ~env opt cmd in
@@ -686,8 +691,13 @@ let coq_protect st e =
     (* let msg = str msg ++ fnl () ++ CErrors.print ~info e in *)
     (* Richpp.richpp_of_pp msg *)
 
+type parse_entry = Vernac | Constr
+
+(** parse [ontop] of the given sentence with entry [entry] *)
 type parse_opt =
-  { ontop  : Stateid.t option [@sexp.option] }
+  { ontop  : Stateid.t option [@sexp.option]
+  ; entry : parse_entry [@default Vernac]
+  }
 
 type add_opts = {
   lim    : int       option [@sexp.option];
@@ -708,11 +718,25 @@ module ControlUtil = struct
   let _dump_doc () =
     Format.eprintf "%a@\n%!" pp_doc !cur_doc
 
-  let parse_sentence ~doc ~(opt : parse_opt) sent =
-    let ontop = Extra.value opt.ontop ~default:(Stm.get_current_state ~doc) in
+  let parse_expr ~doc ~ontop str =
+    let ontop = Extra.value ontop ~default:(Stm.get_current_state ~doc) in
+    parsing_state_of_st (Stm.state_of_id ~doc ontop)
+    |> Option.map (fun pstate ->
+        let entry = Pcoq.Constr.lconstr in
+        let pa = Pcoq.Parsable.make (Ser_stream.of_string str) in
+        Vernacstate.Parser.parse pstate entry pa)
+
+  let parse_sentence ~doc ~ontop sent =
+    let ontop = Extra.value ontop ~default:(Stm.get_current_state ~doc) in
     let pa = Pcoq.Parsable.make (Ser_stream.of_string sent) in
     let entry = Pvernac.main_entry in
     Stm.parse_sentence ~doc ontop ~entry pa
+
+  let parse_entry ~doc ~(opt : parse_opt) str =
+    let ontop = opt.ontop in
+    match opt.entry with
+    | Vernac -> Option.map (fun x -> [CoqAst x]) (parse_sentence ~doc ~ontop str)
+    | Constr -> Option.map (fun x -> [CoqExpr x]) (parse_expr ~doc ~ontop str)
 
   exception End_of_input
 
@@ -907,7 +931,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
         in
         let _doc = Stm.observe ~doc opts.sid in
         let pst = Stm.state_of_id ~doc opts.sid in
-        let pstate = pstate_of_st pst in
+        let pstate = proof_state_of_st pst in
         Serapi_doc.save_vo ~doc ~pstate ~in_file ?ldir:st.ldir (); []
     end
   | Add (opt, s) ->
@@ -922,8 +946,8 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
     let sigma, env = Extcoq.context_of_st st in
     [ObjList [obj_print env sigma opts.pp obj]]
   | Parse(opt,s) ->
-    Option.cata (fun ast -> [ObjList [CoqAst ast]]) []
-      ControlUtil.(parse_sentence ~doc ~opt s)
+    ControlUtil.(parse_entry ~doc ~opt s)
+    |> Option.cata (fun objs -> [ObjList objs]) []
   | Join              -> ignore(Stm.join ~doc); []
   | Finish            -> ignore(Stm.finish ~doc); []
   (*  *)

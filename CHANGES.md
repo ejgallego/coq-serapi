@@ -3,6 +3,8 @@
  - [sertop] Allow to set `--coqlib` using the `COQLIB` environment
             variable. The cmdline argument option still has
             precedence.
+ - [serapi] Allow to parse expressions too with
+            `(Parse (entry Constr) $text)` (@ejgallego, fixes #272)
 
 ## Version 0.16.0:
 
