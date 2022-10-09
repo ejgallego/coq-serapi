@@ -1,3 +1,12 @@
+## Version 0.17.0:
+
+ - [serlib] (!) Serialization format of generic arguments has changed
+            to be conforming to usual `ppx_sexp_conv` conventions.
+            (@ejgallego , fixes #273)
+ - [serapi] (!) support for Coq 8.17, upstream structures seem pretty
+            stable from 8.16, except for `Constr.Evar` (@ejgallego)
+ - [serapi] SerAPI is now in Coq's CI (@ejgallego @alizter)
+
 ## Version 0.16.1:
 
  - [sertop] Allow to set `--coqlib` using the `COQLIB` environment

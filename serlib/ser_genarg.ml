@@ -50,11 +50,11 @@ let rec hash_fold_genarg_type : type a b c. (a, b, c) genarg_type Hash.folder = 
   | OptArg  rt     -> hash_tagged hash_fold_genarg_type st "OptArg" rt
   | PairArg(t1,t2) -> hash_tagged (hash_pair hash_fold_genarg_type hash_fold_genarg_type) st "PairArg" (t1, t2)
 
-let sexp_of_abstract_argument_type : type lvl. ('o, lvl) abstract_argument_type -> Sexp.t * Sexp.t = fun  at ->
+let sexp_of_abstract_argument_type : type lvl. ('o, lvl) abstract_argument_type -> Sexp.t = fun  at ->
   match at with
-  | Rawwit w -> Atom "raw", sexp_of_genarg_type w
-  | Glbwit w -> Atom "glb", sexp_of_genarg_type w
-  | Topwit w -> Atom "top", sexp_of_genarg_type w
+  | Rawwit w -> List [Atom "Rawwit"; sexp_of_genarg_type w]
+  | Glbwit w -> List [Atom "Glbwit"; sexp_of_genarg_type w]
+  | Topwit w -> List [Atom "Topwit"; sexp_of_genarg_type w]
 
 let rec argument_type_of_sexp : Sexp.t -> argument_type = fun sexp ->
   match sexp with
@@ -230,8 +230,8 @@ let compare_generic : type lvl. ('o,lvl) abstract_argument_type -> 'o Ppx_compar
   | Genarg.Topwit ty -> (get_gen_ser_ty ty).top_compare
 
 (* We need to generalize this to use the proper printers for opt *)
-let mk_sexparg (lvl, st) so =
-  Sexp.List [Atom "GenArg"; lvl; st; so]
+let mk_sexparg st so =
+  Sexp.List [Atom "GenArg"; st; so]
 
 (* XXX: There is still some duplication here in the traversal of g_ty, but
    we can live with that for now.  *)
@@ -271,13 +271,13 @@ let compare_generic_argument : type a. a Ppx_compare_lib.compare -> a generic_ar
 
 let gen_abstype_of_sexp : Sexp.t -> rgen_argument = fun s ->
   match s with
-  | List [Atom "GenArg"; Atom "raw"; sty; sobj] ->
+  | List [Atom "GenArg"; List [ Atom "Rawwit"; sty]; sobj] ->
     let (ArgumentType ty) = argument_type_of_sexp sty in
     RG (generic_des (Rawwit ty) sobj)
-  | List [Atom "GenArg"; Atom "glb"; sty; sobj] ->
+  | List [Atom "GenArg"; List [ Atom "Glbwit"; sty]; sobj] ->
     let (ArgumentType ty) = argument_type_of_sexp sty in
     RG (generic_des (Glbwit ty) sobj)
-  | List [Atom "GenArg"; Atom "top"; sty; sobj] ->
+  | List [Atom "GenArg"; List [ Atom "Topwit"; sty]; sobj] ->
     let (ArgumentType ty) = argument_type_of_sexp sty in
     RG (generic_des (Topwit ty) sobj)
   | _ -> raise (Failure "SEXP Exception in abstype")

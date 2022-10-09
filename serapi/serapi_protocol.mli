@@ -38,9 +38,10 @@ open Ltac_plugin
     As of today SerAPI does provide the following components:
 
     - [serlib]: A library providing serializers for core Coq structures;
-      the main serialization format is S-expressions, as [serlib] is
-    based on the excellent {{:https://github.com/janestreet/ppx_sexp_conv}ppx_sexp_conv}
-    from Jane Street. Support for JSON is currently under development.
+      the main serialization formats are S-expressions and JSON. [serlib] is
+    based on {{:https://github.com/janestreet/ppx_sexp_conv}ppx_sexp_conv}
+    from Jane Street and `ppx_deriving_yojson`. [serlib] also provides for
+    custom hash and equality functions for many Coq types.
     - [sertop]: A toplevel executable exposing a simple document building
     and querying protocol. This is the main component, we document it properly below.
     - [sercomp]: A simple compiler utility for .v files that can input and output
@@ -62,7 +63,7 @@ Karl Palmskog contributed the round trip testing infrastructure to make this hap
 {2 Users:}
 
 SerAPI is a bit of a swiss army knife, in the sense that it is a general "talk to Coq" tool and can do
-many things; a good way to understand the tool is look at some of its users, see the list of them in the 
+many things; a good way to understand the tool is look at some of its users, see the list of them in the
 {{:https://github.com/ejgallego/coq-serapi/}Project's README}
 
 *)
@@ -167,8 +168,8 @@ recommend you read the help of the `sercomp` compiler.
 SerAPI can return different kinds of objects as an answer to queries; object type is
 usually distinguished by a tag, for example [(CoqString "foo")] or [(CoqConstr (App ...)]
 
-Serialization representation is derived from the OCaml representation automatically, thus
-the best is to use Merlin or some OCaml-browsing tool as to know the internal of each type;
+Serialization representation is derived from the OCaml representation automatically, except for a few
+custom datatypes (see below). Thus, the best is to use Merlin or some OCaml-browsing tool as to know the internal of each type;
 we provide a brief description of each object:
 *)
 
@@ -239,6 +240,15 @@ type coq_object =
      improved support *)
   | CoqLibObjects of { library_segment : Lib.library_segment; path_prefix : Nametab.object_prefix }
   (** Meta-logical Objects in Coq's library / module system *)
+
+(** There are some Coq types that cannot be seralizaled properly, in
+   this case, the types can be "opaque", or we will perform some
+   manual serialization, such for GADTs.
+
+    In the past generic arguments were such a case, but that has been
+   fixed in SerAPI 0.17. Please open an issue or pull request if you
+   find such a discrepancy as to document it here.
+*)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
