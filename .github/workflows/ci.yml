@@ -89,9 +89,10 @@ jobs:
           echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_BRANCH/_build/install/default/lib/" >> $GITHUB_ENV
           # Update to coq-core some day
           # opam install --deps-only coq-core
-          opam install --deps-only coq
+          opam install --deps-only coq-core
           git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH"
-          make -C "$HOME/coq-$COQ_BRANCH" world
+          # Upstream 'make -C "$HOME/coq-$COQ_BRANCH" world' target now builds coqide
+          ( cd "$HOME/coq-$COQ_BRANCH" && dune build -p coq-core,coq-stdlib,coq )
           # Install math-comp using Coq from git
           PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
           git clone --depth=3 -b master https://github.com/math-comp/math-comp.git
