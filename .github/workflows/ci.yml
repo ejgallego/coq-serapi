@@ -91,7 +91,7 @@ jobs:
           # opam install --deps-only coq-core
           opam install --deps-only coq
           git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH"
-          make -C "$HOME/coq-$COQ_BRANCH" -f Makefile.dune world
+          make -C "$HOME/coq-$COQ_BRANCH" world
           # Install math-comp using Coq from git
           PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
           git clone --depth=3 -b master https://github.com/math-comp/math-comp.git
