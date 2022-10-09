@@ -92,7 +92,10 @@ jobs:
           opam install --deps-only coq-core
           git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH"
           # Upstream 'make -C "$HOME/coq-$COQ_BRANCH" world' target now builds coqide
-          ( cd "$HOME/coq-$COQ_BRANCH" && dune build -p coq-core,coq-stdlib,coq )
+          cd "$HOME/coq-$COQ_BRANCH"
+          ./configure -prefix "$HOME/coq-$COQ_BRANCH/_build/install/default/"
+          dune build -p coq-core,coq-stdlib,coq
+          cd "$HOME"
           # Install math-comp using Coq from git
           PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
           git clone --depth=3 -b master https://github.com/math-comp/math-comp.git
