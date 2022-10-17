@@ -132,7 +132,7 @@ type coq_object =
   | CoqImplicit  of Impargs.implicits_list
   | CoqProfData  of Profile_ltac.treenode
   | CoqNotation  of Constrexpr.notation
-  | CoqUnparsing of Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
+  | CoqUnparsing of Ppextend.notation_printing_rules * Notation_gram.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqExtGoal   of Constrexpr.constr_expr Serapi_goals.reified_goal Serapi_goals.ser_goals
   | CoqProof     of EConstr.constr list
@@ -481,9 +481,8 @@ module QueryUtil = struct
     (* List.map  map entries [] *)
 
   let query_unparsing (nt : Constrexpr.notation) :
-    Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar =
+    Ppextend.notation_printing_rules * Notation_gram.notation_grammar =
     Ppextend.find_notation_printing_rule None nt,
-    Ppextend.find_notation_extra_printing_rules None nt,
     Notgram_ops.grammar_of_notation nt
 
   let query_pnotations () =
@@ -604,8 +603,8 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.
                        *)
-                      begin try let up, upe, gr = QueryUtil.query_unparsing (Constrexpr.InConstrEntry,ntn) in
-                                [CoqUnparsing(up,upe,gr)]
+                      begin try let up, gr = QueryUtil.query_unparsing (Constrexpr.InConstrEntry,ntn) in
+                                [CoqUnparsing(up,gr)]
                       with _exn -> []
                       end
   | LogicalPath f  -> [CoqDP (Serapi_paths.dirpath_of_file f)]

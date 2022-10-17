@@ -219,7 +219,7 @@ type coq_object =
   (** Ltac Profiler data *)
   | CoqNotation  of Constrexpr.notation
   (** Representation of a notation (usually a string) *)
-  | CoqUnparsing of Ppextend.notation_printing_rules * Ppextend.extra_unparsing_rules * Notation_gram.notation_grammar
+  | CoqUnparsing of Ppextend.notation_printing_rules * Notation_gram.notation_grammar
   (** Rules for notation printing and some internals  *)
   (* | CoqPhyLoc  of Library.library_location * Names.DirPath.t * string (\* CUnix.physical_path *\) *)
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals

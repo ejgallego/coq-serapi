@@ -41,10 +41,6 @@ type unparsing_rule =
   [%import: Ppextend.unparsing_rule]
   [@@deriving sexp]
 
-type extra_unparsing_rules =
-  [%import: Ppextend.extra_unparsing_rules]
-  [@@deriving sexp]
-
 type notation_printing_rules =
   [%import: Ppextend.notation_printing_rules]
   [@@deriving sexp]
