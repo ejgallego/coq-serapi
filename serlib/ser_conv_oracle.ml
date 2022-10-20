@@ -27,12 +27,5 @@ module OpaqueOracle = struct
 end
 
 module B = SerType.Opaque(OpaqueOracle)
-
 type oracle = B.t
-let sexp_of_oracle = B.sexp_of_t
-let oracle_of_sexp = B.t_of_sexp
-let oracle_of_yojson = B.of_yojson
-let oracle_to_yojson = B.to_yojson
-let hash_oracle = B.hash
-let hash_fold_oracle = B.hash_fold_t
-let compare_oracle = B.compare
+ [@@deriving sexp,yojson,hash,compare]

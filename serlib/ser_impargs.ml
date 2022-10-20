@@ -44,13 +44,7 @@ end
 
 module B_ = SerType.Pierce(ISCPierceSpec)
 type implicit_side_condition = B_.t
-let sexp_of_implicit_side_condition = B_.sexp_of_t
-let implicit_side_condition_of_sexp = B_.t_of_sexp
-let implicit_side_condition_of_yojson = B_.of_yojson
-let implicit_side_condition_to_yojson = B_.to_yojson
-let hash_implicit_side_condition = B_.hash
-let hash_fold_implicit_side_condition = B_.hash_fold_t
-let compare_implicit_side_condition = B_.compare
+ [@@deriving sexp,yojson,hash,compare]
 
 type implicit_position =
   [%import: Impargs.implicit_position]
