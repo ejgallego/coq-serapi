@@ -30,6 +30,7 @@ let map_serlib fl_pkg =
     | "coq-core.plugins.extraction"       (* extraction  *)
     | "coq-core.plugins.firstorder"       (* firstorder  *)
     | "coq-core.plugins.funind"           (* funind      *)
+    | "coq-core.plugins.ltac2"            (* ltac2       *)
     | "coq-core.plugins.micromega"        (* micromega   *)
     | "coq-core.plugins.ring"             (* ring        *)
     | "coq-core.plugins.ssreflect"        (* ssreflect   *)
