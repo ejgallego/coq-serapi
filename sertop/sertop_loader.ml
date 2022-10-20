@@ -40,6 +40,7 @@ let map_serlib ml_mod =
     | "cc_plugin"               (* cc  *)
     | "micromega_plugin"        (* micromega   *)
     | "zify_plugin"             (* zify *)
+    | "ltac2_plugin"            (* ltac2       *)
       -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;

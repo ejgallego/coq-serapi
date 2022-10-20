@@ -1,6 +1,9 @@
 ## Version 0.15.3:
 
  - [serlib] Backport serlib improvements from 0.16.0:
+ - [serlib] Added support for some more plugins from coq-core (ltac2,
+            cc, micromega, number_string_notation) (@ejgallego, #284, #306)
+ - [serlib] Much improved yojson / json support (@ejgallego)
  - [serlib] Coq AST now supports ppx_hash intf (ignoring locations by default)
             (@ejgallego)
  - [serlib] Coq AST now supports ppx_compare intf (ignoring locations by default)

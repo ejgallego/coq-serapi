@@ -142,6 +142,8 @@ let compare x y = compare__t (_t_put x) (_t_put y)
 
 end
 
+module KNmap = Ser_cMap.Make(Names.KNmap)(KerName)
+
 module Constant = struct
 
 (* Constant.t: private *)
