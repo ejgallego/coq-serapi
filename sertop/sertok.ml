@@ -102,14 +102,14 @@ let sertok_doc = "sertok Coq tokenizer"
 
 open Cmdliner
 
-let driver debug disallow_sprop printer async async_workers error_recovery quick coq_path ml_path load_path rload_path in_file omit_loc omit_att omit_env exn_on_opaque indices_matter =
+let driver debug set_impredicative_set disallow_sprop printer async async_workers error_recovery quick coq_path ml_path load_path rload_path in_file omit_loc omit_att omit_env exn_on_opaque indices_matter =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
 
   (* initialization *)
   let doc, sid = Sertop.Comp_common.create_document
-      ~debug ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
+      ~debug ~set_impredicative_set ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
       ~omit_loc ~omit_att ~exn_on_opaque ~omit_env ~coq_path ~async ~async_workers ~error_recovery in
 
   (* main loop *)
@@ -132,7 +132,7 @@ let main () =
     let open Sertop.Sertop_arg in
     let term =
       Term.(const driver
-            $ debug $ disallow_sprop $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
+            $ debug $ set_impredicative_set $ disallow_sprop $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
             $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
             $ indices_matter
            ) in

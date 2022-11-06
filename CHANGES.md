@@ -1,5 +1,6 @@
 ## Version 0.16.1:
 
+ - [serapi] Add the `--impredicative-set` option
  - [sertop] Allow to set `--coqlib` using the `COQLIB` environment
             variable. The cmdline argument option still has
             precedence.
