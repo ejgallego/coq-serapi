@@ -94,10 +94,6 @@ type ('c,'d,'id) inversion_strength =
   [%import: ('c,'d,'id) Ltac_plugin.Tacexpr.inversion_strength]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('a,'b) location =
-  [%import: ('a, 'b) Ltac_plugin.Tacexpr.location]
-  [@@deriving sexp,yojson,hash,compare]
-
 type 'id message_token =
   [%import: ('id) Ltac_plugin.Tacexpr.message_token]
   [@@deriving sexp,yojson,hash,compare]

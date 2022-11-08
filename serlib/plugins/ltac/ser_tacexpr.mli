@@ -70,12 +70,6 @@ val sexp_of_inversion_strength :
   ('id -> Sexp.t) ->
   ('c, 'd, 'id) inversion_strength -> Sexp.t
 
-type ('a, 'b) location =
-  ('a, 'b) Tacexpr.location =
-    HypLocation of 'a
-  | ConclLocation of 'b
-  [@@deriving sexp,hash,compare]
-
 type 'id message_token = 'id Tacexpr.message_token
 
 val message_token_of_sexp :
