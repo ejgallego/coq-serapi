@@ -277,6 +277,10 @@ type option_setting =
   [%import: Vernacexpr.option_setting]
   [@@deriving sexp,yojson]
 
+type notation_enable_modifier =
+  [%import: Vernacexpr.notation_enable_modifier]
+  [@@deriving sexp, yojson]
+
 type vernac_expr =
   [%import: Vernacexpr.vernac_expr]
   [@@deriving sexp, yojson]

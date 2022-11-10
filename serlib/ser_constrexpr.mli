@@ -43,6 +43,8 @@ type cumul_ident_decl = Constrexpr.cumul_ident_decl [@@deriving sexp, yojson, ha
 type univ_constraint_expr = Constrexpr.univ_constraint_expr [@@deriving sexp, yojson, hash,compare]
 type name_decl = Constrexpr.name_decl [@@deriving sexp, yojson, hash,compare]
 
+type notation_with_optional_scope = Constrexpr.notation_with_optional_scope [@@deriving sexp, yojson, hash,compare]
+
 type notation = Constrexpr.notation
 
 val notation_of_sexp : Sexp.t -> notation

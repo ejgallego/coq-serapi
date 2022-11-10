@@ -47,6 +47,8 @@ module Attributes    = Ser_attributes
 module Gramlib       = Ser_gramlib
 module Impargs       = Ser_impargs
 module Typeclasses   = Ser_typeclasses
+module Notationextern = Ser_notationextern
+module Util          = Ser_util
 
 type class_rawexpr = [%import: Vernacexpr.class_rawexpr]
   [@@deriving sexp,yojson,hash,compare]
@@ -306,6 +308,10 @@ type reference_or_constr =
 
 type hints_expr =
   [%import: Vernacexpr.hints_expr]
+  [@@deriving sexp,yojson,hash,compare]
+
+type notation_enable_modifier =
+  [%import: Vernacexpr.notation_enable_modifier]
   [@@deriving sexp,yojson,hash,compare]
 
 type vernac_expr =

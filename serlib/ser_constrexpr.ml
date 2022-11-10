@@ -82,6 +82,10 @@ type name_decl =
   [%import: Constrexpr.name_decl]
   [@@deriving sexp,yojson,hash,compare]
 
+type notation_with_optional_scope =
+  [%import: Constrexpr.notation_with_optional_scope]
+  [@@deriving sexp,yojson,hash,compare]
+
 type notation_entry =
   [%import: Constrexpr.notation_entry]
   [@@deriving sexp,yojson,hash,compare]
@@ -127,10 +131,6 @@ type explicit_flag = [%import: Constrexpr.explicit_flag]
  *   [@@deriving sexp,yojson] *)
 
 type prim_token = [%import: Constrexpr.prim_token]
-  [@@deriving sexp,yojson,hash,compare]
-
-type notation_with_optional_scope =
-  [%import: Constrexpr.notation_with_optional_scope]
   [@@deriving sexp,yojson,hash,compare]
 
 type cases_pattern_expr_r = [%import: Constrexpr.cases_pattern_expr_r]
