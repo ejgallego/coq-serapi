@@ -32,6 +32,7 @@ type ser_opts =
 ; printer  : Sertop_ser.ser_printer
 
 ; debug    : bool
+; set_impredicative_set : bool
 ; allow_sprop : bool
 ; indices_matter : bool
 ; print0   : bool
@@ -217,6 +218,7 @@ let ser_loop ser_opts =
         { fb_handler   = pp_feed
         ; plugin_load  = None
         ; debug        = ser_opts.debug
+        ; set_impredicative_set  = ser_opts.set_impredicative_set
         ; allow_sprop  = ser_opts.allow_sprop
         ; indices_matter = ser_opts.indices_matter
         ; ml_path
