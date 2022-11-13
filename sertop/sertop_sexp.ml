@@ -32,6 +32,7 @@ type ser_opts =
 ; printer  : Sertop_ser.ser_printer
 
 ; debug    : bool
+; set_impredicative_set : bool
 ; allow_sprop : bool
 ; indices_matter : bool
 ; print0   : bool
@@ -218,6 +219,7 @@ let ser_loop ser_opts =
         ; ml_load      = None
         ; debug        = ser_opts.debug
         ; allow_sprop  = ser_opts.allow_sprop
+        ; set_impredicative_set  = ser_opts.set_impredicative_set
         ; indices_matter = ser_opts.indices_matter
         ; ml_path
         ; vo_path

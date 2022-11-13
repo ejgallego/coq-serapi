@@ -1,3 +1,6 @@
+## Version 0.14.1:
+ - [serapi] Add the `--impredicative-set` option
+
 ## Version 0.14.0:
 
  - [serapi] (!) support for Coq 8.14, see upstream changes; nothing

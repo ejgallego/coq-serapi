@@ -42,6 +42,7 @@ val topfile         : string option Term.t
 val no_prelude      : bool Term.t
 
 (* Kernel checking options *)
+val set_impredicative_set  : bool Term.t
 val disallow_sprop  : bool Term.t
 val indices_matter  : bool Term.t
 

@@ -23,6 +23,7 @@ val sertop_init :
   vo_load_path:Loadpath.vo_path list ->
   injections:Coqargs.injection_command list ->
   debug:bool ->
+  set_impredicative_set:bool ->
   allow_sprop:bool ->
   Stm.doc * Stateid.t
 

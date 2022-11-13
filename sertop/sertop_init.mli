@@ -37,6 +37,9 @@ type coq_opts =
   ; debug        : bool
   (** Enable Coq Debug mode             *)
 
+  ; set_impredicative_set  : bool
+  (** The --impredicative-set option (default=false) *)
+
   ; allow_sprop  : bool
   (** allow using the proof irrelevant SProp sort (default=true) *)
 
