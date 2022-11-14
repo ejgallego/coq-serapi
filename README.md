@@ -117,12 +117,29 @@ There are three categories of [commands](serapi/serapi_protocol.mli#L147):
 - **Printing:** `(Print opts obj)`: The `Print` command provides access to the Coq pretty printers.
   Its intended use is for printing (maybe IDE manipulated) objects returned by `Query`.
 
-### Roadmap:
+### Roadmap and Developer organization:
 
-SerAPI 0.17.x is based on Coq 8.17. These days, most work related to
-SerAPI is directly happening over [Coq's upstream](https://github.com/coq/coq)
-itself. The main objective is to improve the proof-document model; building
-a rich query language will be next.
+SerAPI is organized in branches corresponding to upstream Coq
+versions; usually, branch v8.XX is compatible with Coq 8.XX, and
+corresponds to SerAPI 0.XX. These branches are stable and can be
+relied upon.
+
+The branch `main` tracks Coq `master` branch, and it is not a stable
+branch; force pushes and random rebases can happen there; handle with
+care!
+
+We are working on fixing this problematic setup, which is that way as
+in the past such branch used to be "private", but now that SerAPI is
+in Coq's CI the development workflow has changed, with developer
+submitting PRs to it.
+
+These days, most work related to SerAPI is directly happening over
+[Coq's upstream](https://github.com/coq/coq) itself. The main
+objective is to improve the proof-document model; building a rich
+query language will be next. See the [roadmap issue]() in our bug
+tracker for more information about roadmap and the [Developer
+Information](#Developer-information) section for more details on the
+development setup.
 
 ### Clients and Users:
 
