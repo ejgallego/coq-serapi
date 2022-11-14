@@ -15,10 +15,6 @@
 
 open Sexplib
 
-type arity_error = Type_errors.arity_error
-val arity_error_of_sexp : Sexp.t -> arity_error
-val sexp_of_arity_error : arity_error -> Sexp.t
-
 type guard_error = Type_errors.guard_error
 val guard_error_of_sexp : Sexp.t -> guard_error
 val sexp_of_guard_error : guard_error -> Sexp.t
