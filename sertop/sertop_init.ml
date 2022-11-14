@@ -34,6 +34,8 @@ type coq_opts =
   ; debug        : bool
   (* Enable Coq Debug mode *)
 
+  ; set_impredicative_set : bool
+
   ; allow_sprop  : bool
   (* Allow SProp *)
   ; indices_matter : bool
@@ -64,6 +66,8 @@ let init_runtime opts =
 
   (* --allow-sprop in agreement with coq v8.11  *)
   Global.set_allow_sprop opts.allow_sprop;
+  if opts.set_impredicative_set
+  then Global.set_engagement Declarations.ImpredicativeSet;
 
   (* XXX fixme *)
   Flags.set_native_compiler false;

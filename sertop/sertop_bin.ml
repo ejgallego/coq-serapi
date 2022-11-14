@@ -20,7 +20,7 @@ open Cmdliner
 
 let sertop_version = Sertop.Ser_version.ser_git_version
 
-let sertop printer print0 debug disallow_sprop indices_matter lheader coq_path ml_path no_init topfile no_prelude lp1 lp2 _std_impl async deep_edits async_workers error_recovery omit_loc omit_att omit_env exn_on_opaque =
+let sertop printer print0 debug set_impredicative_set disallow_sprop indices_matter lheader coq_path ml_path no_init topfile no_prelude lp1 lp2 _std_impl async deep_edits async_workers error_recovery omit_loc omit_att omit_env exn_on_opaque =
 
   let open  Sertop.Sertop_init         in
   let open! Sertop.Sertop_sexp         in
@@ -39,6 +39,7 @@ let sertop printer print0 debug disallow_sprop indices_matter lheader coq_path m
     ; out_chan = stdout
 
     ; debug
+    ; set_impredicative_set
     ; allow_sprop
     ; indices_matter
     ; printer
@@ -79,7 +80,7 @@ let sertop_cmd =
   ]
   in
   Term.(const sertop
-        $ printer $ print0 $ debug $ disallow_sprop $ indices_matter $ length $ prelude $ ml_include_path $ no_init $topfile $ no_prelude $ load_path $ rload_path $ implicit_stdlib
+        $ printer $ print0 $ debug $ set_impredicative_set $ disallow_sprop $ indices_matter $ length $ prelude $ ml_include_path $ no_init $topfile $ no_prelude $ load_path $ rload_path $ implicit_stdlib
         $ async $ deep_edits $ async_workers $ error_recovery $ omit_loc $ omit_att $ omit_env $ exn_on_opaque ),
   Term.info "sertop" ~version:sertop_version ~doc ~man
 

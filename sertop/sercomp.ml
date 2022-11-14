@@ -23,7 +23,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop ~indices_matter =
+let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~set_impredicative_set ~allow_sprop ~indices_matter =
 
   let open Sertop.Sertop_init in
 
@@ -32,6 +32,7 @@ let create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debu
     { fb_handler = (fun _ _ -> ())  (* XXXX *)
     ; ml_load    = None
     ; debug
+    ; set_impredicative_set
     ; allow_sprop
     ; indices_matter
     ; ml_path = ml_load_path
@@ -183,7 +184,7 @@ let sercomp_doc = "sercomp Coq Compiler"
 
 open Cmdliner
 
-let driver input mode debug disallow_sprop indices_matter printer async async_workers error_recovery quick
+let driver input mode debug set_impredicative_set disallow_sprop indices_matter printer async async_workers error_recovery quick
     coq_path ml_path load_path rload_path in_file omit_loc omit_att omit_env exn_on_opaque =
 
   (* closures *)
@@ -206,7 +207,7 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
     ; async_workers
     ; error_recovery
     } in
-  let doc, sid = create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop ~indices_matter in
+  let doc, sid = create_document ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~set_impredicative_set ~allow_sprop ~indices_matter in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -227,7 +228,7 @@ let main () =
   let sercomp_cmd =
     let open Sertop.Sertop_arg in
     Term.(const driver
-          $ comp_input $ comp_mode $ debug $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
+          $ comp_input $ comp_mode $ debug $ set_impredicative_set $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
          ),
     Term.info "sercomp" ~version:sercomp_version ~doc:sercomp_doc ~man:sercomp_man

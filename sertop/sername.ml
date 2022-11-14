@@ -22,7 +22,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~allow_sprop =
+let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_load_path ~debug ~set_impredicative_set ~allow_sprop =
 
   let open Sertop.Sertop_init in
 
@@ -31,6 +31,7 @@ let create_document ~require_lib ~in_file ~stm_flags ~quick ~ml_load_path ~vo_lo
     { fb_handler = (fun _ _ -> ())  (* XXXX *)
     ; ml_load    = None
     ; debug
+    ; set_impredicative_set 
     ; allow_sprop
     ; indices_matter = false
     ; ml_path = ml_load_path
@@ -171,7 +172,7 @@ let sername_doc = "sername Coq tool"
 
 open Cmdliner
 
-let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att omit_env exn_on_opaque =
+let driver debug printer set_impredicative_set disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att omit_env exn_on_opaque =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
@@ -194,7 +195,7 @@ let driver debug printer disallow_sprop async async_workers error_recovery quick
   let ml_load_path = dft_ml_path @ ml_path in
   let vo_load_path = vo_path @ load_path @ rload_path in
 
-  let doc, sid = create_document ~require_lib ~in_file:"file.v" ~stm_flags ~allow_sprop ~quick ~ml_load_path ~vo_load_path ~debug in
+  let doc, sid = create_document ~require_lib ~in_file:"file.v" ~stm_flags ~set_impredicative_set ~allow_sprop ~quick ~ml_load_path ~vo_load_path ~debug in
 
   (* main loop *)
   let in_chan = open_in in_file in
@@ -215,7 +216,7 @@ let main () =
   let sername_cmd =
     let open Sertop.Sertop_arg in
     Term.(const driver
-          $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
+          $ debug $ printer $ set_impredicative_set $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
           $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
          ),
     Term.info "sername" ~version:sername_version ~doc:sername_doc ~man:sername_man

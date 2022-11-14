@@ -115,8 +115,9 @@ let _ =
       let vo_load_path = List.map pkg_to_bb all_pkgs                     in
       let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some true)] in
       let debug       = false                                            in
+      let set_impredicative_set = false                                  in
       let allow_sprop = true                                             in
-      ignore (sertop_init ~fb_out:post_message ~ml_load_path ~vo_load_path ~injections ~debug ~allow_sprop);
+      ignore (sertop_init ~fb_out:post_message ~ml_load_path ~vo_load_path ~injections ~debug ~set_impredicative_set ~allow_sprop);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit
