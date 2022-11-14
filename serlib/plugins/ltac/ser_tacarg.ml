@@ -31,6 +31,7 @@ module Genintern    = Ser_genintern
 module Geninterp    = Ser_geninterp
 module EConstr      = Ser_eConstr
 module Hints        = Ser_hints
+module Ltac_pretype = Ser_ltac_pretype
 
 module Ltac_plugin = struct
   module G_rewrite    = G_rewrite
@@ -335,7 +336,7 @@ module GT4 = struct
   [@@deriving sexp,hash,compare]
   type glb = Genintern.glob_constr_and_expr
   [@@deriving sexp,hash,compare]
-  type top = Geninterp.interp_sign * Ser_glob_term.glob_constr
+  type top = Ltac_pretype.closed_glob_constr
   [@@deriving sexp,hash,compare]
 end
 
