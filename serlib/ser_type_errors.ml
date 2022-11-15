@@ -25,10 +25,6 @@ module Univ    = Ser_univ
 module Context = Ser_context
 module CPrimitives = Ser_cPrimitives
 
-type arity_error =
-  [%import: Type_errors.arity_error]
-  [@@deriving sexp]
-
 type 'constr pfix_guard_error =
   [%import: 'constr Type_errors.pfix_guard_error]
   [@@deriving sexp]
