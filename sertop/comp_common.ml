@@ -78,10 +78,9 @@ let create_document ~debug ~disallow_sprop ~ml_path ~load_path ~rload_path ~quic
   in
 
   let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
-
+  Stm.init_process stm_options;
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; injections
-             ; stm_options
              } in
 
   (* Workaround, see

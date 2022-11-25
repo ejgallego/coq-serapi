@@ -235,11 +235,11 @@ let ser_loop ser_opts =
     else [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
 
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
+  Stm.init_process stm_options;
 
   if not ser_opts.no_init then begin
     let ndoc = { Stm.doc_type = doc_type ser_opts.topfile
                ; injections
-               ; stm_options
                } in
     let _ = Stm.new_doc ndoc in
     ()

@@ -913,9 +913,9 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
     let require_libs = Option.default (["Coq.Init.Prelude", None, Some Lib.Export]) opts.require_libs in
+    Stm.init_process stm_options;
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
                ; injections = List.map (fun x -> Coqargs.RequireInjection x) require_libs
-               ; stm_options
                } in
     (* This got broken upstream :S *)
     (* doc_id := fst Stm.(new_doc ndoc); [] *)
