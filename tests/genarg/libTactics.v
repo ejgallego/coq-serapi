@@ -1588,7 +1588,7 @@ Tactic Notation "applys_eq" constr(H) constr(n1) constr(n2) constr(n3) constr(n4
     anything else *)
 
 Tactic Notation "false_goal" :=
-  elimtype False.
+  exfalso.
 
 (** [false_post] is the underlying tactic used to prove goals
     of the form [False]. In the default implementation, it proves
@@ -4837,7 +4837,7 @@ Tactic Notation "clears_last" constr(N) :=
 Axiom skip_axiom : False.
 
 Ltac skip_with_axiom :=
-  elimtype False; apply skip_axiom.
+  exfalso; apply skip_axiom.
 
 Tactic Notation "skip" :=
   skip_with_axiom.
