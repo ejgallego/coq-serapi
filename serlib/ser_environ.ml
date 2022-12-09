@@ -29,9 +29,6 @@ module Retroknowledge = Ser_retroknowledge
 module UGraph         = Ser_uGraph
 module Declarations   = Ser_declarations
 
-type lazy_val = [%import: Environ.lazy_val]
-let sexp_of_lazy_val = Serlib_base.sexp_of_opaque ~typ:"Environ.lazy_val"
-
 (* type stratification =
  *   [%import: Environ.stratification]
  *   [@@deriving sexp_of] *)
