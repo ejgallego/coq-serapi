@@ -45,7 +45,7 @@ let do_stats =
   | VernacFixpoint   (_,_)
   | VernacInductive  (_,_)
   | VernacCoFixpoint (_,_)
-  | VernacNotation   (_,_,_,_) ->
+  | VernacNotation   (_,_) ->
     stats.specs <- incS ?loc stats.specs
 
   (* Proofs *)
