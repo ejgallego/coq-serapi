@@ -66,7 +66,7 @@ let init_runtime opts =
   Global.set_allow_sprop opts.allow_sprop;
 
   (* XXX fixme *)
-  Global.set_native_compiler false;
+  Flags.set_native_compiler false;
 
   (* Loadpath is early in the state now *)
 
