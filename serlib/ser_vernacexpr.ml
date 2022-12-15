@@ -146,8 +146,8 @@ type syntax_modifier =
   [%import: Vernacexpr.syntax_modifier]
   [@@deriving sexp,yojson,hash,compare]
 
-type notation_declaration =
-  [%import: Vernacexpr.notation_declaration]
+type decl_notation =
+  [%import: Vernacexpr.decl_notation]
   [@@deriving sexp,yojson,hash,compare]
 
 type 'a fix_expr_gen =

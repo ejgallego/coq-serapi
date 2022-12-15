@@ -142,9 +142,9 @@ type inductive_kind = Vernacexpr.inductive_kind
 val inductive_kind_of_sexp : Sexp.t -> inductive_kind
 val sexp_of_inductive_kind : inductive_kind -> Sexp.t
 
-type notation_declaration = Vernacexpr.notation_declaration
-val notation_declaration_of_sexp : Sexp.t -> notation_declaration
-val sexp_of_notation_declaration : notation_declaration -> Sexp.t
+type decl_notation = Vernacexpr.decl_notation
+val decl_notation_of_sexp : Sexp.t -> decl_notation
+val sexp_of_decl_notation : decl_notation -> Sexp.t
 
 type simple_binder = Vernacexpr.simple_binder
 val simple_binder_of_sexp : Sexp.t -> simple_binder
