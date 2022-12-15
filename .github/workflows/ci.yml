@@ -37,11 +37,11 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: [coq.dev coq-mathcomp-ssreflect.dev]
+        extra-opam: [coq.8.17.dev coq-mathcomp-ssreflect.dev]
         include:
         - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
           test-target: js-dune
-          extra-opam: coq.dev js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
+          extra-opam: coq.8.17.dev js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-compiler: 4.13.1
           test-target: test
           extra-opam:
@@ -52,7 +52,7 @@ jobs:
       OPAMYES: "true"
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
-      COQ_BRANCH: "master"
+      COQ_BRANCH: "v8.17"
     runs-on: ubuntu-latest
 
     steps:
