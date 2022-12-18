@@ -158,6 +158,10 @@ type 'a module_alg_expr =
   [%import: 'a Declarations.module_alg_expr]
   [@@deriving sexp,yojson,hash,compare]
 
+type 'a functor_alg_expr =
+  [%import: 'a Declarations.functor_alg_expr]
+  [@@deriving sexp,yojson,hash,compare]
+
 type structure_field_body =
   [%import: Declarations.structure_field_body]
   [@@deriving sexp,yojson,hash,compare]
