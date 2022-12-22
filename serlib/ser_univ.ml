@@ -168,7 +168,3 @@ type 'a in_universe_context_set =
 type 'a puniverses =
   [%import: 'a Univ.puniverses]
   [@@deriving sexp, yojson, hash, compare]
-
-type explanation =
-  [%import: Univ.explanation]
-  [@@deriving sexp]
