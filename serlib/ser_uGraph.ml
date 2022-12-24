@@ -29,6 +29,11 @@ type t = [%import: UGraph.t]
 let sexp_of_t = Serlib_base.sexp_of_opaque ~typ:"UGraph.t"
 let t_of_sexp = Serlib_base.opaque_of_sexp ~typ:"UGraph.t"
 
+type explanation = [%import: UGraph.explanation]
+
+let sexp_of_explanation = Serlib_base.sexp_of_opaque ~typ:"UGraph.explanation"
+let explanation_of_sexp = Serlib_base.opaque_of_sexp ~typ:"UGraph.explanation"
+
 type univ_inconsistency =
   [%import: UGraph.univ_inconsistency]
   [@@deriving sexp]

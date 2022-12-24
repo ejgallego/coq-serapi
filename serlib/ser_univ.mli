@@ -46,9 +46,3 @@ val sexp_of_in_universe_context_set : ('a -> Sexp.t) -> 'a in_universe_context_s
 
 type 'a puniverses = 'a * Instance.t
  [@@deriving sexp,yojson,hash,compare]
-
-type explanation = Univ.explanation
-
-val explanation_of_sexp : Sexp.t -> explanation
-val sexp_of_explanation : explanation -> Sexp.t
-
