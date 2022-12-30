@@ -24,7 +24,7 @@ authors: [
 
 depends: [
   "ocaml"               {           >= "4.09.0"              }
-  "coq"                 { !pinned & >= "8.16" & < "8.17"     }
+  "coq"                 { !pinned & >= "8.17" & < "8.18"     }
   "cmdliner"            {           >= "1.1.0"               }
   "ocamlfind"           {           >= "1.8.0"               }
   "sexplib"             {           >= "v0.13.0"             }

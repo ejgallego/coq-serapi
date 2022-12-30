@@ -1,6 +1,6 @@
 (env
- (dev     (flags :standard -rectypes))
- (release (flags :standard -rectypes)))
+ (dev     (flags :standard))
+ (release (flags :standard)))
 
 (install
  (section share_root)
