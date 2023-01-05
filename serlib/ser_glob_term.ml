@@ -31,6 +31,7 @@ module Libnames   = Ser_libnames
 module Genarg     = Ser_genarg
 module Evar_kinds = Ser_evar_kinds
 module Namegen    = Ser_namegen
+module Sorts      = Ser_sorts
 
 (**********************************************************************)
 (* Glob_term                                                          *)
