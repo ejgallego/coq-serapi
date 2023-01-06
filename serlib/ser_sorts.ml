@@ -31,6 +31,19 @@ end
 
 include SerType.Pierce(PierceSpec)
 
+
+module BijectQVar = struct
+  open Sexplib.Std
+  open Ppx_hash_lib.Std.Hash.Builtin
+  open Ppx_compare_lib.Builtin
+  type t = Sorts.QVar.t
+  type _t = int [@@deriving sexp,yojson,hash,compare]
+  let of_t = Sorts.QVar.repr
+  let to_t = Sorts.QVar.make
+end
+
+module QVar = SerType.Biject(BijectQVar)
+
 type relevance =
   [%import: Sorts.relevance]
   [@@deriving sexp,yojson,hash,compare]

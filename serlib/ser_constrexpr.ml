@@ -33,6 +33,7 @@ module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
 module NumTok     = Ser_numTok
 module Univ       = Ser_univ
+module Sorts      = Ser_sorts
 
 type sort_name_expr =
   [%import: Constrexpr.sort_name_expr]
