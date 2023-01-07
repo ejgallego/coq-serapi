@@ -38,6 +38,10 @@ type binder_entry_kind =
   [%import: Extend.binder_entry_kind]
   [@@deriving sexp]
 
+and constr_prod_entry_key =
+  [%import: Extend.constr_prod_entry_key]
+  [@@deriving sexp]
+
 type 'lev constr_entry_key_gen =
   [%import: 'lev Extend.constr_entry_key_gen]
   [@@deriving sexp,yojson,hash,compare]
@@ -45,10 +49,6 @@ type 'lev constr_entry_key_gen =
 type constr_entry_key =
   [%import: Extend.constr_entry_key]
   [@@deriving sexp,yojson,hash,compare]
-
-type constr_prod_entry_key =
-  [%import: Extend.constr_prod_entry_key]
-  [@@deriving sexp]
 
 type simple_constr_prod_entry_key =
   [%import: Extend.simple_constr_prod_entry_key]
