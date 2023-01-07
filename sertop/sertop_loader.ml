@@ -32,6 +32,7 @@ let map_serlib fl_pkg =
     | "coq-core.plugins.extraction"       (* setoid_ring *)
     | "coq-core.plugins.ssrmatching"      (* ssrmatching *)
     | "coq-core.plugins.ssreflect"        (* ssr *)
+    | "coq-core.plugins.number_string_notation" (* syntax *)
       -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" fl_pkg;
