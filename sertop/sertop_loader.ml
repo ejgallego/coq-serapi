@@ -35,6 +35,7 @@ let map_serlib ml_mod =
     | "extraction_plugin"       (* setoid_ring *)
     | "ssrmatching_plugin"      (* ssrmatching *)
     | "ssreflect_plugin"        (* ssr *)
+    | "number_string_notation_plugin" (* syntax *)
       -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
