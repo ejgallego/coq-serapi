@@ -58,7 +58,7 @@ type printable =
   | PrintInstances of reference or_by_notation
   | PrintLtac of reference
   | PrintCoercions
-  | PrintCoercionPaths of class_rawexpr * class_rawexpr
+  | PrintCoercionPaths of coercion_class * coercion_class
   | PrintCanonicalConversions
   | PrintUniverses of bool * string option
   | PrintHint of reference or_by_notation

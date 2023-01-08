@@ -31,9 +31,9 @@ type syntax_modifier =
   [%import: Vernacexpr.syntax_modifier]
   [@@deriving sexp,yojson]
 
-type class_rawexpr = Vernacexpr.class_rawexpr
-val class_rawexpr_of_sexp : Sexp.t -> class_rawexpr
-val sexp_of_class_rawexpr : class_rawexpr -> Sexp.t
+type coercion_class = Vernacexpr.coercion_class
+val coercion_class_of_sexp : Sexp.t -> coercion_class
+val sexp_of_coercion_class : coercion_class -> Sexp.t
 
 (* type goal_identifier = Vernacexpr.goal_identifier
  * val goal_identifier_of_sexp : Sexp.t -> goal_identifier
