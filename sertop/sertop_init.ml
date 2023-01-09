@@ -58,9 +58,6 @@ let init_runtime opts =
   (* Core Coq initialization *)
   Lib.init();
 
-  (* This is only needed when statically linking *)
-  Mltop.init_known_plugins ();
-
   (* --impredicative-set option *)
   Global.set_impredicative_set opts.set_impredicative_set;
 
