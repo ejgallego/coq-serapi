@@ -26,12 +26,17 @@ let map_serlib fl_pkg =
     | "coq-core.plugins.ltac." -> false
     (* | "tauto_plugin" -> false *)
     (* Supported *)
+    | "coq-core.plugins.cc"               (* cc  *)
+    | "coq-core.plugins.extraction"       (* extraction  *)
     | "coq-core.plugins.firstorder"       (* firstorder  *)
     | "coq-core.plugins.funind"           (* funind      *)
-    | "coq-core.plugins.ring"             (* setoid_ring *)
-    | "coq-core.plugins.extraction"       (* setoid_ring *)
+    | "coq-core.plugins.micromega"        (* micromega   *)
+    | "coq-core.plugins.ring"             (* ring        *)
+    | "coq-core.plugins.ssreflect"        (* ssreflect   *)
     | "coq-core.plugins.ssrmatching"      (* ssrmatching *)
-    | "coq-core.plugins.ssreflect"        (* ssr *)
+    | "coq-core.plugins.number_string_notation" (* syntax *)
+    | "coq-core.plugins.tauto"            (* tauto *)
+    | "coq-core.plugins.zify"             (* zify *)
       -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" fl_pkg;
