@@ -37,6 +37,7 @@ let map_serlib ml_mod =
     | "ssreflect_plugin"        (* ssr *)
     | "number_string_notation_plugin" (* syntax *)
     | "tauto_plugin"            (* tauto *)
+    | "cc_plugin"               (* cc  *)
       -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
