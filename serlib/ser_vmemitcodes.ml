@@ -54,15 +54,8 @@ module PierceToPatch = struct
 end
 
 module B = SerType.Pierce(PierceToPatch)
-
 type to_patch = B.t
-let sexp_of_to_patch = B.sexp_of_t
-let to_patch_of_sexp = B.t_of_sexp
-let to_patch_of_yojson = B.of_yojson
-let to_patch_to_yojson = B.to_yojson
-(* let hash_to_patch = B.hash *)
-let hash_fold_to_patch = B.hash_fold_t
-let compare_to_patch = B.compare
+ [@@deriving sexp,yojson,hash,compare]
 
 type body_code =
   [%import: Vmemitcodes.body_code]

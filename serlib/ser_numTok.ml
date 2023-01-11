@@ -43,6 +43,16 @@ module Unsigned = struct
   include SerType.Pierce(PierceSpec)
 end
 
+module UnsignedNat = struct
+  module USNBij = struct
+    type t = NumTok.UnsignedNat.t
+    type _t = string [@@deriving sexp,yojson,hash,compare]
+    let to_t = NumTok.UnsignedNat.of_string
+    let of_t = NumTok.UnsignedNat.to_string
+  end
+  include SerType.Biject(USNBij)
+end
+
 module Signed = struct
 
   type t =

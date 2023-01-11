@@ -23,15 +23,8 @@ module OD = struct
 end
 
 module A_ = SerType.Opaque(OD)
-
 type delta_resolver = A_.t
-let sexp_of_delta_resolver = A_.sexp_of_t
-let delta_resolver_of_sexp = A_.t_of_sexp
-let delta_resolver_of_yojson = A_.of_yojson
-let delta_resolver_to_yojson = A_.to_yojson
-let hash_delta_resolver = A_.hash
-let hash_fold_delta_resolver = A_.hash_fold_t
-let compare_delta_resolver = A_.compare
+ [@@deriving sexp,yojson,hash,compare]
 
 module OS = struct
   type t = Mod_subst.substitution
@@ -39,12 +32,5 @@ module OS = struct
 end
 
 module B_ = SerType.Opaque(OS)
-
 type substitution = B_.t
-let sexp_of_substitution = B_.sexp_of_t
-let substitution_of_sexp = B_.t_of_sexp
-let substitution_of_yojson = B_.of_yojson
-let substitution_to_yojson = B_.to_yojson
-let hash_substitution = B_.hash
-let hash_fold_substitution = B_.hash_fold_t
-let compare_substitution = B_.compare
+ [@@deriving sexp,yojson,hash,compare]

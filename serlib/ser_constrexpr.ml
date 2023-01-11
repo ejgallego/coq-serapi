@@ -92,15 +92,15 @@ type notation_entry =
 
 type entry_level =
   [%import: Constrexpr.entry_level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type entry_relative_level =
   [%import: Constrexpr.entry_relative_level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type notation_entry_level =
   [%import: Constrexpr.notation_entry_level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type notation_key =
   [%import: Constrexpr.notation_key]

@@ -52,15 +52,8 @@ module DO = struct
 end
 
 module B = SerType.Opaque1(DO)
-
 type 'a delayed_open = 'a B.t
-let sexp_of_delayed_open = B.sexp_of_t
-let delayed_open_of_sexp = B.t_of_sexp
-let delayed_open_of_yojson = B.of_yojson
-let delayed_open_to_yojson = B.to_yojson
-(* let hash_delayed_open = B.hash *)
-let hash_fold_delayed_open = B.hash_fold_t
-let compare_delayed_open = B.compare
+ [@@deriving sexp,yojson,hash,compare]
 
 type delayed_open_constr =
   [%import: Tactypes.delayed_open_constr]

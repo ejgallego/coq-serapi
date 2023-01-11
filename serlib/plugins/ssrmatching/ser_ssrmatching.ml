@@ -43,15 +43,8 @@ module PierceRPattern = struct
 end
 
 module B_ = SerType.Pierce(PierceRPattern)
-
 type rpattern = B_.t
-let sexp_of_rpattern = B_.sexp_of_t
-let rpattern_of_sexp = B_.t_of_sexp
-let rpattern_of_yojson = B_.of_yojson
-let rpattern_to_yojson = B_.to_yojson
-let hash_rpattern = B_.hash
-let hash_fold_rpattern = B_.hash_fold_t
-let compare_rpattern = B_.compare
+ [@@deriving sexp,yojson,hash,compare]
 
 type ssrdir =
   [%import: Ssrmatching_plugin.Ssrmatching.ssrdir]

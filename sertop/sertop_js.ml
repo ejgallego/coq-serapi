@@ -116,7 +116,8 @@ let _ =
       let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
       let debug       = false                                            in
       let allow_sprop = true                                             in
-      ignore (sertop_init ~fb_out:post_message ~ml_path ~vo_path ~injections ~debug ~allow_sprop);
+      let set_impredicative_set = false                                  in
+      ignore (sertop_init ~fb_out:post_message ~ml_path ~vo_path ~injections ~debug ~set_impredicative_set ~allow_sprop);
       (* We only accept messages when Coq is ready.             *)
       Worker.set_onmessage on_msg;
       return_unit
