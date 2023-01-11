@@ -22,7 +22,7 @@ let fatal_exn exn info =
   Format.eprintf "Error: @[%a@]@\n%!" Pp.pp_with msg;
   exit 1
 
-let create_document ~debug ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
+let create_document ~debug ~set_impredicative_set ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
   ~omit_loc ~omit_att ~exn_on_opaque ~omit_env ~coq_path ~async ~async_workers ~error_recovery =
 
   (* initialization *)
@@ -49,6 +49,7 @@ let create_document ~debug ~disallow_sprop ~ml_path ~load_path ~rload_path ~quic
     { fb_handler = (fun _ _ -> ())  (* XXXX *)
     ; plugin_load = None
     ; debug
+    ; set_impredicative_set
     ; allow_sprop
     ; indices_matter
     ; ml_path

@@ -28,6 +28,7 @@ type ser_opts =
                                  (** Printer type                             *)
 
 ; debug    : bool                (** Enable Coq debug mode                    *)
+; set_impredicative_set: bool    (** Enable Coq -impredicative-set option *)
 ; allow_sprop: bool              (** Allow using the proof irrelevant SProp sort *)
 ; indices_matter : bool          (** Indices of indexes contribute to inductive level *)
 ; print0   : bool                (** End every answer with [\0]               *)

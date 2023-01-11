@@ -57,15 +57,8 @@ module PC = struct
 end
 
 module B_ = SerType.Pierce(PC)
-
-type private_constants = Safe_typing.private_constants
-let sexp_of_private_constants = B_.sexp_of_t
-let private_constants_of_sexp = B_.t_of_sexp
-let private_constants_of_yojson = B_.of_yojson
-let private_constants_to_yojson = B_.to_yojson
-let hash_private_constants = B_.hash
-let hash_fold_private_constants = B_.hash_fold_t
-let compare_private_constants = B_.compare
+type private_constants = B_.t
+ [@@deriving sexp,yojson,hash,compare]
 
 (*
 type 'a effect_entry =

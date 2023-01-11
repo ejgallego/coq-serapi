@@ -13,8 +13,6 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-type 'a key = 'a CEphemeron.key
-
 module EBiject = struct
   type 'a t = 'a CEphemeron.key
 
@@ -25,10 +23,5 @@ module EBiject = struct
 end
 
 module B = SerType.Biject1(EBiject)
-
-let sexp_of_key = B.sexp_of_t
-let key_of_sexp = B.t_of_sexp
-let key_of_yojson = B.of_yojson
-let key_to_yojson = B.to_yojson
-let hash_fold_key = B.hash_fold_t
-let compare_key = B.compare
+type 'a key = 'a B.t
+ [@@deriving sexp,yojson,hash,compare]
