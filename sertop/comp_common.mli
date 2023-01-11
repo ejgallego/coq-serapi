@@ -19,6 +19,7 @@ val fatal_exn : exn -> Exninfo.info -> 'a
 
 val create_document :
   debug:bool
+  -> set_impredicative_set:bool
   -> disallow_sprop:bool
   -> ml_path:string list
   -> load_path:Loadpath.vo_path list

@@ -36,6 +36,8 @@ module ModPath : SerType.SJHC with type t = ModPath.t
 module MPmap   : Ser_cMap.ExtS with type key = ModPath.t and type 'a t = 'a MPmap.t
 
 module KerName  : SerType.SJHC with type t = KerName.t
+module KNmap : Ser_cMap.ExtS with type key = KerName.t and type 'a t = 'a KNmap.t
+
 module Constant : SerType.SJHC with type t = Constant.t
 
 module Cset_env : Ser_cSet.ExtS with type elt = Constant.t and type t = Cset_env.t

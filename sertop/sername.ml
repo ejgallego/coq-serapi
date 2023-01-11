@@ -77,7 +77,7 @@ let do_require ~doc ~sid ~require_lib ~in_file =
 
 open Cmdliner
 
-let driver debug printer disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att omit_env exn_on_opaque indices_matter =
+let driver debug printer set_impredicative_set disallow_sprop async async_workers error_recovery quick coq_path ml_path load_path rload_path require_lib str_pp de_bruijn body in_file omit_loc omit_att omit_env exn_on_opaque indices_matter =
 
   (* closures *)
   let pp = Sertop.Sertop_ser.select_printer printer in
@@ -85,7 +85,7 @@ let driver debug printer disallow_sprop async async_workers error_recovery quick
 
   (* initialization *)
   let doc, sid = Sertop.Comp_common.create_document
-      ~debug ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
+      ~debug ~set_impredicative_set ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
       ~omit_loc ~omit_att ~exn_on_opaque ~omit_env ~coq_path ~async ~async_workers ~error_recovery in
 
   let doc, sid = Option.cata (fun require_lib -> do_require ~doc ~sid ~require_lib ~in_file) (doc, sid) require_lib in
@@ -110,7 +110,7 @@ let main () =
     let open Sertop.Sertop_arg in
     let term =
       Term.(const driver
-            $ debug $ printer $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
+            $ debug $ printer $ set_impredicative_set $ disallow_sprop $ async $ async_workers $ error_recovery $ quick $ prelude
             $ ml_include_path $ load_path $ rload_path $ require_lib $ str_pp $ de_bruijn $ body $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
             $ indices_matter
            ) in

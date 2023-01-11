@@ -120,14 +120,8 @@ module MRK = struct
 end
 
 module B_ = SerType.Opaque1(MRK)
-
 type 'a module_retroknowledge = 'a B_.t
-let sexp_of_module_retroknowledge = B_.sexp_of_t
-let module_retroknowledge_of_sexp = B_.t_of_sexp
-let module_retroknowledge_of_yojson = B_.of_yojson
-let module_retroknowledge_to_yojson = B_.to_yojson
-let hash_fold_module_retroknowledge = B_.hash_fold_t
-let compare_module_retroknowledge = B_.compare
+ [@@deriving sexp,yojson,hash,compare]
 
 type recursivity_kind =
   [%import: Declarations.recursivity_kind]

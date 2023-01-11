@@ -7,6 +7,12 @@
             stable from 8.16, except for `Constr.Evar` (@ejgallego)
  - [serapi] SerAPI is now in Coq's CI (@ejgallego @alizter)
 
+## Version 0.16.2:
+
+ - [sertop] Add `--impredicative-set` command line option (@dhilst , #288)
+ - [serlib] Added support for some more plugins from coq-core (ltac2,
+            cc, micromega, number_string_notation) (@ejgallego, #284, #306)
+
 ## Version 0.16.1:
 
  - [sertop] Allow to set `--coqlib` using the `COQLIB` environment
