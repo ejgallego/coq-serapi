@@ -34,6 +34,9 @@ type coq_opts =
   ; debug        : bool
   (* Enable Coq Debug mode *)
 
+  ; set_impredicative_set : bool
+  (* Enable -impredicative-set option *)
+
   ; allow_sprop  : bool
   (* Allow SProp *)
   ; indices_matter : bool
@@ -58,8 +61,9 @@ let init_runtime opts =
   (* This is only needed when statically linking *)
   Mltop.init_known_plugins ();
 
-  (* This should be configurable somehow. *)
-  Global.set_impredicative_set false;
+  (* --impredicative-set option *)
+  Global.set_impredicative_set opts.set_impredicative_set;
+
   Global.set_indices_matter opts.indices_matter;
 
   (* --allow-sprop in agreement with coq v8.11  *)

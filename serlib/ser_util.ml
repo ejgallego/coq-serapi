@@ -16,3 +16,9 @@
 type ('a,'b) union =
   [%import: ('a,'b) Util.union]
   [@@deriving sexp,yojson,hash,compare]
+
+module EmptyS = struct
+  type t = Util.Empty.t
+  let name = "Util.Empty.t"
+end
+module Empty = SerType.Opaque(EmptyS)

@@ -32,15 +32,8 @@ type _t =
 end
 
 module B_ = SerType.Pierce(OP)
-
-type opaque = Opaqueproof.opaque
-let sexp_of_opaque = B_.sexp_of_t
-let opaque_of_sexp = B_.t_of_sexp
-let opaque_of_yojson = B_.of_yojson
-let opaque_to_yojson = B_.to_yojson
-let hash_opaque = B_.hash
-let hash_fold_opaque = B_.hash_fold_t
-let compare_opaque = B_.compare
+type opaque = B_.t
+ [@@deriving sexp,yojson,hash,compare]
 
 module Map = Ser_cMap.Make(Int.Map)(Ser_int)
 
@@ -53,12 +46,5 @@ module OTSpec = struct
 end
 
 module C_ = SerType.Pierce(OTSpec)
-
 type opaquetab = C_.t
-let sexp_of_opaquetab = C_.sexp_of_t
-let opaquetab_of_sexp = C_.t_of_sexp
-let opaquetab_of_yojson = C_.of_yojson
-let opaquetab_to_yojson = C_.to_yojson
-let hash_opaquetab = C_.hash
-let hash_fold_opaquetab = C_.hash_fold_t
-let compare_opaquetab = C_.compare
+ [@@deriving sexp,yojson,hash,compare]

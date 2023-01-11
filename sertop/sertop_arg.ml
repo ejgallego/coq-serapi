@@ -91,6 +91,10 @@ let debug =
   let doc = "Enable debug mode for Coq." in
   Arg.(value & flag & info ["debug"] ~doc)
 
+let set_impredicative_set =
+  let doc = "Enable Coq -impredicative-set option (disabled by default)" in
+  Arg.(value & flag & info ["impredicative-set"] ~doc)
+
 let disallow_sprop =
   let doc = "Forbid using the proof irrelevant SProp sort (allowed by default)" in
   Arg.(value & flag & info ["disallow-sprop"] ~doc)

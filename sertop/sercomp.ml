@@ -111,7 +111,7 @@ let sercomp_doc = "sercomp Coq Compiler"
 
 open Cmdliner
 
-let driver input mode debug disallow_sprop indices_matter printer async async_workers error_recovery quick
+let driver input mode debug set_impredicative_set disallow_sprop indices_matter printer async async_workers error_recovery quick
     coq_path ml_path load_path rload_path in_file omit_loc omit_att omit_env exn_on_opaque =
 
   (* closures *)
@@ -120,7 +120,7 @@ let driver input mode debug disallow_sprop indices_matter printer async async_wo
 
   (* initialization *)
   let doc, sid = Sertop.Comp_common.create_document
-      ~debug ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
+      ~debug ~set_impredicative_set ~disallow_sprop ~ml_path ~load_path ~rload_path ~quick ~in_file ~indices_matter
       ~omit_loc ~omit_att ~exn_on_opaque ~omit_env ~coq_path ~async ~async_workers ~error_recovery in
 
   (* main loop *)
@@ -143,7 +143,7 @@ let main () =
     let open Sertop.Sertop_arg in
     let term =
       Term.(const driver
-            $ comp_input $ comp_mode $ debug $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
+            $ comp_input $ comp_mode $ debug $ set_impredicative_set $ disallow_sprop $ indices_matter $ printer $ async $ async_workers $ error_recovery $ quick $ prelude
             $ ml_include_path $ load_path $ rload_path $ input_file $ omit_loc $ omit_att $ omit_env $ exn_on_opaque
            ) in
     let info = Cmd.info "sercomp" ~version:sercomp_version ~doc:sercomp_doc ~man:sercomp_man in

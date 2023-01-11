@@ -144,6 +144,8 @@ let equal = KerName.equal
 
 end
 
+module KNmap = Ser_cMap.Make(Names.KNmap)(KerName)
+
 module Constant = struct
 
 (* Constant.t: private *)
