@@ -38,6 +38,8 @@ let map_serlib ml_mod =
     | "number_string_notation_plugin" (* syntax *)
     | "tauto_plugin"            (* tauto *)
     | "cc_plugin"               (* cc  *)
+    | "micromega_plugin"        (* micromega   *)
+    | "zify_plugin"             (* zify *)
       -> true
     | _ ->
       if debug then Format.eprintf "missing serlib: %s@\n%!" ml_mod;
