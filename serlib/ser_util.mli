@@ -14,3 +14,9 @@
 (************************************************************************)
 
 type ('a, 'b) union = ('a, 'b) Util.union [@@deriving sexp,yojson,hash,compare]
+
+module Empty : sig
+  type t = Util.Empty.t
+  [@@deriving sexp,yojson,hash,compare]
+end
+

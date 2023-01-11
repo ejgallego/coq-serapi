@@ -83,9 +83,6 @@ type ('constr, 'types) pcofixpoint =
   [%import: ('constr, 'types) Constr.pcofixpoint]
   [@@deriving sexp,yojson,hash,compare]
 
-type constr = Constr.constr
-type types  = Constr.constr
-
 type 'constr pcase_invert =
   [%import: 'constr Constr.pcase_invert]
   [@@deriving sexp,yojson,hash,compare]
@@ -130,7 +127,7 @@ type _constr =
   | Array     of Univ.Instance.t * _constr array * _constr * _constr
 [@@deriving sexp,yojson,hash,compare]
 
-let rec _constr_put (c : constr) : _constr =
+let rec _constr_put (c : Constr.t) : _constr =
   let cr  = _constr_put           in
   let crl = List.map _constr_put  in
   let cra = Array.map _constr_put in
@@ -162,7 +159,7 @@ let rec _constr_put (c : constr) : _constr =
   | C.Float i             -> Float i
   | C.Array (u,a,e,t)     -> Array(u, cra a, cr e, cr t)
 
-let rec _constr_get (c : _constr) : constr =
+let rec _constr_get (c : _constr) : Constr.t =
   let cr  = _constr_get           in
   let crl = List.map _constr_get  in
   let cra = Array.map _constr_get in
@@ -194,7 +191,7 @@ let rec _constr_get (c : _constr) : constr =
 
 module ConstrBij = struct
 
-  type t = constr
+  type t = Constr.t
 
   type _t = _constr
   [@@deriving sexp,yojson,hash,compare]
@@ -205,33 +202,13 @@ module ConstrBij = struct
 end
 
 module CC = SerType.Biject(ConstrBij)
-
-(* type constr = CC.t *)
-let sexp_of_constr = CC.sexp_of_t
-let constr_of_sexp = CC.t_of_sexp
-let constr_of_yojson = CC.of_yojson
-let constr_to_yojson = CC.to_yojson
-let hash_constr = CC.hash
-let hash_fold_constr = CC.hash_fold_t
-let compare_constr = CC.compare
-
-let sexp_of_types = CC.sexp_of_t
-let types_of_sexp = CC.t_of_sexp
-let types_of_yojson = CC.of_yojson
-let types_to_yojson = CC.to_yojson
-let hash_types = CC.hash
-let hash_fold_types = CC.hash_fold_t
-let compare_types = CC.compare
+type constr = CC.t
+ [@@deriving sexp,yojson,hash,compare]
+type types = CC.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type t = constr
-
-let t_of_sexp = constr_of_sexp
-let sexp_of_t = sexp_of_constr
-let of_yojson = constr_of_yojson
-let to_yojson = constr_to_yojson
-let hash = hash_constr
-let hash_fold_t = hash_fold_constr
-let compare = compare_constr
+ [@@deriving sexp,yojson,hash,compare]
 
 type case_invert =
   [%import: Constr.case_invert]

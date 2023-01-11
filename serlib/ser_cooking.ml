@@ -49,13 +49,5 @@ type t =
 end
 
 module B_ = SerType.Pierce(CIP)
-
 type cooking_info = B_.t
-let sexp_of_cooking_info = B_.sexp_of_t
-let cooking_info_of_sexp = B_.t_of_sexp
-let cooking_info_of_yojson = B_.of_yojson
-let cooking_info_to_yojson = B_.to_yojson
-let hash_cooking_info = B_.hash
-let hash_fold_cooking_info = B_.hash_fold_t
-let compare_cooking_info = B_.compare
-
+ [@@deriving sexp,yojson,hash,compare]
