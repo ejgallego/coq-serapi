@@ -24,7 +24,7 @@ authors: [
 
 depends: [
   "ocaml"               {           >= "4.09.0"              }
-  "coq"                 { !pinned & >= "8.16" & < "8.17"     }
+  "coq"                 { !pinned & >= "8.18" & < "8.19"     }
   "cmdliner"            {           >= "1.1.0"               }
   "ocamlfind"           {           >= "1.8.0"               }
   "sexplib"             {           >= "v0.13.0"             }
@@ -36,6 +36,12 @@ depends: [
   "ppx_hash"            {           >= "v0.13.0"             }
   "yojson"              {           >= "1.7.0"               }
   "ppx_deriving_yojson" {           >= "3.4"                 }
+
+  # math-comp ssreflect is needed to run the tests.
+  #
+  # We can't enable this due to coq-mathcomp-ssreflect not being in
+  # the main opam repos, that would make opam's CI fail.
+  # "coq-mathcomp-ssreflect" { with-test & >= "1.15" }
 ]
 
 conflicts: [
