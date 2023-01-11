@@ -55,12 +55,13 @@ let sertop_init ~(fb_out : Sexp.t -> unit) ~ml_path ~vo_path ~injections ~debug 
     ; error_recovery = false
     } in
 
+  Stm.init_process stm_options;
+
   let open Stm in
   let doc_type = Interactive (TopLogical Names.(DirPath.make [Id.of_string "SerTopJS"])) in
 
   let ndoc = { doc_type
              ; injections
-             ; stm_options
              } in
   new_doc ndoc
 

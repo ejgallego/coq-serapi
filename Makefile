@@ -26,7 +26,9 @@ check:
 build-install:
 	dune build coq-serapi.install
 
-test:
+# build is required as otherwise the serlib plugins won't be in scope
+# for testing; we should really add the package dep to dune test files
+test: build
 	dune runtest --root .
 
 doc:
