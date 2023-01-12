@@ -68,7 +68,7 @@ module Extra = struct
   (******************************************************************************)
 
   let rec stream_tok n_tok acc lstr =
-    let e = Gramlib.LStream.next lstr in
+    let e = Gramlib.LStream.next (Pcoq.get_keyword_state()) lstr in
     let loc = Gramlib.LStream.get_loc n_tok lstr in
     let l_tok = CAst.make ~loc e in
     if Tok.(equal e EOI) then
