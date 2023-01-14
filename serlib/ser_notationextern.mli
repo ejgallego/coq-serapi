@@ -13,6 +13,12 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+module Constrexpr = Ser_constrexpr
+
+type level =
+  [%import: Notationextern.level]
+  [@@deriving sexp,yojson,hash,compare]
+
 type notation_use =
   [%import: Notationextern.notation_use]
   [@@deriving sexp,yojson,hash,compare]

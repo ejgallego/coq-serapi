@@ -15,10 +15,6 @@
 
 open Sexplib
 
-type side = Extend.side
-val side_of_sexp : Sexp.t -> side
-val sexp_of_side : side -> Sexp.t
-
 type production_position = Extend.production_position
 val production_position_of_sexp : Sexp.t -> production_position
 val sexp_of_production_position : production_position -> Sexp.t

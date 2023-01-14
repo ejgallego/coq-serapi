@@ -13,19 +13,11 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib.Std
-open Ppx_hash_lib.Std.Hash.Builtin
-open Ppx_compare_lib.Builtin
-
 (* module Ppextend = Ser_ppextend
  * module Notation_term = Ser_notation_term *)
 
 module NumTok = Ser_numTok
 module Constrexpr = Ser_constrexpr
-
-type level =
-  [%import: Notation.level]
-  [@@deriving sexp,yojson,hash,compare]
 
 type numnot_option =
   [%import: Notation.numnot_option]

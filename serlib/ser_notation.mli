@@ -13,5 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type level = Notation.level [@@deriving sexp,yojson,hash,compare]
 type numnot_option = Notation.numnot_option [@@deriving sexp,yojson,hash,compare]

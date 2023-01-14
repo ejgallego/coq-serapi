@@ -33,6 +33,8 @@ type name_decl = Constrexpr.name_decl [@@deriving sexp, yojson, hash,compare]
 
 type notation_with_optional_scope = Constrexpr.notation_with_optional_scope [@@deriving sexp, yojson, hash,compare]
 
+type side = Constrexpr.side [@@deriving sexp, yojson, hash,compare]
+
 type notation = Constrexpr.notation
 
 val notation_of_sexp : Sexp.t -> notation
