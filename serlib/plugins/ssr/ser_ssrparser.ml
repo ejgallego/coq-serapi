@@ -34,6 +34,7 @@ module Ssreflect_plugin = struct
   module Ssrast = Ser_ssrast
   module Ssrequality = Ser_ssrequality
   module Ssrparser = Ssreflect_plugin.Ssrparser
+  module Ssrtacs = Ssreflect_plugin.Ssrtacs
 end
 
 open! Ssrast
@@ -210,6 +211,7 @@ let ser_wit_ssrdgens = let module M = Ser_genarg.GS0(A14) in M.genser
 let register () =
   let open Ser_genarg in
   let open Ssreflect_plugin.Ssrparser in
+  let open Ssreflect_plugin.Ssrtacs in
 
   register_genser wit_ssrapplyarg        ser_wit_ssrapplyarg;
   register_genser wit_ssrarg             ser_wit_ssrarg;
