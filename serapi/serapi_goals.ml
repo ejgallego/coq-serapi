@@ -53,10 +53,14 @@ let get_hyp (ppx : Constr.t -> 'pc)
 
 (** gets the constr associated to the type of the current goal *)
 let get_goal_type (ppx : Constr.t -> 'pc)
-    (sigma : Evd.evar_map)
+    (env : Environ.env) (sigma : Evd.evar_map)
     (g : Evar.t) : _ =
   let EvarInfo evi = Evd.find sigma g in
-  ppx @@ EConstr.to_constr ~abort_on_undefined_evars:false sigma Evd.(evar_concl evi)
+  let concl = match Evd.evar_body evi with
+  | Evd.Evar_empty -> Evd.evar_concl evi
+  | Evd.Evar_defined body -> Retyping.get_type_of env sigma body
+  in
+  ppx @@ EConstr.to_constr ~abort_on_undefined_evars:false sigma concl
 
 let build_info sigma g =
   { evar = g
@@ -74,7 +78,7 @@ let process_goal_gen ppx sigma g : 'a reified_goal =
   let ppx       = ppx env sigma                                             in
   let hyp       = List.map (get_hyp ppx sigma) ctx                          in
   let info      = build_info sigma g                                        in
-  { info; ty = get_goal_type ppx sigma g; hyp }
+  { info; ty = get_goal_type ppx env sigma g; hyp }
 
 let if_not_empty (pp : Pp.t) = if Pp.(repr pp = Ppcmd_empty) then None else Some pp
 
