@@ -16,7 +16,7 @@
 type subscopes = Notation_term.subscopes
   [@@deriving sexp,yojson,hash,compare]
 
-type constr_as_binder_kind = Notation_term.constr_as_binder_kind
+type notation_binder_kind = Notation_term.notation_binder_kind
   [@@deriving sexp,yojson,hash,compare]
 
 type notation_var_internalization_type = Notation_term.notation_var_internalization_type
