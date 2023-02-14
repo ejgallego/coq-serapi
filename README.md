@@ -9,6 +9,14 @@
 [zulip-badge]: https://img.shields.io/badge/Zulip-chat-informational.svg
 [zulip-link]: https://coq.zulipchat.com/#narrow/stream/256331-SerAPI
 
+**Note**: Coq SerAPI is now in maintenance mode, and has been
+succeeded by [coq-lsp](https://github.com/ejgallego/coq-lsp/), which
+solves many longstanding issues and feature requests.
+
+See https://github.com/ejgallego/coq-serapi/issues/252 for more
+information. The `serlib` component of this repository is still
+active, pending its integration in Coq at some point.
+
 To install with opam:
 ```
 $ opam install coq-serapi
