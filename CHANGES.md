@@ -10,6 +10,7 @@
             (@ejgallego)
  - [serlib] Large refactoring on Serlib, using functors, see serlib/README.md
             (@ejgallego)
+ - [serlib] Fix JSON serialization for generic arguments (@ejgallego, #321)
 
 ## Version 0.15.2:
 
