@@ -1,3 +1,7 @@
+## Version 0.16.3:
+
+ - [serlib] Fix JSON serialization for generic arguments (@ejgallego, #321)
+
 ## Version 0.16.2:
 
  - [sertop] Add `--impredicative-set` command line option (@dhilst , #288)

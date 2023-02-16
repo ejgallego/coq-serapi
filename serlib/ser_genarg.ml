@@ -286,8 +286,23 @@ let generic_argument_of_sexp _lvl sexp : 'a Genarg.generic_argument =
   let (RG ga) = gen_abstype_of_sexp sexp in
   Obj.magic ga
 
-let generic_argument_of_yojson _lvl _json = Error "not supported generic_argument_of_yojson"
-let generic_argument_to_yojson _lvl _g = `String "foo"
+let rec yojson_to_sexp json = match json with
+  | `String s -> Sexp.Atom s
+  | `List s -> Sexp.List (List.map yojson_to_sexp s)
+  | _ -> raise (Failure "ser_genarg: yojson_to_sexp")
+
+let rec sexp_to_yojson sexp : Yojson.Safe.t =
+  match sexp with
+  | Sexp.Atom s -> `String s
+  | List l -> `List (List.map sexp_to_yojson l)
+
+let generic_argument_of_yojson lvl json =
+  let sexp = yojson_to_sexp json in
+  Result.Ok (generic_argument_of_sexp lvl sexp)
+
+let generic_argument_to_yojson : type a. (a -> Yojson.Safe.t) -> a generic_argument -> Yojson.Safe.t =
+  fun _level_tag g ->
+  sexp_of_generic_argument (fun _ -> Atom "") g |> sexp_to_yojson
 
 type 'a generic_argument = 'a Genarg.generic_argument
 

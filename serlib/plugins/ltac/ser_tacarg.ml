@@ -458,7 +458,7 @@ let register () =
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
   Ser_genarg.register_genser Extraargs.wit_by_arg_tac ser_wit_by_arg_tac;
-  (* XXX *)
+  (* XXX: seems gone from Coq *)
   (* Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr; *)
   Ser_genarg.register_genser Extraargs.wit_glob ser_wit_lglob;
   Ser_genarg.register_genser Extraargs.wit_hloc ser_wit_hloc;
