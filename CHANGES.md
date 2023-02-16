@@ -9,7 +9,7 @@
 
 ## Version 0.16.3:
 
- - [serlib] Fix JSON serialization for generic arguments (@ejgalleg, #)
+ - [serlib] Fix JSON serialization for generic arguments (@ejgallego, #321)
 
 ## Version 0.16.2:
 
