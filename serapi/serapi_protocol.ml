@@ -561,7 +561,8 @@ module QueryUtil = struct
       gr
     in
     let gr = smart_global qid in
-    let cstr = Globnames.printable_constr_of_global gr in
+    (* Assumptions doesn't care about the universes *)
+    let cstr, _ = UnivGen.fresh_global_instance env gr in
     let st = Conv_oracle.get_transp_state (Environ.oracle env) in
     let nassums =
       Assumptions.assumptions st ~add_opaque:true ~add_transparent:true gr cstr in
