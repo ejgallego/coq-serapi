@@ -89,7 +89,7 @@ end
 let ser_wit_red_expr = let module M = Ser_genarg.GS(A) in M.genser
 
 let register () =
-    Ser_genarg.register_genser Genredexpr.wit_red_expr ser_wit_red_expr;
+    Ser_genarg.register_genser Redexpr.wit_red_expr ser_wit_red_expr;
     ()
 
 let _ =
