@@ -836,7 +836,7 @@ type newdoc_opts =
   (** Initial ML loadpath  *)
   ; vo_load_path   : Loadpath.vo_path list option [@sexp.option]
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
-  ; require_libs : (string * string option * Lib.export_flag option) list option [@sexp.option]
+  ; require_libs : Coqargs.require_injection list option [@sexp.option]
   (** Libraries to load in the initial document state *)
   }
 
@@ -913,7 +913,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   coq_protect st @@ fun () -> match cmd with
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
-    let require_libs = Option.default (["Coq.Init.Prelude", None, Some Lib.Export]) opts.require_libs in
+    let require_libs = Option.default [{Coqargs.lib="Coq.Init.Prelude"; prefix=None; export=Some Lib.Export;}] opts.require_libs in
     Stm.init_process stm_options;
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
                ; injections = List.map (fun x -> Coqargs.RequireInjection x) require_libs

@@ -422,7 +422,7 @@ type newdoc_opts =
   (** Initial ML loadpath  *)
   ; vo_load_path   : Loadpath.vo_path list option [@sexp.option]
   (** Initial LoadPath for the document *) (* [XXX: Use the coq_pkg record?] *)
-  ; require_libs : (string * string option * Lib.export_flag option) list option [@sexp.option]
+  ; require_libs : Coqargs.require_injection list option [@sexp.option]
   (** Libraries to load in the initial document state *)
   }
 
