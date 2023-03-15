@@ -10,7 +10,12 @@
 open Sexplib.Std
 
 module Names = Ser_names
+module Lib = Ser_lib
 
 type top =
   [%import: Coqargs.top]
   [@@deriving sexp,yojson]
+
+type require_injection =
+  [%import: Coqargs.require_injection]
+  [@@deriving sexp]

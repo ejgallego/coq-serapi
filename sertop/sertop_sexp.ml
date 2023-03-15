@@ -234,7 +234,7 @@ let ser_loop ser_opts =
 
   let injections =
     if ser_opts.no_prelude then []
-    else [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
+    else [Coqargs.RequireInjection {lib="Coq.Init.Prelude"; prefix=None; export=Some Lib.Import;}] in
 
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
   Stm.init_process stm_options;
