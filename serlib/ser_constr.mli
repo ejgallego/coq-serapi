@@ -36,18 +36,8 @@ type pconstructor = Constr.pconstructor
 val pconstructor_of_sexp : Sexp.t -> pconstructor
 val sexp_of_pconstructor : pconstructor -> Sexp.t
 
-type cast_kind = Constr.cast_kind
-val cast_kind_of_sexp : Sexp.t -> cast_kind
-val sexp_of_cast_kind : cast_kind -> Sexp.t
-val cast_kind_of_yojson : Yojson.Safe.t -> (cast_kind, string) Result.result
-val cast_kind_to_yojson : cast_kind -> Yojson.Safe.t
-
-type case_style = Constr.case_style
-
-val case_style_of_sexp : Sexp.t -> case_style
-val sexp_of_case_style : case_style -> Sexp.t
-val case_style_of_yojson : Yojson.Safe.t -> (case_style, string) Result.result
-val case_style_to_yojson : case_style -> Yojson.Safe.t
+type cast_kind = Constr.cast_kind [@@deriving sexp, yojson, hash,compare]
+type case_style = Constr.case_style [@@deriving sexp, yojson, hash,compare]
 
 type case_printing = Constr.case_printing
 
@@ -75,9 +65,7 @@ val cofixpoint_of_sexp : Sexp.t -> cofixpoint
 val sexp_of_cofixpoint : cofixpoint -> Sexp.t
 
 type 'constr pexistential = 'constr Constr.pexistential
-
-val pexistential_of_sexp : (Sexp.t -> 'constr) -> Sexp.t -> 'constr pexistential
-val sexp_of_pexistential : ('constr -> Sexp.t) -> 'constr pexistential -> Sexp.t
+  [@@deriving sexp, yojson, hash, compare]
 
 type ('constr, 'types) prec_declaration = ('constr, 'types) Constr.prec_declaration
 
@@ -109,27 +97,13 @@ val sexp_of_pcofixpoint :
   ('constr, 'types) pcofixpoint -> Sexp.t
 
 type t = Constr.t
-
-val t_of_sexp : Sexp.t -> t
-val sexp_of_t : t -> Sexp.t
-
-val of_yojson : Yojson.Safe.t -> (t, string) Result.result
-val to_yojson : t -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type constr = t
-
-val constr_of_sexp : Sexp.t -> constr
-val sexp_of_constr : constr -> Sexp.t
-
-val constr_of_yojson : Yojson.Safe.t -> (constr, string) Result.result
-val constr_to_yojson : constr -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type types  = constr
-val types_of_sexp : Sexp.t -> types
-val sexp_of_types : types -> Sexp.t
-
-val types_of_yojson : Yojson.Safe.t -> (types, string) Result.result
-val types_to_yojson : types -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type existential = Constr.existential
 val existential_of_sexp : Sexp.t -> existential
@@ -144,13 +118,11 @@ val named_declaration_of_sexp : Sexp.t -> named_declaration
 val sexp_of_named_declaration : named_declaration -> Sexp.t
 
 type named_context = Constr.named_context
-val named_context_of_sexp : Sexp.t -> named_context
-val sexp_of_named_context : named_context -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type rel_declaration = Constr.rel_declaration
 val rel_declaration_of_sexp : Sexp.t -> rel_declaration
 val sexp_of_rel_declaration : rel_declaration -> Sexp.t
 
 type rel_context = Constr.rel_context
-val rel_context_of_sexp : Sexp.t -> rel_context
-val sexp_of_rel_context : rel_context -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

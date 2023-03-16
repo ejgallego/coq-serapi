@@ -13,6 +13,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module Loc   = Ser_loc
@@ -28,68 +30,63 @@ type 'a red_atom =
 
 type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('a,'b,'c,'d) red_expr_gen0 =
   [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen0]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('a,'b,'c) red_expr_gen =
   [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('a,'b,'c) may_eval =
   [%import: ('a,'b,'c) Genredexpr.may_eval]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 (* Helpers for raw_red_expr *)
 type r_trm =
   [%import: Genredexpr.r_trm]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type r_cst =
   [%import: Genredexpr.r_cst]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type r_pat =
   [%import: Genredexpr.r_pat]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type raw_red_expr =
   [%import: Genredexpr.raw_red_expr]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a and_short_name =
   [%import: 'a Genredexpr.and_short_name]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
-type wrd_h1 =
-  (Ser_constrexpr.constr_expr,
-   Ser_libnames.qualid Ser_constrexpr.or_by_notation,
-   Ser_constrexpr.constr_expr) red_expr_gen
-  [@@deriving sexp]
+module A = struct
 
-type wrd_h2 =
-  (Ser_genintern.glob_constr_and_expr,
-   Ser_tacred.evaluable_global_reference and_short_name Ser_locus.or_var,
-   Ser_genintern.glob_constr_pattern_and_expr) red_expr_gen
-  [@@deriving sexp]
+  type raw =
+    (Ser_constrexpr.constr_expr,
+     Ser_libnames.qualid Ser_constrexpr.or_by_notation,
+     Ser_constrexpr.constr_expr) red_expr_gen
+  [@@deriving sexp,yojson,hash,compare]
 
-type wrd_h3 =
-  (Ser_eConstr.constr,
-   Ser_tacred.evaluable_global_reference,
-   Ser_pattern.constr_pattern) red_expr_gen
-  [@@deriving sexp]
+  type glb =
+    (Ser_genintern.glob_constr_and_expr,
+     Ser_tacred.evaluable_global_reference and_short_name Ser_locus.or_var,
+     Ser_genintern.glob_constr_pattern_and_expr) red_expr_gen
+  [@@deriving sexp,yojson,hash,compare]
 
-let ser_wit_red_expr = Ser_genarg.{
-    raw_ser = sexp_of_wrd_h1;
-    glb_ser = sexp_of_wrd_h2;
-    top_ser = sexp_of_wrd_h3;
+  type top =
+    (Ser_eConstr.constr,
+     Ser_tacred.evaluable_global_reference,
+     Ser_pattern.constr_pattern) red_expr_gen
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-    raw_des = wrd_h1_of_sexp;
-    glb_des = wrd_h2_of_sexp;
-    top_des = wrd_h3_of_sexp;
-  }
+let ser_wit_red_expr = let module M = Ser_genarg.GS(A) in M.genser
 
 let register () =
     Ser_genarg.register_genser Genredexpr.wit_red_expr ser_wit_red_expr;

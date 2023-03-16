@@ -13,56 +13,17 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
 type hint_db_name = Hints.hint_db_name
-
-val sexp_of_hint_db_name : hint_db_name -> Sexp.t
-val hint_db_name_of_sexp : Sexp.t -> hint_db_name
+ [@@deriving sexp,yojson,hash,compare]
 
 type 'a hints_path_gen = 'a Hints.hints_path_gen
-
-val sexp_of_hints_path_gen : ('a -> Sexp.t) -> 'a hints_path_gen -> Sexp.t
-val hints_path_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_path_gen
+ [@@deriving sexp,yojson,hash,compare]
 
 type 'a hints_path_atom_gen = 'a Hints.hints_path_atom_gen
-
-val sexp_of_hints_path_atom_gen : ('a -> Sexp.t) -> 'a hints_path_atom_gen -> Sexp.t
-val hints_path_atom_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_path_atom_gen
+ [@@deriving sexp,yojson,hash,compare]
 
 type hints_path = Hints.hints_path
+ [@@deriving sexp,yojson,hash,compare]
 
-val sexp_of_hints_path : hints_path -> Sexp.t
-val hints_path_of_sexp : Sexp.t -> hints_path
-
-type 'a hints_transparency_target = 'a Hints.hints_transparency_target
-val hints_transparency_target_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a hints_transparency_target
-val sexp_of_hints_transparency_target : ('a -> Sexp.t) -> 'a hints_transparency_target -> Sexp.t
-val hints_transparency_target_of_yojson :
-  (Yojson.Safe.t -> ('a, string) Result.result) ->
-  Yojson.Safe.t -> ('a hints_transparency_target, string) Result.result
-val hints_transparency_target_to_yojson :
-  ('a -> Yojson.Safe.t) ->
-  'a hints_transparency_target -> Yojson.Safe.t
-
-(*
-type hint_info_expr = Hints.hint_info_expr
-val hint_info_expr_of_sexp : Sexp.t -> hint_info_expr
-val sexp_of_hint_info_expr : hint_info_expr -> Sexp.t
-val hint_info_expr_of_yojson : Yojson.Safe.t -> (hint_info_expr, string) Result.result
-val hint_info_expr_to_yojson : hint_info_expr -> Yojson.Safe.t
-*)
-
-type hint_mode = Hints.hint_mode
-val hint_mode_of_sexp : Sexp.t -> hint_mode
-val sexp_of_hint_mode : hint_mode -> Sexp.t
-val hint_mode_of_yojson : Yojson.Safe.t -> (hint_mode, string) Result.result
-val hint_mode_to_yojson : hint_mode -> Yojson.Safe.t
-
-(*
-type hints_expr = Hints.hints_expr
-val hints_expr_of_sexp : Sexp.t -> hints_expr
-val sexp_of_hints_expr : hints_expr -> Sexp.t
-val hints_expr_of_yojson : Yojson.Safe.t -> (hints_expr, string) Result.result
-val hints_expr_to_yojson : hints_expr -> Yojson.Safe.t
-*)
+type 'a hints_transparency_target = 'a Hints.hints_transparency_target [@@deriving sexp,yojson,hash,compare]
+type hint_mode = Hints.hint_mode [@@deriving sexp,yojson,hash,compare]

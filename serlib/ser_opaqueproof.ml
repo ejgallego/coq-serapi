@@ -13,7 +13,9 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib.Conv
+open Sexplib.Std
+open Ppx_compare_lib.Builtin
+open Ppx_hash_lib.Std.Hash.Builtin
 
 module Future = Ser_future
 module Names  = Ser_names
@@ -24,31 +26,27 @@ module Mod_subst = Ser_mod_subst
 type proofterm = (Constr.constr * Univ.ContextSet.t) Future.computation
   [@@deriving sexp]
 
-(* type work_list =
- *   [%import: Opaqueproof.work_list]
- *   [@@deriving sexp]
- *
- * type cooking_info =
- *   [%import: Opaqueproof.cooking_info]
- *   [@@deriving sexp]
-*)
+module OP = struct
+type 'a t = [%import: 'a Opaqueproof.opaque]
+type 'cooking_info _t =
+  | Indirect of Mod_subst.substitution list * 'cooking_info list * Names.DirPath.t * int
+ [@@deriving sexp,yojson,hash,compare]
+end
 
-type 'cooking_info _opaque =
-| Indirect of Mod_subst.substitution list * 'cooking_info list * Names.DirPath.t * int (* subst, discharge, lib, index *)
-[@@deriving sexp]
-
-type opaque = [%import: 'a Opaqueproof.opaque]
-
-let sexp_of_opaque f x = sexp_of__opaque f (Obj.magic x)
-let opaque_of_sexp f x = Obj.magic (_opaque_of_sexp f x)
+module B_ = SerType.Pierce1(OP)
+type 'c opaque = 'c B_.t
+ [@@deriving sexp,yojson,hash,compare]
 
 module Map = Ser_cMap.Make(Int.Map)(Ser_int)
-type _opaquetab = {
-  opaque_len : int;
-  (** Size of the above map *)
-  opaque_dir : Names.DirPath.t;
-} [@@deriving sexp]
 
-type opaquetab = [%import: Opaqueproof.opaquetab]
-let sexp_of_opaquetab x = sexp_of__opaquetab (Obj.magic x)
-let opaquetab_of_sexp x = Obj.magic (_opaquetab_of_sexp x)
+module OTSpec = struct
+  type t = Opaqueproof.opaquetab
+  type _t = {
+    opaque_len : int;
+    opaque_dir : Names.DirPath.t;
+  } [@@deriving sexp,yojson,hash,compare]
+end
+
+module C_ = SerType.Pierce(OTSpec)
+type opaquetab = C_.t
+ [@@deriving sexp,yojson,hash,compare]

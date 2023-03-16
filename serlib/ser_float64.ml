@@ -16,16 +16,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-type t = Float64.t
-
 open Sexplib.Std
-type _t = float [@@deriving sexp, yojson]
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
-let _t_get = Obj.magic
-let _t_put = Obj.magic
+module PierceSpec = struct
+  type t = Float64.t
+  type _t = float [@@deriving sexp,yojson,hash,compare]
+end
 
-let t_of_sexp t = _t_put (_t_of_sexp t)
-let sexp_of_t t = sexp_of__t (_t_get t)
-
-let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
-let to_yojson level = _t_to_yojson (_t_put level)
+include SerType.Pierce(PierceSpec)

@@ -2,5 +2,5 @@
  (name serlib_firstorder)
  (public_name coq-serapi.serlib.firstorder_plugin)
  (synopsis "Serialization Library for Coq Firstorder Plugin")
- (preprocess (staged_pps ppx_import ppx_sexp_conv))
+ (preprocess (staged_pps ppx_import ppx_sexp_conv ppx_hash ppx_compare))
  (libraries coq-core.plugins.firstorder serlib sexplib))

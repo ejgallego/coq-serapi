@@ -20,13 +20,11 @@ module type ExtS = sig
 
   include CSig.MapS
 
-  (* module SSet : Ser_cSet.ExtS *)
-
-  include SerType.S1 with type 'a t := 'a t
+  include SerType.SJHC1 with type 'a t := 'a t
 
 end
 
-module Make (M : CSig.MapS) (S : SerType.S with type t := M.key)
+module Make (M : CSig.MapS) (S : SerType.SJHC with type t = M.key)
   : ExtS
     with type key = M.key
      and type 'a t = 'a M.t

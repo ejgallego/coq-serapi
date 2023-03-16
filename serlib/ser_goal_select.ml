@@ -19,10 +19,12 @@
  * val goal_selector_of_sexp : Sexp.t -> goal_selector
  * val sexp_of_goal_selector : goal_selector -> Sexp.t *)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Conv
 
 module Names       = Ser_names
 
 type t =
   [%import: Goal_select.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]

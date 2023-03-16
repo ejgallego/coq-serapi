@@ -16,6 +16,8 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Stdlib     = Ser_stdlib
 module Names      = Ser_names
@@ -26,16 +28,16 @@ module Pattern    = Ser_pattern
 module Notation_term = Ser_notation_term
 
 module Store = struct
-  type t = Genintern.Store.t
 
-  let t_of_sexp _ = CErrors.user_err Pp.(str "[GI Store: Cannot deserialize stores.")
-  let sexp_of_t _ = Sexplib.Sexp.Atom "[GENINTERN STORE]"
+  module StoreOpaque = struct type t = Genintern.Store.t let name = "Genintern.Store.t" end
+
+  include SerType.Opaque(StoreOpaque)
 
 end
 
 type intern_variable_status =
   [%import: Genintern.intern_variable_status]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_sign =
   [%import: Genintern.glob_sign]
@@ -43,8 +45,8 @@ type glob_sign =
 
 type glob_constr_and_expr =
   [%import: Genintern.glob_constr_and_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type glob_constr_pattern_and_expr =
   [%import: Genintern.glob_constr_pattern_and_expr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

@@ -15,17 +15,29 @@
 
 open Sexplib
 
+type infix_flag =
+  [%import: Vernacexpr.infix_flag]
+  [@@deriving sexp,yojson]
+
+type scope_name =
+  [%import: Vernacexpr.scope_name]
+  [@@deriving sexp,yojson]
+
+type notation_format =
+  [%import: Vernacexpr.notation_format]
+  [@@deriving sexp,yojson]
+
+type syntax_modifier =
+  [%import: Vernacexpr.syntax_modifier]
+  [@@deriving sexp,yojson]
+
 type class_rawexpr = Vernacexpr.class_rawexpr
 val class_rawexpr_of_sexp : Sexp.t -> class_rawexpr
 val sexp_of_class_rawexpr : class_rawexpr -> Sexp.t
 
-type goal_identifier = Vernacexpr.goal_identifier
-val goal_identifier_of_sexp : Sexp.t -> goal_identifier
-val sexp_of_goal_identifier : goal_identifier -> Sexp.t
-
-type scope_name = Vernacexpr.scope_name
-val scope_name_of_sexp : Sexp.t -> scope_name
-val sexp_of_scope_name : scope_name -> Sexp.t
+(* type goal_identifier = Vernacexpr.goal_identifier
+ * val goal_identifier_of_sexp : Sexp.t -> goal_identifier
+ * val sexp_of_goal_identifier : goal_identifier -> Sexp.t *)
 
 type goal_reference = Vernacexpr.goal_reference
 val goal_reference_of_sexp : Sexp.t -> goal_reference
@@ -116,8 +128,7 @@ val definition_expr_of_sexp : Sexp.t -> definition_expr
 val sexp_of_definition_expr : definition_expr -> Sexp.t
 
 type fixpoint_expr = Vernacexpr.fixpoint_expr
-val fixpoint_expr_of_sexp : Sexp.t -> fixpoint_expr
-val sexp_of_fixpoint_expr : fixpoint_expr -> Sexp.t
+  [@@deriving sexp,hash,compare]
 
 type cofixpoint_expr = Vernacexpr.cofixpoint_expr
 val cofixpoint_expr_of_sexp : Sexp.t -> cofixpoint_expr
@@ -214,23 +225,70 @@ type module_binder = Vernacexpr.module_binder
 val module_binder_of_sexp : Sexp.t -> module_binder
 val sexp_of_module_binder : module_binder -> Sexp.t
 
-type vernac_expr = Vernacexpr.vernac_expr
-(* and  vernac_list = Vernacexpr.vernac_list *)
-(* and  located_vernac_expr = Vernacexpr.located_vernac_expr *)
+type discharge =
+  [%import: Vernacexpr.discharge]
+  [@@deriving sexp,yojson]
 
-val vernac_expr_of_sexp : Sexp.t -> vernac_expr
-val sexp_of_vernac_expr : vernac_expr -> Sexp.t
-val vernac_expr_of_yojson : Yojson.Safe.t -> (vernac_expr, string) Result.result
-val vernac_expr_to_yojson : vernac_expr -> Yojson.Safe.t
+(* type equality_scheme_type = *)
+(*   [%import: Vernacexpr.equality_scheme_type] *)
+(*   [@@deriving sexp,yojson] *)
 
-(* val located_vernac_expr_of_sexp : Sexp.t -> located_vernac_expr *)
-(* val sexp_of_located_vernac_expr : located_vernac_expr -> Sexp.t *)
+type import_categories =
+  [%import: Vernacexpr.import_categories]
+  [@@deriving sexp,yojson]
 
-(* val vernac_list_of_sexp : Sexp.t -> vernac_list *)
-(* val sexp_of_vernac_list : vernac_list -> Sexp.t *)
+(* type export_with_cats = *)
+(*   [%import: Vernacexpr.export_with_cats] *)
+(*   [@@deriving sexp,yojson] *)
 
-type vernac_control = Vernacexpr.vernac_control
-val vernac_control_of_sexp : Sexp.t -> vernac_control
-val sexp_of_vernac_control : vernac_control -> Sexp.t
-val vernac_control_of_yojson : Yojson.Safe.t -> (vernac_control, string) Result.result
-val vernac_control_to_yojson : vernac_control -> Yojson.Safe.t
+type one_import_filter_name =
+  [%import: Vernacexpr.one_import_filter_name]
+  [@@deriving sexp,yojson]
+
+type import_filter_expr =
+  [%import: Vernacexpr.import_filter_expr]
+  [@@deriving sexp,yojson]
+
+type hint_info_expr =
+  [%import: Vernacexpr.hint_info_expr]
+  [@@deriving sexp,yojson]
+
+type reference_or_constr =
+  [%import: Vernacexpr.reference_or_constr]
+  [@@deriving sexp,yojson]
+
+type hints_expr =
+  [%import: Vernacexpr.hints_expr]
+  [@@deriving sexp,yojson]
+
+type vernac_one_argument_status =
+  [%import: Vernacexpr.vernac_one_argument_status]
+  [@@deriving sexp,yojson]
+
+type vernac_argument_status =
+  [%import: Vernacexpr.vernac_argument_status]
+  [@@deriving sexp,yojson]
+
+type arguments_modifier =
+  [%import: Vernacexpr.arguments_modifier]
+  [@@deriving sexp,yojson]
+
+type option_setting =
+  [%import: Vernacexpr.option_setting]
+  [@@deriving sexp,yojson]
+
+type vernac_expr =
+  [%import: Vernacexpr.vernac_expr]
+  [@@deriving sexp, yojson]
+
+type control_flag =
+  [%import: Vernacexpr.control_flag]
+  [@@deriving sexp, yojson]
+
+type vernac_control_r =
+  [%import: Vernacexpr.vernac_control_r]
+  [@@deriving sexp,yojson]
+
+type vernac_control =
+  [%import: Vernacexpr.vernac_control]
+  [@@deriving sexp,yojson,hash,compare]

@@ -13,8 +13,9 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names = Ser_names
 module Constrexpr = Ser_constrexpr
@@ -35,17 +36,15 @@ type force_inference =
   [%import: Impargs.force_inference]
   [@@deriving sexp]
 
-(* XXX: Careful here, we break abstraction, so this must be kept in sync with Coq. *)
-type _implicit_side_condition = DefaultImpArgs | LessArgsThan of int
-  [@@deriving sexp]
+module ISCPierceSpec = struct
+  type t = Impargs.implicit_side_condition
+  type _t = DefaultImpArgs | LessArgsThan of int
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-type implicit_side_condition = Impargs.implicit_side_condition
-
-let implicit_side_condition_of_sexp (sexp : Sexp.t) : implicit_side_condition =
-  Obj.magic (_implicit_side_condition_of_sexp sexp)
-
-let sexp_of_implicit_side_condition (isc : implicit_side_condition) : Sexp.t =
-  sexp_of__implicit_side_condition (Obj.magic isc)
+module B_ = SerType.Pierce(ISCPierceSpec)
+type implicit_side_condition = B_.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type implicit_position =
   [%import: Impargs.implicit_position]

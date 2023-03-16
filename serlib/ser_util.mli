@@ -13,11 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
+type ('a, 'b) union = ('a, 'b) Util.union [@@deriving sexp,yojson,hash,compare]
 
-type ('a, 'b) union = ('a, 'b) Util.union
+module Empty : sig
+  type t = Util.Empty.t
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-val union_of_sexp : (Sexp.t -> 'a) -> (Sexp.t -> 'b) -> Sexp.t -> ('a, 'b) union
-val sexp_of_union : ('a -> Sexp.t) -> ('b -> Sexp.t) -> ('a, 'b) union -> Sexp.t
-val union_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> (Yojson.Safe.t -> ('b, string) Result.result) -> Yojson.Safe.t -> (('a, 'b) union, string) Result.result
-val union_to_yojson : ('a -> Yojson.Safe.t) -> ('b -> Yojson.Safe.t) -> ('a,'b) union -> Yojson.Safe.t

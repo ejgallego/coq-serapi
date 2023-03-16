@@ -13,8 +13,10 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 type physical_path =
   [%import: CUnix.physical_path]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]

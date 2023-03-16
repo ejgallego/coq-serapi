@@ -15,16 +15,16 @@
 
 type definition_object_kind =
   [%import: Decls.definition_object_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type theorem_kind =
   [%import: Decls.theorem_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type assumption_object_kind =
   [%import: Decls.assumption_object_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type logical_kind =
   [%import: Decls.logical_kind]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]

@@ -28,50 +28,21 @@ val glob_red_flag_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Y
 val glob_red_flag_to_yojson : ('a -> Yojson.Safe.t) -> 'a glob_red_flag -> Yojson.Safe.t
 
 type ('a, 'b, 'c) red_expr_gen =  ('a, 'b, 'c) Genredexpr.red_expr_gen
-
-val red_expr_gen_of_sexp :
-  (Sexp.t -> 'a) ->
-  (Sexp.t -> 'b) ->
-  (Sexp.t -> 'c) -> Sexp.t -> ('a, 'b, 'c) red_expr_gen
-val sexp_of_red_expr_gen :
-  ('a -> Sexp.t) ->
-  ('b -> Sexp.t) ->
-  ('c -> Sexp.t) -> ('a, 'b, 'c) red_expr_gen -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type ('a, 'b, 'c) may_eval =  ('a, 'b, 'c) Genredexpr.may_eval
-val may_eval_of_sexp :
-  (Sexp.t -> 'a) ->
-  (Sexp.t -> 'b) ->
-  (Sexp.t -> 'c) -> Sexp.t -> ('a, 'b, 'c) may_eval
-val sexp_of_may_eval :
-  ('a -> Sexp.t) ->
-  ('b -> Sexp.t) ->
-  ('c -> Sexp.t) -> ('a, 'b, 'c) may_eval -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
-type raw_red_expr = Genredexpr.raw_red_expr
-val raw_red_expr_of_sexp : Sexp.t -> raw_red_expr
-val sexp_of_raw_red_expr : raw_red_expr -> Sexp.t
-val raw_red_expr_of_yojson : Yojson.Safe.t -> (raw_red_expr, string) Result.result
-val raw_red_expr_to_yojson : raw_red_expr -> Yojson.Safe.t
+type raw_red_expr = Genredexpr.raw_red_expr [@@deriving sexp,yojson,hash,compare]
 
 type r_cst = Genredexpr.r_cst
-val r_cst_of_sexp : Sexp.t -> r_cst
-val sexp_of_r_cst : r_cst -> Sexp.t
-val r_cst_of_yojson : Yojson.Safe.t -> (r_cst, string) Result.result
-val r_cst_to_yojson : r_cst -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type r_trm = Genredexpr.r_trm
-val r_trm_of_sexp : Sexp.t -> r_trm
-val sexp_of_r_trm : r_trm -> Sexp.t
-val r_trm_of_yojson : Yojson.Safe.t -> (r_trm, string) Result.result
-val r_trm_to_yojson : r_trm -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type r_pat = Genredexpr.r_pat
-val r_pat_of_sexp : Sexp.t -> r_pat
-val sexp_of_r_pat : r_pat -> Sexp.t
-val r_pat_of_yojson : Yojson.Safe.t -> (r_pat, string) Result.result
-val r_pat_to_yojson : r_pat -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a and_short_name = 'a Genredexpr.and_short_name
-val and_short_name_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a and_short_name
-val sexp_of_and_short_name : ('a -> Sexp.t) -> 'a and_short_name -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]

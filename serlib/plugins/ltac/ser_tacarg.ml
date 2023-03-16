@@ -13,18 +13,30 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
 open Serlib
+
 open Ltac_plugin
 
 module CAst         = Ser_cAst
+module Names        = Ser_names
 module Constrexpr   = Ser_constrexpr
 module Tactypes     = Ser_tactypes
+module Locus        = Ser_locus
+module Libnames     = Ser_libnames
 module Genintern    = Ser_genintern
+module Geninterp    = Ser_geninterp
+module EConstr      = Ser_eConstr
+module Hints        = Ser_hints
 
 module Ltac_plugin = struct
   module G_rewrite    = G_rewrite
   module Rewrite      = Ser_rewrite
   module Tacexpr      = Ser_tacexpr
+  module Tacentries   = Ser_tacentries
 end
 
 (* Needed for compat with -pack build method used in Coq's make *)
@@ -32,415 +44,382 @@ open Ltac_plugin
 
 (* Tacarg *)
 module A1 = struct
-  type h1 = Constrexpr.constr_expr Tactypes.intro_pattern_expr CAst.t
-  [@@deriving sexp]
-  type h2 = Genintern.glob_constr_and_expr Tactypes.intro_pattern_expr CAst.t
-  [@@deriving sexp]
-  type h3 = Ltac_plugin.Tacexpr.intro_pattern
-  [@@deriving sexp]
+  type raw = Constrexpr.constr_expr Tactypes.intro_pattern_expr CAst.t
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr Tactypes.intro_pattern_expr CAst.t
+  [@@deriving sexp,hash,compare]
+  type top = Ltac_plugin.Tacexpr.intro_pattern
+  [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_simple_intropattern = let open A1 in Ser_genarg.
-  { raw_ser = sexp_of_h1
-  ; raw_des = h1_of_sexp
+let ser_wit_simple_intropattern =
+  let module M = Ser_genarg.GS(A1) in M.genser
 
-  ; glb_ser = sexp_of_h2
-  ; glb_des = h2_of_sexp
+module A2 = struct
+  type raw = Constrexpr.constr_pattern_expr Tactypes.with_bindings Ser_tactics.destruction_arg
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr Tactypes.with_bindings Ser_tactics.destruction_arg
+  [@@deriving sexp,hash,compare]
+  type top = Tactypes.delayed_open_constr_with_bindings Ser_tactics.destruction_arg
+  [@@deriving sexp,hash,compare]
+end
 
-  ; top_ser = sexp_of_h3
-  ; top_des = h3_of_sexp
-  }
+let ser_wit_destruction_arg =
+  let module M = Ser_genarg.GS(A2) in M.genser
 
-let ser_wit_destruction_arg = Ser_genarg.{
-    raw_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr);
-    glb_ser = Ser_tactics.sexp_of_destruction_arg (Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr);
-    top_ser = Ser_tactics.(sexp_of_destruction_arg Ser_tactypes.sexp_of_delayed_open_constr_with_bindings);
+module A3 = struct
+  type raw = Tacexpr.raw_tactic_expr
+  [@@deriving sexp,hash,compare]
+  type glb = Tacexpr.glob_tactic_expr
+  [@@deriving sexp,hash,compare]
+  type top = Ser_geninterp.Val.t
+  [@@deriving sexp,hash,compare]
+end
 
-    raw_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp);
-    glb_des = Ser_tactics.destruction_arg_of_sexp (Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp);
-    top_des = Ser_tactics.(destruction_arg_of_sexp Ser_tactypes.delayed_open_constr_with_bindings_of_sexp);
-  }
+let ser_wit_tactic = let module M = Ser_genarg.GS(A3) in M.genser
 
-let ser_wit_tactic = Ser_genarg.{
-    raw_ser = Ser_tacexpr.sexp_of_raw_tactic_expr;
-    glb_ser = Ser_tacexpr.sexp_of_glob_tactic_expr;
-    top_ser = Ser_geninterp.Val.sexp_of_t;
+module A4 = struct
+  type raw = Tacexpr.raw_tactic_expr
+  [@@deriving sexp,hash,compare]
+  type glb = Tacexpr.glob_tactic_expr
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
 
-    raw_des = Ser_tacexpr.raw_tactic_expr_of_sexp;
-    glb_des = Ser_tacexpr.glob_tactic_expr_of_sexp;
-    top_des = Ser_geninterp.Val.t_of_sexp;
-  }
+let ser_wit_ltac = let module M = Ser_genarg.GS(A4) in M.genser
 
-let ser_wit_ltac = Ser_genarg.{
-    raw_ser = Ser_tacexpr.sexp_of_raw_tactic_expr;
-    glb_ser = Ser_tacexpr.sexp_of_glob_tactic_expr;
-    top_ser = Sexplib.Conv.sexp_of_unit;
+module A5 = struct
+  type t = Ser_tactypes.quantified_hypothesis [@@deriving sexp,hash,compare]
+end
 
-    raw_des = Ser_tacexpr.raw_tactic_expr_of_sexp;
-    glb_des = Ser_tacexpr.glob_tactic_expr_of_sexp;
-    top_des = Sexplib.Conv.unit_of_sexp;
-  }
+let ser_wit_quant_hyp = let module M = Ser_genarg.GS0(A5) in M.genser
 
-let ser_wit_quant_hyp =
-  Ser_genarg.mk_uniform
-    Ser_tactypes.sexp_of_quantified_hypothesis
-    Ser_tactypes.quantified_hypothesis_of_sexp
+module A6 = struct
+  type raw = Constrexpr.constr_expr Tactypes.bindings
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr Tactypes.bindings
+  [@@deriving sexp,hash,compare]
+  type top = EConstr.constr Tactypes.bindings Tactypes.delayed_open
+  [@@deriving sexp,hash,compare]
+end
 
-let ser_wit_bindings :
-  (Constrexpr.constr_expr Tactypes.bindings,
-   Genintern.glob_constr_and_expr Tactypes.bindings,
-   EConstr.constr Tactypes.bindings Tactypes.delayed_open)
-    Ser_genarg.gen_ser
- = Ser_genarg.{
-    raw_ser = Ser_tactypes.sexp_of_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tactypes.sexp_of_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_bindings/top";
+let ser_wit_bindings = let module M = Ser_genarg.GS(A6) in M.genser
 
-    raw_des = Ser_tactypes.bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tactypes.bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = Serlib_base.opaque_of_sexp ~typ:"wit_bindings/top";
-  }
+module A7 = struct
+  type raw = Constrexpr.constr_expr Tactypes.with_bindings
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr Tactypes.with_bindings
+  [@@deriving sexp,hash,compare]
+  type top = EConstr.constr Tactypes.with_bindings Tactypes.delayed_open
+  [@@deriving sexp,hash,compare]
+end
 
-let ser_wit_constr_with_bindings :
-  (Constrexpr.constr_expr Tactypes.with_bindings,
-   Genintern.glob_constr_and_expr Tactypes.with_bindings,
-   EConstr.constr Tactypes.with_bindings Tactypes.delayed_open)
-    Ser_genarg.gen_ser
- = Ser_genarg.{
-    raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = Serlib_base.sexp_of_opaque ~typ:"wit_constr_with_bindings/top";
-
-    raw_des = Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = Serlib_base.opaque_of_sexp ~typ:"wit_constr_with_bindings/top";
-  }
+let ser_wit_constr_with_bindings = let module M = Ser_genarg.GS(A7) in M.genser
 
 (* G_ltac *)
 (* Defined in g_ltac but serialized here *)
 
-let ser_wit_ltac_info =
-  let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = sexp_of_int;
-    glb_ser = sexp_of_unit;
-    top_ser = sexp_of_unit;
+module A8 = struct
+  type raw = int
+  [@@deriving sexp,hash,compare]
+  type glb = unit
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
 
-    raw_des = int_of_sexp;
-    glb_des = unit_of_sexp;
-    top_des = unit_of_sexp;
-  }
+let ser_wit_ltac_info = let module M = Ser_genarg.GS(A8) in M.genser
 
-let ser_wit_production_item =
-  let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = Ser_tacentries.(sexp_of_grammar_tactic_prod_item_expr sexp_of_raw_argument);
-    glb_ser = sexp_of_unit;
-    top_ser = sexp_of_unit;
+module A9 = struct
+  type raw = Ltac_plugin.Tacentries.raw_argument Ser_tacentries.grammar_tactic_prod_item_expr
+  [@@deriving sexp,hash,compare]
+  type glb = unit
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
 
-    raw_des = Ser_tacentries.(grammar_tactic_prod_item_expr_of_sexp raw_argument_of_sexp);
-    glb_des = unit_of_sexp;
-    top_des = unit_of_sexp;
-  }
+let ser_wit_production_item = let module M = Ser_genarg.GS(A9) in M.genser
 
-let ser_wit_ltac_production_sep =
-  let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = sexp_of_string;
-    glb_ser = sexp_of_unit;
-    top_ser = sexp_of_unit;
+module A10 = struct
+  type raw = string
+  [@@deriving sexp,hash,compare]
+  type glb = unit
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_ltac_production_sep = let module M = Ser_genarg.GS(A10) in M.genser
 
-    raw_des = string_of_sexp;
-    glb_des = unit_of_sexp;
-    top_des = unit_of_sexp;
-  }
+module A11 = struct
+  type raw = Ser_goal_select.t
+  [@@deriving sexp,hash,compare]
+  type glb = unit
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_ltac_selector = let module M = Ser_genarg.GS(A11) in M.genser
 
-let ser_wit_ltac_selector = Ser_genarg.{
-    raw_ser = Ser_goal_select.sexp_of_t;
-    glb_ser = Sexplib.Conv.sexp_of_unit;
-    top_ser = Sexplib.Conv.sexp_of_unit;
+module A12 = struct
+  type raw = Ser_tacexpr.tacdef_body
+  [@@deriving sexp,hash,compare]
+  type glb = unit
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_ltac_tacdef_body = let module M = Ser_genarg.GS(A12) in M.genser
 
-    raw_des = Ser_goal_select.t_of_sexp;
-    glb_des = Sexplib.Conv.unit_of_sexp;
-    top_des = Sexplib.Conv.unit_of_sexp;
-  }
+module A13 = struct
+  type raw = int  [@@deriving sexp,hash,compare]
+  type glb = unit [@@deriving sexp,hash,compare]
+  type top = unit [@@deriving sexp,hash,compare]
+end
+let ser_wit_ltac_tactic_level = let module M = Ser_genarg.GS(A13) in M.genser
 
-let ser_wit_ltac_tacdef_body = Ser_genarg.{
-    raw_ser = Ser_tacexpr.sexp_of_tacdef_body;
-    glb_ser = Sexplib.Conv.sexp_of_unit;
-    top_ser = Sexplib.Conv.sexp_of_unit;
-
-    raw_des = Ser_tacexpr.tacdef_body_of_sexp;
-    glb_des = Sexplib.Conv.unit_of_sexp;
-    top_des = Sexplib.Conv.unit_of_sexp;
-  }
-
-let ser_wit_ltac_tactic_level = Ser_genarg.{
-    raw_ser = Sexplib.Conv.sexp_of_int;
-    glb_ser = Sexplib.Conv.sexp_of_unit;
-    top_ser = Sexplib.Conv.sexp_of_unit;
-
-    raw_des = Sexplib.Conv.int_of_sexp;
-    glb_des = Sexplib.Conv.unit_of_sexp;
-    top_des = Sexplib.Conv.unit_of_sexp;
-  }
-
-let ser_wit_ltac_use_default = Ser_genarg.{
-    raw_ser = Sexplib.Conv.sexp_of_bool;
-    glb_ser = Sexplib.Conv.sexp_of_unit;
-    top_ser = Sexplib.Conv.sexp_of_unit;
-
-    raw_des = Sexplib.Conv.bool_of_sexp;
-    glb_des = Sexplib.Conv.unit_of_sexp;
-    top_des = Sexplib.Conv.unit_of_sexp
-  }
+module A14 = struct
+  type raw = bool
+  [@@deriving sexp,hash,compare]
+  type glb = unit
+  [@@deriving sexp,hash,compare]
+  type top = unit
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_ltac_use_default = let module M = Ser_genarg.GS(A14) in M.genser
 
 (* From G_auto *)
-let ser_wit_auto_using = Ser_genarg.{
-    raw_ser = Sexplib.Conv.sexp_of_list Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Sexplib.Conv.sexp_of_list Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = Sexplib.Conv.sexp_of_list Ser_ltac_pretype.sexp_of_closed_glob_constr;
+module A15 = struct
+  type raw = Ser_constrexpr.constr_expr list
+  [@@deriving sexp,hash,compare]
+  type glb = Ser_genintern.glob_constr_and_expr list
+  [@@deriving sexp,hash,compare]
+  type top = Ser_ltac_pretype.closed_glob_constr list
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_auto_using = let module M = Ser_genarg.GS(A15) in M.genser
 
-    raw_des = Sexplib.Conv.list_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Sexplib.Conv.list_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = Sexplib.Conv.list_of_sexp Ser_ltac_pretype.closed_glob_constr_of_sexp;
-  }
+module A16 = struct
+  type raw = string list option
+  [@@deriving sexp,hash,compare]
+  type glb = string list option
+  [@@deriving sexp,hash,compare]
+  type top = string list option
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_hintbases = let module M = Ser_genarg.GS(A16) in M.genser
 
-let ser_wit_hintbases =
-  let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = sexp_of_option (sexp_of_list sexp_of_string);
-    glb_ser = sexp_of_option (sexp_of_list sexp_of_string);
-    top_ser = sexp_of_option (sexp_of_list Ser_hints.sexp_of_hint_db_name);
+module A17 = struct
+  type raw = Ser_libnames.qualid Ser_hints.hints_path_gen
+  [@@deriving sexp,hash,compare]
+  type glb = Ser_hints.hints_path
+  [@@deriving sexp,hash,compare]
+  type top = Ser_hints.hints_path
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_hintbases_path = let module M = Ser_genarg.GS(A17) in M.genser
 
-    raw_des = option_of_sexp (list_of_sexp string_of_sexp);
-    glb_des = option_of_sexp (list_of_sexp string_of_sexp);
-    top_des = option_of_sexp (list_of_sexp Ser_hints.hint_db_name_of_sexp);
-  }
+module A18 = struct
+  type raw = Libnames.qualid Hints.hints_path_atom_gen
+  [@@deriving sexp,hash,compare]
+  type glb = Names.GlobRef.t Hints.hints_path_atom_gen
+  [@@deriving sexp,hash,compare]
+  type top = Names.GlobRef.t Hints.hints_path_atom_gen
+  [@@deriving sexp,hash,compare]
+end
 
-let ser_wit_hintbases_path =
-  Ser_genarg.{
-    raw_ser = Ser_hints.(sexp_of_hints_path_gen Ser_libnames.sexp_of_qualid);
-    glb_ser = Ser_hints.sexp_of_hints_path;
-    top_ser = Ser_hints.sexp_of_hints_path;
+let ser_wit_hintbases_path_atom = let module M = Ser_genarg.GS(A18) in M.genser
 
-    raw_des = Ser_hints.(hints_path_gen_of_sexp Ser_libnames.qualid_of_sexp);
-    glb_des = Ser_hints.hints_path_of_sexp;
-    top_des = Ser_hints.hints_path_of_sexp;
-  }
+module A19 = struct
+  type raw = string list option
+  [@@deriving sexp,hash,compare]
+  type glb = string list option
+  [@@deriving sexp,hash,compare]
+  type top = string list option
+  [@@deriving sexp,hash,compare]
+end
 
-let ser_wit_hintbases_path_atom =
-  Ser_genarg.{
-    raw_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_libnames.sexp_of_qualid);
-    glb_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_names.GlobRef.sexp_of_t);
-    top_ser = Ser_hints.(sexp_of_hints_path_atom_gen Ser_names.GlobRef.sexp_of_t);
-
-    raw_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_libnames.qualid_of_sexp);
-    glb_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_names.GlobRef.t_of_sexp);
-    top_des = Ser_hints.(hints_path_atom_gen_of_sexp Ser_names.GlobRef.t_of_sexp);
-  }
-
-let ser_wit_opthints =
-  let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = sexp_of_option (sexp_of_list sexp_of_string);
-    glb_ser = sexp_of_option (sexp_of_list sexp_of_string);
-    top_ser = sexp_of_option (sexp_of_list Ser_hints.sexp_of_hint_db_name);
-
-    raw_des = option_of_sexp (list_of_sexp string_of_sexp);
-    glb_des = option_of_sexp (list_of_sexp string_of_sexp);
-    top_des = option_of_sexp (list_of_sexp Ser_hints.hint_db_name_of_sexp);
-  }
+let ser_wit_opthints = let module M = Ser_genarg.GS(A19) in M.genser
 
 (* G_rewrite *)
 
 module G_rewrite = struct
 
-open Sexplib.Conv
-
 let wit_binders = Ltac_plugin.G_rewrite.wit_binders
 
-type binders_argtype =
-  [%import: Ltac_plugin.G_rewrite.binders_argtype]
-  [@@deriving sexp]
+module GT0 = struct
+  type t =
+    [%import: Ltac_plugin.G_rewrite.binders_argtype]
+  [@@deriving sexp,hash,compare]
+end
 
-let ser_wit_binders = Ser_genarg.mk_uniform sexp_of_binders_argtype binders_argtype_of_sexp
+let ser_wit_binders = let module M = Ser_genarg.GS0(GT0) in M.genser
 
 let wit_glob_constr_with_bindings = Ltac_plugin.G_rewrite.wit_glob_constr_with_bindings
 
-let ser_wit_glob_constr_with_bindings =
-  let open Sexplib.Conv in
+module GT1 = struct
+  type raw = Constrexpr.constr_expr Tactypes.with_bindings
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr Tactypes.with_bindings
+  [@@deriving sexp,hash,compare]
+  type top = Geninterp.interp_sign * Genintern.glob_constr_and_expr Tactypes.with_bindings
+  [@@deriving sexp,hash,compare]
+end
 
-  let _sexp_of_interp_sign = Serlib_base.sexp_of_opaque ~typ:"interp_sign" in
-  let _interp_sign_of_sexp = Serlib_base.opaque_of_sexp ~typ:"interp_sign" in
-
-  Ser_genarg.{
-    raw_ser = Ser_tactypes.sexp_of_with_bindings Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_tactypes.sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = sexp_of_pair _sexp_of_interp_sign Ser_tactypes.(sexp_of_with_bindings Ser_genintern.sexp_of_glob_constr_and_expr);
-
-    raw_des = Ser_tactypes.with_bindings_of_sexp Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_tactypes.with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = pair_of_sexp _interp_sign_of_sexp Ser_tactypes.(with_bindings_of_sexp Ser_genintern.glob_constr_and_expr_of_sexp)
-  }
+let ser_wit_glob_constr_with_bindings = let module M = Ser_genarg.GS(GT1) in M.genser
 
 let wit_rewstrategy = Ltac_plugin.G_rewrite.wit_rewstrategy
 
-type raw_strategy =
-  [%import: Ltac_plugin.G_rewrite.raw_strategy]
-  [@@deriving sexp]
+module GT2 = struct
+  type raw =
+    [%import: Ltac_plugin.G_rewrite.raw_strategy]
+  [@@deriving sexp,hash,compare]
+  type glb =
+    [%import: Ltac_plugin.G_rewrite.glob_strategy]
+  [@@deriving sexp,hash,compare]
+  type top = Ltac_plugin.Rewrite.strategy
+  [@@deriving sexp,hash,compare]
+end
 
-type glob_strategy =
-  [%import: Ltac_plugin.G_rewrite.glob_strategy]
-  [@@deriving sexp]
 
 (* (G_rewrite.raw_strategy, G_rewrite.glob_strategy, Rewrite.strategy) *)
 
-let ser_wit_rewstrategy =
-  Ser_genarg.
-    { raw_ser = sexp_of_raw_strategy
-    ; glb_ser = sexp_of_glob_strategy
-    ; top_ser = Ltac_plugin.Rewrite.sexp_of_strategy
-
-    ; raw_des = raw_strategy_of_sexp
-    ; glb_des = glob_strategy_of_sexp
-    ; top_des = Ltac_plugin.Rewrite.strategy_of_sexp
-    }
+let ser_wit_rewstrategy = let module M = Ser_genarg.GS(GT2) in M.genser
 
 end
 
 let ser_wit_debug =
   let open Sexplib.Conv in
-  Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
+  Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp hash_fold_bool compare_bool
 
-let ser_wit_eauto_search_strategy =
-  let open Sexplib.Conv in
-  Ser_genarg.mk_uniform
-    (sexp_of_option Ser_class_tactics.sexp_of_search_strategy)
-    (option_of_sexp Ser_class_tactics.search_strategy_of_sexp)
+module SWESS = struct
+  type t = Ser_class_tactics.search_strategy option
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_eauto_search_strategy = let module M = Ser_genarg.GS0(SWESS) in M.genser
 
-let ser_wit_withtac =
-  let open Sexplib.Conv in
-  Ser_genarg.mk_uniform
-    (sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr)
-    (option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp)
+module SWWT = struct
+  type t = Ser_tacexpr.raw_tactic_expr option
+  [@@deriving sexp,hash,compare]
+end
+let ser_wit_withtac = let module M = Ser_genarg.GS0(SWWT) in M.genser
 
 (* extraargs *)
 
-open Sexplib.Conv
-
-module Names = Ser_names
-module Locus = Ser_locus
-
 type 'a gen_place =
   [%import: 'a Ltac_plugin.Extraargs.gen_place]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type loc_place =
   [%import: Ltac_plugin.Extraargs.loc_place]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
 type place =
   [%import: Ltac_plugin.Extraargs.place]
-  [@@deriving sexp]
+  [@@deriving sexp,hash,compare]
 
-let ser_wit_hloc =
-  Ser_genarg.{
-    raw_ser = sexp_of_loc_place
-  ; glb_ser = sexp_of_loc_place
-  ; top_ser = sexp_of_place
+module GT3 = struct
+  type raw = loc_place
+  [@@deriving sexp,hash,compare]
+  type glb = loc_place
+  [@@deriving sexp,hash,compare]
+  type top = place
+  [@@deriving sexp,hash,compare]
+end
 
-  ; raw_des = loc_place_of_sexp
-  ; glb_des = loc_place_of_sexp
-  ; top_des = place_of_sexp
-  }
+let ser_wit_hloc = let module M = Ser_genarg.GS(GT3) in M.genser
 
-let ser_wit_lglob =
-  Ser_genarg.{
-    raw_ser = Ser_constrexpr.sexp_of_constr_expr
-  ; glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr
-  ; top_ser = sexp_of_pair Ser_geninterp.sexp_of_interp_sign Ser_glob_term.sexp_of_glob_constr
+module GT4 = struct
+  type raw = Constrexpr.constr_expr
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr
+  [@@deriving sexp,hash,compare]
+  type top = Geninterp.interp_sign * Ser_glob_term.glob_constr
+  [@@deriving sexp,hash,compare]
+end
 
-  ; raw_des = Ser_constrexpr.constr_expr_of_sexp
-  ; glb_des = Ser_genintern.glob_constr_and_expr_of_sexp
-  ; top_des = pair_of_sexp Ser_geninterp.interp_sign_of_sexp Ser_glob_term.glob_constr_of_sexp
-  }
+let ser_wit_lglob = let module M = Ser_genarg.GS(GT4) in M.genser
 
 let ser_wit_orient =
   let open Sexplib.Conv in
-  Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp
+  Ser_genarg.mk_uniform sexp_of_bool bool_of_sexp hash_fold_bool compare_bool
+
+module WRen = struct
+  type t = Names.Id.t * Names.Id.t
+  [@@deriving sexp,hash,compare]
+end
 
 let ser_wit_rename =
-  let open Sexplib.Conv in
-  Ser_genarg.mk_uniform
-    (sexp_of_pair Ser_names.Id.sexp_of_t Ser_names.Id.sexp_of_t)
-    (pair_of_sexp Ser_names.Id.t_of_sexp Ser_names.Id.t_of_sexp)
+  let module M = Ser_genarg.GS0(WRen) in M.genser
 
 let ser_wit_natural =
   let open Sexplib.Conv in
-  Ser_genarg.mk_uniform sexp_of_int int_of_sexp
+  Ser_genarg.mk_uniform sexp_of_int int_of_sexp hash_fold_int compare_int
+
+module GT5 = struct
+  type raw = Constrexpr.constr_expr
+  [@@deriving sexp,hash,compare]
+  type glb = Genintern.glob_constr_and_expr
+  [@@deriving sexp,hash,compare]
+  type top = EConstr.t
+  [@@deriving sexp,hash,compare]
+end
 
 let ser_wit_lconstr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
-  Ser_genarg.{
-    raw_ser = Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = Ser_eConstr.sexp_of_t;
+  let module M = Ser_genarg.GS(GT5) in M.genser
 
-    raw_des = Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = Ser_eConstr.t_of_sexp;
-  }
+(* let _ser_wit_casted_constr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
+ *   Ser_genarg.{
+ *     raw_ser = Ser_constrexpr.sexp_of_constr_expr
+ *   ; glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr
+ *   ; top_ser = Ser_eConstr.sexp_of_t
+ * 
+ *   ; raw_des = Ser_constrexpr.constr_expr_of_sexp
+ *   ; glb_des = Ser_genintern.glob_constr_and_expr_of_sexp
+ *   ; top_des = Ser_eConstr.t_of_sexp
+ *   } *)
 
-let _ser_wit_casted_constr : (Constrexpr.constr_expr, Ser_genintern.glob_constr_and_expr, EConstr.t) Ser_genarg.gen_ser =
-  Ser_genarg.{
-    raw_ser = Ser_constrexpr.sexp_of_constr_expr;
-    glb_ser = Ser_genintern.sexp_of_glob_constr_and_expr;
-    top_ser = Ser_eConstr.sexp_of_t;
-
-    raw_des = Ser_constrexpr.constr_expr_of_sexp;
-    glb_des = Ser_genintern.glob_constr_and_expr_of_sexp;
-    top_des = Ser_eConstr.t_of_sexp;
-  }
+module GT6 = struct
+  type raw = Names.lident Locus.clause_expr
+  [@@deriving sexp,hash,compare]
+  type glb = Names.lident Locus.clause_expr
+  [@@deriving sexp,hash,compare]
+  type top = Names.Id.t Locus.clause_expr
+  [@@deriving sexp,hash,compare]
+end
 
 let ser_wit_in_clause :
   (Names.lident Locus.clause_expr, Names.lident Locus.clause_expr, Names.Id.t Locus.clause_expr) Ser_genarg.gen_ser =
-  Ser_genarg.{
-    raw_ser = Ser_locus.sexp_of_clause_expr Ser_names.sexp_of_lident;
-    glb_ser = Ser_locus.sexp_of_clause_expr Ser_names.sexp_of_lident;
-    top_ser = Ser_locus.sexp_of_clause_expr Ser_names.Id.sexp_of_t;
+  let module M = Ser_genarg.GS(GT6) in M.genser
 
-    raw_des = Ser_locus.clause_expr_of_sexp Ser_names.lident_of_sexp;
-    glb_des = Ser_locus.clause_expr_of_sexp Ser_names.lident_of_sexp;
-    top_des = Ser_locus.clause_expr_of_sexp Ser_names.Id.t_of_sexp;
-  }
+module GT7 = struct
+  type raw = Tacexpr.raw_tactic_expr option
+  [@@deriving sexp,hash,compare]
+  type glb = Tacexpr.glob_tactic_expr option
+  [@@deriving sexp,hash,compare]
+  type top = Geninterp.Val.t option
+  [@@deriving sexp,hash,compare]
+end
 
 let ser_wit_by_arg_tac :
   (Tacexpr.raw_tactic_expr option, Tacexpr.glob_tactic_expr option, Tacinterp.value option) Ser_genarg.gen_ser =
-  Ser_genarg.{
-    raw_ser = Sexplib.Conv.sexp_of_option Ser_tacexpr.sexp_of_raw_tactic_expr;
-    glb_ser = Sexplib.Conv.sexp_of_option Ser_tacexpr.sexp_of_glob_tactic_expr;
-    top_ser = Sexplib.Conv.sexp_of_option Ser_geninterp.Val.sexp_of_t;
-
-    raw_des = Sexplib.Conv.option_of_sexp Ser_tacexpr.raw_tactic_expr_of_sexp;
-    glb_des = Sexplib.Conv.option_of_sexp Ser_tacexpr.glob_tactic_expr_of_sexp;
-    top_des = Sexplib.Conv.option_of_sexp Ser_geninterp.Val.t_of_sexp;
-  }
+  let module M = Ser_genarg.GS(GT7) in M.genser
 
 let ser_wit_lpar_id_colon =
   let open Sexplib.Conv in
-  Ser_genarg.mk_uniform sexp_of_unit unit_of_sexp
+  Ser_genarg.mk_uniform sexp_of_unit unit_of_sexp hash_fold_unit compare_unit
 
-let ser_wit_occurences =
-  let open Sexplib.Conv in
-  Ser_genarg.{
-    raw_ser = Ser_locus.sexp_of_or_var (sexp_of_list sexp_of_int);
-    glb_ser = Ser_locus.sexp_of_or_var (sexp_of_list sexp_of_int);
-    top_ser = sexp_of_list sexp_of_int;
+module GT8 = struct
+  type raw = int list Locus.or_var
+  [@@deriving sexp,hash,compare]
+  type glb = int list Locus.or_var
+  [@@deriving sexp,hash,compare]
+  type top = int list
+  [@@deriving sexp,hash,compare]
+end
 
-    raw_des = Ser_locus.or_var_of_sexp (list_of_sexp int_of_sexp);
-    glb_des = Ser_locus.or_var_of_sexp (list_of_sexp int_of_sexp);
-    top_des = list_of_sexp int_of_sexp;
-  }
+let ser_wit_occurences = let module M = Ser_genarg.GS(GT8) in M.genser
 
 let register () =
 
@@ -479,7 +458,7 @@ let register () =
   Ser_genarg.register_genser G_obligations.wit_withtac ser_wit_withtac;
 
   Ser_genarg.register_genser Extraargs.wit_by_arg_tac ser_wit_by_arg_tac;
-  (* XXX *)
+  (* XXX: seems gone from Coq *)
   (* Ser_genarg.register_genser Extraargs.wit_casted_constr ser_wit_casted_constr; *)
   Ser_genarg.register_genser Extraargs.wit_glob ser_wit_lglob;
   Ser_genarg.register_genser Extraargs.wit_hloc ser_wit_hloc;

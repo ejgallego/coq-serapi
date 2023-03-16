@@ -20,9 +20,17 @@
 module Constr  = Ser_constr
 module Environ = Ser_environ
 
-type t = EConstr.t
-let t_of_sexp s = EConstr.of_constr (Ser_constr.constr_of_sexp s)
-let sexp_of_t c = Ser_constr.sexp_of_constr (EConstr.Unsafe.to_constr c)
+module ECtoC = struct
+
+  type t = EConstr.t
+  type _t = Constr.t
+  [@@deriving sexp,yojson,hash,compare]
+
+  let to_t = EConstr.of_constr
+  let of_t = EConstr.Unsafe.to_constr
+end
+
+include SerType.Biject(ECtoC)
 
 type existential =
   [%import: EConstr.existential]
@@ -30,7 +38,7 @@ type existential =
 
 type constr =
   [%import: EConstr.constr]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type types =
   [%import: EConstr.types]

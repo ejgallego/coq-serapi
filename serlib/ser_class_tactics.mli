@@ -13,8 +13,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-type search_strategy = Class_tactics.search_strategy
-
-val search_strategy_of_sexp : Sexp.t -> search_strategy
-val sexp_of_search_strategy : search_strategy -> Sexp.t
+type search_strategy = Class_tactics.search_strategy [@@deriving sexp,hash,compare]

@@ -14,22 +14,12 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
-module Self = struct
-
-type t =
-  [%import: Stateid.t]
-
-type _t = int [@@deriving sexp, yojson]
-
-let _t_put stateid = (Stateid.to_int stateid)
-let _t_get stateid = Stateid.of_int stateid
-
-let t_of_sexp sexp    = _t_get (_t_of_sexp sexp)
-let sexp_of_t stateid = sexp_of__t (_t_put stateid)
-
-let of_yojson json = Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _t_get)
-let to_yojson level = _t_to_yojson (_t_put level)
+module SId = struct
+  type t = Stateid.t
+  type _t = int [@@deriving sexp,yojson,hash,compare]
 end
 
-include Self
+include SerType.Pierce(SId)

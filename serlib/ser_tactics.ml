@@ -14,18 +14,20 @@
 (************************************************************************)
 
 open Sexplib.Conv
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 module Names     = Ser_names
 
 type clear_flag =
   [%import: Tactics.clear_flag]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a core_destruction_arg =
   [%import: 'a Tactics.core_destruction_arg]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a destruction_arg =
   [%import: 'a Tactics.destruction_arg]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 

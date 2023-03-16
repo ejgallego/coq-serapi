@@ -13,11 +13,13 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 type sign =
   [%import: NumTok.sign]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type num_class =
   [%import: NumTok.num_class]
@@ -29,24 +31,32 @@ type 'a exp =
 
 module Unsigned = struct
 
-  type _t = {
-    int : string;
-    frac : string;
-    exp : string
-  } [@@deriving sexp,yojson]
+  module PierceSpec = struct
+    type t = NumTok.Unsigned.t
+    type _t = {
+      int : string;
+      frac : string;
+      exp : string
+    } [@@deriving sexp,yojson,hash,compare]
+  end
 
-  type t = NumTok.Unsigned.t
-  let t_of_sexp s = Obj.magic (_t_of_sexp s)
-  let sexp_of_t s = sexp_of__t (Obj.magic s)
-  let of_yojson s = Obj.magic (_t_of_yojson s)
-  let to_yojson s = _t_to_yojson (Obj.magic s)
+  include SerType.Pierce(PierceSpec)
+end
 
+module UnsignedNat = struct
+  module USNBij = struct
+    type t = NumTok.UnsignedNat.t
+    type _t = string [@@deriving sexp,yojson,hash,compare]
+    let to_t = NumTok.UnsignedNat.of_string
+    let of_t = NumTok.UnsignedNat.to_string
+  end
+  include SerType.Biject(USNBij)
 end
 
 module Signed = struct
 
   type t =
     [%import: NumTok.Signed.t]
-    [@@deriving sexp,yojson]
+    [@@deriving sexp,yojson,hash,compare]
 
 end

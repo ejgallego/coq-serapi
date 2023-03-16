@@ -13,7 +13,15 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-type 'a key = 'a CEphemeron.key
+module EBiject = struct
+  type 'a t = 'a CEphemeron.key
 
-let key_of_sexp f x = CEphemeron.create (f x)
-let sexp_of_key f v = f CEphemeron.(get v)
+  type 'a _t = 'a [@@deriving sexp,yojson,hash,compare]
+
+  let to_t x = CEphemeron.create x
+  let of_t x = CEphemeron.get x
+end
+
+module B = SerType.Biject1(EBiject)
+type 'a key = 'a B.t
+ [@@deriving sexp,yojson,hash,compare]

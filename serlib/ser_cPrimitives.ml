@@ -15,14 +15,16 @@
 
 open Sexplib
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 
 type t =
   [%import: CPrimitives.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type const =
   [%import: CPrimitives.const]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash]
 
 (* XXX: GADTs ... *)
 type 'a prim_type = [%import: 'a CPrimitives.prim_type]
@@ -43,6 +45,9 @@ let prim_type_of_sexp (x : Sexp.t) : 'a prim_type =
 
 type op_or_type = [%import: CPrimitives.op_or_type]
   [@@deriving sexp_of]
+
+let hash_fold_op_or_type st x = hash_fold_string st (Sexp.to_string (sexp_of_op_or_type x))
+let compare_op_or_type x y = compare_string (Sexp.to_string (sexp_of_op_or_type x)) (Sexp.to_string (sexp_of_op_or_type y))
 
 let op_or_type_of_sexp (x : Sexp.t) : op_or_type =
   match x with

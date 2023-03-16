@@ -13,20 +13,8 @@
 (* Status: Experimental                                                 *)
 (************************************************************************)
 
-open Sexplib
-
-(* type work_list = Opaqueproof.work_list
- * val sexp_of_work_list : work_list -> Sexp.t
- * val work_list_of_sexp : Sexp.t -> work_list *)
-
-(* type cooking_info = Opaqueproof.cooking_info
- * val sexp_of_cooking_info : cooking_info -> Sexp.t
- * val cooking_info_of_sexp : Sexp.t -> cooking_info *)
-
 type 'a opaque = 'a Opaqueproof.opaque
-val sexp_of_opaque : ('a -> Sexp.t) -> 'a opaque -> Sexp.t
-val opaque_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a opaque
+  [@@deriving sexp,yojson,hash,compare]
 
 type opaquetab = Opaqueproof.opaquetab
-val sexp_of_opaquetab : opaquetab -> Sexp.t
-val opaquetab_of_sexp : Sexp.t -> opaquetab
+  [@@deriving sexp,yojson,hash,compare]

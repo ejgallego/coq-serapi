@@ -16,8 +16,4 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Sexplib
-
-type recipe = Cooking.recipe
-val recipe_of_sexp : Sexp.t -> recipe
-val sexp_of_recipe : recipe -> Sexp.t
+type recipe = Cooking.recipe [@@deriving sexp,yojson,hash,compare]

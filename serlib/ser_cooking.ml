@@ -18,7 +18,10 @@
 
 module Declarations = Ser_declarations
 module Opaqueproof = Ser_opaqueproof
+module Names = Ser_names
+module Univ = Ser_univ
+module Constr = Ser_constr
 
 type recipe =
   [%import: Cooking.recipe]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]

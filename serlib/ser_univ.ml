@@ -14,6 +14,10 @@
 (************************************************************************)
 
 open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
+let hash_fold_array = hash_fold_array_frozen
 
 module Names = Ser_names
 module Stdlib = Ser_stdlib
@@ -22,7 +26,7 @@ module RawLevel = struct
 
   module UGlobal = struct
     type t = Names.DirPath.t * int
-    [@@deriving sexp, yojson]
+    [@@deriving sexp, yojson, hash,compare]
   end
 
   type t =
@@ -31,47 +35,35 @@ module RawLevel = struct
   | Set
   | Level of UGlobal.t
   | Var of int
-  [@@deriving sexp, yojson]
-
-end
-
-module Level_ = struct
-
-  type _t =
-    { hash : int
-    ; data : RawLevel.t
-    }
-  [@@deriving sexp, yojson]
-
-  type t = Univ.Level.t
-
-  let t_of_sexp sexp  = Obj.magic (_t_of_sexp sexp)
-  let sexp_of_t level = sexp_of__t (Obj.magic level)
-
-  let of_yojson json  =
-    Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
-  let to_yojson level = _t_to_yojson (Obj.magic level)
+  [@@deriving sexp, yojson, hash,compare]
 
 end
 
 module Level = struct
-  include Level_
-  module Set = Ser_cSet.MakeJ(Univ.Level.Set)(Level_)
+  module PierceSpec = struct
+    type t = Univ.Level.t
+    type _t =
+      { hash : int
+      ; data : RawLevel.t
+      } [@@deriving sexp, yojson, hash,compare]
+  end
+
+  module PierceImp = SerType.Pierce(PierceSpec)
+  include PierceImp
+  module Set = Ser_cSet.Make(Univ.Level.Set)(PierceImp)
 end
 
 (* XXX: Think what to do with this  *)
 module Universe = struct
-  type t = [%import: Univ.Universe.t]
 
-  type _t = (Level.t * int) list
-  [@@deriving sexp, yojson]
+  module PierceSpec = struct
 
-  let t_of_sexp sexp     = Obj.magic (_t_of_sexp sexp)
-  let sexp_of_t universe = sexp_of__t (Obj.magic universe)
+    type t = Univ.Universe.t
+    type _t = (Level.t * int) list
+    [@@deriving sexp,yojson,hash,compare]
+  end
 
-  let of_yojson json  =
-    Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= Obj.magic)
-  let to_yojson level = _t_to_yojson (Obj.magic level)
+  include SerType.Pierce(PierceSpec)
 end
 
 (*************************************************************************)
@@ -80,7 +72,7 @@ module Variance = struct
 
   type t =
     [%import: Univ.Variance.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 end
 
@@ -90,7 +82,7 @@ type t =
   [%import: Univ.Instance.t]
 
 type _t = Instance of Level.t array
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash, compare]
 
 let _instance_put instance            = Instance (Univ.Instance.to_array instance)
 let _instance_get (Instance instance) = Univ.Instance.of_array instance
@@ -102,61 +94,68 @@ let of_yojson json  =
   Ppx_deriving_yojson_runtime.(_t_of_yojson json >|= _instance_get)
 let to_yojson level = _t_to_yojson (_instance_put level)
 
+let hash i = hash__t (Instance (Univ.Instance.to_array i))
+let hash_fold_t st i = hash_fold__t st (Instance (Univ.Instance.to_array i))
+let compare i1 i2 = compare__t (Instance (Univ.Instance.to_array i1)) (Instance (Univ.Instance.to_array i2))
+
 end
 
 type constraint_type =
   [%import: Univ.constraint_type]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type univ_constraint =
   [%import: Univ.univ_constraint]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
-module Constraints = Ser_cSet.MakeJ(Univ.Constraints)(struct
+module Constraints = Ser_cSet.Make(Univ.Constraints)(struct
+    type t = univ_constraint
     let t_of_sexp = univ_constraint_of_sexp
     let sexp_of_t = sexp_of_univ_constraint
     let of_yojson = univ_constraint_of_yojson
     let to_yojson = univ_constraint_to_yojson
+    let hash = hash_univ_constraint
+    let hash_fold_t = hash_fold_univ_constraint
+    let compare = compare_univ_constraint
   end)
 
 type 'a constrained =
   [%import: 'a Univ.constrained]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 module UContext = struct
 
   module I = struct
-    type t = Names.Name.t array * Instance.t constrained
-    [@@deriving sexp,yojson]
+    type t = Univ.UContext.t
+    type _t = Names.Name.t array * Instance.t constrained
+    [@@deriving sexp,yojson,hash,compare]
 
-    let to_uc (un, cs) = Univ.UContext.make un cs
-    let from_uc uc = Univ.UContext.(names uc, (instance uc, constraints uc))
-
+    let to_t (un, cs) = Univ.UContext.make un cs
+    let of_t uc = Univ.UContext.(names uc, (instance uc, constraints uc))
   end
 
-  type t = Univ.UContext.t
-
-  let t_of_sexp s = I.t_of_sexp s |> I.to_uc
-  let sexp_of_t t = I.from_uc t |> I.sexp_of_t
+  include SerType.Biject(I)
 
 end
 
 module AbstractContext = struct
 
-  type _t = Names.Name.t array constrained
-  [@@deriving sexp]
-  type t = Univ.AbstractContext.t
+  let hash_fold_array = hash_fold_array_frozen
+  module ACPierceDef = struct
 
-  (* XXX: Opaque, so check they are the same *)
-  let t_of_sexp x = Obj.magic (_t_of_sexp x)
-  let sexp_of_t c = sexp_of__t (Obj.magic c)
+    type t = Univ.AbstractContext.t
+    type _t = Names.Name.t array constrained
+    [@@deriving sexp,yojson,hash,compare]
+  end
+
+  include SerType.Pierce(ACPierceDef)
 
 end
 
 module ContextSet = struct
   type t =
     [%import: Univ.ContextSet.t]
-    [@@deriving sexp, yojson]
+    [@@deriving sexp, yojson, hash, compare]
 end
 
 type 'a in_universe_context =
@@ -169,7 +168,7 @@ type 'a in_universe_context_set =
 
 type 'a puniverses =
   [%import: 'a Univ.puniverses]
-  [@@deriving sexp, yojson]
+  [@@deriving sexp, yojson, hash, compare]
 
 type explanation =
   [%import: Univ.explanation]

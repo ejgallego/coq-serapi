@@ -13,17 +13,19 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 type level =
   [%import: Conv_oracle.level]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
-(* XXX: Fixme *)
-type oracle =
-  [%import: Conv_oracle.oracle]
+module OpaqueOracle = struct
+  type t = Conv_oracle.oracle
+  let name = "Conv_oracle.oracle"
+end
 
-let sexp_of_oracle _ =
-  Sexplib.Sexp.(Atom "[Conv_oracle.oracle: Abstract]")
-
-let oracle_of_sexp _ = Conv_oracle.empty
+module B = SerType.Opaque(OpaqueOracle)
+type oracle = B.t
+ [@@deriving sexp,yojson,hash,compare]

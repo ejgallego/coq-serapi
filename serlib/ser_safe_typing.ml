@@ -16,6 +16,8 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module ONames = Names
@@ -31,34 +33,32 @@ module Univ = Ser_univ
 type certificate = {
   certif_struc : Declarations.structure_body;
   certif_univs : Univ.ContextSet.t;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson,hash,compare]
 
 type side_effect = {
   from_env : certificate CEphemeron.key;
   seff_constant : Names.Constant.t;
   seff_body : Declarations.constant_body;
-} [@@deriving sexp]
+} [@@deriving sexp,yojson,hash,compare]
 
 module SeffOrd = struct
   type t = side_effect
-  let compare e1 e2 = ONames.Constant.CanOrd.compare e1.seff_constant e2.seff_constant
-  let t_of_sexp = side_effect_of_sexp
-  let sexp_of_t = sexp_of_side_effect
+  [@@deriving sexp,yojson,hash,compare]
 end
 
 module SeffSet = Set.Make(SeffOrd)
 module SerSeffSet = Ser_cSet.Make(SeffSet)(SeffOrd)
 
-type _t = { seff : side_effect list; elts : SerSeffSet.t }
- [@@deriving sexp]
+module PC = struct
+  (* t  private_constants *)
+  type t = Safe_typing.private_constants
+  type _t = { seff : side_effect list; elts : SerSeffSet.t }
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-type _private_constants = _t
- [@@deriving sexp]
-
-type private_constants = Safe_typing.private_constants
-
-let sexp_of_private_constants x = sexp_of__private_constants (Obj.magic x)
-let private_constants_of_sexp x = Obj.magic (_private_constants_of_sexp x)
+module B_ = SerType.Pierce(PC)
+type private_constants = B_.t
+ [@@deriving sexp,yojson,hash,compare]
 
 (*
 type 'a effect_entry =
@@ -70,9 +70,9 @@ let _effect_entry_of_sexp (_f : Sexp.t -> 'a) (x : Sexp.t) : 'a effect_entry =
   let open Sexp in
   match x with
   | Atom "PureEntry" ->
-    Obj.magic PureEntry
+    Obj__magic PureEntry
   | Atom "EffectEntry" ->
-    Obj.magic EffectEntry
+    Obj__magic EffectEntry
   | _ ->
     Sexplib.Conv_error.no_variant_match ()
 *)
