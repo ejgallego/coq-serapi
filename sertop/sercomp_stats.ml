@@ -41,29 +41,29 @@ let do_stats =
   in
   match expr with
   (* Definition *)
-  | VernacDefinition (_,_,_)
+  | VernacSynPure (VernacDefinition (_,_,_)
   | VernacFixpoint   (_,_)
   | VernacInductive  (_,_)
-  | VernacCoFixpoint (_,_)
-  | VernacNotation   (_,_) ->
+  | VernacCoFixpoint (_,_))
+  | VernacSynterp (VernacNotation (_,_)) ->
     stats.specs <- incS ?loc stats.specs
 
   (* Proofs *)
-  | VernacStartTheoremProof (_,_) ->
+  | VernacSynPure (VernacStartTheoremProof (_,_)) ->
     stats.specs <- incS ?loc stats.specs;
     Option.iter (fun loc -> proof_loc := Some Loc.(loc.line_nb_last)) loc
 
-  | VernacProof (_,_)               -> ()
+  | VernacSynPure (VernacProof (_,_)) -> ()
   (* XXX: Should we use the +1 rule here, what happens for proofs:
      Proof. exact: L. Qed.
    *)
-  | VernacEndProof _                -> Option.iter (fun ll -> Option.iter (fun loc ->
+  | VernacSynPure (VernacEndProof _) -> Option.iter (fun ll -> Option.iter (fun loc ->
                                          stats.proofs <- stats.proofs + (Loc.(loc.line_nb) - ll) + 1
                                        ) loc ) !proof_loc;
                                        proof_loc := None
   (* This is tricky.. *)
   (* This is Ltac := ... *)
-  | VernacExtend (("VernacDeclareTacticDefinition",_),_)
+  | VernacSynterp (VernacExtend (("VernacDeclareTacticDefinition",_),_))
                                     -> stats.proofs <- incS ?loc stats.proofs;
 
   | _                               -> if Option.is_empty !proof_loc then stats.misc <- incS ?loc stats.misc

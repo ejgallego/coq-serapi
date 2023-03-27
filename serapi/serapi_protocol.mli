@@ -238,7 +238,7 @@ type coq_object =
 
      See https://github.com/coq/coq/issues/12413 for updates on
      improved support *)
-  | CoqLibObjects of { library_segment : Lib.library_segment; path_prefix : Nametab.object_prefix }
+  | CoqLibObjects of { library_segment : Summary.Interp.frozen Lib.library_segment; path_prefix : Nametab.object_prefix }
   (** Meta-logical Objects in Coq's library / module system *)
 
 (** There are some Coq types that cannot be seralizaled properly, in

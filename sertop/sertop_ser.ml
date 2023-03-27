@@ -118,6 +118,8 @@ module Vernacexpr   = Ser_vernacexpr
 module Declarations = Ser_declarations
 (* module Richpp       = Ser_richpp *)
 
+module Summary = Ser_summary
+
 module Serapi = struct
 module Serapi_goals = struct
 

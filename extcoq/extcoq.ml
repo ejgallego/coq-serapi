@@ -16,7 +16,7 @@
 (* Functions missing from Coq's API, to be upstreamed! *)
 
 let context_of_st m = match m with
-  | Stm.Valid (Some { Vernacstate.lemmas = Some pstate; _ } ) ->
+  | Stm.Valid (Some { Vernacstate.interp = { lemmas = Some pstate; _ } ; _} ) ->
     Vernacstate.LemmaStack.with_top pstate
       ~f:Declare.Proof.get_current_context
   | _ ->

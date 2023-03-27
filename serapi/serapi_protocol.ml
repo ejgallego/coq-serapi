@@ -138,7 +138,7 @@ type coq_object =
   | CoqProof     of EConstr.constr list
   | CoqAssumptions of Serapi_assumptions.t
   | CoqComments of ((int * int) * string) list list
-  | CoqLibObjects of { library_segment : Lib.library_segment; path_prefix : Nametab.object_prefix }
+  | CoqLibObjects of { library_segment : Summary.Interp.frozen Lib.library_segment; path_prefix : Nametab.object_prefix }
   (** Meta-logical Objects in Coq's library / module system *)
 
 (******************************************************************************)
@@ -644,12 +644,12 @@ let doc_id = ref 0
 
 (* XXX: Needs to take into account possibly local proof state *)
 let proof_state_of_st m = match m with
-  | Stm.Valid (Some { Vernacstate.lemmas; _ } ) ->
+  | Stm.Valid (Some { Vernacstate.interp = { lemmas; _ }; _} ) ->
     lemmas
   | _ -> None
 
 let parsing_state_of_st m = match m with
-  | Stm.Valid (Some { Vernacstate.parsing; _ } ) ->
+  | Stm.Valid (Some { Vernacstate.synterp = { parsing; _ }; _} ) ->
     Some parsing
   | _ -> None
 

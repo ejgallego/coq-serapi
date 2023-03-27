@@ -116,7 +116,7 @@ let driver debug set_impredicative_set disallow_sprop printer async async_worker
   let in_chan = open_in in_file in
   let doc, _sid = input_doc ~pp ~in_file ~in_chan ~doc ~sid in
   let pstate = match Stm.state_of_id ~doc sid with
-    | Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
+    | Valid (Some { Vernacstate.interp = { lemmas; _ }; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~doc ~pstate in

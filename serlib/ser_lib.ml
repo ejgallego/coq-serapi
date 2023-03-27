@@ -30,10 +30,10 @@ type export =
   [%import: Lib.export]
   [@@deriving sexp]
 
-type node =
-  [%import: Lib.node]
+type 'a node =
+  [%import: 'a Lib.node]
   [@@deriving sexp]
 
-type library_segment =
-  [%import: Lib.library_segment]
+type 'a library_segment =
+  [%import: 'a Lib.library_segment]
   [@@deriving sexp]
