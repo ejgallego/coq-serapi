@@ -38,7 +38,7 @@ type 'a ser_goals =
 (** XXX: Do we need to perform evar normalization? *)
 
 module CDC = Context.Compacted.Declaration
-type cdcl = Constr.compacted_declaration
+type cdcl = EConstr.compacted_declaration
 
 let to_tuple ppx : cdcl -> (Names.Id.t list * 'pc option * 'pc) =
   let open CDC in function
@@ -46,7 +46,7 @@ let to_tuple ppx : cdcl -> (Names.Id.t list * 'pc option * 'pc) =
     | LocalDef(idl,tdef,tm) -> (List.map Context.binder_name idl, Some (ppx tdef), ppx tm)
 
 (** gets a hypothesis *)
-let get_hyp (ppx : Constr.t -> 'pc)
+let get_hyp (ppx : EConstr.t -> 'pc)
     (_sigma : Evd.evar_map)
     (hdecl : cdcl) : (Names.Id.t list * 'pc option * 'pc) =
   to_tuple ppx hdecl
@@ -74,9 +74,10 @@ let process_goal_gen ppx sigma g : 'a reified_goal =
   let EvarInfo evi = Evd.find sigma g in
   let env = Evd.evar_filtered_env env evi in
   (* why is compaction neccesary... ? [eg for better display] *)
-  let ctx       = Termops.compact_named_context (Environ.named_context env) in
+  let ctx       = Termops.compact_named_context sigma (EConstr.named_context env) in
   let ppx       = ppx env sigma                                             in
-  let hyp       = List.map (get_hyp ppx sigma) ctx                          in
+  let eppx c    = ppx (EConstr.Unsafe.to_constr c)                          in
+  let hyp       = List.map (get_hyp eppx sigma) ctx                         in
   let info      = build_info sigma g                                        in
   { info; ty = get_goal_type ppx env sigma g; hyp }
 
