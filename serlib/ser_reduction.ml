@@ -15,5 +15,5 @@
 (************************************************************************)
 
 type conv_pb =
-  [%import: Reduction.conv_pb]
+  [%import: Conversion.conv_pb]
   [@@deriving sexp]
