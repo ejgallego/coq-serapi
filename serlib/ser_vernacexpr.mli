@@ -281,16 +281,28 @@ type notation_enable_modifier =
   [%import: Vernacexpr.notation_enable_modifier]
   [@@deriving sexp, yojson]
 
-type vernac_expr =
-  [%import: Vernacexpr.vernac_expr]
+type synterp_vernac_expr =
+  [%import: Vernacexpr.synterp_vernac_expr]
+  [@@deriving sexp,yojson]
+
+type synpure_vernac_expr =
+  [%import: Vernacexpr.synpure_vernac_expr]
+  [@@deriving sexp,yojson]
+
+type 'a vernac_expr_gen =
+  [%import: 'a Vernacexpr.vernac_expr_gen]
   [@@deriving sexp, yojson]
 
 type control_flag =
   [%import: Vernacexpr.control_flag]
   [@@deriving sexp, yojson]
 
-type vernac_control_r =
-  [%import: Vernacexpr.vernac_control_r]
+type ('a, 'b) vernac_control_gen_r =
+  [%import: ('a, 'b) Vernacexpr.vernac_control_gen_r]
+  [@@deriving sexp,yojson]
+
+type 'a vernac_control_gen =
+  [%import: 'a Vernacexpr.vernac_control_gen]
   [@@deriving sexp,yojson]
 
 type vernac_control =

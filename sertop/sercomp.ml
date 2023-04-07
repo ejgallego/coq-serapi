@@ -127,7 +127,7 @@ let driver input mode debug set_impredicative_set disallow_sprop indices_matter 
   let in_chan = open_in in_file in
   let doc, _sid = input_doc ~input ~in_file ~in_chan ~process ~doc ~sid in
   let pstate = match Stm.state_of_id ~doc sid with
-    | Valid (Some { Vernacstate.lemmas; _ }) -> lemmas
+    | Valid (Some { Vernacstate.interp = { lemmas ; _ }; _ }) -> lemmas
     | _ -> None
   in
   let () = close_document ~pp ~mode ~doc ~in_file ~pstate in
