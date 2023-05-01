@@ -16,7 +16,7 @@
 
 open Sexplib
 
-type conv_pb = Reduction.conv_pb
+type conv_pb = Conversion.conv_pb
 
 val conv_pb_of_sexp : Sexp.t -> conv_pb
 val sexp_of_conv_pb : conv_pb -> Sexp.t
