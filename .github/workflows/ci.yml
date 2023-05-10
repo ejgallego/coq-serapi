@@ -32,7 +32,7 @@ jobs:
       matrix:
         ocaml-version: [4.07.1, 4.08.1, 4.09.1, 4.10.1, 4.11.1, 4.12.1, 4.13.1]
         test-target: [test]
-        extra-opam: ["coq.8.15.0 coq-mathcomp-ssreflect"]
+        extra-opam: ["coq.8.15.0 coq-mathcomp-ssreflect.1.17.0"]
         include:
         - ocaml-version: 4.07.1+32bit
           test-target: js-dune
