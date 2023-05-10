@@ -1,3 +1,8 @@
+## Version 0.15.4:
+
+ - [serlib] Fix crash when serializing projections (@ejgallego, #332,
+   reported by @rwhender, fixes #331).
+
 ## Version 0.15.3:
 
  - [serlib] Backport serlib improvements from 0.16.0:

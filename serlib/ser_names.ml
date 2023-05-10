@@ -231,7 +231,6 @@ module Projection = struct
       type t = Names.Projection.Repr.t
       type _t =
         { proj_ind : inductive
-        ; proj_relevant : bool
         ; proj_npars : int
         ; proj_arg : int
         ; proj_name : Label.t
