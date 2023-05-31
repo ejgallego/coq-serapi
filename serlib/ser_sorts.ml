@@ -37,9 +37,9 @@ module BijectQVar = struct
   open Ppx_hash_lib.Std.Hash.Builtin
   open Ppx_compare_lib.Builtin
   type t = Sorts.QVar.t
-  type _t = int [@@deriving sexp,yojson,hash,compare]
+  type _t = string * int [@@deriving sexp,yojson,hash,compare]
   let of_t = Sorts.QVar.repr
-  let to_t = Sorts.QVar.make
+  let to_t (s,i) = Sorts.QVar.make s i
 end
 
 module QVar = SerType.Biject(BijectQVar)
