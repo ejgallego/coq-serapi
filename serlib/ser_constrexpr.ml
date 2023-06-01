@@ -87,6 +87,10 @@ type notation_with_optional_scope =
   [%import: Constrexpr.notation_with_optional_scope]
   [@@deriving sexp,yojson,hash,compare]
 
+type side =
+  [%import: Constrexpr.side]
+  [@@deriving sexp,yojson,hash,compare]
+
 type notation_entry =
   [%import: Constrexpr.notation_entry]
   [@@deriving sexp,yojson,hash,compare]

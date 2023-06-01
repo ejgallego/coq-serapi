@@ -13,6 +13,17 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std
+open Ppx_compare_lib.Builtin
+open Sexplib.Conv
+open Hash.Builtin
+
+module Constrexpr = Ser_constrexpr
+
+type level =
+  [%import: Notationextern.level]
+  [@@deriving sexp,yojson,hash,compare]
+
 type notation_use =
   [%import: Notationextern.notation_use]
   [@@deriving sexp,yojson,hash,compare]

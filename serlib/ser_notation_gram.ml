@@ -21,6 +21,7 @@ module Tok           = Ser_tok
 module Extend        = Ser_extend
 module Gramlib       = Ser_gramlib
 module Notation      = Ser_notation
+module Notationextern = Ser_notationextern
 
 (* type precedence =
  *   [%import: Notation_gram.precedence]
