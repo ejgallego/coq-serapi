@@ -20,6 +20,7 @@ open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 module Libnames = Ser_libnames
+module Deprecation = Ser_deprecation
 
 type option_locality =
   [%import: Goptions.option_locality]
