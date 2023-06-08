@@ -44,16 +44,20 @@ end
 
 let ser_wit_ltac2_constr = let module M = Ser_genarg.GS(WLC2) in M.genser
 
+type var_quotation_kind =
+  [%import: Ltac2_plugin.Tac2env.var_quotation_kind]
+  [@@deriving sexp,yojson,hash,compare]
+
 module WLQ2 = struct
-  type raw = Tac2expr.uid Loc.located
+  type raw = Names.lident option * Names.lident
   [@@deriving sexp,hash,compare]
-  type glb = Tac2expr.uid
+  type glb = var_quotation_kind * Names.Id.t
   [@@deriving sexp,hash,compare]
   type top = Util.Empty.t
   [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_ltac2_quotation = let module M = Ser_genarg.GS(WLQ2) in M.genser
+let ser_wit_ltac2_var_quotation = let module M = Ser_genarg.GS(WLQ2) in M.genser
 
 module WLV2 = struct
   type raw = Util.Empty.t
@@ -70,7 +74,7 @@ let register () =
   Ser_genarg.register_genser Tac2env.wit_ltac2in1 ser_wit_ltac2in1;
   Ser_genarg.register_genser Tac2env.wit_ltac2in1_val ser_wit_ltac2in1_val;
   Ser_genarg.register_genser Tac2env.wit_ltac2_constr ser_wit_ltac2_constr;
-  Ser_genarg.register_genser Tac2env.wit_ltac2_quotation ser_wit_ltac2_quotation;
+  Ser_genarg.register_genser Tac2env.wit_ltac2_var_quotation ser_wit_ltac2_var_quotation;
   Ser_genarg.register_genser Tac2env.wit_ltac2_val ser_wit_ltac2_val;
   ()
 
