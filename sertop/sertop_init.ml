@@ -92,12 +92,11 @@ let coq_init opts out_fmt =
   end;
 
   let load_plugin = Sertop_loader.plugin_handler opts.plugin_load in
-  let load_module = Dynlink.loadfile in
 
   (* Custom toplevel is used for bytecode-to-js dynlink  *)
   let ser_mltop : Mltop.toplevel = let open Mltop in
     { load_plugin
-    ; load_module
+    ; load_module = Dynlink.loadfile
     (* We ignore all the other operations for now. *)
     ; add_dir = (fun _ -> ())
     ; ml_loop = (fun _ -> ())
