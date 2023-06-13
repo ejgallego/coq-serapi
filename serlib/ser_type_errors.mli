@@ -19,6 +19,17 @@ type guard_error = Type_errors.guard_error
 val guard_error_of_sexp : Sexp.t -> guard_error
 val sexp_of_guard_error : guard_error -> Sexp.t
 
+type ('c,'t) pcant_apply_bad_type = ('c, 't) Type_errors.pcant_apply_bad_type
+
+val pcant_apply_bad_type_of_sexp :
+  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) ->
+  Sexp.t -> ('constr, 'types) pcant_apply_bad_type
+
+val sexp_of_pcant_apply_bad_type :
+  ('constr -> Sexp.t) ->
+  ('types -> Sexp.t) ->
+  ('constr, 'types) pcant_apply_bad_type -> Sexp.t
+
 type ('c, 't) ptype_error  = ('c, 't) Type_errors.ptype_error
 val ptype_error_of_sexp :
   (Sexp.t -> 'constr) -> (Sexp.t -> 'types) ->

@@ -41,6 +41,10 @@ type guard_error =
   [%import: Type_errors.guard_error]
   [@@deriving sexp]
 
+type ('constr, 'types) pcant_apply_bad_type =
+  [%import: ('constr, 'types) Type_errors.pcant_apply_bad_type]
+  [@@deriving sexp]
+
 type ('constr, 'types) ptype_error =
   [%import: ('constr, 'types) Type_errors.ptype_error]
   [@@deriving sexp]
