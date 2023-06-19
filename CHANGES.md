@@ -1,3 +1,7 @@
+## Version 0.17.1:
+
+ - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #)
+
 ## Version 0.17.0:
 
  - [serlib] (!) Serialization format of generic arguments has changed

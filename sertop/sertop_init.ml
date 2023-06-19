@@ -164,7 +164,11 @@ let process_stm_flags opts =
 
     (* The -no-glob for workers seems broken recently *)
     AsyncTaskQueue.async_proofs_flags_for_workers := [];
-    CoqworkmgrApi.(init High);
+
+    (* This is not needed as we won't run workers from the cmdline
+       "build system" *)
+    (* CoqworkmgrApi.(init High); *)
+
     (* Uh! XXXX *)
     for i = 0 to Array.length Sys.argv - 1 do
       Array.set Sys.argv i "-m"
