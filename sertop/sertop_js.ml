@@ -113,7 +113,7 @@ let _ =
       let all_pkgs    = List.(concat @@ map (fun b -> b.pkgs) bundles)   in
       let ml_path = []                                              in
       let vo_path = List.map pkg_to_bb all_pkgs                     in
-      let injections = [Coqargs.RequireInjection ("Coq.Init.Prelude", None, Some Lib.Import)] in
+      let injections = [Coqargs.RequireInjection {lib="Coq.Init.Prelude"; prefix=None; export=Some Lib.Import;}] in
       let debug       = false                                            in
       let allow_sprop = true                                             in
       let set_impredicative_set = false                                  in
