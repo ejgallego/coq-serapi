@@ -37,7 +37,7 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: [coq.dev coq-mathcomp-ssreflect.dev]
+        extra-opam: [coq.dev coq-mathcomp-ssreflect.1.dev]
         include:
         - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
           test-target: js-dune
@@ -53,15 +53,16 @@ jobs:
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
       COQ_BRANCH: "master"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v2
       - name: Install apt dependencies
         run: |
+          sudo apt-get install aptitude
           sudo dpkg --add-architecture i386
-          sudo apt-get -o Acquire::Retries=30 update -q
-          sudo apt-get -o Acquire::Retries=30 install gcc-multilib libgmp-dev:i386 -y --allow-unauthenticated
+          sudo aptitude -o Acquire::Retries=30 update -q
+          sudo aptitude --log-resolver -o Acquire::Retries=30 install gcc-multilib libgmp-dev:i386 -y
       - name: Set up OCaml ${{ matrix.ocaml-compiler }}
         uses: avsm/setup-ocaml@v2
         with:
@@ -99,7 +100,7 @@ jobs:
           cd "$HOME"
           # Install math-comp using Coq from git
           PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
-          git clone --depth=3 -b master https://github.com/math-comp/math-comp.git
+          git clone --depth=3 -b mathcomp-1 https://github.com/math-comp/math-comp.git
           make -C math-comp/mathcomp/ssreflect
           make -C math-comp/mathcomp/ssreflect install
       - name: Extra OPAM Setup (Coq, js_of_ocaml)
