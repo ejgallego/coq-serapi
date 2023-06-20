@@ -1,6 +1,8 @@
 ## Version 0.17.1:
 
- - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #)
+ - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #340)
+ - [serapi] New query `SecVars` that will print section variables used
+            by a constant (#342, fixes #339, reported by @HazardousPeach)
 
 ## Version 0.17.0:
 

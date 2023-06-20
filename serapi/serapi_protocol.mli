@@ -240,6 +240,8 @@ type coq_object =
      improved support *)
   | CoqLibObjects of { library_segment : Summary.Interp.frozen Lib.library_segment; path_prefix : Nametab.object_prefix }
   (** Meta-logical Objects in Coq's library / module system *)
+  | CoqNamedContext of Constr.named_context
+  (** Named context such as the one for section variables *)
 
 (** There are some Coq types that cannot be seralizaled properly, in
    this case, the types can be "opaque", or we will perform some
@@ -374,6 +376,8 @@ type query_cmd =
   (** Get all comments of a document *)
   | Objects
   (** Get Coq meta-logical module objects *)
+  | SecVars of string
+  (** Get section variables that a definition is using  *)
 
 module QueryUtil : sig
   val info_of_id : Environ.env -> string -> coq_object list * coq_object list

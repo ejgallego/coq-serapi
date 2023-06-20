@@ -140,6 +140,8 @@ type coq_object =
   | CoqComments of ((int * int) * string) list list
   | CoqLibObjects of { library_segment : Summary.Interp.frozen Lib.library_segment; path_prefix : Nametab.object_prefix }
   (** Meta-logical Objects in Coq's library / module system *)
+  | CoqNamedContext of Constr.named_context
+  (** Named context such as the one for section variables *)
 
 (******************************************************************************)
 (* Printing Sub-Protocol                                                      *)
@@ -242,6 +244,7 @@ let gen_pp_obj env sigma (obj : coq_object) : Pp.t =
   (* | CoqGlob   g -> pr (Printer.pr_glob_constr g) *)
   | CoqComments _ -> Pp.str "FIXME comments"
   | CoqLibObjects _ -> Pp.str "FIXME libobjects"
+  | CoqNamedContext _ -> Pp.str "FIXME namedcontext"
 
 let str_pp_obj env sigma fmt (obj : coq_object)  =
   Format.fprintf fmt "%a" Pp.pp_with (gen_pp_obj env sigma obj)
@@ -389,6 +392,7 @@ let prefix_pred (prefix : string) (obj : coq_object) : bool =
   | CoqAssumptions _-> true
   | CoqComments _   -> true
   | CoqLibObjects _   -> true
+  | CoqNamedContext _ -> true
 
 let gen_pred (p : query_pred) (obj : coq_object) : bool = match p with
   | Prefix s -> prefix_pred s obj
@@ -428,6 +432,8 @@ type query_cmd =
   (** Get all comments of a document *)
   | Objects
   (** Get Coq meta-logical module objects *)
+  | SecVars of string
+  (** Get section variables that a definition is using  *)
 
 module QueryUtil = struct
 
@@ -551,6 +557,22 @@ module QueryUtil = struct
       | ConstructRef  cr -> info_of_constructor env cr
     with _ -> [],[]
 
+  let secvars id =
+    let qid = Libnames.qualid_of_string id in
+    try
+      let lref = Nametab.locate qid in
+      let open Names.GlobRef in
+      match lref with
+      | VarRef _ -> []
+      | ConstRef c ->
+        let bd = Global.lookup_constant c in
+        [ CoqNamedContext bd.const_hyps ]
+      | IndRef (mind,_)
+      | ConstructRef ((mind,_),_) ->
+        let mb = Global.lookup_mind mind in
+        [ CoqNamedContext mb.mind_hyps ]
+    with _ -> []
+
   let assumptions env id =
 
     let qid = Libnames.qualid_of_string id in
@@ -624,6 +646,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
     List.map (fun x -> CoqGlobRefExt x) (Nametab.completion_canditates (Libnames.qualid_of_string prefix))
   | Comments -> [CoqComments (List.rev !QueryUtil._comments)]
   | Objects -> [QueryUtil.libobjects ()]
+  | SecVars id -> QueryUtil.secvars id
 
 let obj_filter preds objs =
   List.(fold_left (fun obj p -> filter (gen_pred p) obj) objs preds)
