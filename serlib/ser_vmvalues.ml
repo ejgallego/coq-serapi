@@ -18,6 +18,7 @@ open Sexplib.Conv
 open Ppx_hash_lib.Std.Hash.Builtin
 open Ppx_compare_lib.Builtin
 
+module Evar = Ser_evar
 module Sorts = Ser_sorts
 module Names = Ser_names
 module Univ  = Ser_univ
