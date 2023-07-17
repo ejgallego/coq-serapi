@@ -21,3 +21,6 @@ type notation_binder_kind = Notation_term.notation_binder_kind
 
 type notation_var_internalization_type = Notation_term.notation_var_internalization_type
   [@@deriving sexp,yojson,hash,compare]
+
+type notation_var_binders = Notation_term.notation_var_binders
+  [@@deriving sexp,yojson,hash,compare]
