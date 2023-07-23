@@ -101,15 +101,17 @@ module T2ESpec = struct
     | CTacCst of ltac_constructor or_tuple or_relid
     | CTacFun of raw_patexpr list * raw_tacexpr
     | CTacApp of raw_tacexpr * raw_tacexpr list
+    | CTacSyn of (raw_patexpr * raw_tacexpr) list * Names.KerName.t
     | CTacLet of rec_flag * (raw_patexpr * raw_tacexpr) list * raw_tacexpr
     | CTacCnv of raw_tacexpr * raw_typexpr
     | CTacSeq of raw_tacexpr * raw_tacexpr
     | CTacIft of raw_tacexpr * raw_tacexpr * raw_tacexpr
     | CTacCse of raw_tacexpr * raw_taccase list
-    | CTacRec of raw_recexpr
+    | CTacRec of raw_tacexpr option * raw_recexpr
     | CTacPrj of raw_tacexpr * ltac_projection or_relid
     | CTacSet of raw_tacexpr * ltac_projection or_relid * raw_tacexpr
     | CTacExt of int * Obj.t
+
   and raw_tacexpr = _t CAst.t
   and raw_taccase =
   [%import: Ltac2_plugin.Tac2expr.raw_taccase]
@@ -139,6 +141,18 @@ type strexpr =
   [%import: Ltac2_plugin.Tac2expr.strexpr]
   [@@deriving sexp,yojson,hash,compare]
 
+type ctor_indx =
+  [%import: Ltac2_plugin.Tac2expr.ctor_indx]
+  [@@deriving sexp,yojson,hash,compare]
+
+type ctor_data_for_patterns =
+  [%import: Ltac2_plugin.Tac2expr.ctor_data_for_patterns]
+  [@@deriving sexp,yojson,hash,compare]
+
+type glb_pat =
+  [%import: Ltac2_plugin.Tac2expr.glb_pat]
+  [@@deriving sexp,yojson,hash,compare]
+
 type case_info =
   [%import: Ltac2_plugin.Tac2expr.case_info]
   [@@deriving sexp,yojson,hash,compare]
@@ -163,8 +177,9 @@ module GT2ESpec = struct
     | GTacSet of type_constant * _t * int * _t
     | GTacOpn of ltac_constructor * _t list
     | GTacWth of _t open_match
+    | GTacFullMatch of _t * (glb_pat * _t) list
     | GTacExt of int * Obj.t
-    | GTacPrm of ml_tactic_name * _t list
+    | GTacPrm of ml_tactic_name
   [@@deriving sexp,yojson,hash,compare]
 
 end
