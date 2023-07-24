@@ -29,8 +29,15 @@ let ref_of_yojson f x = Result.map (fun x -> ref x) (f x)
 let hash_fold_ref = hash_fold_ref_frozen
 let compare_ref = compare_ref
 
+let (==) = Stdlib.(==)
+
 module Lazy = struct
   type 'a t = 'a lazy_t
+  [@@deriving sexp]
+end
+
+module List = struct
+  type 'a t = 'a list
   [@@deriving sexp]
 end
 
