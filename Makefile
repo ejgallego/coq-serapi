@@ -2,7 +2,7 @@
 
 # Leave empty to use OPAM-installed Coq
 SERAPI_COQ_HOME ?=
-# SERAPI_COQ_HOME=/home/egallego/external/coq-master/_build/install/default/lib/
+# SERAPI_COQ_HOME=/home/egallego/external/coq-v8.18/_build/install/default/lib/
 
 ifneq ($SERAPI_COQ_HOME,)
   export OCAMLPATH := $(SERAPI_COQ_HOME):$(OCAMLPATH)
