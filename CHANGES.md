@@ -1,6 +1,8 @@
 ## Version 0.17.1:
 
- - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #)
+ - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #340)
+ - [serlib] Fix ltac2 plugin wrong piercing due to missing
+   constructor (@ejgallego, reported by @quarkcool, #).
 
 ## Version 0.17.0:
 
