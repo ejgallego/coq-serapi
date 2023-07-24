@@ -1,3 +1,9 @@
+## Version 0.17.1:
+
+ - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #340)
+ - [serlib] Compat with Jane Street libraries >= v0.16.0 (@ejgallego,
+            #351)
+
 ## Version 0.17.0:
 
  - [serlib] (!) Serialization format of generic arguments has changed
