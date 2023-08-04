@@ -107,6 +107,10 @@ type notation_entry_level =
   [%import: Constrexpr.notation_entry_level]
   [@@deriving sexp,yojson,hash,compare]
 
+type notation_entry_relative_level =
+  [%import: Constrexpr.notation_entry_relative_level]
+  [@@deriving sexp,yojson,hash,compare]
+
 type notation_key =
   [%import: Constrexpr.notation_key]
   [@@deriving sexp,yojson,hash,compare]
