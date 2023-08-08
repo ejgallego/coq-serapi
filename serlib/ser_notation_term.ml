@@ -51,3 +51,6 @@ type notation_var_internalization_type =
   [%import: Notation_term.notation_var_internalization_type]
   [@@deriving sexp,yojson,hash,compare]
 
+type notation_var_binders =
+  [%import: Notation_term.notation_var_binders]
+  [@@deriving sexp,yojson,hash,compare]
