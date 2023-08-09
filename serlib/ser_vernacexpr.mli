@@ -67,9 +67,9 @@ type comment = Vernacexpr.comment
 val comment_of_sexp : Sexp.t -> comment
 val sexp_of_comment : comment -> Sexp.t
 
-type search_restriction = Vernacexpr.search_restriction
-val search_restriction_of_sexp : Sexp.t -> search_restriction
-val sexp_of_search_restriction : search_restriction -> Sexp.t
+type 'a search_restriction = 'a Vernacexpr.search_restriction
+val search_restriction_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a search_restriction
+val sexp_of_search_restriction : ('a -> Sexp.t) -> 'a search_restriction -> Sexp.t
 
 (* type rec_flag = Vernacexpr.rec_flag
  * val rec_flag_of_sexp : Sexp.t -> rec_flag
