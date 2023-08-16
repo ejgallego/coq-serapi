@@ -97,7 +97,7 @@ type comment =
   [%import: Vernacexpr.comment]
   [@@deriving sexp,yojson,hash,compare]
 
-type search_restriction =  [%import: Vernacexpr.search_restriction]
+type 'a search_restriction =  [%import: 'a Vernacexpr.search_restriction]
   [@@deriving sexp,yojson,hash,compare]
 
 (* type rec_flag          = [%import: Vernacexpr.rec_flag          ] [@@deriving sexp,yojson] *)
