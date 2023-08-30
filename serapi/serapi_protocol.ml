@@ -434,7 +434,8 @@ module QueryUtil = struct
   let _query_names prefix =
     let acc = ref [] in
     let env = Global.env () in
-    Search.generic_search env (fun gr _kind _env _typ ->
+    let sigma = Evd.from_env env in
+    Search.generic_search env sigma (fun gr _kind _env _sigma _typ ->
         (* Not happy with this at ALL:
 
            String of qualid is OK, but shortest_qualid_of_global is an
