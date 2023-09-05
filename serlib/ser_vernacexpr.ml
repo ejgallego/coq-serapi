@@ -326,20 +326,16 @@ type synpure_vernac_expr =
   [%import: Vernacexpr.synpure_vernac_expr]
   [@@deriving sexp,yojson,hash,compare]
 
-type 'a vernac_expr_gen =
-  [%import: 'a Vernacexpr.vernac_expr_gen]
+type vernac_expr =
+  [%import: Vernacexpr.vernac_expr]
   [@@deriving sexp,yojson,hash,compare]
 
 type control_flag =
   [%import: Vernacexpr.control_flag]
-  [@@deriving sexp,yojson,hash,compare]
+  [@@deriving sexp, yojson, hash, compare]
 
-type ('a, 'b) vernac_control_gen_r =
-  [%import: ('a, 'b) Vernacexpr.vernac_control_gen_r]
-  [@@deriving sexp,yojson,hash,compare]
-
-type 'a vernac_control_gen =
-  [%import: 'a Vernacexpr.vernac_control_gen]
+type vernac_control_r =
+  [%import: Vernacexpr.vernac_control_r]
   [@@deriving sexp,yojson,hash,compare]
 
 type vernac_control =
