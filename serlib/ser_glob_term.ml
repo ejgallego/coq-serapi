@@ -32,6 +32,7 @@ module Genarg     = Ser_genarg
 module Evar_kinds = Ser_evar_kinds
 module Namegen    = Ser_namegen
 module Sorts      = Ser_sorts
+module UState     = Ser_uState
 
 (**********************************************************************)
 (* Glob_term                                                          *)
