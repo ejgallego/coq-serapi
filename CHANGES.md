@@ -1,6 +1,6 @@
 ## Version 0.18.1:
 
- - [serlib] Fix a few 8.18 piercings (!) (@ejgallego, #)
+ - [serlib] Fix a few 8.18 piercings (!) (@ejgallego, #357)
 
 ## Version 0.18.0:
 
