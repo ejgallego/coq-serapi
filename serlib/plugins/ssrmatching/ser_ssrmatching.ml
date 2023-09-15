@@ -34,17 +34,9 @@ type ('a, 'b) ssrpattern =
   [%import: ('a, 'b) Ssrmatching_plugin.Ssrmatching.ssrpattern]
   [@@deriving sexp,yojson,hash,compare]
 
-module PierceRPattern = struct
-
-  type t = Ssrmatching_plugin.Ssrmatching.rpattern
-
-  type _t = (cpattern, cpattern) ssrpattern
+type rpattern =
+  [%import: Ssrmatching_plugin.Ssrmatching.rpattern]
   [@@deriving sexp,yojson,hash,compare]
-end
-
-module B_ = SerType.Pierce(PierceRPattern)
-type rpattern = B_.t
- [@@deriving sexp,yojson,hash,compare]
 
 type ssrdir =
   [%import: Ssrmatching_plugin.Ssrmatching.ssrdir]

@@ -33,24 +33,19 @@ val sexp_of_declaration_arity :
   ('a, 'b) declaration_arity -> Sexp.t
 
 type recarg = Declarations.recarg
-val recarg_of_sexp : Sexp.t -> recarg
-val sexp_of_recarg : recarg -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type wf_paths = recarg Rtree.t
-val wf_paths_of_sexp : Sexp.t -> wf_paths
-val sexp_of_wf_paths : wf_paths -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type regular_inductive_arity = Declarations.regular_inductive_arity
-val regular_inductive_arity_of_sexp : Sexp.t -> regular_inductive_arity
-val sexp_of_regular_inductive_arity : regular_inductive_arity -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type inductive_arity = Declarations.inductive_arity
-val inductive_arity_of_sexp : Sexp.t -> inductive_arity
-val sexp_of_inductive_arity : inductive_arity -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type one_inductive_body = Declarations.one_inductive_body
-val one_inductive_body_of_sexp : Sexp.t -> one_inductive_body
-val sexp_of_one_inductive_body : one_inductive_body -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type set_predicativity = Declarations.set_predicativity
  * val set_predicativity_of_sexp : Sexp.t -> set_predicativity
@@ -61,12 +56,10 @@ val sexp_of_one_inductive_body : one_inductive_body -> Sexp.t
  * val sexp_of_engagement : engagement -> Sexp.t *)
 
 type typing_flags = Declarations.typing_flags
-val typing_flags_of_sexp : Sexp.t -> typing_flags
-val sexp_of_typing_flags : typing_flags -> Sexp.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type inline = Declarations.inline
-val sexp_of_inline : inline -> Sexp.t
-val inline_of_sexp : Sexp.t -> inline
+  [@@deriving sexp,yojson,hash,compare]
 
 (* type work_list = Declarations.work_list *)
 
@@ -80,6 +73,9 @@ val inline_of_sexp : Sexp.t -> inline
  * val sexp_of_cooking_info : cooking_info -> Sexp.t
  * val cooking_info_of_sexp : Sexp.t -> cooking_info *)
 
+type 'a pconstant_body = 'a Declarations.pconstant_body
+  [@@deriving sexp,yojson,hash,compare]
+
 type constant_body = Declarations.constant_body
   [@@deriving sexp,yojson,hash,compare]
 
@@ -88,17 +84,13 @@ type constant_body = Declarations.constant_body
  * val sexp_of_record_body : record_body -> Sexp.t *)
 
 type recursivity_kind = Declarations.recursivity_kind
-val recursivity_kind_of_sexp : Sexp.t -> recursivity_kind
-val sexp_of_recursivity_kind : recursivity_kind -> Sexp.t
-val recursivity_kind_of_yojson : Yojson.Safe.t -> (recursivity_kind, string) Result.result
-val recursivity_kind_to_yojson : recursivity_kind -> Yojson.Safe.t
+  [@@deriving sexp,yojson,hash,compare]
 
 type mutual_inductive_body = Declarations.mutual_inductive_body
   [@@deriving sexp,yojson,hash,compare]
 
 type 'a module_alg_expr = 'a Declarations.module_alg_expr
-val sexp_of_module_alg_expr : ('a -> Sexp.t) -> 'a module_alg_expr -> Sexp.t
-val module_alg_expr_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a module_alg_expr
+  [@@deriving sexp,yojson,hash,compare]
 
 type structure_body = Declarations.structure_body
   [@@deriving sexp,yojson,hash,compare]

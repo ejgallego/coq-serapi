@@ -1,3 +1,7 @@
+## Version 0.18.1:
+
+ - [serlib] Fix a few 8.18 piercings (!) (@ejgallego, #)
+
 ## Version 0.18.0:
 
  - [serapi] (!) support for Coq 8.18, thanks to all the developers

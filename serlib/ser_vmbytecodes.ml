@@ -24,6 +24,10 @@ module Evar = Ser_evar
 
 let hash_fold_array = hash_fold_array_frozen
 
+type caml_prim =
+  [%import: Vmbytecodes.caml_prim]
+  [@@deriving sexp,yojson,hash,compare]
+
 type fv_elem =
   [%import: Vmbytecodes.fv_elem]
   [@@deriving sexp,yojson,hash,compare]
