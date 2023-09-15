@@ -30,13 +30,17 @@ type reloc_info =
   | Reloc_annot of Vmvalues.annot_switch
   | Reloc_const of Vmvalues.structured_constant
   | Reloc_getglobal of Names.Constant.t
-  | Reloc_caml_prim of CPrimitives.t
+  | Reloc_caml_prim of Vmbytecodes.caml_prim
  [@@deriving sexp,yojson,hash,compare]
 
 let hash_fold_array = hash_fold_array_frozen
 
+type positions = string
+ [@@deriving sexp,yojson,hash,compare]
+
 type patches = {
-  reloc_infos : (reloc_info * int array) array;
+  reloc_infos : reloc_info array;
+  reloc_positions : positions;
 } [@@deriving sexp,yojson,hash,compare]
 
 type emitcodes = string

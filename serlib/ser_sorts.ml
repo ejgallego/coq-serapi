@@ -19,19 +19,6 @@ type family =
   [%import: Sorts.family]
   [@@deriving sexp,yojson,hash,compare]
 
-module PierceSpec = struct
-  type t = Sorts.t
-  type _t =
-    | SProp
-    | Prop
-    | Set
-    | Type of Univ.Universe.t
-  [@@deriving sexp,yojson,hash,compare]
-end
-
-include SerType.Pierce(PierceSpec)
-
-
 module BijectQVar = struct
   open Sexplib.Std
   open Ppx_hash_lib.Std.Hash.Builtin
@@ -43,6 +30,19 @@ module BijectQVar = struct
 end
 
 module QVar = SerType.Biject(BijectQVar)
+
+module PierceSpec = struct
+  type t = Sorts.t
+  type _t =
+    | SProp
+    | Prop
+    | Set
+    | Type of Univ.Universe.t
+    | QSort of QVar.t * Univ.Universe.t
+  [@@deriving sexp,yojson,hash,compare]
+end
+
+include SerType.Pierce(PierceSpec)
 
 type relevance =
   [%import: Sorts.relevance]

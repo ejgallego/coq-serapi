@@ -36,9 +36,10 @@ type certificate = {
 } [@@deriving sexp,yojson,hash,compare]
 
 type side_effect = {
-  from_env : certificate CEphemeron.key;
+  seff_certif : certificate CEphemeron.key;
   seff_constant : Names.Constant.t;
-  seff_body : Declarations.constant_body;
+  seff_body : Constr.t Declarations.pconstant_body;
+  seff_univs : Univ.ContextSet.t;
 } [@@deriving sexp,yojson,hash,compare]
 
 module SeffOrd = struct
