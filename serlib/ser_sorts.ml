@@ -24,12 +24,22 @@ module BijectQVar = struct
   open Ppx_hash_lib.Std.Hash.Builtin
   open Ppx_compare_lib.Builtin
   type t = Sorts.QVar.t
-  type _t = string * int [@@deriving sexp,yojson,hash,compare]
+  type _t = [%import: Sorts.QVar.repr] [@@deriving sexp,yojson,hash,compare]
   let of_t = Sorts.QVar.repr
-  let to_t (s,i) = Sorts.QVar.make s i
+  let to_t = Sorts.QVar.of_repr
 end
 
-module QVar = SerType.Biject(BijectQVar)
+module QVar = struct
+  module Self = SerType.Biject(BijectQVar)
+  include Self
+
+  module Set = Ser_cSet.Make(Sorts.QVar.Set)(Self)
+end
+
+module Quality = struct
+  type constant = [%import: Sorts.Quality.constant] [@@deriving sexp,yojson,hash,compare]
+  type t = [%import: Sorts.Quality.t] [@@deriving sexp,yojson,hash,compare]
+end
 
 module PierceSpec = struct
   type t = Sorts.t
@@ -47,3 +57,15 @@ include SerType.Pierce(PierceSpec)
 type relevance =
   [%import: Sorts.relevance]
   [@@deriving sexp,yojson,hash,compare]
+
+module QConstraint = struct
+  type kind =
+    [%import: Sorts.QConstraint.kind]
+    [@@deriving sexp,yojson,hash,compare]
+
+  type t =
+    [%import: Sorts.QConstraint.t]
+    [@@deriving sexp,yojson,hash,compare]
+end
+
+module QConstraints = Ser_cSet.Make(Sorts.QConstraints)(QConstraint)

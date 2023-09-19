@@ -33,6 +33,7 @@ module Libnames   = Ser_libnames
 module Glob_term  = Ser_glob_term
 module NumTok     = Ser_numTok
 module Univ       = Ser_univ
+module UVars      = Ser_uvars
 module Sorts      = Ser_sorts
 
 type sort_name_expr =
@@ -41,6 +42,14 @@ type sort_name_expr =
 
 type univ_level_expr =
   [%import: Constrexpr.univ_level_expr]
+  [@@deriving sexp,yojson,hash,compare]
+
+type qvar_expr =
+  [%import: Constrexpr.qvar_expr]
+  [@@deriving sexp,yojson,hash,compare]
+
+type quality_expr =
+  [%import: Constrexpr.quality_expr]
   [@@deriving sexp,yojson,hash,compare]
 
 type sort_expr =

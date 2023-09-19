@@ -32,6 +32,7 @@ module Names   = Ser_names
 module Sorts   = Ser_sorts
 module Evar    = Ser_evar
 module Univ    = Ser_univ
+module UVars   = Ser_uvars
 module Context = Ser_context
 module Uint63  = Ser_uint63
 module Float64 = Ser_float64
@@ -119,13 +120,13 @@ type _constr =
   | Const     of pconstant
   | Ind       of pinductive
   | Construct of pconstructor
-  | Case      of case_info * Univ.Instance.t * _constr array * _constr pcase_return * _constr pcase_invert *  _constr * _constr pcase_branch array
+  | Case      of case_info * UVars.Instance.t * _constr array * _constr pcase_return * _constr pcase_invert *  _constr * _constr pcase_branch array
   | Fix       of (_constr, _constr) pfixpoint
   | CoFix     of (_constr, _constr) pcofixpoint
-  | Proj      of Names.Projection.t * _constr
+  | Proj      of Names.Projection.t * Sorts.relevance * _constr
   | Int       of Uint63.t
   | Float     of Float64.t
-  | Array     of Univ.Instance.t * _constr array * _constr * _constr
+  | Array     of UVars.Instance.t * _constr array * _constr * _constr
 [@@deriving sexp,yojson,hash,compare]
 
 let rec _constr_put (c : Constr.t) : _constr =
@@ -155,7 +156,7 @@ let rec _constr_put (c : Constr.t) : _constr =
   (* (int array * int) * (Name.t array * 'types array * 'constr array)) *)
   | C.Fix(p,(na,u1,u2))   -> Fix(p, (na, cra u1, cra u2))
   | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
-  | C.Proj(p,c)           -> Proj(p, cr c)
+  | C.Proj(p,r,c)           -> Proj(p, r, cr c)
   | C.Int i               -> Int i
   | C.Float i             -> Float i
   | C.Array (u,a,e,t)     -> Array(u, cra a, cr e, cr t)
@@ -185,7 +186,7 @@ let rec _constr_get (c : _constr) : Constr.t =
   | Case(ci, u, ca, pr, pi, c, pb) -> C.mkCase (ci, u, cra ca, crcr pr, crci pi, cr c, Array.map crcb pb)
   | Fix (p,(na,u1,u2))  -> C.mkFix(p, (na, cra u1, cra u2))
   | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
-  | Proj(p,c)           -> C.mkProj(p, cr c)
+  | Proj(p,r,c)           -> C.mkProj(p, r, cr c)
   | Int i               -> C.mkInt i
   | Float f             -> C.mkFloat f
   | Array (u,a,e,t)     -> C.mkArray(u, cra a, cr e, cr t)

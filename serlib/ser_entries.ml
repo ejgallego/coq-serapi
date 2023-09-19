@@ -22,6 +22,7 @@ module Stateid      = Ser_stateid
 module Future       = Ser_future
 module Names        = Ser_names
 module Univ         = Ser_univ
+module UVars        = Ser_uvars
 module Constr       = Ser_constr
 module Declarations = Ser_declarations
 module CPrimitives  = Ser_cPrimitives

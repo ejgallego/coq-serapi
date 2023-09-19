@@ -18,4 +18,15 @@ include SerType.SJHC with type t = Sorts.t
 type family = Sorts.family [@@deriving sexp,yojson,hash,compare]
 type relevance = Sorts.relevance [@@deriving sexp,yojson,hash,compare]
 
-module QVar : SerType.SJHC with type t = Sorts.QVar.t
+module QVar : sig
+  include SerType.SJHC with type t = Sorts.QVar.t
+  module Set : SerType.SJHC with type t = Sorts.QVar.Set.t
+end
+
+module Quality : sig
+  type constant = Sorts.Quality.constant [@@deriving sexp,yojson,hash,compare]
+
+  include SerType.SJHC with type t = Sorts.Quality.t
+end
+
+module QConstraints : SerType.SJHC with type t = Sorts.QConstraints.t

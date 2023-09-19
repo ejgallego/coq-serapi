@@ -23,6 +23,7 @@ module Range  = Ser_range
 module Names  = Ser_names
 module Constr = Ser_constr
 module Univ   = Ser_univ
+module Sorts  = Ser_sorts
 module Nativevalues   = Ser_nativevalues
 module Opaqueproof    = Ser_opaqueproof
 module Retroknowledge = Ser_retroknowledge

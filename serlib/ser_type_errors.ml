@@ -22,6 +22,7 @@ module Constr  = Ser_constr
 module Environ = Ser_environ
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
+module UVars   = Ser_uvars
 module Context = Ser_context
 module CPrimitives = Ser_cPrimitives
 

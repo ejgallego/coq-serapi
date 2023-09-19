@@ -25,6 +25,7 @@ module Context = Ser_context
 module Constr  = Ser_constr
 module Sorts   = Ser_sorts
 module Univ    = Ser_univ
+module UVars   = Ser_uvars
 module CPrimitives = Ser_cPrimitives
 module Vmvalues    = Ser_vmvalues
 module Conv_oracle = Ser_conv_oracle

@@ -74,8 +74,20 @@ type glob_constraint =
  *   [%import: Glob_term.sort_info]
  *   [@@deriving sexp,yojson] *)
 
+type glob_qvar =
+  [%import: Glob_term.glob_qvar]
+  [@@deriving sexp,yojson,hash,compare]
+
+type glob_quality =
+  [%import: Glob_term.glob_quality]
+  [@@deriving sexp,yojson,hash,compare]
+
 type glob_sort =
   [%import: Glob_term.glob_sort]
+  [@@deriving sexp,yojson,hash,compare]
+
+type glob_instance =
+  [%import: Glob_term.glob_instance]
   [@@deriving sexp,yojson,hash,compare]
 
 (* type 'a cast_type =

@@ -22,17 +22,18 @@ open Ppx_compare_lib.Builtin
 
 module Names = Ser_names
 module Univ = Ser_univ
+module UVars = Ser_uvars
 module Constr = Ser_constr
 
 type abstr_info = {
   abstr_ctx : Constr.named_context;
-  abstr_auctx : Univ.AbstractContext.t;
-  abstr_ausubst : Univ.Instance.t;
+  abstr_auctx : UVars.AbstractContext.t;
+  abstr_ausubst : UVars.Instance.t;
 } [@@deriving sexp,yojson,hash,compare]
 
 type abstr_inst_info = {
   abstr_rev_inst : Names.Id.t list;
-  abstr_uinst : Univ.Instance.t;
+  abstr_uinst : UVars.Instance.t;
 } [@@deriving sexp,yojson,hash,compare]
 
 type 'a entry_map = 'a Names.Cmap.t * 'a Names.Mindmap.t [@@deriving sexp,yojson,hash,compare]
