@@ -828,23 +828,3 @@ type tacdef_body =
 type intro_pattern =
   [%import: Ltac_plugin.Tacexpr.intro_pattern]
   [@@deriving sexp,yojson,hash,compare]
-
-type raw_red_expr =
-  [%import: Ltac_plugin.Tacexpr.raw_red_expr]
-  [@@deriving sexp,yojson,hash,compare]
-
-type g_trm =
-  [%import: Ltac_plugin.Tacexpr.g_trm]
-  [@@deriving sexp,yojson,hash,compare]
-
-type g_cst =
-  [%import: Ltac_plugin.Tacexpr.g_cst]
-  [@@deriving sexp,yojson,hash,compare]
-
-type g_pat =
-  [%import: Ltac_plugin.Tacexpr.g_pat]
-  [@@deriving sexp,yojson,hash,compare]
-
-type glob_red_expr =
-  [%import: Ltac_plugin.Tacexpr.glob_red_expr]
-  [@@deriving sexp,yojson,hash,compare]

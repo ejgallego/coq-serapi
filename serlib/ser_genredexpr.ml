@@ -23,10 +23,16 @@ module Util  = Ser_util
 module Locus = Ser_locus
 module Libnames = Ser_libnames
 module Constrexpr = Ser_constrexpr
+module Genintern = Ser_genintern
+module Tacred = Ser_tacred
 
 type 'a red_atom =
   [%import: 'a Genredexpr.red_atom]
   [@@deriving sexp]
+
+type strength =
+  [%import: Genredexpr.strength]
+  [@@deriving sexp,yojson,hash,compare]
 
 type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
@@ -61,8 +67,26 @@ type raw_red_expr =
   [%import: Genredexpr.raw_red_expr]
   [@@deriving sexp,yojson,hash,compare]
 
+(* glob_red_expr *)
+
 type 'a and_short_name =
   [%import: 'a Genredexpr.and_short_name]
+  [@@deriving sexp,yojson,hash,compare]
+
+type g_trm =
+  [%import: Genredexpr.g_trm]
+  [@@deriving sexp,yojson,hash,compare]
+
+type g_cst =
+  [%import: Genredexpr.g_cst]
+  [@@deriving sexp,yojson,hash,compare]
+
+type g_pat =
+  [%import: Genredexpr.g_pat]
+  [@@deriving sexp,yojson,hash,compare]
+
+type glob_red_expr =
+  [%import: Genredexpr.glob_red_expr]
   [@@deriving sexp,yojson,hash,compare]
 
 module A = struct
