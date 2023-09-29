@@ -1,4 +1,0 @@
-(install
- (section share_root)
- (files (sertop.el as emacs/site-lisp/sertop.el)))
-

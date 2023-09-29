@@ -16,3 +16,7 @@
 (rule
  (targets ser_version.ml)
  (action (write-file %{targets} "let ser_git_version = \"%{version:coq-serapi}\";;")))
+
+(install
+ (section share_root)
+ (files (sertop.el as emacs/site-lisp/sertop.el)))

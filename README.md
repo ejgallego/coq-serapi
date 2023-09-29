@@ -55,7 +55,7 @@ new use cases.
 
 - [Protocol Documentation](http://ejgallego.github.io/coq-serapi/coq-serapi/Serapi/Serapi_protocol/)
 - [interface file](serapi/serapi_protocol.mli)
-- [SerAPI's FAQ](FAQ.md)
+- [SerAPI's FAQ](notes/FAQ.md)
 - [technical report](https://hal-mines-paristech.archives-ouvertes.fr/hal-01384408)
 - [issue tracker](https://github.com/ejgallego/coq-serapi/issues)
 - [Zulip chat](https://coq.zulipchat.com/#narrow/stream/256331-SerAPI)
