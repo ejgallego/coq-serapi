@@ -1,7 +1,10 @@
 ## What is SerAPI?
 
-Is a library plus a set of command line tools aimed to improve the
-communication of third party tools with Coq.
+SerAPI is a library plus a set of command line tools aimed to improve
+the communication of third party tools with Coq.
+
+As of today, SerAPI has been mostly replaced by `coq-lsp`, except the
+`serlib` library which is actively used.
 
 ## How mature is SerAPI?
 
@@ -11,17 +14,21 @@ should be controlled. SerAPI have been used with success in several
 research projects. Protocol-breaking changes are marked in the
 changelog with `(!)`.
 
+Note that a likely side-effect of SerAPI being in maintenance mode is
+that few changes to the protocol will happen.
+
 ## Which Coq versions does SerAPI support?
 
-At the moment, Coq 8.12 is the current supported version for the
-current protocol. Older versions (8.6---8.11) work, however the
-protocol and feature sets do differ.
+At the moment, Coq 8.19 is the current supported version. Older
+versions (Coq 8.6---8.18) work, however the protocol and feature sets
+do differ.
 
 ## How can I install SerAPI?
 
 The supported way is to use the OPAM package manager. The
-`.travis.yml` file contains up to date install instructions if you
-want to build SerAPI manually, see also the [build instructions](notes/build.md) file.
+`.github/workflows/ci.yml` file contains up to date install
+instructions if you want to build SerAPI manually, see also the [build
+instructions](build.md) file.
 
 ## What serialization formats does SerAPI provide?
 
