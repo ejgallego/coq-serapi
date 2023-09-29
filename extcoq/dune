@@ -1,5 +1,0 @@
-(library
- (name extcoq)
- (public_name coq-serapi.extcoq)
- (wrapped false)
- (libraries coq-core.vernac coq-core.stm))

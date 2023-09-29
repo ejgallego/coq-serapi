@@ -27,10 +27,17 @@ let input_doc ~in_chan ~process ~doc ~sid =
 let str_pp_obj env sigma fmt (obj : Serapi.Serapi_protocol.coq_object) : unit =
   Format.fprintf fmt "%a" Pp.pp_with (Serapi.Serapi_protocol.gen_pp_obj env sigma obj)
 
+let context_of_st m = match m with
+  | Stm.Valid (Some { Vernacstate.interp = { lemmas = Some pstate; _ } ; _} ) ->
+    Vernacstate.LemmaStack.with_top pstate
+      ~f:Declare.Proof.get_current_context
+  | _ ->
+    let env = Global.env () in Evd.from_env env, env
+
 let process_line ~pp ~str_pp ~de_bruijn ~body ~doc ~sid line =
   let open Serapi.Serapi_protocol in
   let st = Stm.state_of_id ~doc sid in
-  let sigma, env = Extcoq.context_of_st st in
+  let sigma, env = context_of_st st in
   let info = QueryUtil.info_of_id env line in
   let def = if body then fst info else snd info in
   match def with

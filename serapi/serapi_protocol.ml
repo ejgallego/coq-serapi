@@ -654,10 +654,17 @@ let parsing_state_of_st m = match m with
     Some parsing
   | _ -> None
 
+let context_of_st m = match m with
+  | Stm.Valid (Some { Vernacstate.interp = { lemmas = Some pstate; _ } ; _} ) ->
+    Vernacstate.LemmaStack.with_top pstate
+      ~f:Declare.Proof.get_current_context
+  | _ ->
+    let env = Global.env () in Evd.from_env env, env
+
 let exec_query opt cmd =
   let doc = Stm.get_doc !doc_id in
   let st = Stm.state_of_id ~doc opt.sid in
-  let sigma, env = Extcoq.context_of_st st in
+  let sigma, env = context_of_st st in
   let pstate = proof_state_of_st st in
 
   let pstate = Option.map (Vernacstate.LemmaStack.with_top ~f:(fun p -> p)) pstate in
@@ -944,7 +951,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   | Query (opt, qry)  -> [ObjList (exec_query opt qry)]
   | Print(opts, obj)  ->
     let st = Stm.state_of_id ~doc opts.sid in
-    let sigma, env = Extcoq.context_of_st st in
+    let sigma, env = context_of_st st in
     [ObjList [obj_print env sigma opts.pp obj]]
   | Parse(opt,s) ->
     ControlUtil.(parse_entry ~doc ~opt s)

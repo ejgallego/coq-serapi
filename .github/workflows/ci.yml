@@ -41,9 +41,6 @@ jobs:
         test-target: [test]
         extra-opam: [coq.dev coq-mathcomp-ssreflect.1.dev]
         include:
-        - ocaml-compiler: ocaml-variants.4.12.1+options,ocaml-option-32bit
-          test-target: js-dune
-          extra-opam: coq.dev js_of_ocaml js_of_ocaml-lwt zarith_stubs_js
         - ocaml-compiler: 4.13.1
           test-target: test
           extra-opam:
@@ -105,7 +102,7 @@ jobs:
           git clone --depth=3 -b mathcomp-1 https://github.com/math-comp/math-comp.git
           make -C math-comp/mathcomp/ssreflect
           make -C math-comp/mathcomp/ssreflect install
-      - name: Extra OPAM Setup (Coq, js_of_ocaml)
+      - name: Extra OPAM Setup (Coq.dev, misc extra tools)
         if: ${{ matrix.extra-opam != '' }}
         run: |
           eval $(opam env)
@@ -115,4 +112,3 @@ jobs:
           eval $(opam env)
           make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "${{ matrix.test-target }}"
           ls -lR _build/install/default/ || true
-          ls -lR _build/default/sertop/*.js || true
