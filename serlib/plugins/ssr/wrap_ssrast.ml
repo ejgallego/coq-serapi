@@ -8,7 +8,13 @@
 (*         *     (see LICENSE file for the text of the license)         *)
 (************************************************************************)
 
-(* This file is (C) Copyright 2006-2015 Microsoft Corporation and Inria. *)
+(************************************************************************)
+(* SerAPI: Coq interaction protocol with bidirectional serialization    *)
+(************************************************************************)
+(* Copyright 2016-2019 MINES ParisTech -- License LGPL 2.1+             *)
+(* Copyright 2019-2023 Inria           -- License LGPL 2.1+             *)
+(* Written by: Emilio J. Gallego Arias and others                       *)
+(************************************************************************)
 
 open Ssreflect_plugin [@@ocaml.warning "-33"]
 
