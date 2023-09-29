@@ -41,42 +41,6 @@ sertop: build
 	dune exec -- rlwrap sertop
 
 #####################################################
-# Javascript support
-
-#####################################################
-# JS
-
-JSDIR=jscoq/coq-libjs
-JSFILES=$(addprefix $(JSDIR)/,mutex.js unix.js str.js coq_vm.js)
-
-JSCOQ_DEBUG=no
-JSOO_OPTS=
-ifeq "${JSCOQ_DEBUG}" "yes"
-JSOO_OPTS+= --pretty --noinline --disable shortvar --debug-info
-endif
-
-js:
-	mkdir -p js
-
-force:
-
-_build/default/sertop/sertop_js.bc: force
-	dune build --profile=release sertop/sertop_js.bc
-
-js/sertop_js.js: js _build/default/sertop/sertop_js.bc
-	js_of_ocaml --dynlink +nat.js +dynlink.js +toplevel.js $(JSOO_OPTS) $(JSFILES) _build/default/sertop/sertop_js.bc -o js/sertop_js.js
-
-# We cannot use the separate compilation mode due to Coq's VM: libcoqrun.a
-js-dune:
-	dune build --profile=release sertop/sertop_js.bc.js
-
-js-dist:
-	rsync -avp --exclude=.git --delete ~/research/jscoq/coq-pkgs/ js/coq-pkgs
-
-js-release:
-	rsync -avp --exclude=*~ --exclude=.git --exclude=README.md --exclude=get-hashes.sh --delete js/ ~/research/jscoq-builds
-
-#####################################################
 # Misc
 
 clean:

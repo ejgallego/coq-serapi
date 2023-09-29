@@ -1,3 +1,7 @@
+## unreleased
+
+ - [general] Cleanup old / unused code (@ejgallego, #)
+
 ## Version 0.18.1:
 
  - [serlib] Fix a few 8.18 piercings (!) (@ejgallego, #357)
