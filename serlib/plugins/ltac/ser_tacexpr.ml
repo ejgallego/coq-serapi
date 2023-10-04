@@ -194,7 +194,6 @@ and ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr_r =
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr *
       ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr array
   | TacFirst of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr list
-  | TacComplete of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
   | TacSolve of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr list
   | TacTry of ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) gen_tactic_expr
   | TacOr of
@@ -285,7 +284,6 @@ and _gen_tactic_expr_r_put (t : 'a Ltac_plugin.Tacexpr.gen_tactic_expr_r) :
   | Ltac_plugin.Tacexpr.TacThens (a,b)           -> ITac.TacThens (u a, uu b)
   | Ltac_plugin.Tacexpr.TacThens3parts (a,b,c,d) -> ITac.TacThens3parts (u a, ua b, u c, ua d)
   | Ltac_plugin.Tacexpr.TacFirst a               -> ITac.TacFirst (uu a)
-  | Ltac_plugin.Tacexpr.TacComplete a            -> ITac.TacComplete (u a)
   | Ltac_plugin.Tacexpr.TacSolve a               -> ITac.TacSolve (uu a)
   | Ltac_plugin.Tacexpr.TacTry a                 -> ITac.TacTry (u a)
   | Ltac_plugin.Tacexpr.TacOr (a,b)              -> ITac.TacOr (u a, u b)
@@ -379,7 +377,6 @@ and _gen_tactic_expr_r_get (t : ('t, 'dtrm, 'p, 'c, 'r, 'n, 'tacexpr, 'l) ITac.g
   | ITac.TacThens (a,b)           -> Ltac_plugin.Tacexpr.TacThens (u a, uu b)
   | ITac.TacThens3parts (a,b,c,d) -> Ltac_plugin.Tacexpr.TacThens3parts (u a, ua b, u c, ua d)
   | ITac.TacFirst a               -> Ltac_plugin.Tacexpr.TacFirst (uu a)
-  | ITac.TacComplete a            -> Ltac_plugin.Tacexpr.TacComplete (u a)
   | ITac.TacSolve a               -> Ltac_plugin.Tacexpr.TacSolve (uu a)
   | ITac.TacTry a                 -> Ltac_plugin.Tacexpr.TacTry (u a)
   | ITac.TacOr (a,b)              -> Ltac_plugin.Tacexpr.TacOr (u a, u b)
