@@ -59,6 +59,9 @@ type goal_identifier = [%import: Vernacexpr.goal_identifier]
 type scope_name      = [%import: Vernacexpr.scope_name]
   [@@deriving sexp,yojson,hash,compare]
 
+type scope_delimiter = [%import: Vernacexpr.scope_delimiter]
+  [@@deriving sexp,yojson,hash,compare]
+
 type goal_reference =
   [%import: Vernacexpr.goal_reference]
   [@@deriving sexp,yojson,hash,compare]

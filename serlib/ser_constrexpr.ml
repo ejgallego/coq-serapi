@@ -139,6 +139,9 @@ type explicit_flag = [%import: Constrexpr.explicit_flag]
 (* type sign = [%import: Constrexpr.sign]
  *   [@@deriving sexp,yojson] *)
 
+type delimiter_depth = [%import: Constrexpr.delimiter_depth]
+  [@@deriving sexp,yojson,hash,compare]
+
 type prim_token = [%import: Constrexpr.prim_token]
   [@@deriving sexp,yojson,hash,compare]
 

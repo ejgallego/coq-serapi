@@ -23,6 +23,10 @@ type scope_name =
   [%import: Vernacexpr.scope_name]
   [@@deriving sexp,yojson]
 
+type scope_delimiter =
+  [%import: Vernacexpr.scope_delimiter]
+  [@@deriving sexp,yojson]
+
 type notation_format =
   [%import: Vernacexpr.notation_format]
   [@@deriving sexp,yojson]
