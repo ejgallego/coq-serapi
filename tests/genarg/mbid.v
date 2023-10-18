@@ -5,7 +5,7 @@
  *)
 
 Require Export NumPrelude NZAxioms.
-Require Import NZBase NZOrder NZAddOrder Plus Minus.
+Require Import NZBase NZOrder NZAddOrder.
 
 (** In this file, we investigate the shape of domains satisfying
     the [NZDomainSig] interface. In particular, we define a
