@@ -1,5 +1,5 @@
 Require Setoid.
-Require Import PeanoNat Le Gt Minus Bool Lt List.
+Require Import PeanoNat Bool List.
 Require Import Lia.
 
 Section ReDun.
