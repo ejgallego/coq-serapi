@@ -267,9 +267,3 @@ type tacdef_body = Tacexpr.tacdef_body
 
 type intro_pattern = Tacexpr.intro_pattern
   [@@deriving sexp,hash,compare]
-
-type raw_red_expr = Tacexpr.raw_red_expr
-  [@@deriving sexp,hash,compare]
-
-type glob_red_expr = Tacexpr.glob_red_expr
-  [@@deriving sexp,hash,compare]

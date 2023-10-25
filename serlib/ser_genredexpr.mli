@@ -35,14 +35,8 @@ type ('a, 'b, 'c) may_eval =  ('a, 'b, 'c) Genredexpr.may_eval
 
 type raw_red_expr = Genredexpr.raw_red_expr [@@deriving sexp,yojson,hash,compare]
 
-type r_cst = Genredexpr.r_cst
-  [@@deriving sexp,yojson,hash,compare]
-
-type r_trm = Genredexpr.r_trm
-  [@@deriving sexp,yojson,hash,compare]
-
-type r_pat = Genredexpr.r_pat
-  [@@deriving sexp,yojson,hash,compare]
-
 type 'a and_short_name = 'a Genredexpr.and_short_name
+  [@@deriving sexp,yojson,hash,compare]
+
+type glob_red_expr = Genredexpr.glob_red_expr
   [@@deriving sexp,yojson,hash,compare]

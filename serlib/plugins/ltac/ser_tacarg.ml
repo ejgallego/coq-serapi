@@ -32,6 +32,7 @@ module Geninterp    = Ser_geninterp
 module EConstr      = Ser_eConstr
 module Hints        = Ser_hints
 module Ltac_pretype = Ser_ltac_pretype
+module Genredexpr   = Ser_genredexpr
 
 module Ltac_plugin = struct
   module G_rewrite    = G_rewrite
