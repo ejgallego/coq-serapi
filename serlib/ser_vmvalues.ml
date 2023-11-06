@@ -22,6 +22,7 @@ module Evar = Ser_evar
 module Sorts = Ser_sorts
 module Names = Ser_names
 module Univ  = Ser_univ
+module UVars = Ser_uvars
 module Uint63 = Ser_uint63
 module Float64 = Ser_float64
 

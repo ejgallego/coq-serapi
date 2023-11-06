@@ -8,21 +8,25 @@
 
 (************************************************************************)
 (* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech                                  *)
+(* Copyright 2016 MINES ParisTech                                       *)
 (************************************************************************)
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
-open Ppx_hash_lib.Std.Hash.Builtin
-open Ppx_compare_lib.Builtin
-open Sexplib.Conv
+open Sexplib
 
-module Names       = Ser_names
+module Variance : SerType.SJHC with type t = UVars.Variance.t
 
-type univ_name_list =
-  [%import: UnivNames.univ_name_list]
-  [@@deriving sexp,yojson,hash,compare]
+module Instance : SerType.SJHC with type t = UVars.Instance.t
 
-type full_name_list =
-  [%import: UnivNames.full_name_list]
-  [@@deriving sexp,yojson,hash,compare]
+module UContext : SerType.SJHC with type t = UVars.UContext.t
+
+module AbstractContext : SerType.SJHC with type t = UVars.AbstractContext.t
+
+(** A value in a universe context (resp. context set). *)
+type 'a in_universe_context = 'a UVars.in_universe_context
+val in_universe_context_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a in_universe_context
+val sexp_of_in_universe_context : ('a -> Sexp.t) -> 'a in_universe_context -> Sexp.t
+
+type 'a puniverses = 'a * Instance.t
+ [@@deriving sexp,yojson,hash,compare]

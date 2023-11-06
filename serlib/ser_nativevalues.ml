@@ -22,6 +22,7 @@ module Evar   = Ser_evar
 module Sorts  = Ser_sorts
 module Constr = Ser_constr
 module Univ   = Ser_univ
+module UVars  = Ser_uvars
 
 module NVI = struct
   type t = Nativevalues.t
