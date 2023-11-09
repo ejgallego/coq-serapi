@@ -151,8 +151,8 @@ let rec _constr_put (c : Constr.t) : _constr =
   | C.Const p             -> Const p
   | C.Ind(p,q)            -> Ind (p,q)
   | C.Construct(p)        -> Construct (p)
-  | C.Case(ci, u, ca, pr, pi, c, pb) ->
-    Case(ci, u, cra ca, crcr pr, crci pi, cr c, Array.map crcb pb)
+  | C.Case(ci, u, ca, (pr,r), pi, c, pb) ->
+    Case(ci, u, cra ca, (crcr pr,r), crci pi, cr c, Array.map crcb pb)
   (* (int array * int) * (Name.t array * 'types array * 'constr array)) *)
   | C.Fix(p,(na,u1,u2))   -> Fix(p, (na, cra u1, cra u2))
   | C.CoFix(p,(na,u1,u2)) -> CoFix(p, (na, cra u1, cra u2))
@@ -183,7 +183,7 @@ let rec _constr_get (c : _constr) : Constr.t =
   | Const p             -> C.mkConstU(p)
   | Ind(p,q)            -> C.mkIndU(p, q)
   | Construct(p)        -> C.mkConstructU(p)
-  | Case(ci, u, ca, pr, pi, c, pb) -> C.mkCase (ci, u, cra ca, crcr pr, crci pi, cr c, Array.map crcb pb)
+  | Case(ci, u, ca, (pr,r), pi, c, pb) -> C.mkCase (ci, u, cra ca, (crcr pr,r), crci pi, cr c, Array.map crcb pb)
   | Fix (p,(na,u1,u2))  -> C.mkFix(p, (na, cra u1, cra u2))
   | CoFix(p,(na,u1,u2)) -> C.mkCoFix(p, (na, cra u1, cra u2))
   | Proj(p,r,c)           -> C.mkProj(p, r, cr c)
