@@ -62,6 +62,9 @@ val sexp_of_binder_kind : binder_kind -> Sexp.t
  * val proj_flag_of_sexp : Sexp.t -> proj_flag
  * val sexp_of_proj_flag : proj_flag -> Sexp.t *)
 
+type delimiter_depth = [%import: Constrexpr.delimiter_depth]
+  [@@deriving sexp,yojson,hash,compare]
+
 type prim_token = Constrexpr.prim_token
 
 val prim_token_of_sexp : Sexp.t -> prim_token
