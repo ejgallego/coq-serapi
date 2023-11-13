@@ -114,6 +114,9 @@ type glob_fix_kind =
   [%import: Glob_term.glob_fix_kind]
   [@@deriving sexp,yojson,hash,compare]
 
+type glob_evar_kind = Evar_kinds.glob_evar_kind
+  [@@deriving sexp,yojson,hash,compare]
+
 [@@@ocaml.warning "-27"]
 type 'a glob_constr_r        = [%import: 'a Glob_term.glob_constr_r]
 and 'a glob_constr_g         = [%import: 'a Glob_term.glob_constr_g]

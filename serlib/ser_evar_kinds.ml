@@ -49,3 +49,6 @@ type t =
   [%import: Evar_kinds.t]
   [@@deriving sexp,yojson,hash,compare]
 
+type glob_evar_kind =
+  [%import: Evar_kinds.glob_evar_kind]
+  [@@deriving sexp,yojson,hash,compare]

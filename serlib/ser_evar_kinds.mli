@@ -22,4 +22,7 @@ type matching_var_kind = Evar_kinds.matching_var_kind
 type obligation_definition_status = Evar_kinds.obligation_definition_status
   [@@deriving sexp,yojson,hash,compare]
 
+type glob_evar_kind = Evar_kinds.glob_evar_kind
+  [@@deriving sexp,yojson,hash,compare]
+
 include SerType.SJHC with type t = Evar_kinds.t
