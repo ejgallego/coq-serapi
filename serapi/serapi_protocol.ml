@@ -180,7 +180,7 @@ let _pp_explicitation = let open Constrexpr in function
 
 let pp_implicit : Impargs.implicit_status -> Pp.t = function
   | None              -> Pp.str "!"
-  | Some (_expl, _, _) -> Pp.str "!" (* pp_explicitation expl *)
+  | Some _ -> Pp.str "!" (* pp_explicitation expl *)
 
 (*
 let pp_richpp xml =
