@@ -50,6 +50,10 @@ type implicit_position =
   [%import: Impargs.implicit_position]
   [@@deriving sexp]
 
+type implicit_status_info =
+  [%import: Impargs.implicit_status_info]
+  [@@deriving sexp]
+
 type implicit_status =
   [%import: Impargs.implicit_status]
   [@@deriving sexp]
