@@ -51,6 +51,7 @@ module Mindmap : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindm
 module Mindmap_env : Ser_cMap.ExtS with type key = MutInd.t and type 'a t = 'a Mindmap_env.t
 
 module Indset_env : Ser_cSet.ExtS with type elt = inductive and type t = Indset_env.t
+module Indmap_env : Ser_cMap.ExtS with type key = inductive and type 'a t = 'a Indmap_env.t
 
 type 'a tableKey = 'a Names.tableKey
 

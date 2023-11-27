@@ -27,6 +27,7 @@ module Quality : sig
   type constant = Sorts.Quality.constant [@@deriving sexp,yojson,hash,compare]
 
   include SerType.SJHC with type t = Sorts.Quality.t
+  module Set : SerType.SJHC with type t = Sorts.Quality.Set.t
 end
 
 module QConstraints : SerType.SJHC with type t = Sorts.QConstraints.t

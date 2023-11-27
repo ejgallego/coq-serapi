@@ -63,6 +63,10 @@ type inductive_arity =
   [%import: Declarations.inductive_arity]
   [@@deriving sexp,yojson,hash,compare]
 
+type squash_info =
+  [%import: Declarations.squash_info]
+  [@@deriving sexp,yojson,hash,compare]
+
 type one_inductive_body =
   [%import: Declarations.one_inductive_body]
   [@@deriving sexp,yojson,hash,compare]
