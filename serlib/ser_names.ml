@@ -218,6 +218,7 @@ module Ind = struct
 end
 
 module Indset_env = Ser_cSet.Make(Indset_env)(Ind)
+module Indmap_env = Ser_cMap.Make(Indmap_env)(Ind)
 
 type inductive =
   [%import: Names.inductive]

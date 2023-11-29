@@ -38,7 +38,11 @@ end
 
 module Quality = struct
   type constant = [%import: Sorts.Quality.constant] [@@deriving sexp,yojson,hash,compare]
-  type t = [%import: Sorts.Quality.t] [@@deriving sexp,yojson,hash,compare]
+  module Self = struct
+    type t = [%import: Sorts.Quality.t] [@@deriving sexp,yojson,hash,compare]
+  end
+  include Self
+  module Set = Ser_cSet.Make(Sorts.Quality.Set)(Self)
 end
 
 module PierceSpec = struct
