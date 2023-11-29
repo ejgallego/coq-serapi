@@ -59,6 +59,11 @@
 
 (rule
  (alias runtest)
+ (deps (:input extraction.v))
+ (action (run ./test_roundtrip %{input})))
+
+(rule
+ (alias runtest)
  (deps (:input firstorder.v))
  (action (run ./test_roundtrip %{input})))
 
