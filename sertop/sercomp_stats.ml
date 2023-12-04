@@ -63,7 +63,7 @@ let do_stats =
                                        proof_loc := None
   (* This is tricky.. *)
   (* This is Ltac := ... *)
-  | VernacSynterp (VernacExtend (("VernacDeclareTacticDefinition",_),_))
+  | VernacSynterp (VernacExtend ({ Vernacexpr.ext_entry = "VernacDeclareTacticDefinition"; _ },_))
                                     -> stats.proofs <- incS ?loc stats.proofs;
 
   | _                               -> if Option.is_empty !proof_loc then stats.misc <- incS ?loc stats.misc
