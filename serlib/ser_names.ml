@@ -267,9 +267,11 @@ type t = [%import: Names.GlobRef.t]
 end
 
 (* Evaluable global reference: public *)
-(* type evaluable_global_reference =
- *   [%import: Names.evaluable_global_reference]
- *   [@@deriving sexp] *)
+module Evaluable = struct
+  type t =
+    [%import: Names.Evaluable.t]
+    [@@deriving sexp,yojson,hash,compare]
+end
 
 type lident =
   [%import: Names.lident]

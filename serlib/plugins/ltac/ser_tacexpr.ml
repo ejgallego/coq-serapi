@@ -44,7 +44,6 @@ module Goal_select = Ser_goal_select
 module Pattern    = Ser_pattern
 module Constrexpr = Ser_constrexpr
 module Vernacexpr = Ser_vernacexpr
-module Tacred     = Ser_tacred
 module Tactypes   = Ser_tactypes
 module Tactics    = Ser_tactics
 module Equality   = Ser_equality
@@ -509,7 +508,7 @@ let rec glob_tactic_expr_of_sexp tac =
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_pattern_and_expr_of_sexp
-    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Tacred.evaluable_global_reference_of_sexp))
+    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Names.Evaluable.t_of_sexp))
     (Locus.or_var_of_sexp (Loc.located_of_sexp ltac_constant_of_sexp))
     Names.lident_of_sexp
     glob_tactic_expr_of_sexp
@@ -520,7 +519,7 @@ and glob_atomic_tactic_expr_of_sexp tac =
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_and_expr_of_sexp
     Genintern.glob_constr_pattern_and_expr_of_sexp
-    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Tacred.evaluable_global_reference_of_sexp))
+    (Locus.or_var_of_sexp (Genredexpr.and_short_name_of_sexp Names.Evaluable.t_of_sexp))
     (Locus.or_var_of_sexp (Loc.located_of_sexp ltac_constant_of_sexp))
     Names.lident_of_sexp
     glob_tactic_expr_of_sexp
@@ -531,7 +530,7 @@ let rec sexp_of_glob_tactic_expr (tac : glob_tactic_expr) =
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_pattern_and_expr
-    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Tacred.sexp_of_evaluable_global_reference))
+    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Names.Evaluable.sexp_of_t))
     (Locus.sexp_of_or_var (Loc.sexp_of_located sexp_of_ltac_constant))
     Names.sexp_of_lident
     sexp_of_glob_tactic_expr
@@ -542,7 +541,7 @@ and sexp_of_glob_atomic_tactic_expr (tac : glob_atomic_tactic_expr) =
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_and_expr
     Genintern.sexp_of_glob_constr_pattern_and_expr
-    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Tacred.sexp_of_evaluable_global_reference))
+    (Locus.sexp_of_or_var (Genredexpr.sexp_of_and_short_name Names.Evaluable.sexp_of_t))
     (Locus.sexp_of_or_var (Loc.sexp_of_located sexp_of_ltac_constant))
     Names.sexp_of_lident
     sexp_of_glob_tactic_expr
@@ -555,7 +554,7 @@ let rec glob_tactic_expr_of_yojson tac =
     Genintern.glob_constr_and_expr_of_yojson
     Genintern.glob_constr_and_expr_of_yojson
     Genintern.glob_constr_pattern_and_expr_of_yojson
-    (Locus.or_var_of_yojson (Genredexpr.and_short_name_of_yojson Tacred.evaluable_global_reference_of_yojson))
+    (Locus.or_var_of_yojson (Genredexpr.and_short_name_of_yojson Names.Evaluable.of_yojson))
     (Locus.or_var_of_yojson (Loc.located_of_yojson ltac_constant_of_yojson))
     Names.lident_of_yojson
     glob_tactic_expr_of_yojson
@@ -566,7 +565,7 @@ and glob_atomic_tactic_expr_of_yojson tac =
     Genintern.glob_constr_and_expr_of_yojson
     Genintern.glob_constr_and_expr_of_yojson
     Genintern.glob_constr_pattern_and_expr_of_yojson
-    (Locus.or_var_of_yojson (Genredexpr.and_short_name_of_yojson Tacred.evaluable_global_reference_of_yojson))
+    (Locus.or_var_of_yojson (Genredexpr.and_short_name_of_yojson Names.Evaluable.of_yojson))
     (Locus.or_var_of_yojson (Loc.located_of_yojson ltac_constant_of_yojson))
     Names.lident_of_yojson
     glob_tactic_expr_of_yojson
@@ -577,7 +576,7 @@ let rec glob_tactic_expr_to_yojson tac =
     Genintern.glob_constr_and_expr_to_yojson
     Genintern.glob_constr_and_expr_to_yojson
     Genintern.glob_constr_pattern_and_expr_to_yojson
-    (Locus.or_var_to_yojson (Genredexpr.and_short_name_to_yojson Tacred.evaluable_global_reference_to_yojson))
+    (Locus.or_var_to_yojson (Genredexpr.and_short_name_to_yojson Names.Evaluable.to_yojson))
     (Locus.or_var_to_yojson (Loc.located_to_yojson ltac_constant_to_yojson))
     Names.lident_to_yojson
     glob_tactic_expr_to_yojson
@@ -588,7 +587,7 @@ and glob_atomic_tactic_expr_to_yojson tac =
     Genintern.glob_constr_and_expr_to_yojson
     Genintern.glob_constr_and_expr_to_yojson
     Genintern.glob_constr_pattern_and_expr_to_yojson
-    (Locus.or_var_to_yojson (Genredexpr.and_short_name_to_yojson Tacred.evaluable_global_reference_to_yojson))
+    (Locus.or_var_to_yojson (Genredexpr.and_short_name_to_yojson Names.Evaluable.to_yojson))
     (Locus.or_var_to_yojson (Loc.located_to_yojson ltac_constant_to_yojson))
     Names.lident_to_yojson
     glob_tactic_expr_to_yojson
@@ -600,7 +599,7 @@ let rec hash_fold_glob_tactic_expr st tac =
     Genintern.hash_fold_glob_constr_and_expr
     Genintern.hash_fold_glob_constr_and_expr
     Genintern.hash_fold_glob_constr_pattern_and_expr
-    (Locus.hash_fold_or_var (Genredexpr.hash_fold_and_short_name Tacred.hash_fold_evaluable_global_reference))
+    (Locus.hash_fold_or_var (Genredexpr.hash_fold_and_short_name Names.Evaluable.hash_fold_t))
     (Locus.hash_fold_or_var (Loc.hash_fold_located hash_fold_ltac_constant))
     Names.hash_fold_lident
     hash_fold_glob_tactic_expr
@@ -611,7 +610,7 @@ and hash_fold_glob_atomic_tactic_expr st tac =
     Genintern.hash_fold_glob_constr_and_expr
     Genintern.hash_fold_glob_constr_and_expr
     Genintern.hash_fold_glob_constr_pattern_and_expr
-    (Locus.hash_fold_or_var (Genredexpr.hash_fold_and_short_name Tacred.hash_fold_evaluable_global_reference))
+    (Locus.hash_fold_or_var (Genredexpr.hash_fold_and_short_name Names.Evaluable.hash_fold_t))
     (Locus.hash_fold_or_var (Loc.hash_fold_located hash_fold_ltac_constant))
     Names.hash_fold_lident
     hash_fold_glob_tactic_expr
@@ -626,7 +625,7 @@ let rec compare_glob_tactic_expr tac =
     Genintern.compare_glob_constr_and_expr
     Genintern.compare_glob_constr_and_expr
     Genintern.compare_glob_constr_pattern_and_expr
-    (Locus.compare_or_var (Genredexpr.compare_and_short_name Tacred.compare_evaluable_global_reference))
+    (Locus.compare_or_var (Genredexpr.compare_and_short_name Names.Evaluable.compare))
     (Locus.compare_or_var (Loc.compare_located compare_ltac_constant))
     Names.compare_lident
     compare_glob_tactic_expr
@@ -637,7 +636,7 @@ and compare_glob_atomic_tactic_expr tac =
     Genintern.compare_glob_constr_and_expr
     Genintern.compare_glob_constr_and_expr
     Genintern.compare_glob_constr_pattern_and_expr
-    (Locus.compare_or_var (Genredexpr.compare_and_short_name Tacred.compare_evaluable_global_reference))
+    (Locus.compare_or_var (Genredexpr.compare_and_short_name Names.Evaluable.compare))
     (Locus.compare_or_var (Loc.compare_located compare_ltac_constant))
     Names.compare_lident
     compare_glob_tactic_expr
@@ -798,7 +797,7 @@ let atomic_tactic_expr_of_sexp tac =
     EConstr.t_of_sexp
     Genintern.glob_constr_and_expr_of_sexp
     Pattern.constr_pattern_of_sexp
-    Tacred.evaluable_global_reference_of_sexp
+    Names.Evaluable.t_of_sexp
     (Loc.located_of_sexp ltac_constant_of_sexp)
     Names.Id.t_of_sexp
     unit_of_sexp
@@ -809,7 +808,7 @@ let sexp_of_atomic_tactic_expr tac =
     EConstr.sexp_of_t
     Genintern.sexp_of_glob_constr_and_expr
     Pattern.sexp_of_constr_pattern
-    Tacred.sexp_of_evaluable_global_reference
+    Names.Evaluable.sexp_of_t
     (Loc.sexp_of_located sexp_of_ltac_constant)
     Names.Id.sexp_of_t
     sexp_of_unit
