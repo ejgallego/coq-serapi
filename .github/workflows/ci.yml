@@ -14,6 +14,7 @@ on:
     - v8.16
     - v8.17
     - v8.18
+    - v8.19
     - main
   pull_request:
     branches:
@@ -28,6 +29,7 @@ on:
     - v8.16
     - v8.17
     - v8.18
+    - v8.19
     - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -39,7 +41,7 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: [coq.dev coq-mathcomp-ssreflect.1.dev]
+        extra-opam: [coq.8.19.dev coq-mathcomp-ssreflect.1.dev]
         include:
         - ocaml-compiler: 4.13.1
           test-target: test
@@ -51,7 +53,7 @@ jobs:
       OPAMYES: "true"
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
-      COQ_BRANCH: "master"
+      COQ_BRANCH: "v8.19"
     runs-on: ubuntu-22.04
 
     steps:
