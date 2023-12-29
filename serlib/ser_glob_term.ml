@@ -78,6 +78,10 @@ type glob_qvar =
   [%import: Glob_term.glob_qvar]
   [@@deriving sexp,yojson,hash,compare]
 
+type glob_relevance =
+  [%import: Glob_term.glob_relevance]
+  [@@deriving sexp,yojson,hash,compare]
+
 type glob_quality =
   [%import: Glob_term.glob_quality]
   [@@deriving sexp,yojson,hash,compare]
@@ -113,6 +117,11 @@ type glob_recarg =
 type glob_fix_kind =
   [%import: Glob_term.glob_fix_kind]
   [@@deriving sexp,yojson,hash,compare]
+
+type relevance_info =
+  [%import: Glob_term.relevance_info]
+  [@@deriving sexp,yojson,hash,compare]
+
 
 type glob_evar_kind = Evar_kinds.glob_evar_kind
   [@@deriving sexp,yojson,hash,compare]

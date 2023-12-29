@@ -52,6 +52,14 @@ type quality_expr =
   [%import: Constrexpr.quality_expr]
   [@@deriving sexp,yojson,hash,compare]
 
+type relevance_expr =
+  [%import: Constrexpr.relevance_expr]
+  [@@deriving sexp,yojson,hash,compare]
+
+type relevance_info_expr =
+  [%import: Constrexpr.relevance_info_expr]
+  [@@deriving sexp,yojson,hash,compare]
+
 type sort_expr =
   [%import: Constrexpr.sort_expr]
   [@@deriving sexp,yojson,hash,compare]
