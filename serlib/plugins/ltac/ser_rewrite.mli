@@ -19,7 +19,7 @@ type unary_strategy = Rewrite.unary_strategy
 type binary_strategy = Rewrite.binary_strategy
   [@@deriving sexp, hash, compare]
 
-type ('a,'b) strategy_ast = ('a,'b) Rewrite.strategy_ast
+type ('a,'b,'c) strategy_ast = ('a,'b,'c) Rewrite.strategy_ast
   [@@deriving sexp, hash, compare]
 
 type strategy = Rewrite.strategy
