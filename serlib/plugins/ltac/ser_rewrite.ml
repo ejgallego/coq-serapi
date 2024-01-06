@@ -29,8 +29,8 @@ type nary_strategy =
   [%import: Rewrite.nary_strategy]
   [@@deriving sexp,hash,compare]
 
-type ('a,'b) strategy_ast =
-  [%import: ('a,'b) Rewrite.strategy_ast]
+type ('a,'b,'c) strategy_ast =
+  [%import: ('a,'b,'c) Rewrite.strategy_ast]
   [@@deriving sexp,hash,compare]
 
 type strategy = Rewrite.strategy

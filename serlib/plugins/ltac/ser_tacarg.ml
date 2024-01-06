@@ -275,17 +275,17 @@ let wit_rewstrategy = Ltac_plugin.G_rewrite.wit_rewstrategy
 
 module GT2 = struct
   type raw =
-    [%import: Ltac_plugin.G_rewrite.raw_strategy]
+    [%import: Ltac_plugin.Tacexpr.raw_strategy]
   [@@deriving sexp,hash,compare]
   type glb =
-    [%import: Ltac_plugin.G_rewrite.glob_strategy]
+    [%import: Ltac_plugin.Tacexpr.glob_strategy]
   [@@deriving sexp,hash,compare]
   type top = Ltac_plugin.Rewrite.strategy
   [@@deriving sexp,hash,compare]
 end
 
 
-(* (G_rewrite.raw_strategy, G_rewrite.glob_strategy, Rewrite.strategy) *)
+(* (Tacexpr.raw_strategy, Tacexpr.glob_strategy, Rewrite.strategy) *)
 
 let ser_wit_rewstrategy = let module M = Ser_genarg.GS(GT2) in M.genser
 
