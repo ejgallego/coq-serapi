@@ -42,8 +42,8 @@ type ('a, 'b) declaration_arity =
   [%import: ('a, 'b) Declarations.declaration_arity]
   [@@deriving sexp,yojson,hash,compare]
 
-type nested_type =
-  [%import: Declarations.nested_type]
+type recarg_type =
+  [%import: Declarations.recarg_type]
   [@@deriving sexp,yojson,hash,compare]
 
 type recarg =
