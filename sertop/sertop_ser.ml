@@ -105,9 +105,12 @@ module Printer    = Ser_printer
 (* module Stm        = Ser_stm *)
 module Ser_stm    = Ser_stm
 
+module LtacX_common_plugin = struct
+  module Profile_ltac = Serlib_ltacX_common.Ser_profile_ltac
+end
+
 module Ltac_plugin = struct
   module Tacenv       = Serlib_ltac.Ser_tacenv
-  module Profile_ltac = Serlib_ltac.Ser_profile_ltac
   module Tacexpr      = Serlib_ltac.Ser_tacexpr
 end
 

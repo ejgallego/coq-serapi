@@ -21,6 +21,7 @@
 (* Public API for Ocaml clients                                         *)
 (************************************************************************)
 
+open LtacX_common_plugin
 open Ltac_plugin
 
 (** The SerAPI Protocol *)

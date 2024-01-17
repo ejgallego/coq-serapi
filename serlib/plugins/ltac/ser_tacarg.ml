@@ -19,6 +19,7 @@ open Ppx_compare_lib.Builtin
 
 open Serlib
 
+open LtacX_common_plugin
 open Ltac_plugin
 
 module CAst         = Ser_cAst
@@ -439,10 +440,10 @@ let register () =
   Ser_genarg.register_genser G_ltac.wit_ltac_info ser_wit_ltac_info;
   Ser_genarg.register_genser G_ltac.wit_ltac_production_item ser_wit_production_item;
   Ser_genarg.register_genser G_ltac.wit_ltac_production_sep ser_wit_ltac_production_sep;
-  Ser_genarg.register_genser G_ltac.wit_ltac_selector ser_wit_ltac_selector;
+  Ser_genarg.register_genser G_ltacX_common.wit_ltac_selector ser_wit_ltac_selector;
   Ser_genarg.register_genser G_ltac.wit_ltac_tacdef_body ser_wit_ltac_tacdef_body;
   Ser_genarg.register_genser G_ltac.wit_ltac_tactic_level ser_wit_ltac_tactic_level;
-  Ser_genarg.register_genser G_ltac.wit_ltac_use_default ser_wit_ltac_use_default;
+  Ser_genarg.register_genser G_ltacX_common.wit_ltac_use_default ser_wit_ltac_use_default;
 
   Ser_genarg.register_genser G_auto.wit_auto_using ser_wit_auto_using;
   Ser_genarg.register_genser G_auto.wit_hintbases ser_wit_hintbases;

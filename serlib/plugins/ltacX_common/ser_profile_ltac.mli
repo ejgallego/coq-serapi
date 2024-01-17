@@ -15,7 +15,7 @@
 
 open Sexplib
 
-open Ltac_plugin
+open LtacX_common_plugin
 
 type treenode = Profile_ltac.treenode
 

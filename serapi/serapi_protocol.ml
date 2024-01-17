@@ -28,6 +28,7 @@
  * embed a few utility functions in the `Extra` module below.
  *)
 
+open LtacX_common_plugin
 open Ltac_plugin
 open! Sexplib.Conv
 
