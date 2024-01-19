@@ -1,6 +1,6 @@
 ## unreleased
 
- - [general] Cleanup old / unused code (@ejgallego, #)
+ - [general] Cleanup old / unused code (@ejgallego, #362)
 
 ## Version 0.18.1:
 
@@ -13,6 +13,11 @@
             many others).
  - [serlib] Fix ltac2 plugin wrong piercing due to missing constructor
             (@ejgallego, reported by @quarkcool, #349).
+
+## Version 0.17.2:
+
+ - [serlib] Expose some more Ast functions required by coq-lsp's
+            auto-build support (@ejgallego, #383)
 
 ## Version 0.17.1:
 
