@@ -1,3 +1,8 @@
+## Version 0.17.2:
+
+ - [serlib] Expose some more Ast functions required by coq-lsp's
+            auto-build support (@ejgallego, #383)
+
 ## Version 0.17.1:
 
  - [sertop] Don't initialize `CoqworkmgrApi` (@ejgallego, #340)
