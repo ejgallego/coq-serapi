@@ -84,7 +84,6 @@ jobs:
         if: ${{ matrix.coq-from-git }}
         run: |
           eval $(opam env)
-          opam pin add -k version dune 3.3.1
           # First we update SERAPI_COQ_HOME for future steps as per https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
           echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_BRANCH/_build/install/default/lib/" >> $GITHUB_ENV
           # Update to coq-core some day
