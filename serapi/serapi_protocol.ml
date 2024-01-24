@@ -130,7 +130,7 @@ type coq_object =
   | CoqGlobRef   of Names.GlobRef.t
   | CoqGlobRefExt of Globnames.extended_global_reference
   | CoqImplicit  of Impargs.implicits_list
-  | CoqProfData  of Profile_ltac.treenode
+  | CoqProfData  of Profile_tactic.treenode
   | CoqNotation  of Constrexpr.notation
   | CoqUnparsing of Ppextend.notation_printing_rules * Notation_gram.notation_grammar
   | CoqGoal      of Constr.t               Serapi_goals.reified_goal Serapi_goals.ser_goals
@@ -600,7 +600,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | Tactics prefix -> List.map (fun (i,t) -> CoqTactic(i,t)) @@ QueryUtil.query_tactics prefix
   | Locate  id     -> List.map (fun qid -> CoqQualId qid) @@ QueryUtil.locate id
   | Implicits id   -> List.map (fun ii -> CoqImplicit ii ) @@ QueryUtil.implicits id
-  | ProfileData    -> [CoqProfData (Profile_ltac.get_local_profiling_results ())]
+  | ProfileData    -> [CoqProfData (Profile_tactic.get_local_profiling_results ())]
   | Proof          -> QueryUtil.get_proof ~pstate
   | Unparsing ntn  -> (* Unfortunately this will produce an anomaly if the notation is not found...
                        * To keep protocol promises we need to special wrap it.

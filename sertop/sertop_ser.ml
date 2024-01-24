@@ -100,6 +100,7 @@ module Notation_gram = Ser_notation_gram
 module Genarg     = Ser_genarg
 module Loadpath   = Ser_loadpath
 module Printer    = Ser_printer
+module Profile_tactic = Ser_profile_tactic
 
 (* Alias fails due to the [@@default in protocol] *)
 (* module Stm        = Ser_stm *)
@@ -107,7 +108,6 @@ module Ser_stm    = Ser_stm
 
 module Ltac_plugin = struct
   module Tacenv       = Serlib_ltac.Ser_tacenv
-  module Profile_ltac = Serlib_ltac.Ser_profile_ltac
   module Tacexpr      = Serlib_ltac.Ser_tacexpr
 end
 

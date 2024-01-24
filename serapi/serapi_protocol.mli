@@ -215,7 +215,7 @@ type coq_object =
   (** "Extended Global Reference", as they can contain syntactic definitions too *)
   | CoqImplicit  of Impargs.implicits_list
   (** Implicit status for a constant *)
-  | CoqProfData  of Profile_ltac.treenode
+  | CoqProfData  of Profile_tactic.treenode
   (** Ltac Profiler data *)
   | CoqNotation  of Constrexpr.notation
   (** Representation of a notation (usually a string) *)

@@ -15,9 +15,7 @@
 
 open Sexplib
 
-open Ltac_plugin
-
-type treenode = Profile_ltac.treenode
+type treenode = Profile_tactic.treenode
 
 val treenode_of_sexp : Sexp.t -> treenode
 val sexp_of_treenode : treenode -> Sexp.t
