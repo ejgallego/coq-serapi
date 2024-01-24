@@ -24,7 +24,6 @@ module Locus = Ser_locus
 module Libnames = Ser_libnames
 module Constrexpr = Ser_constrexpr
 module Genintern = Ser_genintern
-module Tacred = Ser_tacred
 
 type 'a red_atom =
   [%import: 'a Genredexpr.red_atom]
@@ -99,13 +98,13 @@ module A = struct
 
   type glb =
     (Ser_genintern.glob_constr_and_expr,
-     Ser_tacred.evaluable_global_reference and_short_name Ser_locus.or_var,
+     Ser_names.Evaluable.t and_short_name Ser_locus.or_var,
      Ser_genintern.glob_constr_pattern_and_expr) red_expr_gen
   [@@deriving sexp,yojson,hash,compare]
 
   type top =
     (Ser_eConstr.constr,
-     Ser_tacred.evaluable_global_reference,
+     Ser_names.Evaluable.t,
      Ser_pattern.constr_pattern) red_expr_gen
   [@@deriving sexp,yojson,hash,compare]
 end
