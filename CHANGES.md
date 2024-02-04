@@ -1,5 +1,7 @@
-## unreleased
+## Version 0.19.0
 
+ - [serapi] (!) support for Coq 8.19, thanks to all the developers
+            that contributed compatibility patches.
  - [general] Cleanup old / unused code (@ejgallego, #362)
 
 ## Version 0.18.1:
