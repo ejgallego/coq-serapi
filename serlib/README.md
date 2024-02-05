@@ -15,6 +15,43 @@ plugins.
 `serlib` provides some builtins and configuration values in the
 `Serlib_base` and `Serlib_init` modules.
 
+### Serializing regular Coq types
+
+The standard recipe is to use a combination of `ppx_import` and
+several ppx-based "derivers" to make `serlib` generate the
+corresponding serializers.
+
+The pattern for a Coq module `Foo` exporting the datatype `bar` and
+their constructors is:
+
+1. create a new OCaml module named `ser_foo.ml`
+2. get the corresponding serializers for existing types in scope, this is unusually done in two steps:
+  - serializers for OCaml Stdlib:
+```ocaml
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+open Sexplib.Std
+```
+  - serializers for types that `Foo.bar` depends on, for example:
+```ocaml
+module Names = Ser_names
+module EConstr = Ser_eConstr
+...
+```
+3. implement the serializers for your type. Add to `ser_foo.ml`:
+```ocaml
+type bar =
+  [%import: Foo.bar]
+  [@@deriving sexp,yojson,hash,compare]
+```
+
+Additionally, you can add an `.mli` file, with the same contents as
+above, but in this case, `[@@deriving ...]` will generate the right
+interface declarations.
+
+If `Foo.bar` has no public constructors, `Obj.magic` will be
+needed. `serlib` provides helpers for this, see below.
+
 ### Serializing opaque and private types
 
 `serlib` uses `ppx_import` to retrieve the original type definitions
