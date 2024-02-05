@@ -62,6 +62,14 @@ type relevance =
   [%import: Sorts.relevance]
   [@@deriving sexp,yojson,hash,compare]
 
+open Sexplib.Std
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
+type pattern =
+  [%import: Sorts.pattern]
+  [@@deriving sexp,yojson,hash,compare]
+
 module QConstraint = struct
   type kind =
     [%import: Sorts.QConstraint.kind]
