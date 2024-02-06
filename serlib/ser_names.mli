@@ -74,8 +74,6 @@ end
 
 module GlobRef : SerType.SJHC with type t = Names.GlobRef.t
 
-module Evaluable : SerType.SJHC with type t = Names.Evaluable.t
-
 type lident = Names.lident [@@deriving sexp,yojson,hash,compare]
 type lname = Names.lname [@@deriving sexp,yojson,hash,compare]
 type lstring = Names.lstring [@@deriving sexp,yojson,hash,compare]
