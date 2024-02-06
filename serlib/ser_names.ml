@@ -266,13 +266,6 @@ type t = [%import: Names.GlobRef.t]
 
 end
 
-(* Evaluable global reference: public *)
-module Evaluable = struct
-  type t =
-    [%import: Names.Evaluable.t]
-    [@@deriving sexp,yojson,hash,compare]
-end
-
 type lident =
   [%import: Names.lident]
   [@@deriving sexp,yojson,hash,compare]
