@@ -28,6 +28,7 @@ module Declarations = Ser_declarations
 module Entries = Ser_entries
 module Cooking = Ser_cooking
 module Univ = Ser_univ
+module Vmemitcodes = Ser_vmemitcodes
 
 (* Side_effects *)
 type certificate = {
@@ -38,7 +39,7 @@ type certificate = {
 type side_effect = {
   seff_certif : certificate CEphemeron.key;
   seff_constant : Names.Constant.t;
-  seff_body : Constr.t Declarations.pconstant_body;
+  seff_body : (Constr.t, Vmemitcodes.body_code option) Declarations.pconstant_body;
   seff_univs : Univ.ContextSet.t;
 } [@@deriving sexp,yojson,hash,compare]
 

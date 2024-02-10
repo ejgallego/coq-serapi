@@ -16,7 +16,16 @@
 (* Status: Very Experimental                                            *)
 (************************************************************************)
 
+type patches = Vmemitcodes.patches
+ [@@deriving sexp,yojson,hash,compare]
+
+type to_patch = Vmemitcodes.to_patch
+ [@@deriving sexp,yojson,hash,compare]
+
 type body_code = Vmemitcodes.body_code
+ [@@deriving sexp,yojson,hash,compare]
+
+type 'a pbody_code = 'a Vmemitcodes.pbody_code
  [@@deriving sexp,yojson,hash,compare]
 
 (* type to_patch_substituted = Vmemitcodes.to_patch_substituted

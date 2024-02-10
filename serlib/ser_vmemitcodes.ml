@@ -38,10 +38,22 @@ let hash_fold_array = hash_fold_array_frozen
 type positions = string
  [@@deriving sexp,yojson,hash,compare]
 
-type patches = {
+type _patches = {
   reloc_infos : reloc_info array;
   reloc_positions : positions;
 } [@@deriving sexp,yojson,hash,compare]
+
+module PiercePatches = struct
+
+  type t = [%import: Vmemitcodes.patches]
+  type _t = _patches
+   [@@deriving sexp,yojson,hash,compare]
+
+end
+
+module C = SerType.Pierce(PiercePatches)
+type patches = C.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type emitcodes = string
  [@@deriving sexp,yojson,hash,compare]
@@ -51,7 +63,7 @@ type _to_patch = emitcodes * patches
 
 module PierceToPatch = struct
 
-  type t = Vmemitcodes.to_patch
+  type t = [%import: Vmemitcodes.to_patch]
   type _t = _to_patch
    [@@deriving sexp,yojson,hash,compare]
 
@@ -60,6 +72,10 @@ end
 module B = SerType.Pierce(PierceToPatch)
 type to_patch = B.t
  [@@deriving sexp,yojson,hash,compare]
+
+type 'a pbody_code =
+  [%import: 'a Vmemitcodes.pbody_code]
+  [@@deriving sexp,yojson,hash,compare]
 
 type body_code =
   [%import: Vmemitcodes.body_code]

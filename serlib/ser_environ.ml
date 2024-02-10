@@ -29,6 +29,7 @@ module Opaqueproof    = Ser_opaqueproof
 module Retroknowledge = Ser_retroknowledge
 module UGraph         = Ser_uGraph
 module Declarations   = Ser_declarations
+module Vmlibrary      = Ser_vmlibrary
 
 (* type stratification =
  *   [%import: Environ.stratification]
