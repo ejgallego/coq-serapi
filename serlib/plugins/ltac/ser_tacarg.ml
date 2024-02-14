@@ -215,23 +215,12 @@ let ser_wit_hintbases = let module M = Ser_genarg.GS(A16) in M.genser
 module A17 = struct
   type raw = Ser_libnames.qualid Ser_hints.hints_path_gen
   [@@deriving sexp,hash,compare]
-  type glb = Ser_hints.hints_path
+  type glb = unit
   [@@deriving sexp,hash,compare]
-  type top = Ser_hints.hints_path
+  type top = unit
   [@@deriving sexp,hash,compare]
 end
 let ser_wit_hintbases_path = let module M = Ser_genarg.GS(A17) in M.genser
-
-module A18 = struct
-  type raw = Libnames.qualid Hints.hints_path_atom_gen
-  [@@deriving sexp,hash,compare]
-  type glb = Names.GlobRef.t Hints.hints_path_atom_gen
-  [@@deriving sexp,hash,compare]
-  type top = Names.GlobRef.t Hints.hints_path_atom_gen
-  [@@deriving sexp,hash,compare]
-end
-
-let ser_wit_hintbases_path_atom = let module M = Ser_genarg.GS(A18) in M.genser
 
 module A19 = struct
   type raw = string list option
@@ -447,7 +436,6 @@ let register () =
   Ser_genarg.register_genser G_auto.wit_auto_using ser_wit_auto_using;
   Ser_genarg.register_genser G_auto.wit_hintbases ser_wit_hintbases;
   Ser_genarg.register_genser G_auto.wit_hints_path ser_wit_hintbases_path;
-  Ser_genarg.register_genser G_auto.wit_hints_path_atom ser_wit_hintbases_path_atom;
   Ser_genarg.register_genser G_auto.wit_opthints ser_wit_opthints;
 
   Ser_genarg.register_genser G_rewrite.wit_binders G_rewrite.ser_wit_binders;
