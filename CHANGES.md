@@ -1,5 +1,7 @@
 ## unreleased
 
+ - [serlib] Support `btauto` Coq plugin (@ejgallego, #362)
+
 ## Version 0.19.0
 
  - [serapi] (!) support for Coq 8.19, thanks to all the developers
