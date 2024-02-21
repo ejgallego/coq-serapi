@@ -9,10 +9,11 @@
 (************************************************************************)
 
 (************************************************************************)
-(* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
+(* SerAPI: Coq interaction protocol with bidirectional serialization    *)
 (************************************************************************)
-(* Status: Very Experimental                                            *)
+(* Copyright 2016-2019 MINES ParisTech -- License LGPL 2.1+             *)
+(* Copyright 2019-2023 Inria           -- License LGPL 2.1+             *)
+(* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
 open Sexplib.Std

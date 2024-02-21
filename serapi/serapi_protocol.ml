@@ -1,32 +1,20 @@
 (************************************************************************)
 (*         *   The Coq Proof Assistant / The Coq Development Team       *)
-(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2018       *)
-(* <O___,, *       (see CREDITS file for the list of authors)           *)
-(*   \VV/  **************************************************************)
+(*  v      *         Copyright INRIA, CNRS and contributors             *)
+(* <O___,, * (see version control and CREDITS file for authors & dates) *)
+(*   VV/  **************************************************************)
 (*    //   *    This file is distributed under the terms of the         *)
 (*         *     GNU Lesser General Public License Version 2.1          *)
 (*         *     (see LICENSE file for the text of the license)         *)
 (************************************************************************)
 
 (************************************************************************)
-(* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2019 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
-(* Copyright 2019-2021 Inria           -- Dual License LGPL 2.1 / GPL3+ *)
-(* Written by: Emilio J. Gallego Arias                                  *)
+(* SerAPI: Coq interaction protocol with bidirectional serialization    *)
 (************************************************************************)
-(* Status: Very Experimental                                            *)
+(* Copyright 2016-2019 MINES ParisTech -- License LGPL 2.1+             *)
+(* Copyright 2019-2023 Inria           -- License LGPL 2.1+             *)
+(* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
-
-(* Cost analysis: in the past we used to pay almost 3MiB of overload
- * in SerAPI.
- *
- * Now, thanks to smarter linking flags we are paying ~500k for the whole
- * of SerTOP when compared to jsCoq, it is IMHO great.
- *
- * Unfortunately, Core_kernel would cost us ~1.8MiB more, it is too
- * much for now until we figure out a better linking strategy. We manually
- * embed a few utility functions in the `Extra` module below.
- *)
 
 open Ltac_plugin
 open! Sexplib.Conv
@@ -43,30 +31,10 @@ module Extra = struct
   let value     x ~default    = Option.default default x
   let value_map x ~default ~f = Option.cata f default x
 
-  (******************************************************************************)
-  (* Taken from Core_kernel, (c) Jane Street, released under Apache License 2.0 *)
-  let is_prefix_gen =
-    let rec loop s ~prefix ~char_equal i =
-      i < 0
-      || ((char_equal prefix.[i] s.[i])
-          && loop s ~prefix ~char_equal (i - 1))
-    in
-    fun s ~prefix ~char_equal ->
-      let prefix_len = String.length prefix in
-      String.length s >= prefix_len && loop s ~prefix ~char_equal (prefix_len - 1)
+  let is_prefix = Base.String.is_prefix
+  let split_while = Base.List.split_while
 
-  let is_prefix s ~prefix = is_prefix_gen s ~prefix ~char_equal:(fun x y -> x = y)
-
-  let split_while xs ~f =
-    let rec loop acc = function
-      | hd :: tl when f hd -> loop (hd :: acc) tl
-      | t -> (List.rev acc, t)
-    in
-    loop [] xs
-
-  (* End of Core_kernel code, (c) Jane Street *)
-  (******************************************************************************)
-
+  (* Custom tokenizer *)
   let rec stream_tok n_tok acc lstr =
     let e = Gramlib.LStream.next (Pcoq.get_keyword_state()) lstr in
     let loc = Gramlib.LStream.get_loc n_tok lstr in
