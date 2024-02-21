@@ -1,6 +1,8 @@
 ## Version 0.19.1
 
  - [serlib] Support `btauto` Coq plugin (@ejgallego, #362)
+ - [serlib] Support `extraction` Coq plugin (@ejgallego, @toku-sa-n,
+            #375, fixes #371)
 
 ## Version 0.19.0
 
