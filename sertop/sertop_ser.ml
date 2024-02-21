@@ -1,19 +1,19 @@
 (************************************************************************)
 (*         *   The Coq Proof Assistant / The Coq Development Team       *)
-(*  v      *   INRIA, CNRS and contributors - Copyright 1999-2018       *)
-(* <O___,, *       (see CREDITS file for the list of authors)           *)
-(*   \VV/  **************************************************************)
+(*  v      *         Copyright INRIA, CNRS and contributors             *)
+(* <O___,, * (see version control and CREDITS file for authors & dates) *)
+(*   VV/  **************************************************************)
 (*    //   *    This file is distributed under the terms of the         *)
 (*         *     GNU Lesser General Public License Version 2.1          *)
 (*         *     (see LICENSE file for the text of the license)         *)
 (************************************************************************)
 
 (************************************************************************)
-(* Coq serialization API/Plugin                                         *)
-(* Copyright 2016-2018 MINES ParisTech -- Dual License LGPL 2.1 / GPL3+ *)
-(* Written by: Emilio J. Gallego Arias                                  *)
+(* SerAPI: Coq interaction protocol with bidirectional serialization    *)
 (************************************************************************)
-(* Status: Very Experimental                                            *)
+(* Copyright 2016-2019 MINES ParisTech -- License LGPL 2.1+             *)
+(* Copyright 2019-2023 Inria           -- License LGPL 2.1+             *)
+(* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
 open Sexplib
@@ -26,7 +26,7 @@ type ser_printer =
   | SP_Human                    (* sexplib human printer *)
 
 let select_printer pr = match pr with
-  | SP_Sertop -> Sertop_util.pp_sertop
+  | SP_Sertop -> Js_sexp_printer.pp_sertop
   | SP_Mach   -> Sexp.pp
   | SP_Human  -> Sexp.pp_hum
 
@@ -93,7 +93,6 @@ module Impargs    = Ser_impargs
 module Constr     = Ser_constr
 module EConstr    = Ser_eConstr
 module Constrexpr = Ser_constrexpr
-module Proof      = Ser_proof
 module Tok        = Ser_tok
 module Ppextend   = Ser_ppextend
 module Notation_gram = Ser_notation_gram

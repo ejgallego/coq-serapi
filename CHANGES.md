@@ -1,3 +1,11 @@
+## Version 0.19.1
+
+ - [serlib] Support `btauto` Coq plugin (@ejgallego, #362)
+ - [serlib] Support `extraction` Coq plugin (@ejgallego, @toku-sa-n,
+            #375, fixes #371)
+ - [general] Make licensing clearer (@ejgallego, @palmskog,
+             @SnarkBoojum, #361, closes #266)
+
 ## Version 0.19.0
 
  - [serapi] (!) support for Coq 8.19, thanks to all the developers
