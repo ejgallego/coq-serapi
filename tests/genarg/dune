@@ -10,7 +10,7 @@
    (run chmod +w test_roundtrip)
    ; We insert the digest of the binaries to force a rebuild of the
    ; test cases if the binary has been modified.
-   (bash "echo \"# $(md5sum ../../sertop/sercomp.exe)\" >> test_roundtrip"))))
+   (bash "for i in ../../sertop/sercomp.exe ../../serlib/plugins/*/*.cmxs; do echo \"# $(md5sum $i)\"; done >> test_roundtrip"))))
 
 (rule
  (alias runtest)
