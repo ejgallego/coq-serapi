@@ -33,6 +33,8 @@ module Mod_subst   = Ser_mod_subst
 module Opaqueproof = Ser_opaqueproof
 module Vmemitcodes = Ser_vmemitcodes
 module Retroknowledge = Ser_retroknowledge
+module Uint63  = Ser_uint63
+module Float64 = Ser_float64
 
 type template_arity =
   [%import: Declarations.template_arity]
@@ -87,8 +89,8 @@ type universes =
   [%import: Declarations.universes]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('a, 'b) constant_def =
-  [%import: ('a, 'b) Declarations.constant_def]
+type ('a, 'b, 'c) constant_def =
+  [%import: ('a, 'b, 'c) Declarations.constant_def]
   [@@deriving sexp,yojson,hash,compare]
 
 type typing_flags =
@@ -143,6 +145,35 @@ type template_universes =
 type mutual_inductive_body =
   [%import: Declarations.mutual_inductive_body
   [@with Context.section_context := Context.Named.t;]]
+  [@@deriving sexp,yojson,hash,compare]
+
+type instance_mask =
+  [%import: UVars.Instance.mask]
+  [@@deriving sexp,yojson,hash,compare]
+
+type 'a head_pattern =
+  [%import: 'a Declarations.head_pattern
+    [@with sort_pattern := Sorts.pattern]]
+  [@@deriving sexp,yojson,hash,compare]
+
+type pattern_elimination =
+  [%import: Declarations.pattern_elimination]
+  [@@deriving sexp,yojson,hash,compare]
+
+and head_elimination =
+  [%import: Declarations.head_elimination]
+  [@@deriving sexp,yojson,hash,compare]
+
+and pattern_argument =
+  [%import: Declarations.pattern_argument]
+  [@@deriving sexp,yojson,hash,compare]
+
+type rewrite_rule =
+  [%import: Declarations.rewrite_rule]
+  [@@deriving sexp,yojson,hash,compare]
+
+type rewrite_rules_body =
+  [%import: Declarations.rewrite_rules_body]
   [@@deriving sexp,yojson,hash,compare]
 
 type ('ty,'a) functorize =

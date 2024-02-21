@@ -95,6 +95,10 @@ type primitive_entry =
   [%import: Entries.primitive_entry]
   [@@deriving sexp]
 
+type symbol_entry =
+  [%import: Entries.symbol_entry]
+  [@@deriving sexp]
+
 type constant_entry =
   [%import: Entries.constant_entry]
   [@@deriving sexp]
