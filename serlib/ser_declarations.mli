@@ -75,7 +75,7 @@ type inline = Declarations.inline
  * val sexp_of_cooking_info : cooking_info -> Sexp.t
  * val cooking_info_of_sexp : Sexp.t -> cooking_info *)
 
-type 'a pconstant_body = 'a Declarations.pconstant_body
+type ('a, 'b) pconstant_body = ('a, 'b) Declarations.pconstant_body
   [@@deriving sexp,yojson,hash,compare]
 
 type constant_body = Declarations.constant_body

@@ -37,6 +37,7 @@ module Vmemitcodes = Ser_vmemitcodes
 module Retroknowledge = Ser_retroknowledge
 module Uint63  = Ser_uint63
 module Float64 = Ser_float64
+module Vmlibrary = Ser_vmlibrary
 
 type template_arity =
   [%import: Declarations.template_arity]
@@ -111,8 +112,8 @@ type typing_flags =
  *   [%import: Declarations.cooking_info]
  *   [@@deriving sexp] *)
 
-type 'a pconstant_body =
-  [%import: 'a Declarations.pconstant_body]
+type ('a, 'b) pconstant_body =
+  [%import: ('a, 'b) Declarations.pconstant_body]
   [@@deriving sexp,yojson,hash,compare]
 
 type constant_body =
