@@ -21,6 +21,14 @@ Files: tests/genarg/*
 Authors: Karl Palmskog
 Licence: Derived from many projects as test cases, falls into fair-use
 
+Files: tests/genarg/LibTactics.v
+Authors: Arthur Chargueraud
+Licence: LGPL-v3
+
+Files: tests/genarg/*
+Authors: Karl Palmskog
+Licence: Derived from many projects as test cases, falls into fair-use
+
 Comment: the intent is to be compatible with Coq's license. Note that
-the LGPL-2.1+ allows to treat the code as GPL-3+ , and we favor that.
+the LGPL-2.1+ allows to treat the code as GPL-3+ , we explicitly ack that here.
 
