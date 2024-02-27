@@ -31,25 +31,21 @@ module WitII = struct
     [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_int_or_id = let module M = Ser_genarg.GS0(WitII) in M.genser
+let ser_wit_int_or_id = let module M = Ser_genarg.GSV(WitII) in M.genser
 
 module WitL = struct
-  type raw = Extraction_plugin.Table.lang
-    [@@deriving sexp,yojson,hash,compare]
-  type glb = unit
-    [@@deriving sexp,yojson,hash,compare]
-  type top = unit
+  type t = Extraction_plugin.Table.lang
     [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_language = let module M = Ser_genarg.GS(WitL) in M.genser
+let ser_wit_language = let module M = Ser_genarg.GSV(WitL) in M.genser
 
 module WitMN = struct
   type t = string
     [@@deriving sexp,yojson,hash,compare]
 end
 
-let ser_wit_mlname = let module M = Ser_genarg.GS0(WitMN) in M.genser
+let ser_wit_mlname = let module M = Ser_genarg.GSV(WitMN) in M.genser
 
 let register () =
   Ser_genarg.register_genser Extraction_plugin.G_extraction.wit_int_or_id ser_wit_int_or_id;

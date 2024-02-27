@@ -40,48 +40,32 @@ type 'a field_mod =
   [@@deriving sexp,hash,compare]
 
 module A0 = struct
-  type raw = Constrexpr.constr_expr field_mod
-    [@@deriving sexp,hash,compare]
-  type glb = unit
-    [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Constrexpr.constr_expr field_mod
     [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_field_mod = let module M = Ser_genarg.GS(A0) in M.genser
+let ser_wit_field_mod = let module M = Ser_genarg.GSV(A0) in M.genser
 
 module A1 = struct
-  type raw = Constrexpr.constr_expr field_mod list
-    [@@deriving sexp,hash,compare]
-  type glb = unit
-    [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Constrexpr.constr_expr field_mod list
     [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_field_mods = let module M = Ser_genarg.GS(A1) in M.genser
+let ser_wit_field_mods = let module M = Ser_genarg.GSV(A1) in M.genser
 
 module A2 = struct
-  type raw = Constrexpr.constr_expr ring_mod
-    [@@deriving sexp,hash,compare]
-  type glb = unit
-    [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Constrexpr.constr_expr ring_mod
     [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_ring_mod = let module M = Ser_genarg.GS(A2) in M.genser
+let ser_wit_ring_mod = let module M = Ser_genarg.GSV(A2) in M.genser
 
 module A3 = struct
-  type raw = Constrexpr.constr_expr ring_mod list
-    [@@deriving sexp,hash,compare]
-  type glb = unit
-    [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Constrexpr.constr_expr ring_mod list
     [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_ring_mods = let module M = Ser_genarg.GS(A3) in M.genser
+let ser_wit_ring_mods = let module M = Ser_genarg.GSV(A3) in M.genser
 
 let register () =
   Ser_genarg.register_genser Ring_plugin.G_ring.wit_field_mod  ser_wit_field_mod;

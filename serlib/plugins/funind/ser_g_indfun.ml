@@ -64,15 +64,11 @@ end
 let ser_wit_fun_ind_using = let module M = Ser_genarg.GS(WitFI) in M.genser
 
 module WitFS = struct
-  type raw = Names.variable * Libnames.qualid * Sorts.family
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Names.variable * Libnames.qualid * Sorts.family
   [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_fun_scheme_arg = let module M = Ser_genarg.GS(WitFS) in M.genser
+let ser_wit_fun_scheme_arg = let module M = Ser_genarg.GSV(WitFS) in M.genser
 
 module Loc = Ser_loc
 module Vernacexpr = Ser_vernacexpr

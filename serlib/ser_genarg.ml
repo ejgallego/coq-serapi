@@ -338,12 +338,34 @@ let mk_uniform pin pout phash pcompare =
   ; top_compare = pcompare
   }
 
+let mk_vernac_arg pin pout phash pcompare =
+  { raw_ser = pin
+  ; raw_des = pout
+  ; raw_hash = phash
+  ; raw_compare = pcompare
+
+  ; glb_ser = Ser_util.Empty.sexp_of_t
+  ; glb_des = Ser_util.Empty.t_of_sexp
+  ; glb_hash = Ser_util.Empty.hash_fold_t
+  ; glb_compare = Ser_util.Empty.compare
+
+
+  ; top_ser = Ser_util.Empty.sexp_of_t
+  ; top_des = Ser_util.Empty.t_of_sexp
+  ; top_hash = Ser_util.Empty.hash_fold_t
+  ; top_compare = Ser_util.Empty.compare
+  }
+
 module type GenSer0 = sig
   type t [@@deriving sexp,hash,compare]
 end
 
 module GS0 (M : GenSer0) = struct
   let genser = mk_uniform M.sexp_of_t M.t_of_sexp M.hash_fold_t M.compare
+end
+
+module GSV (M : GenSer0) = struct
+  let genser = mk_vernac_arg M.sexp_of_t M.t_of_sexp M.hash_fold_t M.compare
 end
 
 module type GenSer = sig

@@ -124,73 +124,47 @@ let ser_wit_constr_with_bindings = let module M = Ser_genarg.GS(A7) in M.genser
 (* Defined in g_ltac but serialized here *)
 
 module A8 = struct
-  type raw = int
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = int
   [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_ltac_info = let module M = Ser_genarg.GS(A8) in M.genser
+let ser_wit_ltac_info = let module M = Ser_genarg.GSV(A8) in M.genser
 
 module A9 = struct
-  type raw = Ltac_plugin.Tacentries.raw_argument Ser_tacentries.grammar_tactic_prod_item_expr
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Ltac_plugin.Tacentries.raw_argument Ser_tacentries.grammar_tactic_prod_item_expr
   [@@deriving sexp,hash,compare]
 end
 
-let ser_wit_production_item = let module M = Ser_genarg.GS(A9) in M.genser
+let ser_wit_production_item = let module M = Ser_genarg.GSV(A9) in M.genser
 
 module A10 = struct
-  type raw = string
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = string
   [@@deriving sexp,hash,compare]
 end
-let ser_wit_ltac_production_sep = let module M = Ser_genarg.GS(A10) in M.genser
+let ser_wit_ltac_production_sep = let module M = Ser_genarg.GSV(A10) in M.genser
 
 module A11 = struct
-  type raw = Ser_goal_select.t
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Ser_goal_select.t
   [@@deriving sexp,hash,compare]
 end
-let ser_wit_ltac_selector = let module M = Ser_genarg.GS(A11) in M.genser
+let ser_wit_ltac_selector = let module M = Ser_genarg.GSV(A11) in M.genser
 
 module A12 = struct
-  type raw = Ser_tacexpr.tacdef_body
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Ser_tacexpr.tacdef_body
   [@@deriving sexp,hash,compare]
 end
-let ser_wit_ltac_tacdef_body = let module M = Ser_genarg.GS(A12) in M.genser
+let ser_wit_ltac_tacdef_body = let module M = Ser_genarg.GSV(A12) in M.genser
 
 module A13 = struct
-  type raw = int  [@@deriving sexp,hash,compare]
-  type glb = unit [@@deriving sexp,hash,compare]
-  type top = unit [@@deriving sexp,hash,compare]
+  type t = int  [@@deriving sexp,hash,compare]
 end
-let ser_wit_ltac_tactic_level = let module M = Ser_genarg.GS(A13) in M.genser
+let ser_wit_ltac_tactic_level = let module M = Ser_genarg.GSV(A13) in M.genser
 
 module A14 = struct
-  type raw = bool
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = bool
   [@@deriving sexp,hash,compare]
 end
-let ser_wit_ltac_use_default = let module M = Ser_genarg.GS(A14) in M.genser
+let ser_wit_ltac_use_default = let module M = Ser_genarg.GSV(A14) in M.genser
 
 (* From G_auto *)
 module A15 = struct
@@ -214,14 +188,10 @@ end
 let ser_wit_hintbases = let module M = Ser_genarg.GS(A16) in M.genser
 
 module A17 = struct
-  type raw = Ser_libnames.qualid Ser_hints.hints_path_gen
-  [@@deriving sexp,hash,compare]
-  type glb = unit
-  [@@deriving sexp,hash,compare]
-  type top = unit
+  type t = Ser_libnames.qualid Ser_hints.hints_path_gen
   [@@deriving sexp,hash,compare]
 end
-let ser_wit_hintbases_path = let module M = Ser_genarg.GS(A17) in M.genser
+let ser_wit_hintbases_path = let module M = Ser_genarg.GSV(A17) in M.genser
 
 module A19 = struct
   type raw = string list option
