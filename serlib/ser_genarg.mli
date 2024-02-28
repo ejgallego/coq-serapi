@@ -81,11 +81,18 @@ val mk_uniform : ('t -> Sexp.t) -> (Sexp.t -> 't) ->
   't Ppx_compare_lib.compare ->
   ('t,'t,'t) gen_ser
 
+val mk_vernac_arg : ('t -> Sexp.t) -> (Sexp.t -> 't) ->
+  't Ppx_hash_lib.Std.Hash.folder ->
+  't Ppx_compare_lib.compare ->
+  ('t,Util.Empty.t,Util.Empty.t) gen_ser
+
 module type GenSer0 = sig
   type t [@@deriving sexp,hash,compare]
 end
 
 module GS0 (M : GenSer0) : sig val genser : (M.t,M.t,M.t) gen_ser end
+
+module GSV (M : GenSer0) : sig val genser : (M.t,Util.Empty.t,Util.Empty.t) gen_ser end
 
 module type GenSer = sig
   type raw [@@deriving sexp,hash,compare]
