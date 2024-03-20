@@ -1,3 +1,9 @@
+## Version 0.19.2
+
+ - [serlib] Fix (@ejgallego, #398, fixes #397 fixes sr-lab/coqpyt#35 ,
+            thanks to @laetitia-teo and @Nfsaavedra for the bug
+            report)
+
 ## Version 0.19.1
 
  - [serlib] Support `btauto` Coq plugin (@ejgallego, #362)
