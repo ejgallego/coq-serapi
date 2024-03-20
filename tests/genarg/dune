@@ -156,3 +156,8 @@
  (alias runtest)
  (deps (:input tactic_notation.v))
  (action (run ./test_roundtrip %{input})))
+
+(rule
+ (alias runtest)
+ (deps (:input primitives.v))
+ (action (run ./test_roundtrip %{input})))
