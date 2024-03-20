@@ -1,3 +1,9 @@
+## Version 0.18.3
+
+ - [serlib] Fix (@ejgallego, #398, fixes #397 fixes sr-lab/coqpyt#35 ,
+            thanks to @laetitia-teo and @Nfsaavedra for the bug
+            report)
+
 ## Version 0.18.2:
 
  - [serlib] Expose some more Ast functions required by coq-lsp's
