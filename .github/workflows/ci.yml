@@ -39,7 +39,7 @@ jobs:
       matrix:
         ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
-        extra-opam: [coq.dev coq-mathcomp-ssreflect.1.dev]
+        extra-opam: [coq.dev]
         include:
         - ocaml-compiler: 4.13.1
           test-target: test
@@ -72,8 +72,6 @@ jobs:
           eval $(opam env)
           opam repos add coq-released http://coq.inria.fr/opam/released
           opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
-          # Only for mathcomp.dev which is needed for 8.16, remove when math-comp is fixed
-          opam repos add coq-extra-dev http://coq.inria.fr/opam/extra-dev
           # coq-serapi already pinned by the setup-ocaml@v2 action
           opam install --deps-only coq-serapi
       - name: Display OPAM Setup
@@ -95,12 +93,6 @@ jobs:
           ./configure -prefix "$HOME/coq-$COQ_BRANCH/_build/install/default/"
           make dunestrap
           dune build -p coq-core,coq-stdlib,coq
-          cd "$HOME"
-          # Install math-comp using Coq from git
-          PATH="$HOME/coq-$COQ_BRANCH/_build/install/default/bin:$PATH"
-          git clone --depth=3 -b mathcomp-1 https://github.com/math-comp/math-comp.git
-          make -C math-comp/mathcomp/ssreflect
-          make -C math-comp/mathcomp/ssreflect install
       - name: Extra OPAM Setup (Coq.dev, misc extra tools)
         if: ${{ matrix.extra-opam != '' }}
         run: |

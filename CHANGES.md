@@ -1,5 +1,10 @@
 ## unreleased
 
+ - [test] Don't require math-comp to run genarg tests (@ejgallego, #399 ,
+          fixes #395 , thanks to @SnarkBoojum for the report)
+
+## Version 0.19.1
+
  - [serlib] Support `btauto` Coq plugin (@ejgallego, #362)
  - [serlib] Support `extraction` Coq plugin (@ejgallego, @toku-sa-n,
             #375, fixes #371)
