@@ -16,10 +16,12 @@
 (* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
-open Sexplib
-open Sexplib.Std
-open Ppx_hash_lib.Std.Hash.Builtin
-open Ppx_compare_lib.Builtin
+(* open Sexplib *)
+(* open Sexplib.Std *)
+(* open Ppx_hash_lib.Std.Hash.Builtin *)
+(* open Ppx_compare_lib.Builtin *)
+
+module UVars = Ser_uvars
 
 type t =
   [%import: CPrimitives.t]
@@ -27,42 +29,45 @@ type t =
 
 type const =
   [%import: CPrimitives.const]
-  [@@deriving sexp,yojson,hash]
+  [@@deriving sexp,yojson,hash,compare]
 
-(* XXX: GADTs ... *)
-type 'a prim_type = [%import: 'a CPrimitives.prim_type]
-and 'a prim_ind = [%import: 'a CPrimitives.prim_ind]
-and ind_or_type = [%import: CPrimitives.ind_or_type]
-  [@@deriving sexp_of]
+(* GADTs ... *)
+module PTP = struct
 
-let prim_type_of_sexp (x : Sexp.t) : 'a prim_type =
-  match x with
-  | Sexp.Atom "PT_int63" ->
-    PT_int63
-  | Sexp.Atom "PT_float64" ->
-    PT_float64
-  | Sexp.Atom "PT_array" ->
-    Obj.magic PT_array
-  | _ ->
-    Sexplib.Conv_error.no_variant_match ()
+  type 'a t = 'a CPrimitives.prim_type
 
-type op_or_type = [%import: CPrimitives.op_or_type]
-  [@@deriving sexp_of]
+  [@@@ocaml.warning "-27"]
 
-let hash_fold_op_or_type st x = hash_fold_string st (Sexp.to_string (sexp_of_op_or_type x))
-let compare_op_or_type x y = compare_string (Sexp.to_string (sexp_of_op_or_type x)) (Sexp.to_string (sexp_of_op_or_type y))
+  (* Non-GADT version *)
+  type 'a _t =
+    | PT_int63
+    | PT_float64
+    | PT_array
+  [@@deriving sexp,yojson,hash,compare]
+end
 
-let op_or_type_of_sexp (x : Sexp.t) : op_or_type =
-  match x with
-  | Sexp.List [Sexp.Atom "OT_op"; p] ->
-    OT_op (t_of_sexp p)
-  | Sexp.List [Sexp.Atom "OT_type"; p] ->
-    OT_type (prim_type_of_sexp p)
-  | Sexp.List [Sexp.Atom "OT_const"; p] ->
-    OT_const (const_of_sexp p)
-  | _ ->
-    Sexplib.Conv_error.no_variant_match ()
+module Prim_type_ = SerType.Pierce1(PTP)
+type 'a prim_type = 'a Prim_type_.t
+  [@@deriving sexp,yojson,hash,compare]
 
-(* XXX *)
-let op_or_type_to_yojson = Obj.magic
-let op_or_type_of_yojson = Obj.magic
+module OOTP = struct
+
+  type ptype =
+    | PT_int63
+    | PT_float64
+    | PT_array
+  [@@deriving sexp,yojson,hash,compare]
+
+  (* op_or_type *)
+  type _t =
+    | OT_op of t
+    | OT_type of ptype
+    | OT_const of const
+  [@@deriving sexp,yojson,hash,compare]
+
+  type t = CPrimitives.op_or_type
+end
+
+module Op_or_type_ = SerType.Pierce(OOTP)
+type op_or_type = Op_or_type_.t
+  [@@deriving sexp,yojson,hash,compare]
