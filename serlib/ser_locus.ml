@@ -34,13 +34,17 @@ type occurrences_expr =
   [%import: Locus.occurrences_expr]
   [@@deriving sexp,yojson,hash,compare]
 
-type 'a with_occurrences =
-  [%import: 'a Locus.with_occurrences]
+type 'a with_occurrences_expr =
+  [%import: 'a Locus.with_occurrences_expr]
   [@@deriving sexp,yojson,hash,compare]
 
 type occurrences =
   [%import: Locus.occurrences]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
+
+type 'a with_occurrences =
+  [%import: 'a Locus.with_occurrences]
+  [@@deriving sexp,yojson,hash,compare]
 
 type hyp_location_flag =
   [%import: Locus.hyp_location_flag]
