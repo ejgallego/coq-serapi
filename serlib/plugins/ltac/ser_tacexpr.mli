@@ -148,49 +148,57 @@ val sexp_of_gen_atomic_tactic_expr :
   ('a -> Sexplib.Sexp.t) ->
   ('c -> Sexplib.Sexp.t) ->
   ('d -> Sexplib.Sexp.t) ->
+  ('rp -> Sexplib.Sexp.t) ->
   ('e -> Sexplib.Sexp.t) ->
   ('f -> Sexplib.Sexp.t) ->
   ('g -> Sexplib.Sexp.t) ->
+  ('occvar -> Sexplib.Sexp.t) ->
   ('h -> Sexplib.Sexp.t) ->
   ('i -> Sexplib.Sexp.t) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_atomic_tactic_expr -> Sexplib.Sexp.t
 val sexp_of_gen_tactic_expr :
   ('a -> Sexplib.Sexp.t) ->
   ('c -> Sexplib.Sexp.t) ->
   ('d -> Sexplib.Sexp.t) ->
+  ('rp -> Sexplib.Sexp.t) ->
   ('e -> Sexplib.Sexp.t) ->
   ('f -> Sexplib.Sexp.t) ->
   ('g -> Sexplib.Sexp.t) ->
+  ('occvar -> Sexplib.Sexp.t) ->
   ('h -> Sexplib.Sexp.t) ->
   ('i -> Sexplib.Sexp.t) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_tactic_expr -> Sexplib.Sexp.t
 val sexp_of_gen_tactic_arg :
   ('a -> Sexplib.Sexp.t) ->
   ('c -> Sexplib.Sexp.t) ->
   ('d -> Sexplib.Sexp.t) ->
+  ('rp -> Sexplib.Sexp.t) ->
   ('e -> Sexplib.Sexp.t) ->
   ('f -> Sexplib.Sexp.t) ->
   ('g -> Sexplib.Sexp.t) ->
+  ('occvar -> Sexplib.Sexp.t) ->
   ('h -> Sexplib.Sexp.t) ->
   ('i -> Sexplib.Sexp.t) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_tactic_arg -> Sexplib.Sexp.t
 val sexp_of_gen_fun_ast :
   ('a -> Sexplib.Sexp.t) ->
   ('c -> Sexplib.Sexp.t) ->
   ('d -> Sexplib.Sexp.t) ->
+  ('rp -> Sexplib.Sexp.t) ->
   ('e -> Sexplib.Sexp.t) ->
   ('f -> Sexplib.Sexp.t) ->
   ('g -> Sexplib.Sexp.t) ->
+  ('occvar -> Sexplib.Sexp.t) ->
   ('h -> Sexplib.Sexp.t) ->
   ('i -> Sexplib.Sexp.t) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_tactic_fun_ast -> Sexplib.Sexp.t
 
 val gen_atomic_tactic_expr_of_sexp :
@@ -198,13 +206,15 @@ val gen_atomic_tactic_expr_of_sexp :
   (Sexplib.Sexp.t -> 'a) ->
   (Sexplib.Sexp.t -> 'c) ->
   (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'rp) ->
   (Sexplib.Sexp.t -> 'e) ->
   (Sexplib.Sexp.t -> 'f) ->
   (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'occvar) ->
   (Sexplib.Sexp.t -> 'h) ->
   (Sexplib.Sexp.t -> 'i) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_atomic_tactic_expr
 
 val gen_tactic_expr_of_sexp :
@@ -212,13 +222,15 @@ val gen_tactic_expr_of_sexp :
   (Sexplib.Sexp.t -> 'a) ->
   (Sexplib.Sexp.t -> 'c) ->
   (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'rp) ->
   (Sexplib.Sexp.t -> 'e) ->
   (Sexplib.Sexp.t -> 'f) ->
   (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'occvar) ->
   (Sexplib.Sexp.t -> 'h) ->
   (Sexplib.Sexp.t -> 'i) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_tactic_expr
 
 val gen_tactic_arg_of_sexp :
@@ -226,13 +238,15 @@ val gen_tactic_arg_of_sexp :
   (Sexplib.Sexp.t -> 'a) ->
   (Sexplib.Sexp.t -> 'c) ->
   (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'rp) ->
   (Sexplib.Sexp.t -> 'e) ->
   (Sexplib.Sexp.t -> 'f) ->
   (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'occvar) ->
   (Sexplib.Sexp.t -> 'h) ->
   (Sexplib.Sexp.t -> 'i) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a  >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_tactic_arg
 
 val gen_fun_ast_of_sexp :
@@ -240,13 +254,15 @@ val gen_fun_ast_of_sexp :
   (Sexplib.Sexp.t -> 'a) ->
   (Sexplib.Sexp.t -> 'c) ->
   (Sexplib.Sexp.t -> 'd) ->
+  (Sexplib.Sexp.t -> 'rp) ->
   (Sexplib.Sexp.t -> 'e) ->
   (Sexplib.Sexp.t -> 'f) ->
   (Sexplib.Sexp.t -> 'g) ->
+  (Sexplib.Sexp.t -> 'occvar) ->
   (Sexplib.Sexp.t -> 'h) ->
   (Sexplib.Sexp.t -> 'i) ->
-  < constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
-    reference : 'f; tacexpr : 'h; term : 'a >
+  < occvar : 'occvar; red_pattern : 'rp; constant : 'e; dterm : 'c; level : 'i; name : 'g; pattern : 'd;
+    reference : 'f; tacexpr : 'h; term : 'a; >
   Tacexpr.gen_tactic_fun_ast
 
 type glob_tactic_expr = Tacexpr.glob_tactic_expr
