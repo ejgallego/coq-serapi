@@ -22,19 +22,18 @@ type 'a or_var = 'a Locus.or_var
   [@@deriving sexp,yojson,hash,compare]
 
 type 'a occurrences_gen = 'a Locus.occurrences_gen
-val occurrences_gen_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a occurrences_gen
-val sexp_of_occurrences_gen : ('a -> Sexp.t) -> 'a occurrences_gen -> Sexp.t
+[@@deriving sexp, yojson, hash,compare]
 
 type occurrences_expr = Locus.occurrences_expr
 
 val occurrences_expr_of_sexp : Sexp.t -> occurrences_expr
 val sexp_of_occurrences_expr : occurrences_expr -> Sexp.t
 
+type 'a with_occurrences_expr = 'a Locus.with_occurrences_expr [@@deriving sexp, yojson, hash,compare]
 type 'a with_occurrences = 'a Locus.with_occurrences [@@deriving sexp, yojson, hash,compare]
 
 type occurrences = Locus.occurrences
-val occurrences_of_sexp : Sexp.t -> occurrences
-val sexp_of_occurrences : occurrences -> Sexp.t
+[@@deriving sexp, yojson, hash,compare]
 
 type hyp_location_flag = Locus.hyp_location_flag
   [@@deriving sexp,hash,compare]
