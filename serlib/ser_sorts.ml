@@ -16,6 +16,10 @@
 (* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
+open Ppx_sexp_conv_lib.Conv
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
+
 module Univ = Ser_univ
 
 type family =
@@ -46,6 +50,7 @@ module Quality = struct
   end
   include Self
   module Set = Ser_cSet.Make(Sorts.Quality.Set)(Self)
+  type pattern = [%import: Sorts.Quality.pattern] [@@deriving sexp,yojson,hash,compare]
 end
 
 module PierceSpec = struct
