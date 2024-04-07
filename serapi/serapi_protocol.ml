@@ -489,7 +489,7 @@ module QueryUtil = struct
     let cdef = Environ.lookup_constant cr env in
     let cb = Environ.lookup_constant cr env in
     Option.cata (fun (cb,_univs,_uctx) -> [CoqConstr cb] ) []
-      (Global.body_of_constant_body Library.indirect_accessor cb),
+      (Global.body_of_constant_body (Library.indirect_accessor[@warning "-3"]) cb),
     [CoqConstr(type_of_constant cdef)]
 
   let info_of_var env vr =
@@ -534,7 +534,8 @@ module QueryUtil = struct
     let cstr, _ = UnivGen.fresh_global_instance env gr in
     let st = Conv_oracle.get_transp_state (Environ.oracle env) in
     let nassums =
-      Assumptions.assumptions st ~add_opaque:true ~add_transparent:true gr cstr in
+      Assumptions.assumptions (Library.indirect_accessor[@warning "-3"])
+        st ~add_opaque:true ~add_transparent:true gr cstr in
     Serapi_assumptions.build env nassums
 
   (* This should be moved Coq upstream *)
