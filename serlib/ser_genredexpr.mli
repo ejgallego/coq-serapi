@@ -30,10 +30,10 @@ val sexp_of_glob_red_flag : ('a -> Sexp.t) -> 'a glob_red_flag -> Sexp.t
 val glob_red_flag_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a glob_red_flag, string) Result.result
 val glob_red_flag_to_yojson : ('a -> Yojson.Safe.t) -> 'a glob_red_flag -> Yojson.Safe.t
 
-type ('a, 'b, 'c) red_expr_gen =  ('a, 'b, 'c) Genredexpr.red_expr_gen
+type ('a, 'b, 'c, 'd) red_expr_gen =  ('a, 'b, 'c, 'd) Genredexpr.red_expr_gen
   [@@deriving sexp,yojson,hash,compare]
 
-type ('a, 'b, 'c) may_eval =  ('a, 'b, 'c) Genredexpr.may_eval
+type ('a, 'b, 'c, 'd) may_eval =  ('a, 'b, 'c, 'd) Genredexpr.may_eval
   [@@deriving sexp,yojson,hash,compare]
 
 type raw_red_expr = Genredexpr.raw_red_expr [@@deriving sexp,yojson,hash,compare]

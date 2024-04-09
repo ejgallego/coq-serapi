@@ -41,16 +41,20 @@ type 'a glob_red_flag =
   [%import: 'a Genredexpr.glob_red_flag]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('a,'b,'c,'d) red_expr_gen0 =
-  [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen0]
+type ('a,'b,'c) red_context =
+  [%import: ('a,'b,'c) Genredexpr.red_context]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('a,'b,'c) red_expr_gen =
-  [%import: ('a,'b,'c) Genredexpr.red_expr_gen]
+type ('a,'b,'c,'d, 'e) red_expr_gen0 =
+  [%import: ('a,'b,'c,'d, 'e) Genredexpr.red_expr_gen0]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('a,'b,'c) may_eval =
-  [%import: ('a,'b,'c) Genredexpr.may_eval]
+type ('a,'b,'c,'d) red_expr_gen =
+  [%import: ('a,'b,'c,'d) Genredexpr.red_expr_gen]
+  [@@deriving sexp,yojson,hash,compare]
+
+type ('a,'b,'c,'d) may_eval =
+  [%import: ('a,'b,'c,'d) Genredexpr.may_eval]
   [@@deriving sexp,yojson,hash,compare]
 
 (* Helpers for raw_red_expr *)
@@ -95,21 +99,18 @@ type glob_red_expr =
 module A = struct
 
   type raw =
-    (Ser_constrexpr.constr_expr,
-     Ser_libnames.qualid Ser_constrexpr.or_by_notation,
-     Ser_constrexpr.constr_expr) red_expr_gen
+    [%import: Genredexpr.raw_red_expr]
   [@@deriving sexp,yojson,hash,compare]
 
   type glb =
-    (Ser_genintern.glob_constr_and_expr,
-     Ser_evaluable.t and_short_name Ser_locus.or_var,
-     Ser_genintern.glob_constr_pattern_and_expr) red_expr_gen
+    [%import: Genredexpr.glob_red_expr]
   [@@deriving sexp,yojson,hash,compare]
 
   type top =
     (Ser_eConstr.constr,
      Ser_evaluable.t,
-     Ser_pattern.constr_pattern) red_expr_gen
+     Ser_pattern.constr_pattern,
+     int) red_expr_gen
   [@@deriving sexp,yojson,hash,compare]
 end
 
