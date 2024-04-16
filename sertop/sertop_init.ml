@@ -99,7 +99,7 @@ let coq_init opts out_fmt =
     ; load_module = Dynlink.loadfile
     (* We ignore all the other operations for now. *)
     ; add_dir = (fun _ -> ())
-    ; ml_loop = (fun _ -> ())
+    ; ml_loop = (fun ?init_file:_ _ -> ())
     } in
   Mltop.set_top ser_mltop;
 
