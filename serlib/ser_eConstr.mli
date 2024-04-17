@@ -18,6 +18,11 @@
 
 open Sexplib
 
+module ERelevance : sig
+  type t = EConstr.ERelevance.t
+  [@@deriving sexp,yojson,hash,compare]
+end
+
 type t = EConstr.t
   [@@deriving sexp,yojson,hash,compare]
 

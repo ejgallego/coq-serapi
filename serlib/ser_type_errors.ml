@@ -49,8 +49,8 @@ type ('constr, 'types) pcant_apply_bad_type =
   [%import: ('constr, 'types) Type_errors.pcant_apply_bad_type]
   [@@deriving sexp]
 
-type ('constr, 'types) ptype_error =
-  [%import: ('constr, 'types) Type_errors.ptype_error]
+type ('constr, 'types, 'r) ptype_error =
+  [%import: ('constr, 'types, 'r) Type_errors.ptype_error]
   [@@deriving sexp]
 
 type type_error =

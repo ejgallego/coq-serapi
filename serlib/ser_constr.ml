@@ -75,16 +75,16 @@ type 'constr pexistential =
   [%import: 'constr Constr.pexistential]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('constr, 'types) prec_declaration =
-  [%import: ('constr, 'types) Constr.prec_declaration]
+type ('constr, 'types, 'r) prec_declaration =
+  [%import: ('constr, 'types, 'r) Constr.prec_declaration]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('constr, 'types) pfixpoint =
-  [%import: ('constr, 'types) Constr.pfixpoint]
+type ('constr, 'types, 'r) pfixpoint =
+  [%import: ('constr, 'types, 'r) Constr.pfixpoint]
   [@@deriving sexp,yojson,hash,compare]
 
-type ('constr, 'types) pcofixpoint =
-  [%import: ('constr, 'types) Constr.pcofixpoint]
+type ('constr, 'types, 'r) pcofixpoint =
+  [%import: ('constr, 'types, 'r) Constr.pcofixpoint]
   [@@deriving sexp,yojson,hash,compare]
 
 type 'constr pcase_invert =
@@ -96,14 +96,14 @@ let map_pcase_invert f = function
   | CaseInvert { indices } ->
     CaseInvert { indices = Array.map f indices }
 
-type 'constr pcase_branch =
-  [%import: 'constr Constr.pcase_branch]
+type ('constr, 'r) pcase_branch =
+  [%import: ('constr, 'r) Constr.pcase_branch]
   [@@deriving sexp,yojson,hash,compare]
 
 let map_pcase_branch f (bi, c) = (bi, f c)
 
-type 'types pcase_return =
-  [%import: 'types Constr.pcase_return]
+type ('types, 'r) pcase_return =
+  [%import: ('types, 'r) Constr.pcase_return]
   [@@deriving sexp,yojson,hash,compare]
 
 let map_pcase_return f (bi, c) = (bi, f c)
@@ -115,16 +115,16 @@ type _constr =
   | Evar      of _constr pexistential
   | Sort      of Sorts.t
   | Cast      of _constr * cast_kind * _constr
-  | Prod      of Names.Name.t Context.binder_annot * _constr * _constr
-  | Lambda    of Names.Name.t Context.binder_annot * _constr * _constr
-  | LetIn     of Names.Name.t Context.binder_annot * _constr * _constr * _constr
+  | Prod      of (Names.Name.t, Sorts.relevance) Context.pbinder_annot * _constr * _constr
+  | Lambda    of (Names.Name.t, Sorts.relevance) Context.pbinder_annot * _constr * _constr
+  | LetIn     of (Names.Name.t, Sorts.relevance) Context.pbinder_annot * _constr * _constr * _constr
   | App       of _constr * _constr array
   | Const     of pconstant
   | Ind       of pinductive
   | Construct of pconstructor
-  | Case      of case_info * UVars.Instance.t * _constr array * _constr pcase_return * _constr pcase_invert *  _constr * _constr pcase_branch array
-  | Fix       of (_constr, _constr) pfixpoint
-  | CoFix     of (_constr, _constr) pcofixpoint
+  | Case      of case_info * UVars.Instance.t * _constr array * (_constr, Sorts.relevance) pcase_return * _constr pcase_invert *  _constr * (_constr, Sorts.relevance) pcase_branch array
+  | Fix       of (_constr, _constr, Sorts.relevance) pfixpoint
+  | CoFix     of (_constr, _constr, Sorts.relevance) pcofixpoint
   | Proj      of Names.Projection.t * Sorts.relevance * _constr
   | Int       of Uint63.t
   | Float     of Float64.t

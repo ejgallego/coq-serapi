@@ -33,15 +33,16 @@ val sexp_of_pcant_apply_bad_type :
   ('types -> Sexp.t) ->
   ('constr, 'types) pcant_apply_bad_type -> Sexp.t
 
-type ('c, 't) ptype_error  = ('c, 't) Type_errors.ptype_error
+type ('c, 't, 'r) ptype_error  = ('c, 't, 'r) Type_errors.ptype_error
 val ptype_error_of_sexp :
-  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) ->
-  Sexp.t -> ('constr, 'types) ptype_error
+  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) -> (Sexp.t -> 'r) ->
+  Sexp.t -> ('constr, 'types, 'r) ptype_error
 
 val sexp_of_ptype_error :
   ('constr -> Sexp.t) ->
   ('types -> Sexp.t) ->
-  ('constr, 'types) ptype_error -> Sexp.t
+  ('r -> Sexp.t) ->
+  ('constr, 'types, 'r) ptype_error -> Sexp.t
 
 type type_error  = Type_errors.type_error
 val type_error_of_sexp : Sexp.t -> type_error

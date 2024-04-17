@@ -69,34 +69,36 @@ val sexp_of_cofixpoint : cofixpoint -> Sexp.t
 type 'constr pexistential = 'constr Constr.pexistential
   [@@deriving sexp, yojson, hash, compare]
 
-type ('constr, 'types) prec_declaration = ('constr, 'types) Constr.prec_declaration
+type ('constr, 'types, 'r) prec_declaration = ('constr, 'types, 'r) Constr.prec_declaration
 
 val prec_declaration_of_sexp :
-  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) ->
-  Sexp.t -> ('constr, 'types) prec_declaration
+  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) -> (Sexp.t -> 'r) ->
+  Sexp.t -> ('constr, 'types, 'r) prec_declaration
 val sexp_of_prec_declaration :
-  ('constr -> Sexp.t) -> ('types -> Sexp.t) ->
-  ('constr, 'types) prec_declaration -> Sexp.t
+  ('constr -> Sexp.t) -> ('types -> Sexp.t) -> ('r -> Sexp.t) ->
+  ('constr, 'types, 'r) prec_declaration -> Sexp.t
 
-type ('constr, 'types) pfixpoint = ('constr, 'types) Constr.pfixpoint
+type ('constr, 'types, 'r) pfixpoint = ('constr, 'types, 'r) Constr.pfixpoint
 
 val pfixpoint_of_sexp :
   (Sexp.t -> 'constr) ->
-  (Sexp.t -> 'types) -> Sexp.t -> ('constr, 'types) pfixpoint
+  (Sexp.t -> 'types) ->
+  (Sexp.t -> 'r) -> Sexp.t -> ('constr, 'types, 'r) pfixpoint
 
 val sexp_of_pfixpoint :
   ('constr -> Sexp.t) ->
-  ('types -> Sexp.t) -> ('constr, 'types) pfixpoint -> Sexp.t
+  ('types -> Sexp.t) ->
+  ('r -> Sexp.t) -> ('constr, 'types, 'r) pfixpoint -> Sexp.t
 
-type ('constr, 'types) pcofixpoint = ('constr, 'types) Constr.pcofixpoint
+type ('constr, 'types, 'r) pcofixpoint = ('constr, 'types, 'r) Constr.pcofixpoint
 
 val pcofixpoint_of_sexp :
-  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) ->
-  Sexp.t -> ('constr, 'types) pcofixpoint
+  (Sexp.t -> 'constr) -> (Sexp.t -> 'types) -> (Sexp.t -> 'r) ->
+  Sexp.t -> ('constr, 'types, 'r) pcofixpoint
 
 val sexp_of_pcofixpoint :
-  ('constr -> Sexp.t) -> ('types -> Sexp.t) ->
-  ('constr, 'types) pcofixpoint -> Sexp.t
+  ('constr -> Sexp.t) -> ('types -> Sexp.t) -> ('r -> Sexp.t) ->
+  ('constr, 'types, 'r) pcofixpoint -> Sexp.t
 
 type t = Constr.t
   [@@deriving sexp,yojson,hash,compare]

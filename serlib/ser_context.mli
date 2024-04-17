@@ -18,18 +18,18 @@
 
 open Sexplib
 
-type 'a binder_annot = 'a Context.binder_annot
+type ('a,'r) pbinder_annot = ('a,'r) Context.pbinder_annot
   [@@deriving sexp,yojson,hash,compare]
 
 module Rel : sig
   module Declaration : sig
 
-    type ('c,'t) pt = ('c,'t) Context.Rel.Declaration.pt
+    type ('c,'t,'r) pt = ('c,'t,'r) Context.Rel.Declaration.pt
      [@@deriving sexp,yojson,hash,compare]
 
   end
 
-  type ('c, 't) pt = ('c,'t) Context.Rel.pt
+  type ('c, 't,'r) pt = ('c,'t,'r) Context.Rel.pt
    [@@deriving sexp,yojson,hash,compare]
 
 end
@@ -38,12 +38,12 @@ module Named : sig
 
   module Declaration : sig
 
-    type ('c, 't) pt = ('c, 't) Context.Named.Declaration.pt
+    type ('c, 't, 'r) pt = ('c, 't, 'r) Context.Named.Declaration.pt
      [@@deriving sexp,yojson,hash,compare]
 
   end
 
-  type ('c, 't) pt = ('c, 't) Context.Named.pt
+  type ('c, 't, 'r) pt = ('c, 't, 'r) Context.Named.pt
    [@@deriving sexp,yojson,hash,compare]
 
 end
@@ -52,14 +52,14 @@ module Compacted : sig
 
   module Declaration : sig
 
-    type ('c, 't) pt = ('c, 't) Context.Compacted.Declaration.pt
-    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
-    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+    type ('c, 't, 'r) pt = ('c, 't, 'r) Context.Compacted.Declaration.pt
+    val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> (Sexp.t -> 'r) -> Sexp.t -> ('c, 't, 'r) pt
+    val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('r -> Sexp.t) -> ('c, 't, 'r) pt -> Sexp.t
 
   end
 
-  type ('c, 't) pt = ('c, 't) Context.Compacted.pt
-  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> Sexp.t -> ('c,'t) pt
-  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('c,'t) pt -> Sexp.t
+  type ('c, 't, 'r) pt = ('c, 't, 'r) Context.Compacted.pt
+  val pt_of_sexp : (Sexp.t -> 'c) -> (Sexp.t -> 't) -> (Sexp.t -> 'r) -> Sexp.t -> ('c, 't, 'r) pt
+  val sexp_of_pt : ('c -> Sexp.t) -> ('t -> Sexp.t) -> ('r -> Sexp.t) -> ('c, 't, 'r) pt -> Sexp.t
 
 end
