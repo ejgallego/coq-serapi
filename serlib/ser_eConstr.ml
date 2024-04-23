@@ -16,8 +16,21 @@
 (* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
+module Sorts   = Ser_sorts
 module Constr  = Ser_constr
 module Environ = Ser_environ
+
+module ERtoR = struct
+
+  type t = EConstr.ERelevance.t
+  type _t = Sorts.relevance
+  [@@deriving sexp,yojson,hash,compare]
+
+  let to_t = EConstr.ERelevance.make
+  let of_t = EConstr.Unsafe.to_relevance
+end 
+
+module ERelevance = SerType.Biject(ERtoR)
 
 module ECtoC = struct
 

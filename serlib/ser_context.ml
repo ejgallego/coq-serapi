@@ -23,23 +23,23 @@ open Ppx_compare_lib.Builtin
 module Names   = Ser_names
 module Sorts   = Ser_sorts
 
-type 'a binder_annot =
-  [%import: 'a Context.binder_annot]
+type ('a,'r) pbinder_annot =
+  [%import: ('a,'r) Context.pbinder_annot]
   [@@deriving sexp,yojson,hash,compare]
 
 module Rel = struct
 
   module Declaration = struct
 
-  type ('constr, 'types) pt =
-    [%import: ('constr, 'types) Context.Rel.Declaration.pt]
+  type ('constr, 'types, 'r) pt =
+    [%import: ('constr, 'types, 'r) Context.Rel.Declaration.pt]
     [@@deriving sexp,yojson,hash,compare]
 
 
   end
 
-  type ('constr, 'types) pt =
-    [%import: ('constr, 'types) Context.Rel.pt]
+  type ('constr, 'types, 'r) pt =
+    [%import: ('constr, 'types, 'r) Context.Rel.pt]
     [@@deriving sexp,yojson,hash,compare]
 
 end
@@ -48,14 +48,14 @@ module Named = struct
 
   module Declaration = struct
 
-  type ('constr, 'types) pt =
-    [%import: ('constr, 'types) Context.Named.Declaration.pt]
+  type ('constr, 'types, 'r) pt =
+    [%import: ('constr, 'types, 'r) Context.Named.Declaration.pt]
     [@@deriving sexp,yojson,hash,compare]
 
   end
 
-  type ('constr, 'types) pt =
-    [%import: ('constr, 'types) Context.Named.pt]
+  type ('constr, 'types, 'r) pt =
+    [%import: ('constr, 'types, 'r) Context.Named.pt]
     [@@deriving sexp,yojson,hash,compare]
 
 end
@@ -64,14 +64,14 @@ module Compacted = struct
 
   module Declaration = struct
 
-  type ('constr, 'types) pt =
-    [%import: ('constr, 'types) Context.Compacted.Declaration.pt]
+  type ('constr, 'types, 'r) pt =
+    [%import: ('constr, 'types, 'r) Context.Compacted.Declaration.pt]
     [@@deriving sexp]
 
   end
 
-  type ('constr, 'types) pt =
-    [%import: ('constr, 'types) Context.Compacted.pt]
+  type ('constr, 'types, 'r) pt =
+    [%import: ('constr, 'types, 'r) Context.Compacted.pt]
     [@@deriving sexp]
 
 end
