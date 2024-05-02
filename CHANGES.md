@@ -1,3 +1,8 @@
+## Version 0.19.3
+
+ - [test] Don't require math-comp to run genarg tests (@ejgallego, #399 ,
+          fixes #395 , thanks to @SnarkBoojum for the report)
+
 ## Version 0.19.2
 
  - [serlib] Fix (@ejgallego, #398, fixes #397 fixes sr-lab/coqpyt#35 ,
