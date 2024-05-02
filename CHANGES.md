@@ -1,8 +1,11 @@
+## unreleased
+
+ - [serlib] Support `micromega_core` plugin (@ejgallego)
+
 ## Version 0.19.3
 
  - [test] Don't require math-comp to run genarg tests (@ejgallego, #399 ,
           fixes #395 , thanks to @SnarkBoojum for the report)
- - [serlib] Support `micromega_core` plugin (@ejgallego)
 
 ## Version 0.19.2
 
@@ -24,6 +27,17 @@
             that contributed compatibility patches.
  - [general] Cleanup old / unused code (@ejgallego, #362)
 
+## Version 0.18.3:
+
+ - [serlib] Fix CPrimitives Serialization (@ejgallego, #398, fixes
+            #397 fixes sr-lab/coqpyt#35 , thanks to @laetitia-teo and
+            @Nfsaavedra for the bug report)
+
+## Version 0.18.2:
+
+ - [serlib] Expose some more Ast functions required by coq-lsp's
+   auto-build support (@ejgallego, #383)
+
 ## Version 0.18.1:
 
  - [serlib] Fix a few 8.18 piercings (!) (@ejgallego, #357)
@@ -35,6 +49,12 @@
             many others).
  - [serlib] Fix ltac2 plugin wrong piercing due to missing constructor
             (@ejgallego, reported by @quarkcool, #349).
+
+## Version 0.17.3:
+
+ - [serlib] Fix CPrimitives Serialization (@ejgallego, #398, fixes
+            #397 fixes sr-lab/coqpyt#35 , thanks to @laetitia-teo and
+            @Nfsaavedra for the bug report)
 
 ## Version 0.17.2:
 
