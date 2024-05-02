@@ -1,11 +1,14 @@
-## Version 0.19.2
+## Version 0.19.3
 
  - [test] Don't require math-comp to run genarg tests (@ejgallego, #399 ,
           fixes #395 , thanks to @SnarkBoojum for the report)
+ - [serlib] Support `micromega_core` plugin (@ejgallego)
+
+## Version 0.19.2
+
  - [serlib] Fix CPrimitives Serialization (@ejgallego, #398, fixes
             #397 fixes sr-lab/coqpyt#35 , thanks to @laetitia-teo and
             @Nfsaavedra for the bug report)
- - [serlib] Support `micromega_core` plugin (@ejgallego)
 
 ## Version 0.19.1
 
