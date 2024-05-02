@@ -45,7 +45,7 @@ jobs:
         test-target: [test]
         extra-opam: [coq.dev]
         include:
-        - ocaml-compiler: 4.13.1
+        - ocaml-compiler: 4.14.x
           test-target: test
           extra-opam:
           coq-from-git: true
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install apt dependencies
         run: |
           sudo apt-get install aptitude
@@ -71,39 +71,40 @@ jobs:
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           dune-cache: true
-      - name: Basic OPAM setup for SerAPI
-        run: |
-          eval $(opam env)
-          opam repos add coq-released http://coq.inria.fr/opam/released
-          opam repos add coq-core-dev http://coq.inria.fr/opam/core-dev
-          # coq-serapi already pinned by the setup-ocaml@v2 action
-          opam install --deps-only coq-serapi
+          opam-pin: false
+          opam-repositories: |
+            default: https://opam.ocaml.org
+            coq-core-dev: http://coq.inria.fr/opam/core-dev
       - name: Display OPAM Setup
-        run: |
-          eval $(opam env)
-          opam list
+        run: opam list
       - name: Install Coq via git
         if: ${{ matrix.coq-from-git }}
         run: |
-          eval $(opam env)
-          # First we update SERAPI_COQ_HOME for future steps as per https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
+          # We are going to install Coq in a root dir as to keep our
+          # main working dir clean, however we need to spec the OPAM root
+          export OPAMSWITCH="$PWD"
+          # First we update SERAPI_COQ_HOME for future steps as per
+          # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
           echo "SERAPI_COQ_HOME=$HOME/coq-$COQ_BRANCH/_build/install/default/lib/" >> $GITHUB_ENV
-          # Update to coq-core some day
-          # opam install --deps-only coq-core
-          opam install --deps-only coq-core
+          # Clone Coq's repos
           git clone --depth=3 -b "$COQ_BRANCH" "$COQ_REPOS" "$HOME/coq-$COQ_BRANCH"
-          # Upstream 'make -C "$HOME/coq-$COQ_BRANCH" world' target now builds coqide
+          # Note that Coq's 'make -C "$HOME/coq-$COQ_BRANCH" world'
+          # target now builds coqide too
           cd "$HOME/coq-$COQ_BRANCH"
-          ./configure -prefix "$HOME/coq-$COQ_BRANCH/_build/install/default/"
-          make dunestrap
-          dune build -p coq-core,coq-stdlib,coq
+          # Install deps for Coq, and build Coq
+          opam install --deps-only ./coq-core.opam
+          opam exec -- ./configure -prefix "$HOME/coq-$COQ_BRANCH/_build/install/default/"
+          opam exec -- make dunestrap
+          opam exec -- dune build -p coq-core,coq-stdlib,coq
       - name: Extra OPAM Setup (Coq.dev, misc extra tools)
         if: ${{ matrix.extra-opam != '' }}
+        run: opam install ${{ matrix.extra-opam }}
+      - name: Install SerAPI deps
+        run: opam install --ignore-constraints-on=coq --deps-only .
+      - name: Build SerAPI
         run: |
-          eval $(opam env)
-          opam install ${{ matrix.extra-opam }}
-      - name: Build and Test SerAPI
-        run: |
-          eval $(opam env)
-          make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "${{ matrix.test-target }}"
-          ls -lR _build/install/default/ || true
+          opam exec -- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME"
+          ls -lR _build/install/default/bin || true
+          ls -l _build/install/default/lib/coq-serapi || true
+      - name: Test SerAPI
+        run: opam exec -- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME" "${{ matrix.test-target }}"
