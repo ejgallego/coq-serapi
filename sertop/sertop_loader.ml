@@ -54,8 +54,8 @@ let plugin_handler user_handler =
   let loader = Option.default (Fl_dynload.load_packages ~debug:false) user_handler in
   fun fl_pkg ->
     try
-      let _, fl_pkg = Mltop.PluginSpec.repr fl_pkg in
       (* In 8.10 with a Dune-built Coq Fl_dynload will track the dependencies *)
+      let fl_pkg = Mltop.PluginSpec.to_package fl_pkg in
       match map_serlib fl_pkg with
       | Some serlib_pkg ->
         if debug then
