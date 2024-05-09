@@ -1,23 +1,31 @@
 (rule
  (alias runtest)
- (deps (:input ab.v))
+ (deps
+  (package coq-lsp)
+  (:input ab.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
 
 (rule
  (alias runtest)
- (deps (:input assoc.v))
+ (deps
+  (package coq-lsp)
+  (:input assoc.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
 
 (rule
  (alias runtest)
- (deps (:input ordered.v))
+ (deps
+  (package coq-lsp)
+  (:input ordered.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
 
 (rule
  (alias runtest)
- (deps (:input reserved.v))
+ (deps
+  (package coq-lsp)
+  (:input reserved.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))

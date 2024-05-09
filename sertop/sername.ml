@@ -74,7 +74,7 @@ let sername_doc = "sername Coq tool"
 (* EJGA: XXX process as regular require at create doc time... *)
 let do_require ~doc ~sid ~require_lib ~in_file =
   let sent = Printf.sprintf "Require %s." require_lib in
-  let in_strm = Serapi.Ser_stream.of_string sent in
+  let in_strm = Gramlib.Stream.of_string sent in
   let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file})) in_strm in
   match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
   | Some ast ->

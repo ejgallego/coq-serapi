@@ -46,7 +46,7 @@ exception End_of_input
 let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let open Format in
   let stt = ref (doc, sid) in
-  let in_strm = Serapi.Ser_stream.of_channel in_chan in
+  let in_strm = Gramlib.Stream.of_channel in_chan in
   let source = Loc.InFile { dirpath = None; file = in_file } in
   let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
   let in_bytes = load_file in_file in
@@ -65,7 +65,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
 	Bytes.sub_string in_bytes begin_char (end_char - begin_char)
       in
       let l_post_st = CLexer.Lexer.State.get () in
-      let sstr = Serapi.Ser_stream.of_string istr in
+      let sstr = Gramlib.Stream.of_string istr in
       try
 	CLexer.Lexer.State.set l_pre_st;
         let lex = CLexer.Lexer.tok_func sstr in

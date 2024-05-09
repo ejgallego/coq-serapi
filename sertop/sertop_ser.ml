@@ -80,7 +80,6 @@ module Pp       = Ser_pp
 module Names    = Ser_names
 module Environ  = Ser_environ
 module Goptions = Ser_goptions
-module Coqargs  = Ser_coqargs
 module Stateid  = Ser_stateid
 module Evar     = Ser_evar
 module Context  = Ser_context
@@ -102,8 +101,8 @@ module Printer    = Ser_printer
 module Profile_tactic = Ser_profile_tactic
 
 (* Alias fails due to the [@@default in protocol] *)
-(* module Stm        = Ser_stm *)
-module Ser_stm    = Ser_stm
+module Ser_stm = Serlib_extra.Ser_stm
+module Coqargs = Serlib_extra.Ser_coqargs
 
 module Ltac_plugin = struct
   module Tacenv       = Serlib_ltac.Ser_tacenv

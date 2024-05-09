@@ -17,7 +17,7 @@ GITDEPS=$(ls .git/HEAD .git/index)
 sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
-build:
+build: vendor/coq-lsp
 	dune build --root . --only-packages=$(SP_PKGS) @install
 
 check:
@@ -39,6 +39,23 @@ browser:
 
 sertop: build
 	dune exec -- rlwrap sertop
+
+vendor/coq-lsp:
+	$(error Submodules not initialized, please do "make submodules-init")
+
+.PHONY: submodules-init
+submodules-init:
+	git submodule update --init
+
+# Deinitialize submodules
+.PHONY: submodules-deinit
+submodules-deinit:
+	git submodule deinit -f --all
+
+# Update submodules from upstream
+.PHONY: submodules-update
+submodules-update:
+	(cd vendor/coq-lsp && git checkout main && git pull upstream main)
 
 #####################################################
 # Misc
