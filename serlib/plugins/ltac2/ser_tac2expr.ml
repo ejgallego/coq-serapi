@@ -66,6 +66,10 @@ type raw_quant_typedef =
   [%import: Ltac2_plugin.Tac2expr.raw_quant_typedef]
   [@@deriving sexp,yojson,hash,compare]
 
+type 'a glb_typexpr =
+  [%import: 'a Ltac2_plugin.Tac2expr.glb_typexpr]
+  [@@deriving sexp,yojson,hash,compare]
+
 type atom =
   [%import: Ltac2_plugin.Tac2expr.atom]
   [@@deriving sexp,yojson,hash,compare]
@@ -97,56 +101,12 @@ type tacref =
   [%import: Ltac2_plugin.Tac2expr.tacref]
   [@@deriving sexp,yojson,hash,compare]
 
-module ObjS = struct type t = Obj.t let name = "Obj.t" end
-module Obj = SerType.Opaque(ObjS)
-
-module T2ESpec = struct
-  type t = Ltac2_plugin.Tac2expr.raw_tacexpr_r
-  open Ltac2_plugin.Tac2expr
-  type _t =
-    | CTacAtm of atom
-    | CTacRef of tacref or_relid
-    | CTacCst of ltac_constructor or_tuple or_relid
-    | CTacFun of raw_patexpr list * raw_tacexpr
-    | CTacApp of raw_tacexpr * raw_tacexpr list
-    | CTacSyn of (raw_patexpr * raw_tacexpr) list * Names.KerName.t
-    | CTacLet of rec_flag * (raw_patexpr * raw_tacexpr) list * raw_tacexpr
-    | CTacCnv of raw_tacexpr * raw_typexpr
-    | CTacSeq of raw_tacexpr * raw_tacexpr
-    | CTacIft of raw_tacexpr * raw_tacexpr * raw_tacexpr
-    | CTacCse of raw_tacexpr * raw_taccase list
-    | CTacRec of raw_tacexpr option * raw_recexpr
-    | CTacPrj of raw_tacexpr * ltac_projection or_relid
-    | CTacSet of raw_tacexpr * ltac_projection or_relid * raw_tacexpr
-    | CTacExt of int * Obj.t
-
-  and raw_tacexpr = _t CAst.t
-  and raw_taccase =
-  [%import: Ltac2_plugin.Tac2expr.raw_taccase]
-  and raw_recexpr =
-  [%import: Ltac2_plugin.Tac2expr.raw_recexpr]
-  [@@deriving sexp,yojson,hash,compare]
-
-end
-
-module T2E = Serlib.SerType.Pierce(T2ESpec)
-type raw_tacexpr_r = T2E.t
-  [@@deriving sexp,yojson,hash,compare]
-
-type raw_tacexpr =
-  [%import: Ltac2_plugin.Tac2expr.raw_tacexpr]
-  [@@deriving sexp,yojson,hash,compare]
-
 type ml_tactic_name =
   [%import: Ltac2_plugin.Tac2expr.ml_tactic_name]
   [@@deriving sexp,yojson,hash,compare]
 
 type sexpr =
   [%import: Ltac2_plugin.Tac2expr.sexpr]
-  [@@deriving sexp,yojson,hash,compare]
-
-type strexpr =
-  [%import: Ltac2_plugin.Tac2expr.strexpr]
   [@@deriving sexp,yojson,hash,compare]
 
 type ctor_indx =
@@ -168,6 +128,9 @@ type case_info =
 type 'a open_match =
   [%import: 'a Ltac2_plugin.Tac2expr.open_match]
   [@@deriving sexp,yojson,hash,compare]
+
+module ObjS = struct type t = Obj.t let name = "Obj.t" end
+module Obj = SerType.Opaque(ObjS)
 
 module GT2ESpec = struct
   type t = Ltac2_plugin.Tac2expr.glb_tacexpr
@@ -194,4 +157,46 @@ end
 
 module GT2E = Serlib.SerType.Pierce(GT2ESpec)
 type glb_tacexpr = GT2E.t
+  [@@deriving sexp,yojson,hash,compare]
+
+module T2ESpec = struct
+  type t = Ltac2_plugin.Tac2expr.raw_tacexpr_r
+  open Ltac2_plugin.Tac2expr
+  type _t =
+    | CTacAtm of atom
+    | CTacRef of tacref or_relid
+    | CTacCst of ltac_constructor or_tuple or_relid
+    | CTacFun of raw_patexpr list * raw_tacexpr
+    | CTacApp of raw_tacexpr * raw_tacexpr list
+    | CTacSyn of (Names.lname * raw_tacexpr) list * Names.KerName.t
+    | CTacLet of rec_flag * (raw_patexpr * raw_tacexpr) list * Names.KerName.t
+    | CTacCnv of raw_tacexpr * raw_typexpr
+    | CTacSeq of raw_tacexpr * raw_tacexpr
+    | CTacIft of raw_tacexpr * raw_tacexpr * raw_tacexpr
+    | CTacCse of raw_tacexpr * raw_taccase list
+    | CTacRec of raw_tacexpr option * raw_recexpr
+    | CTacPrj of raw_tacexpr * ltac_projection or_relid
+    | CTacSet of raw_tacexpr * ltac_projection or_relid * raw_tacexpr
+    | CTacExt of int * Obj.t
+    | CTacGlb of int * (Names.lname * raw_tacexpr * int glb_typexpr option) list * glb_tacexpr * int glb_typexpr
+
+  and raw_tacexpr = _t CAst.t
+  and raw_taccase =
+  [%import: Ltac2_plugin.Tac2expr.raw_taccase]
+  and raw_recexpr =
+  [%import: Ltac2_plugin.Tac2expr.raw_recexpr]
+  [@@deriving sexp,yojson,hash,compare]
+
+end
+
+module T2E = Serlib.SerType.Pierce(T2ESpec)
+type raw_tacexpr_r = T2E.t
+  [@@deriving sexp,yojson,hash,compare]
+
+type raw_tacexpr =
+  [%import: Ltac2_plugin.Tac2expr.raw_tacexpr]
+  [@@deriving sexp,yojson,hash,compare]
+
+type strexpr =
+  [%import: Ltac2_plugin.Tac2expr.strexpr]
   [@@deriving sexp,yojson,hash,compare]
