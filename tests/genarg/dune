@@ -168,8 +168,8 @@
  (action (run ./test_roundtrip %{input})))
 
 ; Disabled until we implement ltac2 extension serialization
-;
-; (rule
-;  (alias runtest)
-;  (deps (:input ltac2.v))
-;  (action (run ./test_roundtrip %{input})))
+
+(rule
+ (alias runtest)
+ (deps (:input ltac2.v))
+ (action (run ./test_roundtrip %{input})))
