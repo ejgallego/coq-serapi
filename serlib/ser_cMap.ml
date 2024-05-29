@@ -22,7 +22,7 @@ open Ppx_compare_lib.Builtin
 
 module type ExtS = sig
 
-  include CSig.MapS
+  include CSig.UMapS
 
   (* module SSet : Ser_cSet.ExtS *)
 
@@ -30,7 +30,7 @@ module type ExtS = sig
 
 end
 
-module Make (M : CSig.MapS) (S : SerType.SJHC with type t = M.key) = struct
+module Make (M : CSig.UMapS) (S : SerType.SJHC with type t = M.key) = struct
 
   include M
 

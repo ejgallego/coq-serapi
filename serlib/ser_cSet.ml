@@ -22,13 +22,13 @@ open Ppx_compare_lib.Builtin
 
 module type ExtS = sig
 
-  include CSig.SetS
+  include CSig.USetS
 
   include SerType.SJHC with type t := t
 
 end
 
-module Make (M : CSig.SetS) (S : SerType.SJHC with type t = M.elt) = struct
+module Make (M : CSig.USetS) (S : SerType.SJHC with type t = M.elt) = struct
 
   include M
 
