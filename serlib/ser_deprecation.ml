@@ -16,8 +16,10 @@
 (* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
+open Ppx_hash_lib.Std.Hash.Builtin
+open Ppx_compare_lib.Builtin
 open Sexplib.Std
 
 type t =
   [%import: Deprecation.t]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]

@@ -31,7 +31,7 @@ module Evaluable = Ser_evaluable
 
 type 'a red_atom =
   [%import: 'a Genredexpr.red_atom]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type strength =
   [%import: Genredexpr.strength]

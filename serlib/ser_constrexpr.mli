@@ -97,13 +97,8 @@ and local_binder_expr    = Constrexpr.local_binder_expr
 and constr_notation_substitution = Constrexpr.constr_notation_substitution
 [@@deriving sexp, yojson, hash,compare]
 
-type constr_pattern_expr = Constrexpr.constr_pattern_expr [@@deriving sexp, yojson, hash,compare]
+type constr_pattern_expr = Constrexpr.constr_pattern_expr [@@deriving sexp,yojson,hash,compare]
 
-type with_declaration_ast = Constrexpr.with_declaration_ast
-
-val with_declaration_ast_of_sexp : Sexp.t -> with_declaration_ast
-val sexp_of_with_declaration_ast : with_declaration_ast -> Sexp.t
-val with_declaration_ast_of_yojson : Yojson.Safe.t -> (with_declaration_ast, string) Result.result
-val with_declaration_ast_to_yojson : with_declaration_ast -> Yojson.Safe.t
+type with_declaration_ast = Constrexpr.with_declaration_ast [@@deriving sexp,yojson,hash,compare]
 
 type module_ast = Constrexpr.module_ast [@@deriving sexp,yojson,hash,compare]

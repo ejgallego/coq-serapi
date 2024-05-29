@@ -31,7 +31,7 @@ let sexp_of_thunk : type a b. (a -> Sexp.t) -> (b -> Sexp.t) -> (a,b) thunk -> S
 let thunk_of_sexp : type a b. (Sexp.t -> a) -> (Sexp.t -> b) -> Sexp.t -> (a,b) thunk =
   fun f _ s -> Value (f s)
 
-let thunk_of_yojson : type a b. (Yojson.Safe.t -> (a, string) Result.result) -> (Yojson.Safe.t -> (b, string) Result.result) -> Yojson.Safe.t -> ((a,b) thunk, string) Result.result =
+let thunk_of_yojson : type a b. (Yojson.Safe.t -> (a, string) Result.t) -> (Yojson.Safe.t -> (b, string) Result.t) -> Yojson.Safe.t -> ((a,b) thunk, string) Result.t =
   fun f _ s -> Result.map (fun s -> Value s) (f s)
 
 let thunk_to_yojson : type a b. (a -> Yojson.Safe.t) -> (b -> Yojson.Safe.t) -> (a,b) thunk -> Yojson.Safe.t =
