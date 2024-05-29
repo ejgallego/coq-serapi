@@ -16,19 +16,11 @@
 (* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
-open Sexplib
-
 type 'a red_atom = 'a Genredexpr.red_atom
-
-val red_atom_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a red_atom
-val sexp_of_red_atom : ('a -> Sexp.t) -> 'a red_atom -> Sexp.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type 'a glob_red_flag =  'a Genredexpr.glob_red_flag
-
-val glob_red_flag_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a glob_red_flag
-val sexp_of_glob_red_flag : ('a -> Sexp.t) -> 'a glob_red_flag -> Sexp.t
-val glob_red_flag_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a glob_red_flag, string) Result.result
-val glob_red_flag_to_yojson : ('a -> Yojson.Safe.t) -> 'a glob_red_flag -> Yojson.Safe.t
+ [@@deriving sexp,yojson,hash,compare]
 
 type ('a, 'b, 'c, 'd) red_expr_gen =  ('a, 'b, 'c, 'd) Genredexpr.red_expr_gen
   [@@deriving sexp,yojson,hash,compare]

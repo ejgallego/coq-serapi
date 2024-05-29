@@ -33,11 +33,11 @@ type option_name =
 
 type option_value =
   [%import: Goptions.option_value]
-  [@@deriving sexp,yojson]
+  [@@deriving sexp,yojson,hash,compare]
 
 type option_state =
   [%import: Goptions.option_state]
-  [@@deriving sexp]
+  [@@deriving sexp,yojson,hash,compare]
 
 type table_value =
   [%import: Goptions.table_value]

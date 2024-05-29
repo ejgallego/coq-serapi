@@ -16,18 +16,8 @@
 (* Written by: Emilio J. Gallego Arias and others                       *)
 (************************************************************************)
 
-open Sexplib
-
 type 'a gxml = 'a Xml_datatype.gxml
-
-val gxml_of_sexp : (Sexp.t -> 'a) -> Sexp.t -> 'a gxml
-val sexp_of_gxml : ('a -> Sexp.t) -> 'a gxml -> Sexp.t
-val gxml_of_yojson : (Yojson.Safe.t -> ('a, string) Result.result) -> Yojson.Safe.t -> ('a gxml, string) Result.result
-val gxml_to_yojson : ('a -> Yojson.Safe.t) -> 'a gxml -> Yojson.Safe.t
+ [@@deriving sexp,yojson]
 
 type xml = Xml_datatype.xml
-
-val xml_of_sexp : Sexp.t -> xml
-val sexp_of_xml : xml -> Sexp.t
-val xml_of_yojson : Yojson.Safe.t -> (xml, string) Result.result
-val xml_to_yojson : xml -> Yojson.Safe.t
+ [@@deriving sexp,yojson]
