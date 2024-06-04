@@ -2,6 +2,8 @@
 
  - [serlib] Support `micromega_core` plugin (@ejgallego)
  - [serlib] Compat with ppx_deriving 6 (@ejgallego)
+ - [serlib] Move `serlib` sources to `coq-lsp` (@ejgallego, #409)
+ - [general] Drop support for OCaml 4.09-4.11 (@ejgallego, #409)
 
 ## Version 0.19.3
 

@@ -91,7 +91,7 @@ let coq_init opts out_fmt =
     (* Flags.debug := true; *)
   end;
 
-  let load_plugin = Sertop_loader.plugin_handler opts.plugin_load in
+  let load_plugin = Coq.Loader.plugin_handler opts.plugin_load in
 
   (* Custom toplevel is used for bytecode-to-js dynlink  *)
   let ser_mltop : Mltop.toplevel = let open Mltop in

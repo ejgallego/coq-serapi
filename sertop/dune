@@ -3,7 +3,7 @@
  (public_name coq-serapi.sertop_v8_12)
  (modules :standard \ sertop_bin sercomp sertok sername)
  (preprocess (staged_pps ppx_import ppx_sexp_conv))
- (libraries findlib.dynload cmdliner serapi serlib serlib_ltac))
+ (libraries findlib.dynload cmdliner serapi coq-lsp.serlib coq-lsp.serlib.ltac coq-lsp.coq serlib_extra))
 
 (executables
  (public_names sertop sercomp sertok sername)

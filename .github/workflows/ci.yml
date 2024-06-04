@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ocaml-compiler: [4.09.x, 4.10.x, 4.11.x, 4.12.x, 4.13.x, 4.14.x]
+        ocaml-compiler: [4.12.x, 4.13.x, 4.14.x]
         test-target: [test]
         extra-opam: [coq.dev]
         include:
@@ -60,6 +60,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Install apt dependencies
         run: |
           sudo apt-get install aptitude
@@ -100,7 +102,9 @@ jobs:
         if: ${{ matrix.extra-opam != '' }}
         run: opam install ${{ matrix.extra-opam }}
       - name: Install SerAPI deps
-        run: opam install --ignore-constraints-on=coq --deps-only .
+        run: |
+          opam install --ignore-constraints-on=coq --deps-only vendor/coq-lsp/coq-lsp.opam
+          opam install --ignore-constraints-on=coq,coq-lsp --deps-only .
       - name: Build SerAPI
         run: |
           opam exec -- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME"

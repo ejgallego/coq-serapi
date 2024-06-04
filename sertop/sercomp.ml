@@ -24,7 +24,7 @@ let input_doc ~input ~in_file ~in_chan ~process ~doc ~sid =
   match input with
   | I_vernac ->
      begin
-       let in_strm = Serapi.Ser_stream.of_channel in_chan in
+       let in_strm = Gramlib.Stream.of_channel in_chan in
        let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file} )) in_strm in
        try while true do
            let doc, sid = !stt in

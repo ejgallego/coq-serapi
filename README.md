@@ -1,10 +1,15 @@
-**Note**: Coq SerAPI is now in maintenance mode, and has been
-succeeded by [coq-lsp](https://github.com/ejgallego/coq-lsp/), which
-solves many longstanding issues and feature requests.
+**Note**: Coq SerAPI has now stopped development, the 0.20 release for
+Coq 8.20 will be the last managed by us. Coq SerAPI has been succeeded
+by [coq-lsp](https://github.com/ejgallego/coq-lsp/), which solves many
+longstanding issues and feature requests.
 
 See https://github.com/ejgallego/coq-serapi/issues/252 for more
-information. The `serlib` component of this repository is still
-active, pending its integration in Coq at some point.
+information. The `serlib` component of this repository now lives in
+the `coq-lsp` repository..
+
+We'd like to thanks all the people that have contributed in one way or
+another to SerAPI after all these years, without you neither SerAPI or
+`coq-lsp` would have been possible.
 
 ## SerAPI: Machine-Friendly, Data-Centric Serialization for Coq
 
