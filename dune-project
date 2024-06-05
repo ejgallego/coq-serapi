@@ -1,3 +1,3 @@
-(lang dune 2.0)
+(lang dune 2.9)
 (formatting (enabled_for ocaml))
 (name coq-serapi)

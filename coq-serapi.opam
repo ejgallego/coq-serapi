@@ -23,7 +23,7 @@ authors: [
 ]
 
 depends: [
-  "dune"                {           >= "2.0.1"                     }
+  "dune"                {           >= "2.9.1"                     }
   "ocaml"               {           >= "4.12.0"                    }
   "coq"                 {           >= "8.20" & < "8.21" | = "dev" }
   # We vendor this for now
