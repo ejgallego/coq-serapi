@@ -619,8 +619,8 @@ let proof_state_of_st m = match m with
   | _ -> None
 
 let parsing_state_of_st m = match m with
-  | Stm.Valid (Some { Vernacstate.synterp = { parsing; _ }; _} ) ->
-    Some parsing
+  | Stm.Valid (Some { Vernacstate.synterp; _} ) ->
+    Some (Vernacstate.Synterp.parsing synterp)
   | _ -> None
 
 let context_of_st m = match m with
