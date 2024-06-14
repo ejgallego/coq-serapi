@@ -701,7 +701,8 @@ module ControlUtil = struct
     |> Option.map (fun pstate ->
         let entry = Pcoq.Constr.lconstr in
         let pa = Pcoq.Parsable.make (Gramlib.Stream.of_string str) in
-        Vernacstate.Parser.parse pstate entry pa)
+        Pcoq.unfreeze pstate;
+        Pcoq.Entry.parse entry pa)
 
   let parse_sentence ~doc ~ontop sent =
     let ontop = Extra.value ontop ~default:(Stm.get_current_state ~doc) in
