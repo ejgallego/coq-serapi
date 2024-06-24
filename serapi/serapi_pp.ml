@@ -72,7 +72,7 @@ let pp_feedback_content fmt fb =
   | Custom(_loc, msg, _xml) -> fprintf fmt "Custom: %s" msg
 
   (* Old generic messages *)
-  | Message(_lvl, _loc, m) -> fprintf fmt "Msg: @[%a@]" Pp.pp_with m
+  | Message(_lvl, _loc, _qf, m) -> fprintf fmt "Msg: @[%a@]" Pp.pp_with m
 
 let pp_feedback fmt (fb : Feedback.feedback) =
   let open Feedback in

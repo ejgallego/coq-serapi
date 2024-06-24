@@ -42,7 +42,7 @@ module F = Feedback
 let feedback_content_pos_filter txt (fbc : F.feedback_content) : F.feedback_content =
   let adjust _txt loc = loc in
   match (fbc : F.feedback_content) with
-  | F.Message (lvl,loc,msg) -> F.Message (lvl, adjust txt loc, msg)
+  | F.Message (lvl,loc,qf,msg) -> F.Message (lvl, adjust txt loc, qf, msg)
   | _                       -> fbc
 
 let feedback_pos_filter text (fb : F.feedback) : F.feedback =
@@ -60,7 +60,7 @@ let default_fb_filter_opts = {
 
 let feedback_content_tr (fb : F.feedback_content) : Serapi.Serapi_protocol.feedback_content =
   match fb with
-  | F.Message (level, loc, pp) ->
+  | F.Message (level, loc, _, pp) ->
     let str = Pp.string_of_ppcmds pp in
     Message { level; loc; pp; str }
   | F.Processed -> Processed
@@ -84,9 +84,9 @@ let feedback_tr (fb : Feedback.feedback) : Serapi.Serapi_protocol.feedback =
 
 let feedback_opt_filter ?(opts=default_fb_filter_opts) =
   let open Feedback in function
-    | { F.contents = Message (lvl, loc, msg); _ } as fb ->
+    | { F.contents = Message (lvl, loc, qf, msg); _ } as fb ->
       Some (if opts.pp_opt
-            then { fb with contents = Message(lvl, loc, coq_pp_opt msg) }
+            then { fb with contents = Message(lvl, loc, qf, coq_pp_opt msg) }
             else fb)
     | { F.contents = FileDependency _ ; _ } -> None
     | fb -> Some fb
