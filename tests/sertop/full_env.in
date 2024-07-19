@@ -1,4 +1,4 @@
-("query0"("Add"()"Require Coq.Vectors.Vector.\nRequire Import Coq.Strings.String Coq.Arith.PeanoNat.\nImport EqNotations Vector.VectorNotations."))
+("query0"("Add"()"Require Stdlib.Vectors.Vector.\nRequire Import Stdlib.Strings.String Stdlib.Arith.PeanoNat.\nImport EqNotations Vector.VectorNotations."))
 ("query1"("Exec""2"))
 ("query2"("Query"(("sid""2"))"EGoals"))
 ("query3"("Exec""3"))

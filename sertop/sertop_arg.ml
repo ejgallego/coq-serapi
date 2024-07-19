@@ -25,7 +25,7 @@ let coqlib_from_env_or_config =
 
 [@@@ocaml.warning "-44-45"]
 let prelude =
-  let doc = "Load Coq.Init.Prelude from $(docv); plugins/ and theories/ should live there." in
+  let doc = "Load Stdlib.Init.Prelude from $(docv); plugins/ and theories/ should live there." in
   Arg.(value & opt string coqlib_from_env_or_config & info ["coqlib"] ~docv:"COQPATH" ~doc)
 
 let require_lib =
