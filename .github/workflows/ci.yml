@@ -55,7 +55,7 @@ jobs:
       OPAMYES: "true"
       NJOBS: "2"
       COQ_REPOS: "https://github.com/coq/coq.git"
-      COQ_BRANCH: "master"
+      COQ_BRANCH: "v8.20"
     runs-on: ubuntu-22.04
 
     steps:
