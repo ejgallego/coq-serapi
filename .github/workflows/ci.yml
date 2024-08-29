@@ -79,6 +79,10 @@ jobs:
             coq-core-dev: http://coq.inria.fr/opam/core-dev
       - name: Display OPAM Setup
         run: opam list
+      - name: Install SerAPI deps
+        run: |
+          opam install --ignore-constraints-on=coq --deps-only vendor/coq-lsp/coq-lsp.opam
+          opam install --ignore-constraints-on=coq,coq-lsp --deps-only .
       - name: Install Coq via git
         if: ${{ matrix.coq-from-git }}
         run: |
@@ -101,10 +105,6 @@ jobs:
       - name: Extra OPAM Setup (Coq.dev, misc extra tools)
         if: ${{ matrix.extra-opam != '' }}
         run: opam install ${{ matrix.extra-opam }}
-      - name: Install SerAPI deps
-        run: |
-          opam install --ignore-constraints-on=coq --deps-only vendor/coq-lsp/coq-lsp.opam
-          opam install --ignore-constraints-on=coq,coq-lsp --deps-only .
       - name: Build SerAPI
         run: |
           opam exec -- make -j "$NJOBS" SERAPI_COQ_HOME="$SERAPI_COQ_HOME"
