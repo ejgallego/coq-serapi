@@ -17,7 +17,7 @@ GITDEPS=$(ls .git/HEAD .git/index)
 sertop/ser_version.ml: $(GITDEPS)
 	echo "let ser_git_version = \"$(shell git describe --tags || cat VERSION)\";;" > $@
 
-build: vendor/coq-lsp
+build:
 	dune build --root . --only-packages=$(SP_PKGS) @install
 
 check:

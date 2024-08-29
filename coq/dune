@@ -1,0 +1,5 @@
+(library
+ (name coq)
+ (public_name coq-serapi.coq)
+ (libraries coq-core.vernac))
+

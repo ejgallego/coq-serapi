@@ -1,4 +1,0 @@
-[submodule "vendor/coq-lsp"]
-	path = vendor/coq-lsp
-	url = https://github.com/ejgallego/coq-lsp.git
-	branch = serlib_merge
