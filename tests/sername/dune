@@ -1,5 +1,5 @@
 (rule
- (deps (package coq-lsp))
+ (deps (package coq-serapi))
  (action
   (with-stdout-to nat_add.log
    (run sername --de-bruijn --str-pp %{dep:nat_add.sername}))))

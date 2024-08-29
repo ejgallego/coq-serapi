@@ -5,7 +5,7 @@
   (:input test_roundtrip.in)
   ; For the plugins to be built, it'd be greater if we could only
   ; specify a few libs, but that's still not possible in Dune.
-  (package coq-lsp))
+  (package coq-serapi))
  (action
   (progn
    (copy test_roundtrip.in test_roundtrip)
