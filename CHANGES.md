@@ -4,6 +4,7 @@
  - [serlib] Compat with ppx_deriving 6 (@ejgallego)
  - [serlib] Move `serlib` sources to `coq-lsp` (@ejgallego, #409)
  - [general] Drop support for OCaml 4.09-4.11 (@ejgallego, #409)
+ - [serlib] Embed `serlib` from `coq-lsp` as to help 8.20 release (@ejgallego)
 
 ## Version 0.19.3
 
