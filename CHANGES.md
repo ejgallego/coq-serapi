@@ -1,4 +1,4 @@
-## unreleased
+## Version 0.20.0
 
  - [serlib] Support `micromega_core` plugin (@ejgallego)
  - [serlib] Compat with ppx_deriving 6 (@ejgallego)
