@@ -45,7 +45,7 @@ let process_line ~pp ~str_pp ~de_bruijn ~body ~doc ~sid line =
   | [CoqConstr def_term] ->
      let evd = Evd.from_env env in
      let edef_term = EConstr.of_constr def_term in
-     let gdef_term = Detyping.detype Detyping.Now Names.Id.Set.empty env evd edef_term in
+     let gdef_term = Detyping.detype Detyping.Now env evd edef_term in
      Format.pp_set_margin Format.std_formatter 100000;
      Format.printf "%s: %!" line;
      if str_pp then Format.fprintf Format.std_formatter "\"@[%a@]\" %!" (str_pp_obj env sigma) (CoqConstr def_term);
