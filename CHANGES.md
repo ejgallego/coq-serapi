@@ -7,6 +7,7 @@
  - [serlib] Move `serlib` sources to `coq-lsp` (@ejgallego, #409)
  - [general] Drop support for OCaml 4.09-4.11 (@ejgallego, #409)
  - [serlib] Embed `serlib` from `coq-lsp` as to help 8.20 release (@ejgallego)
+ - [meta] Add license info for sertop.el (@ejgallego, @SnarkBoojum, fixes #411)
 
 ## Version 0.19.3
 
