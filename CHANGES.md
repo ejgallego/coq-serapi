@@ -1,5 +1,7 @@
 ## Version 0.20.0
 
+ - [serapi] (!) support for Coq 8.20, thanks to all the developers
+            that contributed compatibility patches.
  - [serlib] Support `micromega_core` plugin (@ejgallego)
  - [serlib] Compat with ppx_deriving 6 (@ejgallego)
  - [serlib] Move `serlib` sources to `coq-lsp` (@ejgallego, #409)
