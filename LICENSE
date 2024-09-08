@@ -10,6 +10,10 @@ Files: sertop/js_sexp_printer.ml*
 License: MIT
 Copyright: Copyright (c) 2005--2023 Jane Street Group, LLC <opensource-contacts@janestreet.com>
 
+Files: sertop/sertop.el
+License: GPL-v3
+Copyright: Copyright (C) 2016  Clément Pit-Claudel
+
 Files: serlib/* serapi/* sertop/ser* sertop/comp*
 License: LGPL-2.1+
 Copyright: 2016-2023, MINES ParisTech / Inria / others
