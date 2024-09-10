@@ -75,7 +75,7 @@ exception CannotSaveVo
  *   [@@deriving sexp]
  *)
 
-(* XXX: Use a module here to have Coq.String etc...? *)
+(* XXX: Use a module here to have Stdlib.String etc...? *)
 type coq_object =
   | CoqString    of string
   | CoqSList     of string list
@@ -891,7 +891,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   coq_protect st @@ fun () -> match cmd with
   | NewDoc opts   ->
     let stm_options = Stm.AsyncOpts.default_opts in
-    let require_libs = Option.default [{Coqargs.lib="Coq.Init.Prelude"; prefix=None; export=Some Lib.Export;}] opts.require_libs in
+    let require_libs = Option.default [{Coqargs.lib="Stdlib.Init.Prelude"; prefix=None; export=Some Lib.Export;}] opts.require_libs in
     Stm.init_process stm_options;
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
                ; injections = List.map (fun x -> Coqargs.RequireInjection x) require_libs
