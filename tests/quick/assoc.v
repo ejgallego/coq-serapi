@@ -1,5 +1,4 @@
-Require Import List.
-Import ListNotations.
+Require Import ListDef.
 
 Set Implicit Arguments.
 
@@ -29,7 +28,7 @@ Section assoc.
 
   Fixpoint assoc (l : list (K * V)) (k : K) : option V :=
     match l with
-      | [] => None
+      | nil => None
       | (k', v) :: l' =>
         if K_eq_dec k k' then
           Some v
@@ -45,7 +44,7 @@ Section assoc.
 
   Fixpoint assoc_set (l : list (K * V)) (k : K) (v : V) : list (K * V) :=
     match l with
-      | [] => [(k, v)]
+      | nil => (k, v) :: nil
       | (k', v') :: l' =>
         if K_eq_dec k k' then
           (k, v) :: l'
@@ -55,7 +54,7 @@ Section assoc.
 
   Fixpoint assoc_del (l : list (K * V)) (k : K) : list (K * V) :=
     match l with
-      | [] => []
+      | nil => nil
       | (k', v') :: l' =>
         if K_eq_dec k k' then
           assoc_del l' k
@@ -78,7 +77,6 @@ Section assoc.
     induction l; intros; simpl in *.
     - auto.
     - repeat break_match; subst; simpl in *; auto.
-      break_if; try congruence.
   Qed.
 
   Lemma get_set_diff_default :

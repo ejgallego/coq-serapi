@@ -1,5 +1,4 @@
-Require Import List.
-Import ListNotations.
+Require Import ListDef.
 
 Set Implicit Arguments.
 

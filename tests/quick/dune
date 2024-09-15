@@ -13,19 +13,3 @@
   (:input assoc.v))
  (action (ignore-outputs
            (bash "%{bin:sercomp} --quick %{input}"))))
-
-(rule
- (alias runtest)
- (deps
-  (package coq-lsp)
-  (:input ordered.v))
- (action (ignore-outputs
-           (bash "%{bin:sercomp} --quick %{input}"))))
-
-(rule
- (alias runtest)
- (deps
-  (package coq-lsp)
-  (:input reserved.v))
- (action (ignore-outputs
-           (bash "%{bin:sercomp} --quick %{input}"))))
