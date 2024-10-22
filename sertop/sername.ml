@@ -75,7 +75,7 @@ let sername_doc = "sername Coq tool"
 let do_require ~doc ~sid ~require_lib ~in_file =
   let sent = Printf.sprintf "Require %s." require_lib in
   let in_strm = Gramlib.Stream.of_string sent in
-  let in_pa = Pcoq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file})) in_strm in
+  let in_pa = Procq.Parsable.make ~loc:(Loc.initial (InFile { dirpath = None; file = in_file})) in_strm in
   match Stm.parse_sentence ~doc ~entry:Pvernac.main_entry sid in_pa with
   | Some ast ->
     let doc, sid, tip = Stm.add ~doc ~ontop:sid false ast in
