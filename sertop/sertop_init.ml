@@ -130,7 +130,8 @@ let update_fb_handler ~pp_feed out_fmt =
 
 (* Set async flags; IMPORTANT, this has to happen before STM.init () ! *)
 let process_stm_flags opts =
-  let stm_opts = Stm.AsyncOpts.default_opts in
+  (* spawn_args probably wrong *)
+  let stm_opts = Stm.AsyncOpts.default_opts ~spawn_args:[] in
   (* Process error resilience *)
   let async_proofs_tac_error_resilience, async_proofs_cmd_error_resilience =
     if opts.error_recovery
