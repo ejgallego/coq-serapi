@@ -25,7 +25,7 @@ let load_file f =
   (s)
 
 let rec stream_tok n_tok acc str source begin_line begin_char =
-  let e = Gramlib.LStream.next (Pcoq.get_keyword_state()) str in
+  let e = Gramlib.LStream.next (Procq.get_keyword_state()) str in
   let pre_loc : Loc.t = Gramlib.LStream.get_loc n_tok str in
   let loc =
     { pre_loc with
@@ -48,7 +48,7 @@ let input_doc ~pp ~in_file ~in_chan ~doc ~sid =
   let stt = ref (doc, sid) in
   let in_strm = Gramlib.Stream.of_channel in_chan in
   let source = Loc.InFile { dirpath = None; file = in_file } in
-  let in_pa   = Pcoq.Parsable.make ~loc:(Loc.initial source) in_strm in
+  let in_pa   = Procq.Parsable.make ~loc:(Loc.initial source) in_strm in
   let in_bytes = load_file in_file in
   try while true do
       let l_pre_st = CLexer.Lexer.State.get () in

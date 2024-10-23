@@ -36,7 +36,7 @@ module Extra = struct
 
   (* Custom tokenizer *)
   let rec stream_tok n_tok acc lstr =
-    let e = Gramlib.LStream.next (Pcoq.get_keyword_state()) lstr in
+    let e = Gramlib.LStream.next (Procq.get_keyword_state()) lstr in
     let loc = Gramlib.LStream.get_loc n_tok lstr in
     let l_tok = CAst.make ~loc e in
     if Tok.(equal e EOI) then
@@ -541,7 +541,7 @@ module QueryUtil = struct
   (* This should be moved Coq upstream *)
   let _comments = ref []
   let add_comments pa =
-    let comments = Pcoq.Parsable.comments pa |> List.rev in
+    let comments = Procq.Parsable.comments pa |> List.rev in
     _comments := comments :: !_comments
 
   let libobjects () =
@@ -584,7 +584,7 @@ let obj_query ~doc ~pstate ~env (opt : query_opt) (cmd : query_cmd) : coq_object
   | TypeOf id      -> snd (QueryUtil.info_of_id env id)
   | Search         -> [CoqString "Not Implemented"]
   (* XXX: should set printing options in all queries *)
-  | Vernac q       -> let pa = Pcoq.Parsable.make (Gramlib.Stream.of_string q) in
+  | Vernac q       -> let pa = Procq.Parsable.make (Gramlib.Stream.of_string q) in
                       Stm.query ~doc ~at:opt.sid ~route:opt.route pa; []
   (* XXX: Should set the proper sid state *)
   | Env            -> [CoqEnv env]
@@ -699,14 +699,14 @@ module ControlUtil = struct
     let ontop = Extra.value ontop ~default:(Stm.get_current_state ~doc) in
     parsing_state_of_st (Stm.state_of_id ~doc ontop)
     |> Option.map (fun pstate ->
-        let entry = Pcoq.Constr.lconstr in
-        let pa = Pcoq.Parsable.make (Gramlib.Stream.of_string str) in
-        Pcoq.unfreeze pstate;
-        Pcoq.Entry.parse entry pa)
+        let entry = Procq.Constr.lconstr in
+        let pa = Procq.Parsable.make (Gramlib.Stream.of_string str) in
+        Procq.unfreeze pstate;
+        Procq.Entry.parse entry pa)
 
   let parse_sentence ~doc ~ontop sent =
     let ontop = Extra.value ontop ~default:(Stm.get_current_state ~doc) in
-    let pa = Pcoq.Parsable.make (Gramlib.Stream.of_string sent) in
+    let pa = Procq.Parsable.make (Gramlib.Stream.of_string sent) in
     let entry = Pvernac.main_entry in
     Stm.parse_sentence ~doc ontop ~entry pa
 
@@ -719,7 +719,7 @@ module ControlUtil = struct
   exception End_of_input
 
   let add_sentences ~doc opts sent =
-    let pa = Pcoq.Parsable.make (Gramlib.Stream.of_string sent) in
+    let pa = Procq.Parsable.make (Gramlib.Stream.of_string sent) in
     let i   = ref 1                    in
     let acc = ref []                   in
     let stt = ref (Extra.value opts.ontop ~default:(Stm.get_current_state ~doc)) in
