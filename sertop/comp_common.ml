@@ -79,7 +79,7 @@ let create_document ~debug ~set_impredicative_set ~disallow_sprop ~ml_path ~load
     else stm_options
   in
 
-  let injections = [Coqargs.RequireInjection {lib="Stdlib.Init.Prelude"; prefix=None; export=Some Lib.Import; allow_failure=false}] in
+  let injections = [Coqargs.RequireInjection {lib="Stdlib.Init.Prelude"; prefix=None; export=Some Import; allow_failure=false}] in
   Stm.init_process stm_options;
   let ndoc = { Stm.doc_type = Stm.VoDoc in_file
              ; injections

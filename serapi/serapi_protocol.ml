@@ -892,7 +892,7 @@ let exec_cmd (st : State.t) (cmd : cmd) : answer_kind list * State.t =
   | NewDoc opts   ->
     (* spawn_args probably wrong *)
     let stm_options = Stm.AsyncOpts.default_opts ~spawn_args:[] in
-    let require_libs = Option.default [{Coqargs.lib="Stdlib.Init.Prelude"; prefix=None; export=Some Lib.Export; allow_failure=false}] opts.require_libs in
+    let require_libs = Option.default [{Coqargs.lib="Stdlib.Init.Prelude"; prefix=None; export=Some Export; allow_failure=false}] opts.require_libs in
     Stm.init_process stm_options;
     let ndoc = { Stm.doc_type = Stm.(Interactive opts.top_name)
                ; injections = List.map (fun x -> Coqargs.RequireInjection x) require_libs
