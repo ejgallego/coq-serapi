@@ -26,6 +26,10 @@ type top =
   [%import: Coqargs.top]
   [@@deriving sexp]
 
+type export_flag =
+  [%import: Coqargs.export_flag]
+  [@@deriving sexp]
+
 type require_injection =
   [%import: Coqargs.require_injection]
   [@@deriving sexp]

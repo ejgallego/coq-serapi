@@ -140,7 +140,7 @@ let out_answer opts =
 let doc_type topfile =
   match topfile with
   | None ->
-    let sertop_dp = Names.(DirPath.make [Id.of_string "SerTop"]) in
+    let sertop_dp = "SerTop" in
     Stm.Interactive (TopLogical sertop_dp)
   | Some filename -> Stm.Interactive (Coqargs.TopPhysical filename)
 
@@ -234,7 +234,7 @@ let ser_loop ser_opts =
 
   let injections =
     if ser_opts.no_prelude then []
-    else [Coqargs.RequireInjection {lib="Stdlib.Init.Prelude"; prefix=None; export=Some Lib.Import; allow_failure=false}] in
+    else [Coqargs.RequireInjection {lib="Stdlib.Init.Prelude"; prefix=None; export=Some Import; allow_failure=false}] in
 
   let stm_options = Sertop_init.process_stm_flags ser_opts.async in
   Stm.init_process stm_options;
