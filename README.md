@@ -7,6 +7,10 @@ See https://github.com/ejgallego/coq-serapi/issues/252 for more
 information. The `serlib` component of this repository now lives in
 the `coq-lsp` repository..
 
+New maintainers for SerAPI are **much welcome** ! Please see
+https://github.com/coq-community/manifesto/issues/160 if you would
+like to help keeping SerAPI maintained.
+
 We'd like to thanks all the people that have contributed in one way or
 another to SerAPI after all these years, without you neither SerAPI or
 `coq-lsp` would have been possible.
